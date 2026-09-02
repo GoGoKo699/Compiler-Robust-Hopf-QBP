@@ -14,8 +14,10 @@ size. The present project asks a broader question:
 > Which parts of Hopf quantum backpropagation belong to the Hopf chart itself,
 > and which compiler transformations preserve its resource scaling?
 
-The real-frame construction has now passed an internal line-by-line proof audit
-relative to the exact synthesis lemmas it imports. Let
+Two compiler theorems have now passed internal line-by-line audits relative to
+the exact synthesis lemmas they import.
+
+Let
 
 ```math
 N=2^n,
@@ -27,8 +29,13 @@ n,
 \right\}.
 ```
 
-The audited theorem gives a frame-safe implementation of the complete real
-global Hopf frame with size
+The complete real frame and the separated complex frame
+
+```math
+W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}
+```
+
+admit exact frame-safe implementations with size
 
 ```math
 O(N)
@@ -42,30 +49,35 @@ n(n-t+1)+\frac{N}{n+m}
 \right).
 ```
 
-It uses the same `m` clean ancillary qubits as the matched state compiler for
-every `m>=1`. At the strict `m=0` endpoint, the present construction uses one
-clean reusable suffix flag. Equivalently, the uniform workspace bound is
+For every `m>=1`, the real and diagonal blocks reuse the same `m` clean
+ancillary qubits as the matched state-preparation budget. At the nominal `m=0`
+endpoint, the sharp-size construction uses one reusable real-frame flag. A
+strict zero-ancilla fallback also exists, with depth `O(N)` and size `O(nN)`.
+
+The diagonal block itself has an exact all-budget clean implementation of size
+`O(N)` and depth
 
 ```math
-\max\{1,m\}.
+O\left(n+\frac{N}{n+m}\right).
 ```
 
-This reproduces the three depth upper profiles in Figure 1 of Sun, Tian, Yang,
-Yuan, and Zhang. Whether the complete Hopf frame attains the later optimal
-all-ancilla frontier
+The current frame compiler reproduces all three depth upper profiles in Figure
+1 of Sun, Tian, Yang, Yuan, and Zhang. Whether the complete frame attains the
+later optimal all-ancilla frontier
 
 ```math
-\Theta\left(n+\frac{2^n}{n+m}\right)
+\Theta\left(n+\frac{N}{n+m}\right)
 ```
 
-for every `m` remains an open target.
+for every `m` remains open.
 
-The proof audit, including its corrections and boundaries, is in
-[`docs/PROOF_AUDIT_ISSUE_1.md`](docs/PROOF_AUDIT_ISSUE_1.md). A
-common-workspace complex theorem and an explicit compiler-obstruction example
-are still required before the project is ready for a public manuscript claim.
+The real proof audit is in
+[`docs/PROOF_AUDIT_ISSUE_1.md`](docs/PROOF_AUDIT_ISSUE_1.md). The complex
+common-workspace theorem is in
+[`docs/COMPLEX_COMMON_WORKSPACE.md`](docs/COMPLEX_COMMON_WORKSPACE.md).
+Neither document is external peer review.
 
-## Conceptual claim under investigation
+## Conceptual claim
 
 For the balanced real Hopf chart,
 
@@ -84,8 +96,8 @@ differential frame. The chart supplies:
 - the shared norm-controlled gradient record.
 
 A compiler inherits global Hopf backpropagation scaling only when it implements
-the complete differential frame cleanly and at cost comparable to forward state
-preparation. State-column equality alone is insufficient.
+the complete differential frame cleanly and at cost sufficiently close to
+forward state preparation. State-column equality alone is insufficient.
 
 ## Scope
 
@@ -95,9 +107,10 @@ This repository studies:
 - exact conditioned-prefix identities for addressed Hopf frames;
 - unary realizations by parallel two-mode Givens layers;
 - ancillary-space versus circuit-depth tradeoffs;
+- clean arbitrary-diagonal synthesis under a common workspace budget;
 - output-sensitive classical decoding;
 - lower-bound transfer from universal state preparation;
-- the separated complex Hopf frame;
+- common phase, phase gauge, and singular leaves;
 - limits of compiler invariance.
 
 The main target is the **global differential-frame protocol**. Checkpoint
@@ -125,6 +138,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python validate.py
 python scripts/ancilla_depth_ledger.py --n 10
+python scripts/complex_workspace_ledger.py --n 10
 ```
 
 ## Repository map
@@ -134,42 +148,42 @@ python scripts/ancilla_depth_ledger.py --n 10
 | `docs/RESEARCH_STATUS.md` | Current claim status, unresolved points, and release gates |
 | `docs/FRAME_SAFE_COMPILATION.md` | Logical contracts and the state-column obstruction |
 | `docs/ANCILLA_DEPTH_ROBUSTNESS.md` | Audited real-frame theorem and proof architecture |
-| `docs/PROOF_AUDIT_ISSUE_1.md` | Line-by-line audit, corrections, endpoints, and source-theorem map |
+| `docs/PROOF_AUDIT_ISSUE_1.md` | Real-frame line-by-line audit and corrections |
+| `docs/COMPLEX_COMMON_WORKSPACE.md` | Common-workspace complex-frame theorem, gauge, and end-to-end accounting |
 | `docs/OPTIMAL_ALL_ANCILLA_TARGET.md` | Stronger optimal-frontier question and research routes |
 | `docs/OUTPUT_SENSITIVE_DECODING.md` | Classical decoding complexity |
 | `docs/CLAIM_SUPPORT.md` | Claim-by-claim evidence map |
-| `compiler_robust_hopf/` | Independent analytic implementation |
+| `compiler_robust_hopf/` | Independent analytic implementation and resource ledgers |
 | `tests/` | Deterministic exact checks |
-| `scripts/ancilla_depth_ledger.py` | Machine-readable asymptotic term ledger |
+| `scripts/ancilla_depth_ledger.py` | Real-frame term ledger |
+| `scripts/complex_workspace_ledger.py` | Separated complex common-workspace ledger |
 | `SYNC.md` | Authority, provenance, and synchronization procedure |
 | `provenance/upstream.json` | Exact upstream commits and file lineage |
-| `manuscript/` | Reserved for the new paper after theorem stabilization |
+| `manuscript/` | Reserved for the paper after the remaining scientific gates |
 
 ## Current work queue
 
-1. [Independent proof audit of the current theorem candidate](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/1)
-2. [Optimal all-ancilla depth of the complete Hopf frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/2)
-3. [Common-workspace theorem for the separated complex frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/3)
-4. [Minimal state-column counterexample and checkpoint boundary](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/4)
-
-Issue #1 is addressed by the current proof-audit branch. It should be closed
-only after the audited changes are reviewed and merged.
+1. [Independent proof audit of the real theorem](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/1) — addressed by the parent proof-audit branch.
+2. [Optimal all-ancilla depth of the complete Hopf frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/2) — open.
+3. [Common-workspace theorem for the separated complex frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/3) — addressed by the current stacked branch.
+4. [Minimal state-column counterexample and checkpoint boundary](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/4) — open.
 
 ## Evidence boundary
 
 Finite tests establish exact matrix identities, clean-subspace action,
-unary-code preservation, decoder parity, endpoint bookkeeping, and the explicit
-geometric-tail inequality. They do not prove imported circuit-synthesis
-theorems. Those deductions are stated separately and tied to the hypotheses of
-the cited compiler literature.
+unary-code preservation, diagonal parameter transforms, phase gauge, singular
+leaves, decoder parity, endpoint bookkeeping, and explicit resource
+inequalities. They do not prove imported circuit-synthesis theorems. Those
+deductions are stated separately and tied to the hypotheses of the cited
+compiler literature.
 
 The current project does not claim:
 
 - that the inverse of an arbitrary state-preparation compiler is a valid reverse
   frame;
 - preservation of one Hopf coordinate as one elementary gate angle;
-- strict zero-extra-ancilla compilation at `m=0`;
-- the common-workspace complex theorem;
+- optimal all-ancilla frame depth;
+- simultaneous `O(N)` size and strict zero additional workspace at `m=0`;
 - routed-device depth or noise robustness;
 - approximate Clifford+T error bounds;
 - compiler-invariant checkpoint interfaces;

@@ -1,7 +1,7 @@
 # Manuscript workspace
 
 No manuscript is frozen yet. This directory is reserved for the new paper after
-the first independent proof audit.
+the remaining scientific-scope decisions.
 
 ## Working title
 
@@ -16,17 +16,30 @@ the Hopf construction.
 2. Prove that frame-safe substitution preserves the global Hopf gradient record.
 3. Give the state-column obstruction and checkpoint limitation.
 4. Prove the conditioned-prefix and unary-frame lemmas.
-5. Establish an all-workspace ancilla--depth theorem.
-6. Compare with the optimal QSP frontier of Yuan and Zhang.
-7. Include output-sensitive classical decoding.
-8. Extend the clean result to the separated complex frame.
-9. State all circuit-model and accuracy assumptions explicitly.
+5. Establish the audited all-workspace real-frame theorem.
+6. Establish the common-workspace separated complex theorem.
+7. Compare both with the optimal QSP frontier of Yuan and Zhang.
+8. Include output-sensitive magnitude and phase decoding.
+9. State all circuit-model, phase-convention, and accuracy assumptions.
 
-## Drafting gate
+## Gates already completed internally
 
-Do not add a full paper source until:
+- real conditioned-prefix and unary construction audit;
+- all-workspace real-frame upper bound;
+- clean arbitrary-diagonal all-budget lemma;
+- common-workspace separated complex-frame theorem;
+- common-phase gauge and singular-leaf checks;
+- output-sensitive magnitude and direct-phase decoders.
 
-- the candidate depth theorem has survived an independent proof audit;
-- the `m+1` workspace convention is accepted or improved;
-- the complex common-workspace ledger is complete;
-- the project has decided whether the main theorem is optimal or near-optimal.
+## Remaining drafting gates
+
+Do not freeze a full paper source until:
+
+- the minimal state-column counterexample and checkpoint boundary are complete;
+- the project decides whether to pursue the optimal all-ancilla theorem or
+  publish the audited near-optimal bound with its explicit intermediate gap;
+- the intended theorem statements have received an external proof review;
+- the controlled-observable and accuracy conventions are frozen.
+
+A provisional section skeleton may be developed before those gates, but theorem
+labels and abstract claims must remain explicitly provisional.

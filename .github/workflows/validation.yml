@@ -33,7 +33,9 @@ jobs:
         run: python -m compileall -q compiler_robust_hopf scripts tests validate.py
       - name: Run deterministic validation
         run: python validate.py
-      - name: Exercise resource ledger
-        run: python scripts/ancilla_depth_ledger.py --n 10 --format json > /tmp/ledger.json
+      - name: Exercise real-frame resource ledger
+        run: python scripts/ancilla_depth_ledger.py --n 10 --format json > /tmp/real-ledger.json
+      - name: Exercise complex common-workspace ledger
+        run: python scripts/complex_workspace_ledger.py --n 10 --format json > /tmp/complex-ledger.json
       - name: Validate synchronization metadata offline
         run: python scripts/check_upstream_sync.py --offline

@@ -125,7 +125,35 @@ of all original protocol registers unchanged and factors the workspace as
 probability distribution. Every estimator statement that is a function of that
 distribution is consequently preserved.
 
-## 4. What compilation may change
+## 4. Clean sequential composition
+
+Suppose clean compilers `U_tilde` and `V_tilde` implement system unitaries `U`
+and `V` using at most `a` and `b` workspace qubits, respectively. Embed both in
+a common pool of
+
+```math
+w=\max\{a,b\}
+```
+
+clean qubits, leaving unused wires untouched. Because the first block returns
+the pool to zero, the second begins with a clean input. Therefore
+
+```math
+\widetilde V\widetilde U
+\bigl(|\varphi\rangle|0^w\rangle\bigr)
+=
+(VU|\varphi\rangle)|0^w\rangle.
+```
+
+The workspace costs take a maximum rather than a sum, while circuit sizes and
+depths add for a sequential schedule. The inverse clean composition is obtained
+by reversing the two blocks and taking their adjoints.
+
+This lemma is the register-level reason that the clean real Hopf frame and the
+clean diagonal phase layer can share one ancillary pool in the separated
+complex construction.
+
+## 5. What compilation may change
 
 Frame-safe compilation may change:
 
@@ -148,7 +176,7 @@ Möttönen-style compiler in the established `Hopf-QBP` repository already
 provides an example: compiler-generated multiplexor angles replace the original
 coordinate angles while the complete frame action remains intact.
 
-## 5. Resource inheritance criterion
+## 6. Resource inheritance criterion
 
 Logical correctness does not by itself imply backpropagation scaling. Let
 
@@ -184,7 +212,7 @@ For end-to-end work, the following must also be reported:
 \text{output size}.
 ```
 
-## 6. Chart-native versus compiler-native ingredients
+## 7. Chart-native versus compiler-native ingredients
 
 | Ingredient | Mathematical source |
 |---|---|
@@ -201,7 +229,7 @@ Checkpoint methods may remain efficient under structure-preserving compilers,
 but their intermediate interfaces are not determined by the final state chart
 alone.
 
-## 7. Counterexample template for state-column claims
+## 8. Counterexample template for state-column claims
 
 Choose any nontrivial unitary `Q` satisfying `Q|0>=|0>` and mixing two marker
 basis states. Define `V=WQ`. Then `V|0>=W|0>`, but `V^dagger O|psi>` contains the

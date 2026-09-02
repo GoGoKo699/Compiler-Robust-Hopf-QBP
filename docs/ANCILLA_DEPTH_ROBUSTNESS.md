@@ -2,7 +2,7 @@
 
 ## Status
 
-The **real-frame theorem** on this page has passed an internal line-by-line proof
+The real-frame theorem on this page has passed an internal line-by-line proof
 audit relative to the exact synthesis lemmas cited below. The audit found no
 failure of the construction, but made two corrections:
 
@@ -11,14 +11,16 @@ failure of the construction, but made two corrections:
 2. the workspace bound strengthens from `m+1` to `max(1,m)`.
 
 Thus the construction uses the same `m` clean ancillary qubits as the matched
-state compiler whenever `m>=1`; only the strict `m=0` endpoint uses one clean
-suffix flag.
+state compiler whenever `m>=1`; only the sharp-size construction at the nominal
+`m=0` endpoint uses one clean suffix flag.
 
-The separated complex-frame statement remains provisional until its blocks are
-placed under one common workspace ledger. Reaching the later optimal
-all-ancilla frontier is also a separate open target.
+The separated complex frame has now been placed under one common clean
+workspace ledger. Its theorem and the strict zero-ancilla fallback are in
+[`COMPLEX_COMMON_WORKSPACE.md`](COMPLEX_COMMON_WORKSPACE.md). Reaching the later
+optimal all-ancilla frontier remains open.
 
-See [`PROOF_AUDIT_ISSUE_1.md`](PROOF_AUDIT_ISSUE_1.md) for the complete audit.
+See [`PROOF_AUDIT_ISSUE_1.md`](PROOF_AUDIT_ISSUE_1.md) for the complete real
+proof audit.
 
 ## 1. Setup
 
@@ -156,11 +158,11 @@ unary wires and conversion workspace require
 
 ancillary qubits.
 
-After the inverse conversion, the conversion workspace is clean. When `t<n`,
-reuse part of it to compute the external-suffix-zero predicate, fan that
-predicate out to distinct controls, apply the controlled Givens layers, and
-uncompute both fanout and predicate. The unary-to-binary unitary then restores
-all conversion workspace to zero.
+After inverse conversion, the conversion workspace is clean. When `t<n`, reuse
+part of it to compute the external-suffix-zero predicate, fan that predicate out
+to distinct controls, apply the controlled Givens layers, and uncompute both
+fanout and predicate. The unary-to-binary unitary then restores all conversion
+workspace to zero.
 
 The prefix resources are
 
@@ -210,7 +212,7 @@ suffix flag and apply the UCG synthesis theorem with the remaining `m-1`
 workspace qubits. The final layer may use all `m`. At `m=0`, add one clean flag
 and use zero UCG workspace.
 
-Hence the total ancillary bound is
+Hence the sharp-size construction has total ancillary bound
 
 ```math
 a_{\mathrm{frame}}(m)=\max\{1,m\}.
@@ -258,8 +260,8 @@ uniformly for all `m>=0`.
 
 ## 7. Audited real-frame theorem
 
-> **Theorem (clean ancilla--depth robustness of the real global frame).**
-> Let `n>=1`, `m>=0`, `N=2**n`, and choose `t` as in Section 4. In the exact
+> **Theorem (clean ancilla--depth robustness of the real global frame).** Let
+> `n>=1`, `m>=0`, `N=2**n`, and choose `t` as in Section 4. In the exact
 > all-to-all circuit model with arbitrary one-qubit gates and CNOTs, the
 > addressed real Hopf frame has a frame-safe implementation using at most
 > `max(1,m)` clean ancillary qubits, size
@@ -281,17 +283,15 @@ uniformly for all `m>=0`.
 > ```
 >
 > For `m>=1`, the total workspace equals the matched state-compiler budget
-> `m`. At `m=0`, the present construction uses one clean reusable suffix flag.
-> Reversing the clean circuit implements `W_R^dagger` with the same resources.
+> `m`. At nominal `m=0`, the sharp-size construction uses one clean reusable
+> suffix flag. Reversing the clean circuit implements `W_R^dagger` with the
+> same resources.
 
-The theorem is conditional only in the ordinary sense that it imports the
-exact UCG, unary-to-binary, and multi-controlled-X synthesis theorems rather
-than reproving their elementary circuits here. It is not an optimality theorem.
+The theorem imports the exact UCG, unary-to-binary, and multi-controlled-X
+synthesis theorems rather than reproving their elementary circuits. It is not an
+optimality theorem.
 
 ## 8. Reduction to the older three regimes
-
-The theorem reproduces the three state-preparation upper profiles in the
-Sun--Tian--Yang--Yuan--Zhang analysis.
 
 ### Low ancillary budget
 
@@ -300,8 +300,6 @@ For
 ```math
 m=O\left(\frac{N}{n\log n}\right),
 ```
-
-the sequential term is dominated by `N/(n+m)`, giving
 
 ```math
 D_{\mathrm{frame}}
@@ -319,15 +317,13 @@ m=\omega\left(\frac{N}{n\log n}\right),
 m=o(N),
 ```
 
-we have `n-t=O(log n)`, so
-
 ```math
 D_{\mathrm{frame}}=O(n\log n).
 ```
 
 ### Linear or larger ancillary budget
 
-For `m=Omega(N)`, `n-t=O(1)`, and therefore
+For `m=Omega(N)`,
 
 ```math
 D_{\mathrm{frame}}=O(n).
@@ -345,22 +341,35 @@ The portable complex magnitude frame is
 W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}.
 ```
 
-Exact diagonal synthesis has `O(N)` size and appropriate depth bounds in the
-same circuit model. A complete complex theorem still requires one common
-workspace schedule that treats `D_ph` and `W_R` together. That audit is tracked
-separately and is not silently included in the real-frame theorem.
+The diagonal and real blocks now have a single audited schedule:
 
-The direct complex phase-gradient stream does not apply an inverse differential
-frame and is unaffected by this compiler question.
+- the exact diagonal has size `O(N)`, depth
+  `O(n+N/(n+m))`, and uses at most `m` clean ancillas;
+- the real block has the resources stated in Theorem 7;
+- the two blocks are sequential and each returns the common workspace to zero.
+
+Consequently the separated complex frame has the same size and depth bound as
+the real frame and uses the same `m` clean ancillary qubits for every `m>=1`.
+At nominal `m=0`, the sharp-size construction uses one real-frame flag. A strict
+zero-ancilla fallback has depth `O(N)` and size `O(nN)`.
+
+See [`COMPLEX_COMMON_WORKSPACE.md`](COMPLEX_COMMON_WORKSPACE.md) for the proof,
+diagonal regime audit, common phase, singular leaves, phase-parameter transform,
+and complete-gradient accounting.
 
 ## 10. Executable support
 
 ```text
 compiler_robust_hopf/frames.py
 compiler_robust_hopf/ancilla_depth.py
+compiler_robust_hopf/complex_analysis.py
+compiler_robust_hopf/complex_resources.py
 tests/test_frames.py
 tests/test_ancilla_depth.py
+tests/test_complex_analysis.py
+tests/test_complex_resources.py
 scripts/ancilla_depth_ledger.py
+scripts/complex_workspace_ledger.py
 ```
 
 Run:
@@ -368,20 +377,21 @@ Run:
 ```bash
 python validate.py
 python scripts/ancilla_depth_ledger.py --n 10
+python scripts/complex_workspace_ledger.py --n 10
 ```
 
-The suite checks the exact Hopf identities, unary-code action and leakage,
-workspace bookkeeping, endpoint cases, and the explicit uniform geometric
-bound. It does not infer asymptotic correctness from finite scaling fits.
+The suite checks exact Hopf identities, unary-code action and leakage,
+workspace bookkeeping, endpoint cases, phase-gauge identities, diagonal
+parameter reconstruction, and explicit resource inequalities. It does not infer
+asymptotic correctness from finite scaling fits.
 
 ## 11. Boundaries
 
-This theorem does not establish:
+These theorems do not establish:
 
 - that an arbitrary state-preparation inverse is a valid Hopf reverse frame;
-- strict zero-extra-ancilla compilation at `m=0`;
 - the optimal all-ancilla depth frontier;
-- the common-workspace complex-frame theorem;
+- simultaneous `O(N)` size and strict zero additional workspace at `m=0`;
 - compiler-invariant checkpoint interfaces;
 - approximate Clifford+T error propagation;
 - routed-device depth or noise robustness;
