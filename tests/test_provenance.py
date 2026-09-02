@@ -11,30 +11,45 @@ SHA40 = re.compile(r"^[0-9a-f]{40}$")
 
 
 class ProvenanceTests(unittest.TestCase):
-    def test_provenance_is_well_formed_and_paths_exist(self) -> None:
-        path = ROOT / "provenance" / "upstream.json"
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        self.assertEqual(payload["schema_version"], 1)
+    def setUp(self) -> None:
+        self.payload = json.loads(
+            (ROOT / "provenance" / "upstream.json").read_text(
+                encoding="utf-8"
+            )
+        )
+
+    def test_provenance_schema_and_upstreams(self) -> None:
+        self.assertEqual(self.payload["schema_version"], 1)
         self.assertEqual(
-            payload["current_repository"],
+            self.payload["current_repository"],
             "GoGoKo699/Compiler-Robust-Hopf-QBP",
         )
-        self.assertGreaterEqual(len(payload["upstreams"]), 2)
-        for record in payload["upstreams"]:
+        upstreams = self.payload["upstreams"]
+        self.assertGreaterEqual(len(upstreams), 2)
+        for record in upstreams:
             self.assertRegex(record["tracked_commit"], SHA40)
             self.assertIn("/", record["repository"])
             self.assertTrue(record["tracked_branch"])
-        for local_path, sources in payload["file_lineage"].items():
+            self.assertTrue(record["role"])
+
+    def test_active_lineage_and_native_paths_exist(self) -> None:
+        for local_path, sources in self.payload["file_lineage"].items():
             self.assertTrue((ROOT / local_path).is_file(), local_path)
             self.assertTrue(sources)
+        for local_path in self.payload["project_native_paths"]:
+            self.assertTrue((ROOT / local_path).is_file(), local_path)
 
     def test_sync_document_names_recorded_commits(self) -> None:
-        provenance = json.loads(
-            (ROOT / "provenance" / "upstream.json").read_text(encoding="utf-8")
-        )
         sync_text = (ROOT / "SYNC.md").read_text(encoding="utf-8")
-        for record in provenance["upstreams"]:
+        for record in self.payload["upstreams"]:
+            self.assertIn(record["repository"], sync_text)
             self.assertIn(record["tracked_commit"], sync_text)
+
+    def test_frozen_fallback_is_explicit(self) -> None:
+        fallback = self.payload["frozen_fallback"]
+        self.assertEqual(fallback["branch"], "near-optimal-audited-2026-09")
+        self.assertRegex(fallback["manifest_commit"], SHA40)
+        self.assertIn("not an active compiler path", fallback["policy"])
 
 
 if __name__ == "__main__":

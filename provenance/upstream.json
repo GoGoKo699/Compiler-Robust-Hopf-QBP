@@ -1,41 +1,38 @@
 {
-  "schema_version": 2,
-  "project": "GoGoKo699/Compiler-Robust-Hopf-QBP",
-  "tracked_upstreams": [
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-03T00:00:00Z",
+  "current_repository": "GoGoKo699/Compiler-Robust-Hopf-QBP",
+  "upstreams": [
     {
       "repository": "GoGoKo699/Hopf-QBP",
-      "branch": "main",
-      "commit": "9957815767ef3649275960fd5e860fb91725ff26",
+      "tracked_branch": "main",
+      "tracked_commit": "9957815767ef3649275960fd5e860fb91725ff26",
       "role": "established Hopf-QBP conventions, frame definitions, and gradient protocols"
     },
     {
       "repository": "GoGoKo699/Hopf-QBP",
-      "branch": "ancilla-depth-robustness-2026",
-      "commit": "9cc564f493caff62b847fc362df522a68c6e83bf",
+      "tracked_branch": "ancilla-depth-robustness-2026",
+      "tracked_commit": "9cc564f493caff62b847fc362df522a68c6e83bf",
       "role": "historical research seed; superseded by the unified compiler in this repository"
     }
   ],
-  "active_lineage": [
-    {
-      "local_path": "compiler_robust_hopf/conventions.py",
-      "upstream_path": "qbp_validation/conventions.py",
-      "status": "adapted and independently maintained"
-    },
-    {
-      "local_path": "compiler_robust_hopf/frames.py",
-      "upstream_path": "qbp_validation/reference.py",
-      "status": "adapted and independently maintained"
-    },
-    {
-      "local_path": "compiler_robust_hopf/decoders.py",
-      "upstream_path": "qbp_validation/decoders.py",
-      "status": "adapted and extended with output-sensitive decoding"
-    }
-  ],
+  "file_lineage": {
+    "compiler_robust_hopf/conventions.py": [
+      "Hopf-QBP:qbp_validation/conventions.py@9957815767ef3649275960fd5e860fb91725ff26"
+    ],
+    "compiler_robust_hopf/frames.py": [
+      "Hopf-QBP:qbp_validation/reference.py@9957815767ef3649275960fd5e860fb91725ff26",
+      "Hopf-QBP:qbp_validation/optimized_compiler.py@9957815767ef3649275960fd5e860fb91725ff26"
+    ],
+    "compiler_robust_hopf/decoders.py": [
+      "Hopf-QBP:qbp_validation/decoders.py@9cc564f493caff62b847fc362df522a68c6e83bf"
+    ]
+  },
   "project_native_paths": [
     "compiler_robust_hopf/tree_structure.py",
     "compiler_robust_hopf/tree_decoder.py",
     "compiler_robust_hopf/unified_compiler.py",
+    "compiler_robust_hopf/resource_bounds.py",
     "compiler_robust_hopf/compiler_boundaries.py",
     "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
     "docs/THEOREM_OVERVIEW.md",
@@ -45,5 +42,10 @@
     "branch": "near-optimal-audited-2026-09",
     "manifest_commit": "24f339b863faa2ac92e1adb3917cbef7dc24d3b8",
     "policy": "preserved for provenance; not an active compiler path"
+  },
+  "synchronization_policy": {
+    "foundational_corrections": "port deliberately to both repositories after review",
+    "new_compiler_research": "authoritative only in Compiler-Robust-Hopf-QBP",
+    "automatic_overwrite": false
   }
 }

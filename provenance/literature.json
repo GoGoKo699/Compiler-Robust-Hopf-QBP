@@ -13,11 +13,11 @@
     "doi": "10.22331/q-2023-03-20-956",
     "url": "https://quantum-journal.org/papers/q-2023-03-20-956/",
     "roles": {
-      "theorem_2": "uniform optimal state-preparation size and depth benchmark",
+      "theorem_1": "generic controlled-state-preparation benchmark and all-column comparison",
+      "theorem_2": "uniform optimal state-preparation size and depth frontier",
       "lemma_5": "exact ancilla-free multi-controlled-X primitive",
       "lemma_6": "exact uniformly controlled-gate size and depth tradeoff",
-      "lemma_9": "coherent CNOT-tree copy-use-uncopy primitive",
-      "theorem_1": "generic controlled-state-preparation benchmark and all-column size comparison"
+      "lemma_9": "coherent CNOT-tree copy-use-uncopy primitive"
     },
     "policy": "sole active external compiler framework and QSP benchmark"
   },

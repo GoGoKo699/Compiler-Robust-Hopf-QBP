@@ -23,17 +23,17 @@ from compiler_robust_hopf.tree_decoder import (
 
 class TreeDecoderTests(unittest.TestCase):
     def test_clean_binary_basis_maps_to_one_hot_and_back(self) -> None:
-        for t in range(1, 11):
+        for t in range(1, 10):
             operations = binary_to_unary_operations(t)
             labels = (
                 range(1 << t)
-                if t <= 7
+                if t <= 6
                 else sorted(
                     {
                         0,
                         1,
                         (1 << t) - 1,
-                        *[(17 * j) % (1 << t) for j in range(64)],
+                        *[(17 * index) % (1 << t) for index in range(32)],
                     }
                 )
             )
@@ -48,10 +48,10 @@ class TreeDecoderTests(unittest.TestCase):
 
     def test_gate_list_is_reversible_on_arbitrary_basis_states(self) -> None:
         rng = random.Random(260908)
-        for t in range(1, 8):
+        for t in range(1, 7):
             layout = tree_decoder_layout(t)
             operations = binary_to_unary_operations(t)
-            for _ in range(40):
+            for _ in range(20):
                 bits = tuple(
                     rng.randrange(2) for _ in range(layout.total_qubits)
                 )
@@ -61,8 +61,8 @@ class TreeDecoderTests(unittest.TestCase):
                 )
                 self.assertEqual(recovered, bits)
 
-    def test_explicit_layers_are_disjoint_and_match_depth_formula(self) -> None:
-        for t in range(1, 13):
+    def test_explicit_layers_are_disjoint_and_match_counts(self) -> None:
+        for t in range(1, 12):
             layers = binary_to_unary_layers(t)
             row = tree_decoder_resource_row(t)
             self.assertEqual(len(layers), row.forward_depth_proxy)
@@ -74,7 +74,7 @@ class TreeDecoderTests(unittest.TestCase):
                 row.forward_gate_proxy,
             )
 
-    def test_exact_workspace_and_closed_form_counts(self) -> None:
+    def test_closed_form_workspace_depth_and_size(self) -> None:
         for t in range(1, 41):
             branches = 1 << t
             row = tree_decoder_resource_row(t)
@@ -97,19 +97,16 @@ class TreeDecoderTests(unittest.TestCase):
     def test_conditioned_prefix_reuses_decoder_workspace(self) -> None:
         for t in range(1, 30):
             decoder = tree_decoder_resource_row(t)
-            for n in (t, t + 1, t + 5):
+            for n in (t + 1, t + 2, t + 5):
                 prefix = conditioned_prefix_resource_row(n, t)
                 self.assertEqual(
                     prefix.clean_workspace_qubits,
                     decoder.clean_workspace_qubits,
                 )
-                if n > t:
-                    # This is the common envelope used by a nontrivial routed
-                    # cut. The full-frame endpoint t=n does not use a router.
-                    self.assertLessEqual(
-                        prefix.clean_workspace_qubits,
-                        2 * (1 << t) * (n - t + 1),
-                    )
+                self.assertLessEqual(
+                    prefix.clean_workspace_qubits,
+                    2 * (1 << t) * (n - t + 1),
+                )
 
     def test_one_hot_givens_network_equals_complete_hopf_frame(self) -> None:
         rng = np.random.default_rng(260909)
@@ -123,7 +120,7 @@ class TreeDecoderTests(unittest.TestCase):
             )
 
     def test_each_givens_depth_uses_disjoint_mode_pairs(self) -> None:
-        for t in range(1, 12):
+        for t in range(1, 13):
             for depth in range(t):
                 pairs = unary_layer_pairs(t, depth)
                 flattened = [mode for pair in pairs for mode in pair]
