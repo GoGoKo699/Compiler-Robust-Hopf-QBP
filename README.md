@@ -93,14 +93,23 @@ python scripts/ancilla_depth_ledger.py --n 10
 |---|---|
 | `docs/RESEARCH_STATUS.md` | Current claim status, unresolved points, and release gates |
 | `docs/FRAME_SAFE_COMPILATION.md` | Logical contracts and the state-column obstruction |
-| `docs/ANCILLA_DEPTH_ROBUSTNESS.md` | Candidate theorem and proof architecture |
+| `docs/ANCILLA_DEPTH_ROBUSTNESS.md` | Current compiler theorem candidate and proof architecture |
+| `docs/OPTIMAL_ALL_ANCILLA_TARGET.md` | Stronger optimal-frontier question and candidate research routes |
 | `docs/OUTPUT_SENSITIVE_DECODING.md` | Classical decoding complexity |
 | `docs/CLAIM_SUPPORT.md` | Claim-by-claim evidence map |
 | `compiler_robust_hopf/` | Independent analytic implementation |
 | `tests/` | Deterministic exact checks |
 | `scripts/ancilla_depth_ledger.py` | Machine-readable asymptotic term ledger |
-| `provenance/upstream.json` | Exact upstream commits and synchronized files |
+| `SYNC.md` | Authority, provenance, and synchronization procedure |
+| `provenance/upstream.json` | Exact upstream commits and file lineage |
 | `manuscript/` | Reserved for the new paper after theorem stabilization |
+
+## Current work queue
+
+1. [Independent proof audit of the current theorem candidate](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/1)
+2. [Optimal all-ancilla depth of the complete Hopf frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/2)
+3. [Common-workspace theorem for the separated complex frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/3)
+4. [Minimal state-column counterexample and checkpoint boundary](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/4)
 
 ## Evidence boundary
 
