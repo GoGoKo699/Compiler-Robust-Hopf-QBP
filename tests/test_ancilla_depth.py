@@ -8,6 +8,9 @@ from compiler_robust_hopf.ancilla_depth import (
     ancilla_depth_row,
     conditioned_prefix_frame,
     direct_prefix_frame,
+    frame_ancilla_upper_bound,
+    geometric_tail_sum,
+    geometric_tail_upper_bound,
     hybrid_frame,
     hybrid_frame_residual,
     hybrid_prefix_qubits,
@@ -15,11 +18,13 @@ from compiler_robust_hopf.ancilla_depth import (
     prefix_angle_count,
     prefix_bridge_residual,
     tail_frame,
+    tail_ucg_work_ancillas,
     unary_code_action,
     unary_code_leakage,
     unary_hopf_network,
     unary_layer_pairs,
     unary_prefix_ancilla_upper_bound,
+    unary_prefix_size_proxy,
 )
 from compiler_robust_hopf.frames import real_frame_matrix
 
@@ -124,9 +129,22 @@ class AncillaDepthTests(unittest.TestCase):
             for ancillas in budgets:
                 t = hybrid_prefix_qubits(n, ancillas)
                 self.assertLessEqual(unary_prefix_ancilla_upper_bound(t), ancillas)
+                self.assertEqual(
+                    frame_ancilla_upper_bound(ancillas), max(1, ancillas)
+                )
+                self.assertEqual(
+                    tail_ucg_work_ancillas(ancillas, final=False),
+                    max(0, ancillas - 1),
+                )
+                self.assertEqual(
+                    tail_ucg_work_ancillas(ancillas, final=True), ancillas
+                )
+
                 row = ancilla_depth_row(n, ancillas)
                 self.assertEqual(row.dimension, N)
-                self.assertEqual(row.frame_ancillas_upper_bound, ancillas + 1)
+                self.assertEqual(
+                    row.frame_ancillas_upper_bound, max(1, ancillas)
+                )
                 self.assertEqual(row.unary_prefix_qubits, t)
                 self.assertEqual(
                     row.maximum_unary_control_copies,
@@ -136,12 +154,62 @@ class AncillaDepthTests(unittest.TestCase):
                 self.assertEqual(row.logical_hopf_rotations, N - 1)
                 self.assertEqual(row.recordwise_decode_operations_per_shot, N)
                 self.assertEqual(
+                    row.prefix_size_proxy, unary_prefix_size_proxy(n, t)
+                )
+                self.assertEqual(
                     row.total_frame_depth_proxy,
                     row.prefix_depth_proxy
                     + row.tail_predicate_depth_proxy
                     + row.ucg_linear_depth_proxy
                     + row.ucg_exponential_depth_proxy,
                 )
+                self.assertEqual(
+                    row.total_frame_size_proxy,
+                    row.prefix_size_proxy
+                    + row.tail_predicate_size_proxy
+                    + row.ucg_size_proxy,
+                )
+                self.assertEqual(
+                    row.nonfinal_ucg_work_ancillas,
+                    max(0, ancillas - 1) if t < n - 1 else 0,
+                )
+                self.assertEqual(
+                    row.final_ucg_work_ancillas,
+                    ancillas if t < n else 0,
+                )
+
+    def test_uniform_geometric_tail_bound(self) -> None:
+        for n in range(1, 81):
+            N = 1 << n
+            budgets = {
+                0,
+                1,
+                2,
+                3,
+                n,
+                n * n,
+                max(0, N // max(1, n * n)),
+                max(0, N // max(1, n)),
+                N,
+                10 * N,
+            }
+            for shift in budgets:
+                self.assertLessEqual(
+                    geometric_tail_sum(n, shift),
+                    geometric_tail_upper_bound(n, shift) * (1.0 + 1e-12),
+                )
+
+    def test_endpoint_rows(self) -> None:
+        self.assertEqual(ancilla_depth_row(1, 0).frame_ancillas_upper_bound, 1)
+        for n in range(1, 14):
+            full = ancilla_depth_row(n, 3 * (1 << n))
+            self.assertEqual(full.unary_prefix_qubits, n)
+            self.assertEqual(full.tail_layers, 0)
+            self.assertEqual(full.nonfinal_ucg_work_ancillas, 0)
+            self.assertEqual(full.final_ucg_work_ancillas, 0)
+            self.assertEqual(full.ucg_size_proxy, 0)
+            self.assertEqual(full.tail_predicate_depth_proxy, 0)
+            self.assertEqual(full.total_frame_depth_proxy, 3 * n)
 
     def test_dense_unary_guard(self) -> None:
         with self.assertRaises(ValueError):

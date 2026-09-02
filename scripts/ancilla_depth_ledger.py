@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print the candidate Hopf-frame ancilla--depth term ledger."""
+"""Print the audited Hopf-frame ancilla--depth term ledger."""
 from __future__ import annotations
 
 import argparse
@@ -24,9 +24,11 @@ def parse_args() -> argparse.Namespace:
         "--ancillas",
         type=str,
         default=None,
-        help="Comma-separated state-compiler ancillary budgets.",
+        help="Comma-separated matched state-compiler ancillary budgets.",
     )
-    parser.add_argument("--format", choices=("text", "csv", "json"), default="text")
+    parser.add_argument(
+        "--format", choices=("text", "csv", "json"), default="text"
+    )
     return parser.parse_args()
 
 
@@ -36,6 +38,7 @@ def default_budgets(n: int) -> list[int]:
     return sorted(
         {
             0,
+            1,
             n,
             2 * n,
             max(1, N // max(1, n * n)),
@@ -65,30 +68,38 @@ def parse_budgets(raw: str | None, n: int) -> list[int]:
 
 
 def print_text(rows: list[dict[str, int]]) -> None:
-    print("Compiler-robust Hopf-frame research ledger")
-    print("Depth columns are unit-coefficient term proxies, not exact gate depths.")
-    print("The frame workspace bound is the matched state budget plus one clean flag.")
+    print("Compiler-robust Hopf-frame audited ledger")
+    print("Depth and size columns are unit-coefficient proxies, not exact gate costs.")
+    print("Frame workspace: same m for m>=1; one clean flag at m=0.")
     print(
-        f"{'n':>3} {'N':>9} {'m':>9} {'frame':>9} {'t':>4} {'tail':>5} "
-        f"{'prefix':>8} {'pred':>8} {'UCG-lin':>8} {'UCG-exp':>8} "
-        f"{'total':>8} {'candidate':>10} {'QSP opt.':>9}"
+        f"{'n':>3} {'N':>9} {'m':>8} {'frame':>7} {'t':>4} "
+        f"{'UCG w':>6} {'prefix D':>8} {'pred D':>7} {'UCG D':>8} "
+        f"{'total D':>8} {'prefix S':>8} {'UCG S':>9} {'total S':>9}"
     )
     for row in rows:
-        candidate = row["candidate_sequential_term"] + row["candidate_geometric_term"]
-        qsp = row["optimal_qsp_linear_term"] + row["optimal_qsp_geometric_term"]
-        print(
-            f"{row['n']:>3} {row['dimension']:>9} {row['state_ancillas']:>9} "
-            f"{row['frame_ancillas_upper_bound']:>9} "
-            f"{row['unary_prefix_qubits']:>4} {row['tail_layers']:>5} "
-            f"{row['prefix_depth_proxy']:>8} "
-            f"{row['tail_predicate_depth_proxy']:>8} "
-            f"{row['ucg_linear_depth_proxy']:>8} "
-            f"{row['ucg_exponential_depth_proxy']:>8} "
-            f"{row['total_frame_depth_proxy']:>8} {candidate:>10} {qsp:>9}"
+        ucg_depth = (
+            row["ucg_linear_depth_proxy"]
+            + row["ucg_exponential_depth_proxy"]
         )
-    print("\nCandidate: O(n (n - t + 1) + 2**n/(n + m)).")
-    print("QSP optimum: Theta(n + 2**n/(n + m)).")
-    print("The exact bridge and unary-code identities are validated separately.")
+        work = row["nonfinal_ucg_work_ancillas"]
+        print(
+            f"{row['n']:>3} {row['dimension']:>9} "
+            f"{row['state_ancillas']:>8} "
+            f"{row['frame_ancillas_upper_bound']:>7} "
+            f"{row['unary_prefix_qubits']:>4} {work:>6} "
+            f"{row['prefix_depth_proxy']:>8} "
+            f"{row['tail_predicate_depth_proxy']:>7} "
+            f"{ucg_depth:>8} {row['total_frame_depth_proxy']:>8} "
+            f"{row['prefix_size_proxy']:>8} "
+            f"{row['ucg_size_proxy']:>9} "
+            f"{row['total_frame_size_proxy']:>9}"
+        )
+    print("\nAudited theorem:")
+    print("  workspace <= max(1, m)")
+    print("  size = O(2**n)")
+    print("  depth = O(n (n - t + 1) + 2**n/(n + m))")
+    print("  t = min(n, max(0, floor(log2(m/3))))")
+    print("The prefix-size proxy exposes the corrected O(2**t + n - t) form.")
 
 
 def main() -> int:
@@ -113,10 +124,21 @@ def main() -> int:
         print(
             json.dumps(
                 {
-                    "status": "research theorem candidate",
+                    "status": (
+                        "real-frame theorem internally proof-audited relative "
+                        "to imported exact synthesis lemmas"
+                    ),
                     "rows": rows,
-                    "candidate_depth": "O(n*(n-t+1) + 2**n/(n+m))",
-                    "optimal_qsp_depth": "Theta(n + 2**n/(n+m))",
+                    "workspace_bound": "max(1,m)",
+                    "same_matched_workspace_for": "m>=1",
+                    "candidate_depth": (
+                        "O(n*(n-t+1) + 2**n/(n+m))"
+                    ),
+                    "complete_size": "O(2**n)",
+                    "prefix_size": "O(2**t + n - t)",
+                    "optimal_qsp_depth": (
+                        "Theta(n + 2**n/(n+m))"
+                    ),
                 },
                 indent=2,
             )

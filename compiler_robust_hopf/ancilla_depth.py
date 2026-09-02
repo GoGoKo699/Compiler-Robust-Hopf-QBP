@@ -1,7 +1,8 @@
-"""Exact Hopf identities and term ledgers for ancilla--depth compilation.
+"""Exact Hopf identities and audited term ledgers for ancilla--depth compilation.
 
-The matrix routines establish Hopf-specific identities. The resource rows expose
-terms used in an asymptotic proof; they are not exact elementary-gate counts.
+The matrix routines establish Hopf-specific operator identities. The resource
+rows expose the contributions used in the asymptotic proof; they are not exact
+elementary-gate counts or depths.
 """
 from __future__ import annotations
 
@@ -16,7 +17,7 @@ from .frames import direct_addressed_depth_layer, direct_real_frame, hopf_ry
 
 @dataclass(frozen=True)
 class AncillaDepthRow:
-    """One machine-readable candidate resource ledger."""
+    """One machine-readable audited resource ledger."""
 
     n: int
     dimension: int
@@ -26,11 +27,17 @@ class AncillaDepthRow:
     unary_prefix_ancilla_upper_bound: int
     maximum_unary_control_copies: int
     tail_layers: int
+    nonfinal_ucg_work_ancillas: int
+    final_ucg_work_ancillas: int
     prefix_depth_proxy: int
     tail_predicate_depth_proxy: int
     ucg_linear_depth_proxy: int
     ucg_exponential_depth_proxy: int
     total_frame_depth_proxy: int
+    prefix_size_proxy: int
+    tail_predicate_size_proxy: int
+    ucg_size_proxy: int
+    total_frame_size_proxy: int
     candidate_geometric_term: int
     candidate_sequential_term: int
     optimal_qsp_linear_term: int
@@ -281,6 +288,35 @@ def hybrid_prefix_qubits(n: int, state_ancillas: int) -> int:
     return min(n, quotient.bit_length() - 1)
 
 
+def frame_ancilla_upper_bound(state_ancillas: int) -> int:
+    """Return the audited total frame workspace bound.
+
+    The construction uses the same ``m`` ancillary qubits as the matched state
+    compiler whenever ``m >= 1``. Only the strict ``m = 0`` endpoint needs one
+    additional reusable suffix flag.
+    """
+
+    if state_ancillas < 0:
+        raise ValueError("state_ancillas must be nonnegative.")
+    return max(1, state_ancillas)
+
+
+def tail_ucg_work_ancillas(state_ancillas: int, *, final: bool) -> int:
+    """Return clean work qubits available to one tail UCG.
+
+    A nonfinal addressed layer reserves one of the ``m`` qubits as the
+    suffix-zero flag. The final layer has no suffix predicate and can use all
+    ``m`` work qubits. At ``m=0`` the frame's one extra flag is not counted as
+    UCG workspace.
+    """
+
+    if state_ancillas < 0:
+        raise ValueError("state_ancillas must be nonnegative.")
+    if final:
+        return state_ancillas
+    return max(0, state_ancillas - 1)
+
+
 def frame_layer_ucg_qubits(n: int, depth: int) -> int:
     """Return the UCG width, including its target, for one frame layer."""
 
@@ -304,6 +340,26 @@ def ucg_depth_proxy(total_qubits: int, work_ancillas: int) -> tuple[int, int]:
     return linear, exponential
 
 
+def geometric_tail_sum(n: int, denominator_shift: int) -> float:
+    """Return ``sum(2**k/(k+s), k=1..n)`` for audit checks."""
+
+    _validate_n(n)
+    if denominator_shift < 0:
+        raise ValueError("denominator_shift must be nonnegative.")
+    return sum(
+        (1 << k) / (k + denominator_shift) for k in range(1, n + 1)
+    )
+
+
+def geometric_tail_upper_bound(n: int, denominator_shift: int) -> float:
+    """Return the proved uniform upper bound ``6*2**n/(n+s)``."""
+
+    _validate_n(n)
+    if denominator_shift < 0:
+        raise ValueError("denominator_shift must be nonnegative.")
+    return 6.0 * (1 << n) / (n + denominator_shift)
+
+
 def unary_prefix_depth_proxy(n: int, t: int) -> int:
     """Expose clean unary-prefix contributions with unit coefficients."""
 
@@ -315,8 +371,17 @@ def unary_prefix_depth_proxy(n: int, t: int) -> int:
     return 2 * t + t + 2 * (n - t) + 2 * t
 
 
+def unary_prefix_size_proxy(n: int, t: int) -> int:
+    """Expose the corrected prefix-size form ``O(2**t + n - t)``."""
+
+    _validate_n_t(n, t)
+    if t == 0:
+        return 0
+    return (1 << t) + (n - t)
+
+
 def ancilla_depth_row(n: int, state_ancillas: int) -> AncillaDepthRow:
-    """Return one candidate resource term ledger."""
+    """Return one audited resource term ledger."""
 
     _validate_n(n)
     if state_ancillas < 0:
@@ -325,33 +390,57 @@ def ancilla_depth_row(n: int, state_ancillas: int) -> AncillaDepthRow:
     N = 1 << n
     t = hybrid_prefix_qubits(n, state_ancillas)
     prefix_depth = unary_prefix_depth_proxy(n, t)
+    prefix_size = unary_prefix_size_proxy(n, t)
     tail_predicate_depth = 0
     ucg_linear = 0
     ucg_exponential = 0
+    ucg_size = 0
     for depth in range(t, n):
+        final = depth == n - 1
         suffix_width = n - depth - 1
         tail_predicate_depth += 2 * suffix_width
-        linear, exponential = ucg_depth_proxy(
-            frame_layer_ucg_qubits(n, depth), state_ancillas
-        )
+        width = frame_layer_ucg_qubits(n, depth)
+        work = tail_ucg_work_ancillas(state_ancillas, final=final)
+        linear, exponential = ucg_depth_proxy(width, work)
         ucg_linear += linear
         ucg_exponential += exponential
+        ucg_size += 1 << width
 
-    total = prefix_depth + tail_predicate_depth + ucg_linear + ucg_exponential
+    total_depth = (
+        prefix_depth
+        + tail_predicate_depth
+        + ucg_linear
+        + ucg_exponential
+    )
+    total_size = prefix_size + tail_predicate_depth + ucg_size
     return AncillaDepthRow(
         n=n,
         dimension=N,
         state_ancillas=state_ancillas,
-        frame_ancillas_upper_bound=state_ancillas + 1,
+        frame_ancillas_upper_bound=frame_ancilla_upper_bound(state_ancillas),
         unary_prefix_qubits=t,
         unary_prefix_ancilla_upper_bound=unary_prefix_ancilla_upper_bound(t),
         maximum_unary_control_copies=maximum_unary_control_copies(t),
         tail_layers=n - t,
+        nonfinal_ucg_work_ancillas=(
+            tail_ucg_work_ancillas(state_ancillas, final=False)
+            if t < n - 1
+            else 0
+        ),
+        final_ucg_work_ancillas=(
+            tail_ucg_work_ancillas(state_ancillas, final=True)
+            if t < n
+            else 0
+        ),
         prefix_depth_proxy=prefix_depth,
         tail_predicate_depth_proxy=tail_predicate_depth,
         ucg_linear_depth_proxy=ucg_linear,
         ucg_exponential_depth_proxy=ucg_exponential,
-        total_frame_depth_proxy=total,
+        total_frame_depth_proxy=total_depth,
+        prefix_size_proxy=prefix_size,
+        tail_predicate_size_proxy=tail_predicate_depth,
+        ucg_size_proxy=ucg_size,
+        total_frame_size_proxy=total_size,
         candidate_geometric_term=math.ceil(N / (n + state_ancillas)),
         candidate_sequential_term=n * (n - t + 1),
         optimal_qsp_linear_term=n,
