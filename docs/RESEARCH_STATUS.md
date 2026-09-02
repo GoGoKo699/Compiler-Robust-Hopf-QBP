@@ -147,15 +147,32 @@ The current literature survey is recorded in
 [`STRICT_ZERO_PRIOR_ART.md`](STRICT_ZERO_PRIOR_ART.md). A broader independent
 prior-art review remains a release gate.
 
-## Validation status
+## Consolidation and validation status
 
-The strict-zero candidate and its second internal audit passed on Python 3.11
-and 3.13. The audit stack ran 59 deterministic tests, the unified resource
-ledger, the strict-zero ledger, and the offline upstream-synchronization audit.
+Draft PR [#20](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/pull/20)
+is the single all-workspace consolidation candidate for `main`. Its branch is
 
-The all-workspace integration branch adds cross-checks that the unified `m=0`
-resource row is exactly the strict-zero echo row. Its final CI status must be
-recorded before the branch is proposed as the sole merge candidate.
+```text
+all-workspace-unified-final
+```
+
+Both branch-push and pull-request merge-ref validation pass on Python 3.11 and
+3.13. Each job completes:
+
+- source compilation;
+- **62 deterministic tests**;
+- the unified all-workspace resource ledger;
+- the dedicated strict-zero echo ledger; and
+- the offline upstream-synchronization audit.
+
+The active unified resource row selects the borrowed-suffix echo at `m=0`, the
+direct flagged-UCG schedule at small positive workspace, and the routed schedule
+when a useful cut fits. Exact cross-checks require the unified strict-zero row to
+coincide with the dedicated echo ledger.
+
+The prior positive-workspace PR #14 and strict-zero development PRs #18 and #19
+are superseded by PR #20. They remain available as historical review checkpoints
+but are not alternative merge paths.
 
 ## Frozen fallback
 
@@ -178,9 +195,10 @@ It is retained for provenance and is not an active compiler path.
 - All-workspace operator and resource proof: **met internally**.
 - One-framework source policy: **met**.
 - Strict-zero internal proof audit: **met**.
-- All-workspace unified CI and diff audit: **pending final consolidation run**.
-- Independent human proof review: **open**.
-- Broader prior-art review and novelty wording: **open**.
+- All-workspace unified branch and PR-level CI: **met**.
+- Final diff-level repository audit: **met internally**.
+- Independent human proof review: **open in Issue #12**.
+- Broader prior-art review and novelty wording: **open in Issue #17**.
 - Controlled-observable and statistical-accuracy notation freeze: **pending
   manuscript work**.
 - Merge into private `main`: **deferred until the review decision**.
