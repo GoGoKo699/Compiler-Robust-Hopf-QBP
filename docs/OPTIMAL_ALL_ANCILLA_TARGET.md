@@ -20,33 +20,82 @@ O\left(n+k+\frac{2^{n+k}}{n+k+m}\right)
 
 depth for `k` control qubits and `m` ancillary qubits.
 
-Reference: P. Yuan and S. Zhang, Quantum 7, 956 (2023),
+Reference: P. Yuan and S. Zhang, *Quantum* **7**, 956 (2023),
 [arXiv:2202.11302](https://arxiv.org/abs/2202.11302).
 
 ## 2. Gap left by the current Hopf-frame compiler
 
-The present construction gives
+The audited real and separated complex constructions give
 
 ```math
 D_{\mathrm{frame}}(n,m)
 =O\left(n(n-t+1)+\frac{2^n}{n+m}\right),
 ```
 
-where `t` is approximately `log2(m)`. It matches the optimal QSP scale in the
-low-workspace and linear-workspace regimes, but may be larger by `O(log n)` in
-the intermediate regime.
-
-Uniformly over `m`, the current comparison is
+where
 
 ```math
+t=
+\min\left\{
+n,
+\max\left(0,\left\lfloor\log_2(m/3)\right\rfloor\right)
+\right\}.
+```
+
+They match the optimal QSP scale in the low-workspace and linear-workspace
+regimes, but may be larger by `O(log n)` in the intermediate regime.
+
+The uniform comparison requires a case split; it does not follow from claiming
+`n-t=O(log n)` for every `m`.
+
+### Low workspace
+
+When
+
+```math
+m\leq\frac{2^n}{n^2},
+```
+
+the geometric term is at least of order `n**2`, up to finite small-`n`
+constants. It absorbs the sequential term `O(n**2)`, so the frame-to-QSP depth
+ratio is `O(1)`.
+
+### Remaining workspace
+
+When
+
+```math
+m>\frac{2^n}{n^2},
+```
+
+```math
+\log_2m>n-2\log_2n,
+```
+
+and therefore `n-t=O(log n)`. Since
+
+```math
+\frac{n(n-t+1)+G}{n+G}
+\leq n-t+1,
+\qquad
+G=\frac{2^n}{n+m},
+```
+
+the ratio is `O(log n)`.
+
+Consequently, uniformly over all `m`,
+
+```math
+\boxed{
 \frac{D_{\mathrm{frame}}(n,m)}
 {D_{\mathrm{QSP}}(n,m)}
 =O(\log n).
+}
 ```
 
-This already leaves global Hopf QBP inside the usual logarithmic resource
-overhead allowed by quantum backpropagation definitions. It is not the strongest
-possible compiler theorem.
+For `M=Theta(2**n)` Hopf coordinates, this compiler-depth overhead is
+`O(log log M)`. This is already a strong compiler-robust result, but it is not
+the strongest possible theorem.
 
 ## 3. Primary research question
 
@@ -122,7 +171,7 @@ same workspace budget.
 
 Seek an exact clean reduction from the Hopf frame to one or a constant number of
 controlled-state-preparation calls plus reversible index transformations. The
-reduction must return every index/work register to zero.
+reduction must return every index and work register to zero.
 
 ### Route 4: lower-bound obstruction
 
@@ -139,8 +188,8 @@ Any proposed optimal compiler must establish all of the following:
 3. Uniform validity at singular Hopf coordinates.
 4. Exact size, depth, and ancillary counts in one circuit model.
 5. Reversibility with the same resources.
-6. Compatibility with the separated complex phase layer.
-7. Output-sensitive decoder accounting.
+6. Compatibility with the audited common-workspace complex phase layer.
+7. Output-sensitive magnitude and phase decoder accounting.
 8. A lower bound for the same state class and workspace convention.
 
 ## 7. Stop conditions

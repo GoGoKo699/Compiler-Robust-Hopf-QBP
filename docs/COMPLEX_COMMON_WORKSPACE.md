@@ -74,7 +74,7 @@ one:
 ```math
 \Lambda_n
 =
-\operatorname{diag}
+\mathrm{diag}
 \bigl(1,e^{i\vartheta_1},\ldots,e^{i\vartheta_{N-1}}\bigr).
 ```
 
@@ -509,7 +509,7 @@ Summing them gives
 For a Hermitian observable, the corresponding total phase gradient is
 
 ```math
-2\operatorname{Re}
+2\mathrm{Re}
 \langle i\psi|O|\psi\rangle
 =0.
 ```
@@ -614,22 +614,57 @@ n+rac{N}{n+m}
 
 with size `Theta(N)`.
 
-The audited complex frame therefore has depth ratio at most
+The uniform frame-to-state depth comparison needs two cases.
+
+If
 
 ```math
-O(n-t+1)=O(\log n)
+m\leq\frac{N}{n^2},
 ```
 
-relative to optimal state preparation over the full ancillary range, and size
-ratio `O(1)` for the sharp-size construction. In Hopf parameter count
-`M=Theta(N)`, this compiler-depth overhead is
+the geometric term is at least of order `n**2` and absorbs the sequential
+`O(n**2)` term. The depth ratio is `O(1)`.
+
+If
+
+```math
+m>\frac{N}{n^2},
+```
+
+then
+
+```math
+\log_2m>n-2\log_2n,
+```
+
+so `n-t=O(log n)`. Writing `G=N/(n+m)`,
+
+```math
+\frac{n(n-t+1)+G}{n+G}
+\leq n-t+1
+=
+O(\log n).
+```
+
+Therefore, uniformly over every ancillary budget,
+
+```math
+\boxed{
+\frac{D_{\mathbb C}(n,m)}
+{D_{\mathrm{QSP}}(n,m)}
+=O(\log n).
+}
+```
+
+For `M=Theta(N)` Hopf coordinates, this compiler-depth overhead is
 
 ```math
 O(\log\log M).
 ```
 
-The stronger question of eliminating this remaining intermediate-regime factor
-is the optimal all-ancilla target tracked separately.
+The sharp-size construction has constant asymptotic size ratio to optimal state
+preparation. The stronger question of eliminating the remaining intermediate
+`O(log n)` depth factor is the optimal all-ancilla target tracked separately.
 
 ## 11. Evidence map
 
