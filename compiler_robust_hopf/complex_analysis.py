@@ -1,111 +1,140 @@
-"""Complex Hopf states, derivatives, gradients, gauge, and phase synthesis.
+"""Complex Hopf-chart geometry independent of any elementary compiler.
 
-These routines are independent NumPy references. They support the exact
-logical and geometric checks needed by the common-workspace complex-frame
-theorem; they do not implement a particular elementary gate compiler.
+The active compiler represents the leaf-phase diagonal as one uniformly
+controlled gate. This module therefore contains only chart identities,
+derivatives, gauge checks, and objective gradients; compiler-parameter
+transforms live in :mod:`compiler_robust_hopf.unified_compiler`.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 
-from .decoders import fwht
-from .frames import RealTreeData, complex_frame_matrix, real_tree_data
+from .frames import complex_frame_matrix, phase_layer_matrix, real_tree_data
 
 
-def _phase_for_data(theta_ph: object, data: RealTreeData) -> np.ndarray:
+@dataclass(frozen=True)
+class ComplexChartData:
+    """State and coordinate derivatives of the separated complex Hopf chart."""
+
+    state: np.ndarray
+    magnitude_derivatives: tuple[np.ndarray, ...]
+    phase_derivatives: tuple[np.ndarray, ...]
+    phase_gradient_null_direction: np.ndarray
+
+
+def _phase_vector(theta_ph: object, dimension: int) -> np.ndarray:
     phase = np.asarray(theta_ph, dtype=float).reshape(-1)
-    if phase.size != 1 << data.n:
-        raise ValueError("theta_ph must contain one phase for every Hopf leaf.")
+    if phase.size != dimension:
+        raise ValueError("The complex Hopf chart requires one phase per leaf.")
     return phase
 
 
 def complex_state(theta_mag: object, theta_ph: object) -> np.ndarray:
-    """Return the separated complex Hopf state ``D_ph |psi_R>``."""
+    """Return the complex Hopf state ``D_ph |psi_R>``."""
 
-    data = real_tree_data(theta_mag)
-    phase = _phase_for_data(theta_ph, data)
-    return np.exp(1j * phase) * data.state
-
-
-def complex_magnitude_derivatives(
-    theta_mag: object, theta_ph: object
-) -> tuple[np.ndarray, ...]:
-    """Return derivatives with respect to all real-tree magnitude angles."""
-
-    data = real_tree_data(theta_mag)
-    phase = np.exp(1j * _phase_for_data(theta_ph, data))
-    return tuple(phase * derivative for derivative in data.derivatives)
+    real = real_tree_data(theta_mag)
+    phase = _phase_vector(theta_ph, real.state.size)
+    return np.exp(1j * phase) * real.state
 
 
-def complex_phase_derivatives(
-    theta_mag: object, theta_ph: object
-) -> tuple[np.ndarray, ...]:
-    """Return ``partial_{phi_l}|psi> = i psi_l |l>`` for every leaf."""
+def complex_chart_data(theta_mag: object, theta_ph: object) -> ComplexChartData:
+    """Return complex magnitude and phase derivatives without finite differences."""
 
-    state = complex_state(theta_mag, theta_ph)
-    derivatives: list[np.ndarray] = []
-    for leaf, amplitude in enumerate(state):
+    real = real_tree_data(theta_mag)
+    phase = _phase_vector(theta_ph, real.state.size)
+    phase_factors = np.exp(1j * phase)
+    state = phase_factors * real.state
+    magnitude = tuple(
+        phase_factors * derivative for derivative in real.derivatives
+    )
+
+    phase_derivatives: list[np.ndarray] = []
+    for leaf in range(state.size):
         derivative = np.zeros(state.size, dtype=complex)
-        derivative[leaf] = 1j * amplitude
-        derivatives.append(derivative)
-    return tuple(derivatives)
+        derivative[leaf] = 1j * state[leaf]
+        phase_derivatives.append(derivative)
+
+    return ComplexChartData(
+        state=state,
+        magnitude_derivatives=magnitude,
+        phase_derivatives=tuple(phase_derivatives),
+        phase_gradient_null_direction=np.ones(state.size, dtype=float),
+    )
 
 
 def expectation(state: object, observable: object) -> float:
-    """Return the real expectation value of a Hermitian observable."""
+    """Return the real expectation of a Hermitian observable."""
 
-    vector = np.asarray(state, dtype=complex).reshape(-1)
-    matrix = np.asarray(observable, dtype=complex)
-    if matrix.shape != (vector.size, vector.size):
-        raise ValueError("observable shape does not match the state dimension.")
-    return float(np.real(np.vdot(vector, matrix @ vector)))
+    psi = np.asarray(state, dtype=complex).reshape(-1)
+    operator = np.asarray(observable, dtype=complex)
+    if operator.shape != (psi.size, psi.size):
+        raise ValueError("observable dimension does not match the state.")
+    return float(np.real(np.vdot(psi, operator @ psi)))
 
 
-def coordinate_gradient(
-    state: object,
+def _coordinate_gradient(
+    state: np.ndarray,
     derivatives: tuple[np.ndarray, ...],
     observable: object,
 ) -> np.ndarray:
-    """Return ``2 Re <partial_j psi|O|psi>`` for supplied derivatives."""
-
-    vector = np.asarray(state, dtype=complex).reshape(-1)
-    matrix = np.asarray(observable, dtype=complex)
-    if matrix.shape != (vector.size, vector.size):
-        raise ValueError("observable shape does not match the state dimension.")
-    response = matrix @ vector
-    output: list[float] = []
-    for derivative in derivatives:
-        tangent = np.asarray(derivative, dtype=complex).reshape(-1)
-        if tangent.size != vector.size:
-            raise ValueError("derivative dimension does not match the state.")
-        output.append(2.0 * float(np.real(np.vdot(tangent, response))))
-    return np.asarray(output, dtype=float)
+    operator = np.asarray(observable, dtype=complex)
+    if operator.shape != (state.size, state.size):
+        raise ValueError("observable dimension does not match the state.")
+    response = operator @ state
+    return np.asarray(
+        [2.0 * np.real(np.vdot(derivative, response)) for derivative in derivatives],
+        dtype=float,
+    )
 
 
 def complex_magnitude_gradient(
-    theta_mag: object, theta_ph: object, observable: object
+    theta_mag: object,
+    theta_ph: object,
+    observable: object,
 ) -> np.ndarray:
-    state = complex_state(theta_mag, theta_ph)
-    return coordinate_gradient(
-        state,
-        complex_magnitude_derivatives(theta_mag, theta_ph),
-        observable,
+    """Return all magnitude-coordinate derivatives."""
+
+    data = complex_chart_data(theta_mag, theta_ph)
+    return _coordinate_gradient(
+        data.state, data.magnitude_derivatives, observable
     )
 
 
 def complex_phase_gradient(
-    theta_mag: object, theta_ph: object, observable: object
+    theta_mag: object,
+    theta_ph: object,
+    observable: object,
 ) -> np.ndarray:
-    state = complex_state(theta_mag, theta_ph)
-    return coordinate_gradient(
-        state,
-        complex_phase_derivatives(theta_mag, theta_ph),
-        observable,
+    """Return all leaf-phase derivatives."""
+
+    data = complex_chart_data(theta_mag, theta_ph)
+    return _coordinate_gradient(data.state, data.phase_derivatives, observable)
+
+
+def complex_full_gradient(
+    theta_mag: object,
+    theta_ph: object,
+    observable: object,
+) -> np.ndarray:
+    """Return magnitude derivatives followed by leaf-phase derivatives."""
+
+    return np.concatenate(
+        (
+            complex_magnitude_gradient(theta_mag, theta_ph, observable),
+            complex_phase_gradient(theta_mag, theta_ph, observable),
+        )
     )
 
 
-def split_common_phase(theta_ph: object) -> tuple[float, np.ndarray]:
-    """Split leaf phases into one common phase and a zero-at-leaf-zero remainder."""
+def centered_leaf_phases(theta_ph: object) -> tuple[float, np.ndarray]:
+    """Separate one common phase from the relative leaf phases.
+
+    This is a geometric gauge decomposition, not the active diagonal-compiler
+    parameterization. The active compiler stores the original phase pairs
+    directly as one uniformly controlled gate.
+    """
 
     phase = np.asarray(theta_ph, dtype=float).reshape(-1)
     if phase.size == 0 or phase.size & (phase.size - 1):
@@ -114,60 +143,89 @@ def split_common_phase(theta_ph: object) -> tuple[float, np.ndarray]:
     return common, phase - common
 
 
-def diagonal_parity_angles(theta_ph: object) -> tuple[float, np.ndarray]:
-    """Return exact parity-phase synthesis parameters in ``O(N log N)`` work.
-
-    With ``p_s(x) = <s,x> mod 2``, the returned vector has ``alpha[0] = 0`` and
-
-    ``theta_ph[x] = common + sum_s alpha[s] * p_s(x)``.
-
-    This is the parameter transform used by Walsh/Gray-code diagonal synthesis.
-    """
-
-    common, relative = split_common_phase(theta_ph)
-    N = relative.size
-    spectrum = fwht(relative)
-    alpha = np.zeros(N, dtype=float)
-    alpha[1:] = (-2.0 / N) * spectrum[1:]
-    return common, alpha
-
-
-def reconstruct_relative_phases(alpha: object) -> np.ndarray:
-    """Reconstruct ``sum_s alpha_s p_s(x)`` by one Walsh transform."""
-
-    values = np.asarray(alpha, dtype=float).reshape(-1)
-    if values.size == 0 or values.size & (values.size - 1):
-        raise ValueError("alpha length must be a positive power of two.")
-    if abs(float(values[0])) > 1e-12:
-        raise ValueError("alpha[0] must vanish for parity-phase synthesis.")
-    return 0.5 * (float(np.sum(values)) - fwht(values))
-
-
-def diagonal_parameter_residual(theta_ph: object) -> float:
-    """Return the maximum reconstruction residual of the parity-angle transform."""
+def common_phase_shifted(theta_ph: object, shift: float) -> np.ndarray:
+    """Return the leaf phases after one common projective shift."""
 
     phase = np.asarray(theta_ph, dtype=float).reshape(-1)
-    common, alpha = diagonal_parity_angles(phase)
-    reconstructed = common + reconstruct_relative_phases(alpha)
-    return float(np.max(np.abs(reconstructed - phase)))
-
-
-def common_phase_frame_residual(
-    theta_mag: object, theta_ph: object, shift: float
-) -> float:
-    """Check ``W_C(phi + shift*1) = exp(i*shift) W_C(phi)``."""
-
-    phase = np.asarray(theta_ph, dtype=float).reshape(-1)
-    before = complex_frame_matrix(theta_mag, phase)
-    after = complex_frame_matrix(theta_mag, phase + float(shift))
-    return float(np.max(np.abs(after - np.exp(1j * float(shift)) * before)))
+    return phase + float(shift)
 
 
 def phase_gauge_residual(
-    theta_mag: object, theta_ph: object, observable: object
-) -> float:
-    """Return ``abs(sum_l partial E / partial phi_l)``."""
+    theta_mag: object,
+    theta_ph: object,
+    observable: object,
+    *,
+    shift: float,
+) -> dict[str, float]:
+    """Return state/frame/objective/gradient residuals under a common phase."""
 
-    return float(
-        abs(np.sum(complex_phase_gradient(theta_mag, theta_ph, observable)))
+    phase = np.asarray(theta_ph, dtype=float).reshape(-1)
+    shifted = common_phase_shifted(phase, shift)
+    state = complex_state(theta_mag, phase)
+    shifted_state = complex_state(theta_mag, shifted)
+    frame = complex_frame_matrix(theta_mag, phase)
+    shifted_frame = complex_frame_matrix(theta_mag, shifted)
+    magnitude = complex_magnitude_gradient(theta_mag, phase, observable)
+    shifted_magnitude = complex_magnitude_gradient(theta_mag, shifted, observable)
+    phase_gradient = complex_phase_gradient(theta_mag, phase, observable)
+    shifted_phase_gradient = complex_phase_gradient(
+        theta_mag, shifted, observable
     )
+    return {
+        "state": float(
+            np.max(np.abs(shifted_state - np.exp(1j * shift) * state))
+        ),
+        "frame": float(
+            np.max(np.abs(shifted_frame - np.exp(1j * shift) * frame))
+        ),
+        "expectation": abs(
+            expectation(state, observable)
+            - expectation(shifted_state, observable)
+        ),
+        "magnitude_gradient": float(
+            np.max(np.abs(magnitude - shifted_magnitude))
+        ),
+        "phase_gradient": float(
+            np.max(np.abs(phase_gradient - shifted_phase_gradient))
+        ),
+        "phase_gradient_sum": abs(float(np.sum(phase_gradient))),
+    }
+
+
+def common_phase_factorization_residual(theta_ph: object) -> float:
+    """Check ``D_ph = exp(i phi_0) D_(phi-phi_0)`` exactly."""
+
+    phase = np.asarray(theta_ph, dtype=float).reshape(-1)
+    common, relative = centered_leaf_phases(phase)
+    direct = phase_layer_matrix(phase)
+    factored = np.exp(1j * common) * phase_layer_matrix(relative)
+    return float(np.max(np.abs(direct - factored)))
+
+
+def zero_amplitude_phase_residual(
+    theta_mag: object,
+    theta_ph: object,
+    observable: object,
+    *,
+    atol: float = 1e-12,
+) -> tuple[tuple[int, ...], float, float]:
+    """Check phase differentials and gradients at exactly zero-amplitude leaves."""
+
+    data = complex_chart_data(theta_mag, theta_ph)
+    gradient = complex_phase_gradient(theta_mag, theta_ph, observable)
+    zero_leaves = tuple(
+        int(index)
+        for index in np.flatnonzero(np.abs(data.state) <= float(atol))
+    )
+    derivative_residual = max(
+        (
+            float(np.linalg.norm(data.phase_derivatives[index]))
+            for index in zero_leaves
+        ),
+        default=0.0,
+    )
+    gradient_residual = max(
+        (abs(float(gradient[index])) for index in zero_leaves),
+        default=0.0,
+    )
+    return zero_leaves, derivative_residual, gradient_residual
