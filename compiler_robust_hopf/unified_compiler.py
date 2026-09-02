@@ -1,12 +1,15 @@
-"""Unified Hopf-frame compiler based on the Yuan--Zhang circuit framework.
+"""Unified all-workspace Hopf-frame compiler in the Yuan--Zhang model.
 
-The active construction uses a self-contained reversible tree decoder for the
-conditioned prefix, the exact Hopf tail direct sum, coherent branch routing,
-Yuan--Zhang UCG and multi-controlled-X primitives, and one UCG for the complex
-phase diagonal.
+The active construction uses three internal schedules:
 
-Resource values below are transparent term proxies, not finite elementary-gate
-counts. The asymptotic theorem is proved in the companion documentation.
+* a borrowed-suffix echo at strict zero workspace;
+* a direct flagged-UCG schedule for small positive workspace; and
+* a tree-decoder/routed-subframe schedule for larger workspace.
+
+The separated complex frame adds one exact UCG for the leaf-phase diagonal and
+reuses the same workspace pool sequentially. Resource values below are
+transparent term proxies, not finite elementary-gate counts. The asymptotic
+theorem is proved in the companion documentation.
 """
 from __future__ import annotations
 
@@ -155,7 +158,13 @@ def ucg_size_proxy(total_qubits: int) -> int:
 def direct_frame_resource_row(
     n: int, ancillas: int, *, controlled: bool = False
 ) -> DirectFrameResourceRow:
-    """Return the direct addressed compiler using only Yuan--Zhang primitives."""
+    """Return the direct addressed compiler using Yuan--Zhang primitives.
+
+    The strict-zero entry here is retained as the full-width-UCG baseline and
+    for controlled subframe bookkeeping. The top-level unified compiler selects
+    the sharper borrowed-suffix echo when ``ancillas == 0`` and no external
+    control is requested.
+    """
 
     _validate_n(n)
     if ancillas < 0:
@@ -177,7 +186,7 @@ def direct_frame_resource_row(
             dimension=dimension,
             ancillas=0,
             controlled=controlled,
-            mode="strict-zero-full-width-ucg",
+            mode="strict-zero-full-width-ucg-baseline",
             workspace_used_upper_bound=0,
             predicate_depth_proxy=0,
             ucg_depth_proxy=ucg_depth,
@@ -298,12 +307,39 @@ def optimal_qsp_depth_proxy(n: int, ancillas: int) -> int:
 def unified_real_frame_resource_row(
     n: int, ancillas: int
 ) -> UnifiedFrameResourceRow:
-    """Select the sole active Hopf-frame compiler."""
+    """Select the sole active all-workspace Hopf-frame compiler."""
 
     _validate_n(n)
     if ancillas < 0:
         raise ValueError("ancillas must be nonnegative.")
     dimension = 1 << n
+
+    if ancillas == 0:
+        # Local import avoids a module cycle: strict_zero_echo uses the generic
+        # UCG proxy helpers defined above.
+        from .strict_zero_echo import strict_zero_echo_frame_resource_row
+
+        echo = strict_zero_echo_frame_resource_row(n)
+        return UnifiedFrameResourceRow(
+            n=n,
+            dimension=dimension,
+            ancillas=0,
+            mode=echo.mode,
+            prefix_qubits=0,
+            suffix_qubits=n,
+            branches=1,
+            workspace_used_upper_bound=0,
+            prefix_depth_proxy=0,
+            routing_depth_proxy=0,
+            controlled_subframe_depth_proxy=echo.total_depth_proxy,
+            total_depth_proxy=echo.total_depth_proxy,
+            prefix_size_proxy=0,
+            routing_size_proxy=0,
+            controlled_subframes_size_proxy=echo.total_size_proxy,
+            total_size_proxy=echo.total_size_proxy,
+            optimal_qsp_depth_proxy=echo.optimal_qsp_depth_proxy,
+        )
+
     cut = choose_routed_cut(n, ancillas)
     if cut is None:
         base = direct_frame_resource_row(n, ancillas)

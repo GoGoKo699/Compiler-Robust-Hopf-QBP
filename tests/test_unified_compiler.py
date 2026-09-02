@@ -8,6 +8,9 @@ from compiler_robust_hopf.frames import (
     complex_frame_matrix,
     direct_real_frame,
 )
+from compiler_robust_hopf.strict_zero_echo import (
+    strict_zero_echo_frame_resource_row,
+)
 from compiler_robust_hopf.tree_structure import reconstructed_frame
 from compiler_robust_hopf.unified_compiler import (
     choose_routed_cut,
@@ -105,7 +108,7 @@ class UnifiedCompilerTests(unittest.TestCase):
         for n in range(1, 30):
             zero = direct_frame_resource_row(n, 0)
             self.assertEqual(zero.workspace_used_upper_bound, 0)
-            self.assertEqual(zero.mode, "strict-zero-full-width-ucg")
+            self.assertEqual(zero.mode, "strict-zero-full-width-ucg-baseline")
             for ancillas in (1, 2, n, 4 * n):
                 row = direct_frame_resource_row(n, ancillas)
                 self.assertEqual(row.workspace_used_upper_bound, ancillas)
@@ -118,6 +121,28 @@ class UnifiedCompilerTests(unittest.TestCase):
                     controlled.total_depth_proxy,
                     row.total_depth_proxy,
                 )
+
+    def test_unified_strict_zero_selects_borrowed_suffix_echo(self) -> None:
+        for n in range(1, 65):
+            expected = strict_zero_echo_frame_resource_row(n)
+            real = unified_real_frame_resource_row(n, 0)
+            self.assertEqual(real.mode, "strict-zero-borrowed-suffix-echo")
+            self.assertEqual(real.workspace_used_upper_bound, 0)
+            self.assertEqual(real.total_depth_proxy, expected.total_depth_proxy)
+            self.assertEqual(real.total_size_proxy, expected.total_size_proxy)
+            self.assertEqual(
+                real.optimal_qsp_depth_proxy,
+                expected.optimal_qsp_depth_proxy,
+            )
+
+            complex_row = unified_complex_frame_resource_row(n, 0)
+            self.assertEqual(
+                complex_row.real_mode,
+                "strict-zero-borrowed-suffix-echo",
+            )
+            self.assertEqual(complex_row.workspace_used_upper_bound, 0)
+            self.assertEqual(complex_row.real_depth_proxy, expected.total_depth_proxy)
+            self.assertEqual(complex_row.real_size_proxy, expected.total_size_proxy)
 
     def test_unified_workspace_ledger_on_broad_grid(self) -> None:
         for n in range(1, 65):
@@ -172,15 +197,16 @@ class UnifiedCompilerTests(unittest.TestCase):
         # asymptotic theorem is proved in the documentation, not by fitting.
         worst_depth = (0.0, None)
         worst_size = (0.0, None)
-        for n in range(2, 81):
+        for n in range(1, 81):
             N = 1 << n
             budgets = sorted(
                 {
+                    0,
                     1,
                     n,
                     4 * n - 1,
                     4 * n,
-                    max(1, N // (n * n)),
+                    max(1, N // max(1, n * n)),
                     max(1, N // n),
                     N,
                     2 * N,

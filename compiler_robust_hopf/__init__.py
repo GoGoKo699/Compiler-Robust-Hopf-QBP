@@ -39,6 +39,27 @@ from .resource_bounds import (
     ucg_geometric_tail,
     ucg_geometric_tail_upper_bound,
 )
+from .strict_zero_echo import (
+    BorrowedSuffixEchoLayerRow,
+    StrictZeroEchoComplexRow,
+    StrictZeroEchoFrameRow,
+    borrowed_half_angle_ucg,
+    borrowed_suffix_echo_layer,
+    borrowed_suffix_echo_layer_resource_row,
+    borrowed_suffix_positions,
+    borrowed_suffix_toggle_permutation,
+    borrowed_target_echo_permutation,
+    echo_algebra_residual,
+    echo_complex_frame_residual,
+    echo_frame_residual,
+    echo_layer_residual,
+    echo_sector_action,
+    strict_zero_echo_complex_frame,
+    strict_zero_echo_complex_resource_row,
+    strict_zero_echo_frame_resource_row,
+    strict_zero_echo_frame_resource_rows,
+    strict_zero_echo_real_frame,
+)
 from .tree_decoder import (
     ConditionedPrefixResourceRow,
     ReversibleGate,
@@ -80,6 +101,7 @@ from .unified_compiler import (
 )
 
 __all__ = [
+    "BorrowedSuffixEchoLayerRow",
     "CheckpointInterfaceSafeExample",
     "CheckpointStateColumnCounterexample",
     "ComplexChartData",
@@ -89,12 +111,20 @@ __all__ = [
     "GlobalStateColumnCounterexample",
     "ReversibleGate",
     "RouteWorkspaceRow",
+    "StrictZeroEchoComplexRow",
+    "StrictZeroEchoFrameRow",
     "TreeDecoderLayout",
     "TreeDecoderResourceRow",
     "UnifiedComplexResourceRow",
     "UnifiedFrameResourceRow",
     "binary_to_unary_layers",
     "binary_to_unary_operations",
+    "borrowed_half_angle_ucg",
+    "borrowed_suffix_echo_layer",
+    "borrowed_suffix_echo_layer_resource_row",
+    "borrowed_suffix_positions",
+    "borrowed_suffix_toggle_permutation",
+    "borrowed_target_echo_permutation",
     "centered_leaf_phases",
     "choose_routed_cut",
     "common_phase_factorization_residual",
@@ -114,6 +144,11 @@ __all__ = [
     "direct_frame_resource_row",
     "direct_prefix_frame",
     "direct_real_frame",
+    "echo_algebra_residual",
+    "echo_complex_frame_residual",
+    "echo_frame_residual",
+    "echo_layer_residual",
+    "echo_sector_action",
     "generic_all_column_cqsp_size_proxy",
     "lightcone_depth_lower_bound",
     "lightcone_parameter_slots",
@@ -128,6 +163,11 @@ __all__ = [
     "reconstructed_frame",
     "route_workspace_row",
     "routed_geometric_inequality_holds",
+    "strict_zero_echo_complex_frame",
+    "strict_zero_echo_complex_resource_row",
+    "strict_zero_echo_frame_resource_row",
+    "strict_zero_echo_frame_resource_rows",
+    "strict_zero_echo_real_frame",
     "subtree_angle_indices",
     "tail_block_diagonal_frame",
     "tail_direct_sum_residual",
@@ -146,4 +186,4 @@ __all__ = [
     "zero_amplitude_phase_residual",
 ]
 
-__version__ = "0.2.0a0"
+__version__ = "0.3.0a0"

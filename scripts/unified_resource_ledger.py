@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print the unified Yuan--Zhang Hopf-frame resource ledger."""
+"""Print the unified all-workspace Hopf-frame resource ledger."""
 from __future__ import annotations
 
 import argparse
@@ -71,10 +71,11 @@ def parse_budgets(raw: str | None, n: int) -> list[int]:
 
 
 def print_text(rows: list[dict[str, int | str]]) -> None:
-    print("Unified Yuan--Zhang Hopf-frame ledger")
+    print("Unified all-workspace Hopf-frame ledger")
+    print("External compiler framework: Yuan--Zhang, Quantum 7, 956 (2023).")
     print("Depth and size columns are transparent term proxies, not exact gates.")
     print(
-        f"{'n':>3} {'N':>11} {'m':>11} {'used':>11} {'mode':>34} "
+        f"{'n':>3} {'N':>11} {'m':>11} {'used':>11} {'mode':>37} "
         f"{'t':>4} {'s':>4} {'B':>9} {'depth':>10} {'QSP':>10} {'size/N':>9}"
     )
     for row in rows:
@@ -83,7 +84,7 @@ def print_text(rows: list[dict[str, int | str]]) -> None:
             f"{int(row['n']):>3} {int(row['dimension']):>11} "
             f"{int(row['ancillas']):>11} "
             f"{int(row['workspace_used_upper_bound']):>11} "
-            f"{str(row['mode']):>34} "
+            f"{str(row['mode']):>37} "
             f"{int(row['prefix_qubits']):>4} "
             f"{int(row['suffix_qubits']):>4} "
             f"{int(row['branches']):>9} "
@@ -91,11 +92,11 @@ def print_text(rows: list[dict[str, int | str]]) -> None:
             f"{int(row['optimal_qsp_depth_proxy']):>10} "
             f"{ratio:>9.3f}"
         )
-    print("\nPositive-workspace theorem:")
+    print("\nInternally audited all-workspace theorem candidate:")
     print("  real and separated-complex size  = Theta(2**n)")
     print("  real and separated-complex depth = Theta(n + 2**n/(n+m))")
-    print("  requested clean workspace is respected for every m>=1")
-    print("Strict m=0 remains a separately labelled fallback.")
+    print("  requested clean workspace is respected for every integer m>=0")
+    print("  m=0 uses the borrowed-suffix echo; m>0 uses direct/routed schedules")
 
 
 def main() -> int:
@@ -127,19 +128,20 @@ def main() -> int:
         print(
             json.dumps(
                 {
+                    "status": "internally audited theorem candidate; external review pending",
                     "active_framework": (
                         "Yuan and Zhang, Quantum 7, 956 (2023)"
                     ),
                     "historical_predecessor": (
                         "Sun et al., IEEE TCAD 42, 3301--3314 (2023)"
                     ),
-                    "positive_workspace_theorem": {
+                    "all_workspace_theorem": {
                         "size": "Theta(2**n)",
                         "depth": "Theta(n + 2**n/(n+m))",
-                        "range": "m>=1",
+                        "range": "every integer m>=0",
                     },
-                    "strict_zero_endpoint": (
-                        "separate fallback; sharp joint frontier open"
+                    "strict_zero_schedule": (
+                        "borrowed-suffix echo with two width-(d+2) half-angle UCGs per nonfinal depth"
                     ),
                     "real_rows": real_rows,
                     "complex_rows": complex_rows,
