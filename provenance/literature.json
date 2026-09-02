@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "active_compiler_framework": {
+    "authors": [
+      "Pei Yuan",
+      "Shengyu Zhang"
+    ],
+    "title": "Optimal (controlled) quantum state preparation and improved unitary synthesis by quantum circuits with any number of ancillary qubits",
+    "journal": "Quantum",
+    "volume": 7,
+    "article": 956,
+    "year": 2023,
+    "doi": "10.22331/q-2023-03-20-956",
+    "url": "https://quantum-journal.org/papers/q-2023-03-20-956/",
+    "roles": {
+      "theorem_2": "uniform optimal state-preparation size and depth benchmark",
+      "lemma_5": "exact ancilla-free multi-controlled-X primitive",
+      "lemma_6": "exact uniformly controlled-gate size and depth tradeoff",
+      "lemma_9": "coherent CNOT-tree copy-use-uncopy primitive",
+      "theorem_1": "generic controlled-state-preparation benchmark and all-column size comparison"
+    },
+    "policy": "sole active external compiler framework and QSP benchmark"
+  },
+  "historical_predecessor": {
+    "authors": [
+      "Xiaoming Sun",
+      "Guangya Cai Tian",
+      "Shenggang Yang",
+      "Pei Yuan",
+      "Shengyu Zhang"
+    ],
+    "title": "Asymptotically Optimal Circuit Depth for Quantum State Preparation and General Unitary Synthesis",
+    "journal": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
+    "volume": 42,
+    "pages": "3301-3314",
+    "year": 2023,
+    "doi": "10.1109/TCAD.2023.3244885",
+    "url": "https://ieeexplore.ieee.org/document/10044235",
+    "roles": [
+      "historical first broad exact ancilla-depth landscape",
+      "original source credited by Yuan-Zhang for selected primitives",
+      "predecessor whose intermediate-workspace logarithmic gap was closed by Yuan-Zhang"
+    ],
+    "policy": "historical and original-source attribution; not an active alternative compiler path"
+  },
+  "uniformly_controlled_gate_lineage": [
+    {
+      "authors": [
+        "Mikko Mottonen",
+        "Juha J. Vartiainen",
+        "Ville Bergholm",
+        "Martti M. Salomaa"
+      ],
+      "title": "Transformation of quantum states using uniformly controlled rotations",
+      "journal": "Quantum Information and Computation",
+      "volume": 5,
+      "pages": "467-473",
+      "year": 2005,
+      "arxiv": "quant-ph/0407010"
+    },
+    {
+      "authors": [
+        "Ville Bergholm",
+        "Juha J. Vartiainen",
+        "Mikko Mottonen",
+        "Martti M. Salomaa"
+      ],
+      "title": "Quantum circuits with uniformly controlled one-qubit gates",
+      "journal": "Physical Review A",
+      "volume": 71,
+      "article": "052330",
+      "year": 2005,
+      "arxiv": "quant-ph/0410066"
+    }
+  ],
+  "active_construction_exclusions": [
+    "No regime-by-regime choice between the two 2023 state-preparation papers",
+    "No construction-level use of the earlier unary-to-binary routine",
+    "No separately sourced phase-polynomial diagonal compiler",
+    "No generic all-column controlled-state-preparation implementation of the Hopf frame"
+  ]
+}
