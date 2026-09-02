@@ -50,9 +50,9 @@ class ResourceBoundTests(unittest.TestCase):
                 4 * n + 1,
                 max(4 * n, N // max(1, n * n)),
                 max(4 * n, N // n),
-                N,
-                2 * N,
-                8 * N,
+                max(4 * n, N),
+                max(4 * n, 2 * N),
+                max(4 * n, 8 * N),
             }
             for ancillas in budgets:
                 cut = choose_routed_cut(n, ancillas)
