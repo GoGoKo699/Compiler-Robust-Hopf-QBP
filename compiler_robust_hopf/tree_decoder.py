@@ -1,7 +1,8 @@
 """Self-contained binary--one-hot tree decoder for Hopf prefix frames.
 
-The construction uses only fixed-width reversible gates and coherent CNOT-tree
-copying. It replaces the previously imported unary-to-binary subroutine.
+The construction uses fixed-width reversible gates and coherent CNOT-tree
+copying. It replaces the previously imported unary-to-binary subroutine and
+exposes an explicit parallel layer schedule in the standard circuit model.
 """
 from __future__ import annotations
 
@@ -20,6 +21,9 @@ GateKind = Literal["x", "cx", "ccx"]
 class ReversibleGate:
     kind: GateKind
     qubits: tuple[int, ...]
+
+
+ReversibleLayer = tuple[ReversibleGate, ...]
 
 
 @dataclass(frozen=True)
@@ -82,12 +86,6 @@ def _validate_t(t: int) -> None:
         raise ValueError("t must be positive.")
 
 
-def _ceil_log2(value: int) -> int:
-    if value < 1:
-        raise ValueError("value must be positive.")
-    return (value - 1).bit_length()
-
-
 def tree_decoder_layout(t: int) -> TreeDecoderLayout:
     _validate_t(t)
     branches = 1 << t
@@ -115,27 +113,33 @@ def tree_decoder_layout(t: int) -> TreeDecoderLayout:
     )
 
 
-def _fanout_operations(
+def _fanout_layers(
     source: int, targets: tuple[int, ...]
-) -> tuple[tuple[ReversibleGate, ...], tuple[int, ...]]:
+) -> tuple[tuple[ReversibleLayer, ...], tuple[int, ...]]:
+    """Copy one coherent bit to all targets with a binary CNOT tree."""
+
     active = [source]
     remaining = list(targets)
-    operations: list[ReversibleGate] = []
+    layers: list[ReversibleLayer] = []
     while remaining:
+        gates: list[ReversibleGate] = []
         new_controls: list[int] = []
         for control in tuple(active):
             if not remaining:
                 break
             target = remaining.pop(0)
-            operations.append(ReversibleGate("cx", (control, target)))
+            gates.append(ReversibleGate("cx", (control, target)))
             new_controls.append(target)
+        layers.append(tuple(gates))
         active.extend(new_controls)
-    return tuple(operations), tuple(active)
+    return tuple(layers), tuple(active)
 
 
-def _parity_tree_operations(
+def _parity_tree_layers(
     inputs: tuple[int, ...], ancillas: tuple[int, ...]
-) -> tuple[tuple[ReversibleGate, ...], int]:
+) -> tuple[tuple[ReversibleLayer, ...], int]:
+    """Compute the input parity into a clean tree root."""
+
     if not inputs:
         raise ValueError("A parity tree needs at least one input.")
     if len(inputs) == 1:
@@ -144,45 +148,79 @@ def _parity_tree_operations(
         return (), inputs[0]
     if len(ancillas) != len(inputs) - 1:
         raise ValueError("A binary parity tree needs len(inputs)-1 ancillas.")
+
     current = list(inputs)
     pool = iter(ancillas)
-    operations: list[ReversibleGate] = []
+    layers: list[ReversibleLayer] = []
     while len(current) > 1:
+        first_cnot: list[ReversibleGate] = []
+        second_cnot: list[ReversibleGate] = []
         next_level: list[int] = []
         for first, second in zip(current[0::2], current[1::2], strict=True):
             target = next(pool)
-            operations.append(ReversibleGate("cx", (first, target)))
-            operations.append(ReversibleGate("cx", (second, target)))
+            first_cnot.append(ReversibleGate("cx", (first, target)))
+            second_cnot.append(ReversibleGate("cx", (second, target)))
             next_level.append(target)
+        layers.append(tuple(first_cnot))
+        layers.append(tuple(second_cnot))
         current = next_level
-    return tuple(operations), current[0]
+    return tuple(layers), current[0]
 
 
-def binary_to_unary_operations(t: int) -> tuple[ReversibleGate, ...]:
-    """Return a clean reversible tree decoder.
+def _merge_parallel_schedules(
+    schedules: tuple[tuple[ReversibleLayer, ...], ...]
+) -> tuple[ReversibleLayer, ...]:
+    """Merge disjoint schedules that start at the same logical time."""
 
-    On the clean subspace it maps ``|x>|0...0>`` to
-    ``|0...0>|e_x>|0...0>``. Reversing the operation list implements the
-    inverse map.
+    depth = max((len(schedule) for schedule in schedules), default=0)
+    merged: list[ReversibleLayer] = []
+    for layer_index in range(depth):
+        gates: list[ReversibleGate] = []
+        for schedule in schedules:
+            if layer_index < len(schedule):
+                gates.extend(schedule[layer_index])
+        merged.append(tuple(gates))
+    return tuple(merged)
+
+
+def reversible_layer_is_disjoint(layer: ReversibleLayer) -> bool:
+    """Return whether no two gates in the layer touch the same qubit."""
+
+    used: set[int] = set()
+    for gate in layer:
+        for qubit in gate.qubits:
+            if qubit in used:
+                return False
+            used.add(qubit)
+    return True
+
+
+def binary_to_unary_layers(t: int) -> tuple[ReversibleLayer, ...]:
+    """Return an explicit `O(t)`-depth clean tree-decoder schedule.
+
+    On the clean subspace the schedule maps ``|x>|0...0>`` to
+    ``|0...0>|e_x>|0...0>``. Reversing both the layer order and each layer's
+    gate order gives the inverse. All gates inside one returned layer have
+    disjoint support.
     """
 
     layout = tree_decoder_layout(t)
-    operations: list[ReversibleGate] = []
+    layers: list[ReversibleLayer] = []
 
-    fanouts: list[tuple[ReversibleGate, ...]] = []
+    fanout_schedules: list[tuple[ReversibleLayer, ...]] = []
     controls_by_depth: list[tuple[int, ...]] = []
     offset = 0
     for depth in range(t):
         copies = (1 << depth) - 1
         targets = layout.shared_pool[offset : offset + copies]
         offset += copies
-        fanout, controls = _fanout_operations(layout.binary[depth], targets)
-        fanouts.append(fanout)
+        fanout, controls = _fanout_layers(layout.binary[depth], targets)
+        fanout_schedules.append(fanout)
         controls_by_depth.append(controls)
-    for fanout in fanouts:
-        operations.extend(fanout)
+    concurrent_fanout = _merge_parallel_schedules(tuple(fanout_schedules))
+    layers.extend(concurrent_fanout)
 
-    operations.append(ReversibleGate("x", (layout.internal_by_depth[0][0],)))
+    layers.append((ReversibleGate("x", (layout.internal_by_depth[0][0],)),))
     for depth in range(t):
         parents = layout.internal_by_depth[depth]
         children = (
@@ -190,20 +228,25 @@ def binary_to_unary_operations(t: int) -> tuple[ReversibleGate, ...]:
             if depth < t - 1
             else layout.unary
         )
+        left_layer: list[ReversibleGate] = []
+        right_layer: list[ReversibleGate] = []
+        subtract_right_layer: list[ReversibleGate] = []
         for position, parent in enumerate(parents):
             left = children[2 * position]
             right = children[2 * position + 1]
             address_control = controls_by_depth[depth][position]
-            operations.append(ReversibleGate("cx", (parent, left)))
-            operations.append(
+            left_layer.append(ReversibleGate("cx", (parent, left)))
+            right_layer.append(
                 ReversibleGate("ccx", (parent, address_control, right))
             )
-            operations.append(ReversibleGate("cx", (right, left)))
+            subtract_right_layer.append(ReversibleGate("cx", (right, left)))
+        layers.append(tuple(left_layer))
+        layers.append(tuple(right_layer))
+        layers.append(tuple(subtract_right_layer))
 
-    for fanout in reversed(fanouts):
-        operations.extend(reversed(fanout))
+    layers.extend(reversed(concurrent_fanout))
 
-    reductions: list[tuple[ReversibleGate, ...]] = []
+    reduction_schedules: list[tuple[ReversibleLayer, ...]] = []
     roots: list[int] = []
     offset = 0
     for depth in range(t):
@@ -218,15 +261,18 @@ def binary_to_unary_operations(t: int) -> tuple[ReversibleGate, ...]:
         right_children = tuple(
             children[2 * position + 1] for position in range(1 << depth)
         )
-        reduction, root = _parity_tree_operations(right_children, ancillas)
-        reductions.append(reduction)
+        reduction, root = _parity_tree_layers(right_children, ancillas)
+        reduction_schedules.append(reduction)
         roots.append(root)
-    for reduction in reductions:
-        operations.extend(reduction)
-    for depth, root in enumerate(roots):
-        operations.append(ReversibleGate("cx", (root, layout.binary[depth])))
-    for reduction in reversed(reductions):
-        operations.extend(reversed(reduction))
+    concurrent_reduction = _merge_parallel_schedules(tuple(reduction_schedules))
+    layers.extend(concurrent_reduction)
+    layers.append(
+        tuple(
+            ReversibleGate("cx", (root, layout.binary[depth]))
+            for depth, root in enumerate(roots)
+        )
+    )
+    layers.extend(reversed(concurrent_reduction))
 
     for depth in range(t):
         parents = layout.internal_by_depth[depth]
@@ -235,14 +281,29 @@ def binary_to_unary_operations(t: int) -> tuple[ReversibleGate, ...]:
             if depth < t - 1
             else layout.unary
         )
-        for position, parent in enumerate(parents):
-            operations.append(
+        layers.append(
+            tuple(
                 ReversibleGate("cx", (children[2 * position], parent))
+                for position, parent in enumerate(parents)
             )
-            operations.append(
+        )
+        layers.append(
+            tuple(
                 ReversibleGate("cx", (children[2 * position + 1], parent))
+                for position, parent in enumerate(parents)
             )
-    return tuple(operations)
+        )
+
+    schedule = tuple(layers)
+    if not all(reversible_layer_is_disjoint(layer) for layer in schedule):
+        raise AssertionError("The tree-decoder layer schedule is not disjoint.")
+    return schedule
+
+
+def binary_to_unary_operations(t: int) -> tuple[ReversibleGate, ...]:
+    """Return the tree-decoder gates in a valid scheduled order."""
+
+    return tuple(gate for layer in binary_to_unary_layers(t) for gate in layer)
 
 
 def apply_reversible_operations(
@@ -251,7 +312,7 @@ def apply_reversible_operations(
     *,
     inverse: bool = False,
 ) -> tuple[int, ...]:
-    """Apply the classical action of the reversible gate list to one basis state."""
+    """Apply the basis action of a reversible gate sequence."""
 
     values = [int(value) for value in bits]  # type: ignore[arg-type]
     if any(value not in (0, 1) for value in values):
