@@ -130,7 +130,8 @@ class LiteraturePolicyTests(unittest.TestCase):
         prior_art = (ROOT / "docs" / "STRICT_ZERO_PRIOR_ART.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("not a legal novelty opinion", prior_art)
+        normalized = " ".join(prior_art.split())
+        self.assertIn("not a legal novelty opinion", normalized)
         self.assertIn("Hopf-specific", prior_art)
         self.assertIn("should not be used", prior_art)
 
