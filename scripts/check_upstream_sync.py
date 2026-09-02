@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check whether recorded public upstream branch heads have moved."""
+"""Check whether the recorded upstream branch heads have moved."""
 from __future__ import annotations
 
 import argparse
@@ -19,7 +19,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--offline",
         action="store_true",
-        help="Validate and display the recorded provenance without network access.",
+        help="Validate and display provenance without network access.",
     )
     return parser.parse_args()
 
@@ -27,11 +27,27 @@ def parse_args() -> argparse.Namespace:
 def load_provenance() -> dict[str, object]:
     with PROVENANCE.open("r", encoding="utf-8") as stream:
         payload = json.load(stream)
-    if payload.get("schema_version") != 1:
+    if payload.get("schema_version") != 2:
         raise ValueError("Unsupported provenance schema version.")
-    upstreams = payload.get("upstreams")
+    upstreams = payload.get("tracked_upstreams")
     if not isinstance(upstreams, list) or not upstreams:
-        raise ValueError("No upstream repositories are recorded.")
+        raise ValueError("No tracked upstream repositories are recorded.")
+    for record in upstreams:
+        if not isinstance(record, dict):
+            raise ValueError("Every tracked upstream must be an object.")
+        repository = record.get("repository")
+        branch = record.get("branch")
+        commit = record.get("commit")
+        if not isinstance(repository, str) or "/" not in repository:
+            raise ValueError("Invalid upstream repository name.")
+        if not isinstance(branch, str) or not branch:
+            raise ValueError("Invalid upstream branch name.")
+        if not isinstance(commit, str) or len(commit) != 40:
+            raise ValueError("Invalid upstream commit SHA.")
+        try:
+            int(commit, 16)
+        except ValueError as exc:
+            raise ValueError("Invalid upstream commit SHA.") from exc
     return payload
 
 
@@ -50,7 +66,9 @@ def github_branch_sha(repository: str, branch: str) -> str:
         payload = json.load(response)
     sha = payload.get("sha")
     if not isinstance(sha, str) or len(sha) != 40:
-        raise ValueError(f"GitHub returned no valid commit SHA for {repository}:{branch}.")
+        raise ValueError(
+            f"GitHub returned no valid commit SHA for {repository}:{branch}."
+        )
     return sha
 
 
@@ -62,14 +80,14 @@ def main() -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    records = payload["upstreams"]
+    records = payload["tracked_upstreams"]
     assert isinstance(records, list)
     if args.offline:
         for record in records:
             assert isinstance(record, dict)
             print(
-                f"recorded {record['repository']}:{record['tracked_branch']} "
-                f"at {record['tracked_commit']}"
+                f"recorded {record['repository']}:{record['branch']} "
+                f"at {record['commit']}"
             )
         return 0
 
@@ -77,8 +95,8 @@ def main() -> int:
     for record in records:
         assert isinstance(record, dict)
         repository = str(record["repository"])
-        branch = str(record["tracked_branch"])
-        expected = str(record["tracked_commit"])
+        branch = str(record["branch"])
+        expected = str(record["commit"])
         try:
             current = github_branch_sha(repository, branch)
         except (urllib.error.URLError, TimeoutError, ValueError) as exc:

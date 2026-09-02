@@ -1,6 +1,5 @@
 """Compiler-robust Hopf differential-frame research utilities."""
 
-from .ancilla_depth import AncillaDepthRow, ancilla_depth_row
 from .compiler_boundaries import (
     CheckpointInterfaceSafeExample,
     CheckpointStateColumnCounterexample,
@@ -9,14 +8,15 @@ from .compiler_boundaries import (
     two_qubit_checkpoint_state_column_counterexample,
     two_qubit_global_state_column_counterexample,
 )
-from .complex_resources import ComplexWorkspaceRow, complex_workspace_row
 from .frames import complex_frame_matrix, real_frame_matrix
-from .optimal_parallel import (
-    OptimalityPlanRow,
-    RouteWorkspaceLedger,
-    optimality_plan_row,
-    route_workspace_ledger,
-    tail_block_diagonal_frame as legacy_tail_block_diagonal_frame,
+from .resource_bounds import (
+    generic_all_column_cqsp_size_proxy,
+    lightcone_depth_lower_bound,
+    lightcone_parameter_slots,
+    low_workspace_absorption_holds,
+    parameter_count_depth_lower_bound,
+    real_state_parameter_dimension,
+    routed_geometric_inequality_holds,
 )
 from .tree_decoder import (
     ConditionedPrefixResourceRow,
@@ -30,6 +30,8 @@ from .tree_decoder import (
 )
 from .tree_structure import (
     conditioned_prefix_frame,
+    reconstructed_frame,
+    subtree_angle_indices,
     tail_block_diagonal_frame,
 )
 from .unified_compiler import (
@@ -38,39 +40,50 @@ from .unified_compiler import (
     RouteWorkspaceRow,
     UnifiedComplexResourceRow,
     UnifiedFrameResourceRow,
+    choose_routed_cut,
+    controlled_unitary,
     diagonal_ucg_matrix,
+    diagonal_ucg_resource_row,
+    direct_frame_resource_row,
+    route_workspace_row,
     unified_complex_frame_resource_row,
+    unified_cut_frame_matrix,
     unified_real_frame_resource_row,
 )
 
 __all__ = [
-    "AncillaDepthRow",
     "CheckpointInterfaceSafeExample",
     "CheckpointStateColumnCounterexample",
-    "ComplexWorkspaceRow",
     "ConditionedPrefixResourceRow",
     "DiagonalUCGResourceRow",
     "DirectFrameResourceRow",
     "GlobalStateColumnCounterexample",
-    "OptimalityPlanRow",
     "ReversibleGate",
-    "RouteWorkspaceLedger",
     "RouteWorkspaceRow",
     "TreeDecoderLayout",
     "TreeDecoderResourceRow",
     "UnifiedComplexResourceRow",
     "UnifiedFrameResourceRow",
-    "ancilla_depth_row",
     "binary_to_unary_operations",
+    "choose_routed_cut",
     "complex_frame_matrix",
-    "complex_workspace_row",
     "conditioned_prefix_frame",
     "conditioned_prefix_resource_row",
+    "controlled_unitary",
     "diagonal_ucg_matrix",
-    "legacy_tail_block_diagonal_frame",
-    "optimality_plan_row",
+    "diagonal_ucg_resource_row",
+    "direct_frame_resource_row",
+    "generic_all_column_cqsp_size_proxy",
+    "lightcone_depth_lower_bound",
+    "lightcone_parameter_slots",
+    "low_workspace_absorption_holds",
+    "parameter_count_depth_lower_bound",
     "real_frame_matrix",
-    "route_workspace_ledger",
+    "real_state_parameter_dimension",
+    "reconstructed_frame",
+    "route_workspace_row",
+    "routed_geometric_inequality_holds",
+    "subtree_angle_indices",
     "tail_block_diagonal_frame",
     "tree_decoder_resource_row",
     "two_qubit_checkpoint_interface_safe_example",
@@ -78,6 +91,7 @@ __all__ = [
     "two_qubit_global_state_column_counterexample",
     "unary_hopf_code_action",
     "unified_complex_frame_resource_row",
+    "unified_cut_frame_matrix",
     "unified_real_frame_resource_row",
 ]
 

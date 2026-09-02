@@ -39,11 +39,13 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("historical", historical["policy"])
         self.assertIn("not an active alternative", historical["policy"])
 
-    def test_active_compiler_sources_have_no_legacy_imports(self) -> None:
+    def test_active_sources_have_no_retired_compiler_dependencies(self) -> None:
         active_paths = (
+            "compiler_robust_hopf/__init__.py",
             "compiler_robust_hopf/tree_structure.py",
             "compiler_robust_hopf/tree_decoder.py",
             "compiler_robust_hopf/unified_compiler.py",
+            "compiler_robust_hopf/resource_bounds.py",
         )
         forbidden = (
             "from .ancilla_depth",
@@ -90,6 +92,7 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("historical predecessor", related.lower())
         self.assertIn("Sun", related)
         self.assertIn("Yuan", related)
+        self.assertIn("does not choose between", related)
 
     def test_retired_paths_are_absent_from_active_tree(self) -> None:
         retired = (
@@ -102,8 +105,11 @@ class LiteraturePolicyTests(unittest.TestCase):
             "scripts/optimality_ledger.py",
             "tests/test_ancilla_depth.py",
             "tests/test_complex_resources.py",
-            "tests/test_optimal_parallel.py",
             "tests/test_optimal_audit.py",
+            "tests/test_provenance_v2.py",
+            "docs/CONSOLIDATION_STATUS.md",
+            "docs/UNIFIED_REFACTOR_GATE.md",
+            "provenance/upstream.compatibility-note.md",
         )
         for relative in retired:
             self.assertFalse((ROOT / relative).exists(), msg=relative)
