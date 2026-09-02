@@ -1,52 +1,107 @@
 # Manuscript workspace
 
-No manuscript is frozen yet. This directory is reserved for the new paper after
-the remaining scientific-scope decision.
+The project now has enough internally audited mathematics to begin a controlled
+paper draft. No theorem should be presented as externally verified until an
+independent human proof review is complete.
 
 ## Working title
 
 **Compiler-Robust Quantum Backpropagation in Hopf Coordinates**
 
-The title may broaden only after a theorem is proved for a class of charts beyond
-the Hopf construction.
+The title should remain Hopf-specific unless a theorem is later proved for a
+larger class of coordinate charts.
+
+## Central paper claim
+
+Let `N=2**n`. For every positive clean-workspace budget `m>=1`, the complete
+real Hopf differential frame and the separated complex frame admit exact
+frame-safe implementations with
+
+```math
+S=\Theta(N),
+\qquad
+D=\Theta\left(n+\frac{N}{n+m}\right),
+```
+
+using at most the requested `m` clean ancillary qubits. Thus complete coherent
+access to the Hopf state and all normalized magnitude-coordinate directions can
+match the optimal state-preparation space--time frontier.
+
+The strict `m=0` endpoint remains separate: one clean qubit gives sharp size
+and optimal depth, while the known strict-zero construction has larger size and
+depth. The paper must state this boundary explicitly.
 
 ## Intended contribution chain
 
-1. Define coherent differential frames and frame-safe compilation.
-2. Prove that frame-safe substitution preserves the global Hopf gradient record.
-3. Prove by explicit counterexample that state-column equality is insufficient.
-4. Distinguish full frame safety from checkpoint active-interface safety.
-5. Prove the conditioned-prefix and unary-frame lemmas.
-6. Establish the audited all-workspace real-frame theorem.
-7. Establish the common-workspace separated complex theorem.
-8. Compare both with the optimal QSP frontier of Yuan and Zhang.
-9. Include output-sensitive magnitude, phase, and checkpoint decoding.
-10. State all circuit-model, phase-convention, observable-access, and accuracy
-    assumptions.
+1. Define the Hopf coherent differential frame.
+2. State and prove frame-safe substitution for the global gradient protocol.
+3. Give the two-qubit state-column obstruction.
+4. Prove the conditioned-prefix identity.
+5. Prove the tree-cut tail direct sum.
+6. Construct the coherent branch router and parallel subtree frames.
+7. Prove the optimal positive-workspace size and depth theorem.
+8. Prove the matching real-state lower bound.
+9. Extend the theorem to the separated complex frame under one clean workspace
+   pool.
+10. Include output-sensitive magnitude and phase decoding.
+11. State the checkpoint active-interface theorem and its counterexamples.
+12. Isolate the strict-zero endpoint and broader-chart questions.
 
-## Gates completed internally
+## Recommended theorem hierarchy
 
-- clean frame-safe substitution theorem;
-- exact two-qubit global state-column counterexample;
-- checkpoint active-interface substitution theorem;
-- exact checkpoint state-column sign-flip counterexample;
-- explicit proof that active-interface safety preserves means but not complete
-  distributions;
-- real conditioned-prefix and unary construction audit;
-- all-workspace real-frame upper bound;
-- clean arbitrary-diagonal all-budget lemma;
-- common-workspace separated complex-frame theorem;
-- common-phase gauge and singular-leaf checks;
-- output-sensitive magnitude and direct-phase decoders.
+- **Theorem 1: frame-safe substitution.**
+- **Proposition 2: state-column equality is insufficient.**
+- **Lemma 3: conditioned-prefix frame identity.**
+- **Lemma 4: tree-cut tail direct sum.**
+- **Lemma 5: clean coherent branch routing.**
+- **Lemma 6: controlled subtree-frame resources.**
+- **Theorem 7: optimal positive-workspace real Hopf frame.**
+- **Corollary 8: optimal positive-workspace separated complex frame.**
+- **Theorem 9: checkpoint active-interface substitution.**
+- **Corollary 10: compiler-robust global Hopf backpropagation.**
 
-## Remaining drafting gates
+The numbering is provisional.
 
-Do not freeze a full paper source until:
+## Source discipline
 
-- the project decides whether to pursue the optimal all-ancilla theorem or
-  publish the audited near-optimal bound with its explicit intermediate gap;
-- the intended theorem statements receive an external proof review;
-- the controlled-observable and accuracy conventions are frozen.
+The state-preparation frontier is Theorem 2 of Yuan and Zhang,
+*Quantum* **7**, 956 (2023). Their Figure 1 concerns general unitary synthesis.
+The older Figure 1 that motivated the original compiler question belongs to the
+Sun--Tian--Yang--Yuan--Zhang paper.
 
-A provisional section skeleton may now be developed. The abstract and theorem
-labels must remain provisional until the optimality-scope decision is made.
+The manuscript must distinguish:
+
+- published compiler primitives;
+- Hopf-specific identities proved here;
+- internally audited deductions;
+- finite validation;
+- unresolved endpoint questions.
+
+## Completed internal gates
+
+- frame-safe global substitution;
+- exact global state-column counterexample;
+- checkpoint active-interface theorem and counterexamples;
+- first audit of the conditioned-prefix/unary compiler;
+- common-workspace separated complex theorem;
+- exact tree-cut direct sum;
+- routed parallel-subframe construction;
+- second audit of the positive-workspace optimal theorem;
+- matching real-state size and depth lower bounds;
+- parameter-generation and decoder accounting;
+- frozen near-optimal fallback branch.
+
+## Remaining drafting and release gates
+
+- external proof review of the router, workspace ledger, and lower bound;
+- final decision on whether to pursue the strict `m=0` endpoint before first
+  submission or leave it as an explicit open problem;
+- freeze the controlled-observable model and statistical-accuracy notation;
+- cross-check notation against both earlier Hopf papers;
+- decide which construction diagrams and resource plots are necessary;
+- compile and audit a complete manuscript package;
+- update repository citation metadata only after a manuscript identifier exists.
+
+A full draft may now be started, but the abstract and title page should continue
+to describe the theorem as internally checked until the external review gate is
+met.

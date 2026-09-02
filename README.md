@@ -1,91 +1,86 @@
 # Compiler-Robust Hopf Quantum Backpropagation
 
-Theory, compiler constructions, exact boundaries, and deterministic validation
-for quantum backpropagation from Hopf differential frames.
+Theory, exact compiler constructions, compiler boundaries, and deterministic
+validation for quantum backpropagation from Hopf differential frames.
 
 ## Research status
 
-This repository is the source of truth for a new research project.
+This repository is the source of truth for a new research project. The central
+positive-workspace compiler result has now passed two internal proof audits,
+relative to the exact circuit-synthesis lemmas cited in the audit documents.
+It has not received external peer review.
 
-The established starting point is that global Hopf quantum backpropagation
-survives an exact Möttönen-style multiplexed recompilation with `O(N)` circuit
-size. The present project asks a broader question:
-
-> Which parts of Hopf quantum backpropagation belong to the Hopf chart itself,
-> and which compiler transformations preserve its resource scaling?
-
-The real and separated complex compiler theorems have passed internal
-line-by-line audits relative to the exact synthesis lemmas they import. Let
+Let
 
 ```math
-N=2^n,
-\qquad
-t=
-\min\left\{
-n,
-\max\left(0,\left\lfloor\log_2(m/3)\right\rfloor\right)
-\right\}.
+N=2^n.
 ```
 
-The complete real frame and the separated complex frame
+For every positive clean-workspace budget `m>=1`, the complete real Hopf
+frame and the separated complex frame
 
 ```math
 W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}
 ```
 
-admit exact frame-safe implementations with size
+have exact frame-safe implementations using at most the requested `m` clean
+ancillary qubits, with
 
 ```math
-O(N)
+\boxed{
+S_{\mathbb R}(n,m)=S_{\mathbb C}(n,m)=\Theta(N)
+}
 ```
 
-and depth
+and
 
 ```math
-O\left(
-n(n-t+1)+\frac{N}{n+m}
-\right).
+\boxed{
+D_{\mathbb R}(n,m)=D_{\mathbb C}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right).
+}
 ```
 
-For every `m>=1`, the real and diagonal blocks reuse the same `m` clean
-ancillary qubits as the matched state-preparation budget. At nominal `m=0`, the
-sharp-size construction uses one reusable real-frame flag. A strict
-zero-ancilla fallback has depth `O(N)` and size `O(nN)`.
+The upper bound uses a tree-cut direct sum and a coherent
+route--parallel-subframes--unroute construction. The lower bound follows by
+applying the frame to `|0^n>` and adapting parameter-count and backward-light-
+cone arguments to the `(N-1)`-dimensional real state sphere.
 
-The diagonal block itself has an exact all-budget clean implementation of size
-`O(N)` and depth
+This matches the optimal arbitrary-state-preparation frontier of Yuan and Zhang
+for every `m>=1`. The relevant QSP benchmark is their **Theorem 2**. Figure 1
+of that paper concerns general unitary synthesis, not the QSP frontier.
 
-```math
-O\left(n+\frac{N}{n+m}\right).
-```
+The strict `m=0` endpoint remains deliberately separate:
 
-The current frame compiler reproduces all three depth upper profiles in Figure
-1 of Sun, Tian, Yang, Yuan, and Zhang. Whether the complete frame attains the
-later optimal all-ancilla frontier
+| Clean ancillary qubits | Exact size | Exact depth upper bound |
+|---:|---:|---:|
+| `1` | `O(N)` | `O(n+N/n)` |
+| `0` | `O(nN)` | `O(N)` |
 
-```math
-\Theta\left(n+\frac{N}{n+m}\right)
-```
+It remains open whether strict zero workspace can simultaneously achieve
+`O(N)` size and `O(n+N/n)` depth.
 
-for every `m` remains open.
+The cumulative audited near-optimal fallback is preserved on
+`near-optimal-audited-2026-09` at manifest commit
+`24f339b863faa2ac92e1adb3917cbef7dc24d3b8`. Optimality work does not rewrite
+that branch.
 
-The compiler boundary is also now exact. State-column equality alone is
-insufficient for both global and checkpoint reverse circuits. The global method
-requires the complete differential-frame action. A checkpoint compiler may be
-weaker, but it must preserve the complete active checkpoint interface rather
-than only the one prepared prefix state. Exact two-qubit counterexamples and an
-active-interface substitution theorem are in
-[`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md).
+## Main documents
 
-The main technical documents are:
+- [`docs/OPTIMALITY_AUDIT_ISSUE_9.md`](docs/OPTIMALITY_AUDIT_ISSUE_9.md):
+  independent audit of the optimal positive-workspace theorem and source map;
+- [`docs/OPTIMALITY_CHECKPOINT_1.md`](docs/OPTIMALITY_CHECKPOINT_1.md):
+  routed parallel-subframe construction;
+- [`docs/PROOF_AUDIT_ISSUE_1.md`](docs/PROOF_AUDIT_ISSUE_1.md):
+  audited near-optimal real-frame construction;
+- [`docs/COMPLEX_COMMON_WORKSPACE.md`](docs/COMPLEX_COMMON_WORKSPACE.md):
+  exact diagonal synthesis, separated complex frame, gauge, and end-to-end
+  accounting;
+- [`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md):
+  state-column counterexamples and checkpoint active-interface theorem;
+- [`docs/CLAIM_SUPPORT.md`](docs/CLAIM_SUPPORT.md): claim-by-claim evidence map.
 
-- [`docs/PROOF_AUDIT_ISSUE_1.md`](docs/PROOF_AUDIT_ISSUE_1.md): audited real-frame construction;
-- [`docs/COMPLEX_COMMON_WORKSPACE.md`](docs/COMPLEX_COMMON_WORKSPACE.md): separated complex common-workspace theorem;
-- [`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md): exact negative results and checkpoint interface theorem.
-
-These are internal mathematical audits, not external peer review.
-
-## Conceptual claim
+## Why this is a chart-and-compiler result
 
 For the balanced real Hopf chart,
 
@@ -103,59 +98,103 @@ differential frame. The chart supplies:
 - the computational marker structure;
 - the shared norm-controlled gradient record.
 
-A compiler inherits global Hopf backpropagation scaling only when it implements
-the complete differential frame cleanly and at cost sufficiently close to
-forward state preparation. A checkpoint compiler instead needs a
-factorization-specific active-interface contract.
+The resource theorem additionally needs a **frame-safe compiler**. A compiled
+unitary with clean workspace is frame-safe when, for every system input,
+
+```math
+\widetilde W
+\bigl(|\varphi\rangle|0^w\rangle\bigr)
+=
+\bigl(W|\varphi\rangle\bigr)|0^w\rangle.
+```
+
+Equality on the prepared state column alone is insufficient. A two-qubit
+counterexample in this repository preserves the Hopf state exactly while
+changing the decoded gradient from `(2,0,0)` to `(0,sqrt(2),0)`.
+
+## Optimal compiler architecture
+
+Cut the addressed frame after `t` prefix qubits and write `s=n-t`, `B=2^t`.
+The tail has the exact full-operator decomposition
+
+```math
+R_t^{(n)}
+=
+\bigoplus_{r=0}^{B-1}W_s^{(r)}.
+```
+
+A coherent binary-tree router moves the existing suffix register and a one-hot
+activation token into one of `B` disjoint branch registers. All controlled
+subtree frames then run in parallel, after which inverse routing returns every
+auxiliary data, token, copied-control, and branch-flag register to zero.
+
+The routed construction fits in the conservative workspace envelope
+
+```math
+2B(s+1)\leq m.
+```
+
+Choosing the largest feasible cut gives the optimal positive-workspace depth.
+For `1<=m<4n`, the separately audited low-workspace compiler is already of
+optimal order.
+
+The generic controlled-state-preparation shortcut is not used. Treating all
+`N` frame columns as unrelated targets gives generic size `O(N^2)` and leaves a
+coherent input column label that still has to be removed.
 
 ## Exact compiler hierarchy
 
-| Compiler promise | Scalar state | Checkpoint means | Global distribution |
+| Compiler promise | Scalar state | Checkpoint means | Global Hopf distribution |
 |---|---:|---:|---:|
 | One prepared state column | sufficient | insufficient | insufficient |
 | Complete active checkpoint interface | sufficient | sufficient | generally insufficient |
 | Complete frame-safe operator | sufficient | sufficient where applicable | sufficient |
 
-The repository includes:
+For a checkpoint factorization `U=B_dA_d`, a clean suffix compiler is
+active-interface safe when
 
-- a two-qubit global example in which a SWAP of two marker columns preserves the
-  state but changes the decoded gradient from `(2,0,0)` to `(0,sqrt(2),0)`;
-- a two-qubit checkpoint suffix that preserves the final state but flips the
-  decoded derivative from `2` to `-2`;
-- an interface-safe suffix whose full output distribution changes by total
-  variation `1/4` while the checkpoint mean remains exact.
+```math
+\widetilde B_d J P_d
+=e^{i\chi}J B_dP_d.
+```
 
-## Scope
+This preserves every designated checkpoint estimator mean under consistent
+forward/reverse use. It need not preserve the complete checkpoint output
+distribution.
 
-This repository studies:
+## Complex chart and classical work
 
-- frame-safe compilation;
-- checkpoint active-interface compilation;
-- exact state-column counterexamples;
-- exact conditioned-prefix identities for addressed Hopf frames;
-- unary realizations by parallel two-mode Givens layers;
-- ancillary-space versus circuit-depth tradeoffs;
-- clean arbitrary-diagonal synthesis under a common workspace budget;
-- output-sensitive classical decoding;
-- lower-bound transfer from universal state preparation;
-- common phase, phase gauge, and singular leaves;
-- limits of compiler invariance.
+The exact arbitrary diagonal has an all-budget clean implementation of size
+`O(N)` and depth
 
-The main positive resource theorem concerns the **global differential-frame
-protocol**. Checkpoint protocols remain tied to a chosen factorization, even
-though compilers may act arbitrarily outside the certified active interface.
+```math
+O\left(n+\frac{N}{n+m}\right)
+```
 
-## Relationship to the earlier repositories
+using at most `m` clean ancillas. It reuses the real-frame workspace
+sequentially, so workspace costs take a maximum rather than a sum.
+
+Compiler phase parameters are generated by one length-`N` Walsh transform in
+`O(Nn)` classical arithmetic. Complete-gradient decoding is output-sensitive:
+
+```math
+T_{\mathrm{mag}}=O(S_{\mathrm{mag}}N),
+\qquad
+T_{\mathrm{phase}}=O(S_{\mathrm{phase}}+N).
+```
+
+The direct phase stream uses no inverse differential frame.
+
+## Relationship to earlier repositories
 
 | Repository | Role |
 |---|---|
 | [`Hopf-ansatz`](https://github.com/GoGoKo699/Hopf-ansatz) | Balanced Hopf coordinates, inverse map, metric, and tangent preparation |
-| [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | Established global, direct-phase, and checkpoint gradient protocols for the designated Hopf realization, plus Möttönen-style robustness |
-| **This repository** | New paper on chart-native differential frames and compiler-robust resource scaling |
+| [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | Established Hopf gradient protocols and Möttönen-style compiler robustness |
+| **This repository** | Frame-safe compilation, optimal positive-workspace depth, compiler boundaries, and the new manuscript |
 
-This repository is independently executable. Shared definitions are copied only
-when needed and are tracked in [`SYNC.md`](SYNC.md) and
-[`provenance/upstream.json`](provenance/upstream.json).
+Shared definitions are copied only when needed and are tracked in
+[`SYNC.md`](SYNC.md) and [`provenance/upstream.json`](provenance/upstream.json).
 
 ## Quick start
 
@@ -167,56 +206,49 @@ python -m pip install -r requirements.txt
 python validate.py
 python scripts/ancilla_depth_ledger.py --n 10
 python scripts/complex_workspace_ledger.py --n 10
+python scripts/optimality_ledger.py --n 12
 ```
 
 ## Repository map
 
 | Path | Role |
 |---|---|
-| `docs/RESEARCH_STATUS.md` | Current claim status, unresolved points, and release gates |
-| `docs/FRAME_SAFE_COMPILATION.md` | Global and checkpoint logical contracts |
-| `docs/COMPILER_BOUNDARIES.md` | Explicit counterexamples and active-interface theorem |
-| `docs/ANCILLA_DEPTH_ROBUSTNESS.md` | Audited real-frame theorem and proof architecture |
-| `docs/PROOF_AUDIT_ISSUE_1.md` | Real-frame line-by-line audit and corrections |
-| `docs/COMPLEX_COMMON_WORKSPACE.md` | Complex-frame theorem, gauge, and end-to-end accounting |
-| `docs/OPTIMAL_ALL_ANCILLA_TARGET.md` | Stronger optimal-frontier question and research routes |
-| `docs/OUTPUT_SENSITIVE_DECODING.md` | Classical decoding complexity |
-| `docs/CLAIM_SUPPORT.md` | Claim-by-claim evidence map |
-| `compiler_robust_hopf/` | Independent analytic implementation and resource ledgers |
+| `compiler_robust_hopf/frames.py` | Independent real and separated complex frame constructions |
+| `compiler_robust_hopf/ancilla_depth.py` | Audited near-optimal compiler ledger |
+| `compiler_robust_hopf/optimal_parallel.py` | Tree-cut direct sum, coherent router, and optimality planner |
+| `compiler_robust_hopf/optimal_audit.py` | Independent register and inequality audit helpers |
+| `compiler_robust_hopf/complex_resources.py` | Common-workspace diagonal and complex-frame ledger |
+| `compiler_robust_hopf/compiler_boundaries.py` | Exact global and checkpoint counterexamples |
+| `compiler_robust_hopf/decoders.py` | Output-sensitive magnitude and phase decoders |
 | `tests/` | Deterministic exact checks |
-| `scripts/ancilla_depth_ledger.py` | Real-frame term ledger |
-| `scripts/complex_workspace_ledger.py` | Complex common-workspace ledger |
-| `SYNC.md` | Authority, provenance, and synchronization procedure |
-| `provenance/upstream.json` | Exact upstream commits and file lineage |
-| `manuscript/` | Reserved for the paper after the remaining scientific decision |
+| `docs/RESEARCH_STATUS.md` | Current theorem status and release gates |
+| `docs/CLAIM_SUPPORT.md` | Evidence classification for every material statement |
+| `manuscript/` | Paper planning and, after review, manuscript source |
 
 ## Current work queue
 
-1. [Real-frame proof audit](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/1) — addressed by stacked PR #5.
-2. [Optimal all-ancilla depth](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/2) — open central research target.
-3. [Complex common-workspace theorem](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/3) — addressed by stacked PR #6.
-4. [State-column and checkpoint boundary](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/4) — addressed by the current stacked branch.
+1. External proof review of the positive-workspace theorem and its lower bound.
+2. Resolve or sharply characterize the strict `m=0` endpoint.
+3. Freeze controlled-observable and statistical-accuracy conventions for the
+   manuscript.
+4. Draft the paper around the audited theorem hierarchy without broadening the
+   claim to arbitrary coordinate charts.
 
 ## Evidence boundary
 
-Finite tests establish exact matrix identities, clean-subspace action,
-unary-code preservation, diagonal parameter transforms, phase gauge, singular
-leaves, decoder parity, explicit counterexample distributions, endpoint
-bookkeeping, and resource inequalities. They do not prove imported
-circuit-synthesis theorems. Those deductions are tied separately to the cited
-compiler literature.
+The repository contains dimension-independent proofs, exact finite operator
+checks, explicit counterexamples, resource ledgers, and CI. The asymptotic
+compiler theorems import exact synthesis results from the cited literature; the
+repository does not reimplement every elementary decomposition gate by gate.
 
-The current project does not claim:
+The project does not currently claim:
 
-- that an arbitrary state-preparation inverse is a valid reverse frame;
-- that one prepared checkpoint state determines a valid reverse interface;
-- preservation of one Hopf coordinate as one elementary gate angle;
-- optimal all-ancilla frame depth;
-- simultaneous `O(N)` size and strict zero additional workspace at `m=0`;
-- equality of full checkpoint distributions under active-interface compilation;
-- routed-device depth or noise robustness;
+- strict-zero-workspace optimality;
+- routed-hardware or noise-optimal depth;
 - approximate Clifford+T error bounds;
-- a general theorem for arbitrary coordinate charts.
+- compiler-invariant checkpoint distributions;
+- a theorem for arbitrary state-space charts;
+- external peer-review status.
 
 ## License
 

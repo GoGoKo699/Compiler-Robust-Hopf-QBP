@@ -1,204 +1,245 @@
-# Optimal all-ancilla target
+# Optimal all-ancilla target: current resolution and remaining endpoint
 
-## 1. Current benchmark
+## 1. Benchmark
 
-Yuan and Zhang proved that arbitrary `n`-qubit state preparation with `m` clean
-ancillary qubits has optimal depth and size
+Let
+
+```math
+N=2^n.
+```
+
+Yuan and Zhang proved that arbitrary `n`-qubit state preparation with `m`
+clean ancillary qubits has optimal size and depth
+
+```math
+S_{\mathrm{QSP}}(n,m)=\Theta(N),
+```
 
 ```math
 D_{\mathrm{QSP}}(n,m)
-=\Theta\left(n+\frac{2^n}{n+m}\right),
-\qquad
-S_{\mathrm{QSP}}(n,m)=\Theta(2^n)
+=\Theta\left(n+\frac{N}{n+m}\right)
 ```
 
-for every `m>=0`. Their controlled state-preparation construction also achieves
+for every `m>=0`. The relevant statement is Theorem 2 of their 2023
+*Quantum* paper. Figure 1 of that paper concerns general unitary synthesis.
 
-```math
-O\left(n+k+\frac{2^{n+k}}{n+k+m}\right)
-```
+## 2. Positive-workspace problem: internally resolved
 
-depth for `k` control qubits and `m` ancillary qubits.
-
-Reference: P. Yuan and S. Zhang, *Quantum* **7**, 956 (2023),
-[arXiv:2202.11302](https://arxiv.org/abs/2202.11302).
-
-## 2. Gap left by the current Hopf-frame compiler
-
-The audited real and separated complex constructions give
-
-```math
-D_{\mathrm{frame}}(n,m)
-=O\left(n(n-t+1)+\frac{2^n}{n+m}\right),
-```
-
-where
-
-```math
-t=
-\min\left\{
-n,
-\max\left(0,\left\lfloor\log_2(m/3)\right\rfloor\right)
-\right\}.
-```
-
-They match the optimal QSP scale in the low-workspace and linear-workspace
-regimes, but may be larger by `O(log n)` in the intermediate regime.
-
-The uniform comparison requires a case split; it does not follow from claiming
-`n-t=O(log n)` for every `m`.
-
-### Low workspace
-
-When
-
-```math
-m\leq\frac{2^n}{n^2},
-```
-
-the geometric term is at least of order `n**2`, up to finite small-`n`
-constants. It absorbs the sequential term `O(n**2)`, so the frame-to-QSP depth
-ratio is `O(1)`.
-
-### Remaining workspace
-
-When
-
-```math
-m>\frac{2^n}{n^2},
-```
-
-```math
-\log_2m>n-2\log_2n,
-```
-
-and therefore `n-t=O(log n)`. Since
-
-```math
-\frac{n(n-t+1)+G}{n+G}
-\leq n-t+1,
-\qquad
-G=\frac{2^n}{n+m},
-```
-
-the ratio is `O(log n)`.
-
-Consequently, uniformly over all `m`,
+For every `m>=1`, the complete real Hopf differential frame now has an
+internally audited exact frame-safe implementation using at most `m` clean
+ancillary qubits, with
 
 ```math
 \boxed{
-\frac{D_{\mathrm{frame}}(n,m)}
-{D_{\mathrm{QSP}}(n,m)}
-=O(\log n).
+S_{\mathbb R}(n,m)=\Theta(N),
+\qquad
+D_{\mathbb R}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right).
 }
 ```
 
-For `M=Theta(2**n)` Hopf coordinates, this compiler-depth overhead is
-`O(log log M)`. This is already a strong compiler-robust result, but it is not
-the strongest possible theorem.
+The separated complex frame inherits the same size and depth profile under the
+same clean workspace budget.
 
-## 3. Primary research question
+The construction and independent audit are in:
 
-Determine whether the complete clean Hopf differential frame satisfies
-
-```math
-\boxed{
-D_{\mathrm{frame}}(n,m)
-=\Theta\left(n+\frac{2^n}{n+m}\right)
-}
+```text
+docs/OPTIMALITY_CHECKPOINT_1.md
+docs/OPTIMALITY_AUDIT_ISSUE_9.md
+compiler_robust_hopf/optimal_parallel.py
+compiler_robust_hopf/optimal_audit.py
 ```
 
-for every ancillary budget.
+This remains an internal theorem status pending external proof review.
 
-There are two scientifically meaningful outcomes.
+## 3. Structural decomposition
 
-### Outcome A: optimal frame compilation
-
-Construct a frame-safe circuit attaining the QSP frontier. Since applying the
-frame to `|0>` prepares an arbitrary Hopf state, an appropriate state-preparation
-lower bound should transfer, producing an optimality theorem for a complete
-moving frame rather than one state column.
-
-### Outcome B: a genuine frame/state separation
-
-Prove that clean coherent access to all Hopf tangent columns requires greater
-depth or workspace than preparing the state alone in some regime. This would
-identify a resource cost intrinsic to quantum differentiation.
-
-Either outcome would be a central theorem for the new paper.
-
-## 4. Why controlled state preparation is relevant but not sufficient
-
-The optimal controlled-QSP theorem implements
+Cut the addressed frame after `t` prefix qubits. Put
 
 ```math
-|i\rangle|0^n\rangle
+B=2^t,
+\qquad
+s=n-t.
+```
+
+The remaining tail is exactly
+
+```math
+R_t^{(n)}
+=
+\bigoplus_{r=0}^{B-1}W_s^{(r)}.
+```
+
+Each block is the complete Hopf frame belonging to one depth-`t` subtree. This
+full-operator direct sum is the key structure absent from a generic list of
+unrelated target columns.
+
+## 4. Routed parallel-subframe compiler
+
+The construction allocates `B` branch-data registers and `B` one-hot token
+qubits. A coherent binary-tree router moves the existing suffix data and token
+into the branch selected by the prefix. All token-controlled subtree frames act
+on disjoint registers and therefore run in parallel. The inverse router returns
+the transformed suffix to the original system register and cleans all auxiliary
+registers.
+
+The exact copied-control count is
+
+```math
+(B-1)(s+1)-t.
+```
+
+The complete routed construction fits in the conservative envelope
+
+```math
+2B(s+1)\leq m.
+```
+
+One controlled subtree frame has
+
+```math
+S_{\mathrm{csub}}(s)=O(2^s),
+```
+
+```math
+D_{\mathrm{csub}}(s)
+=O\left(s^2+\frac{2^s}{s}\right).
+```
+
+All `B` branches together have total size `O(B2**s)=O(N)` and the depth of one
+branch.
+
+## 5. Cut choice
+
+For `m>=4n`, choose the largest `t<n` satisfying
+
+```math
+2\,2^t(n-t+1)\leq m.
+```
+
+If `s=n-t>1`, maximality gives
+
+```math
+m<4Bs.
+```
+
+Consequently,
+
+```math
+\frac{2^s}{s}
+=\frac{N}{Bs}
+<4\frac{N}{m}
+=O\left(\frac{N}{n+m}\right).
+```
+
+Also,
+
+```math
+s^2=O\left(n+\frac{2^s}{s}\right).
+```
+
+The route and conditioned prefix each have `O(n)` depth, so the complete depth
+is optimal.
+
+For `1<=m<4n`, the frozen audited compiler has
+
+```math
+O\left(n^2+\frac{N}{n+m}\right)
+```
+
+depth. Since `n+m<5n` and `n**3<=4*2**n`, the `n**2` term is already absorbed
+by `N/(n+m)`.
+
+## 6. Matching lower bound
+
+Applying the frame to `|0^n>` prepares an arbitrary real unit vector. The real
+unit sphere has dimension `N-1`.
+
+Parameter counting therefore gives
+
+```math
+S=\Omega(N)
+```
+
+and, on `n+m` total wires,
+
+```math
+D=\Omega\left(\frac{N}{n+m}\right).
+```
+
+For the independent linear term, the backward light cone of the `n` system
+outputs contains fewer than `4n2**D` relevant continuous parameters in a
+depth-`D` circuit. Covering an `(N-1)`-dimensional real state family requires
+
+```math
+4n2^D\geq N-1,
+```
+
+which gives `D=Omega(n)`. Combining the two bounds matches the routed upper
+bound.
+
+## 7. Why generic CQSP is not the solution
+
+Yuan--Zhang controlled state preparation implements
+
+```math
+|j\rangle|0^n\rangle
 \longmapsto
-|i\rangle|\psi_i\rangle
+|j\rangle|\psi_j\rangle.
 ```
 
-for a family of target states. The Hopf frame instead requires an in-place
-unitary whose columns are the state and an organized set of tangent vectors:
+Treating all `N` frame columns as unrelated targets requires `n` index qubits
+and has generic size
 
 ```math
-|0\rangle\mapsto|\psi\rangle,
-\qquad
-|\lambda(j)\rangle\mapsto|e_j\rangle.
+O(2^{n+n})=O(N^2).
 ```
 
-Naively preparing a different output state in a fresh target register leaves the
-input index present and does not implement this frame unitary. Erasing or
-swapping the index without losing coherence is the nontrivial bridge.
+It also leaves the coherent input column label present. The routed compiler
+avoids both problems by exploiting the Hopf tail direct sum and moving the
+existing suffix register instead of generating a second indexed output.
 
-The optimal CQSP theorem therefore provides powerful compiler primitives and a
-benchmark, but it does not automatically solve frame compilation.
+## 8. Remaining strict-zero endpoint
 
-## 5. Candidate routes
+The positive-workspace theorem does not settle `m=0` with simultaneous sharp
+size and optimal depth.
 
-### Route 1: recursive controlled subframes
+Known exact constructions are:
 
-Exploit the exact conditioned-prefix identity and compile larger blocks of Hopf
-subframes recursively, using optimal controlled state preparation only for
-cleanly isolated subspaces.
+| Clean ancillary qubits | Size | Depth |
+|---:|---:|---:|
+| `1` | `O(N)` | `O(n+N/n)` |
+| `0` | `O(nN)` | `O(N)` |
 
-### Route 2: direct parallelization of addressed Givens layers
+The remaining question is:
 
-Replace the current sequential tail UCG schedule by a global routing and control
-layout that shares predicate computations and balances all tree depths under the
-same workspace budget.
+```math
+\boxed{
+S_{\mathrm{frame}}(n,0)=O(N),
+\qquad
+D_{\mathrm{frame}}(n,0)=O\left(n+\frac{N}{n}\right)
+\;?
+}
+```
 
-### Route 3: frame-to-CQSP reduction
+Two outcomes remain scientifically useful:
 
-Seek an exact clean reduction from the Hopf frame to one or a constant number of
-controlled-state-preparation calls plus reversible index transformations. The
-reduction must return every index and work register to zero.
+1. an ancilla-free global synthesis of the Hopf tree frame attaining both
+   bounds; or
+2. a rigorous separation showing that one clean flag changes the achievable
+   size--depth tradeoff for complete frame access.
 
-### Route 4: lower-bound obstruction
+## 9. Current stop conditions
 
-Use parameter counting, light-cone arguments, or clean-workspace constraints to
-show that a complete orthogonal frame cannot always be realized at the state
-column's optimum.
+Do not claim the strict-zero theorem from:
 
-## 6. Required proof checks
+- the one-ancilla construction;
+- a zero-ancilla circuit with `O(nN)` size;
+- state-column equality;
+- finite scaling fits;
+- generic unitary synthesis;
+- a CQSP routine that leaves its index register entangled.
 
-Any proposed optimal compiler must establish all of the following:
-
-1. Full clean-frame action on arbitrary system inputs.
-2. No workspace leakage.
-3. Uniform validity at singular Hopf coordinates.
-4. Exact size, depth, and ancillary counts in one circuit model.
-5. Reversibility with the same resources.
-6. Compatibility with the audited common-workspace complex phase layer.
-7. Output-sensitive magnitude and phase decoder accounting.
-8. A lower bound for the same state class and workspace convention.
-
-## 7. Stop conditions
-
-Do not claim the optimal theorem from:
-
-- equality of only the prepared state;
-- finite numerical scaling fits;
-- generic unitary synthesis, which costs too much;
-- separately optimized subcircuits whose ancillary budgets cannot coexist;
-- a controlled-state-preparation oracle that leaves the index entangled;
-- asymptotic notation that hides an additional exponential workspace register.
+The positive-workspace theorem may be used as the main manuscript result after
+external proof review, with the `m=0` point stated as an explicit endpoint
+problem rather than hidden inside an all-`m` claim.
