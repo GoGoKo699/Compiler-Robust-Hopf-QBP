@@ -1,7 +1,7 @@
 # Compiler-Robust Hopf Quantum Backpropagation
 
-Theory, compiler constructions, and exact validation for quantum backpropagation
-from Hopf differential frames.
+Theory, compiler constructions, exact boundaries, and deterministic validation
+for quantum backpropagation from Hopf differential frames.
 
 ## Research status
 
@@ -14,10 +14,8 @@ size. The present project asks a broader question:
 > Which parts of Hopf quantum backpropagation belong to the Hopf chart itself,
 > and which compiler transformations preserve its resource scaling?
 
-Two compiler theorems have now passed internal line-by-line audits relative to
-the exact synthesis lemmas they import.
-
-Let
+The real and separated complex compiler theorems have passed internal
+line-by-line audits relative to the exact synthesis lemmas they import. Let
 
 ```math
 N=2^n,
@@ -50,9 +48,9 @@ n(n-t+1)+\frac{N}{n+m}
 ```
 
 For every `m>=1`, the real and diagonal blocks reuse the same `m` clean
-ancillary qubits as the matched state-preparation budget. At the nominal `m=0`
-endpoint, the sharp-size construction uses one reusable real-frame flag. A
-strict zero-ancilla fallback also exists, with depth `O(N)` and size `O(nN)`.
+ancillary qubits as the matched state-preparation budget. At nominal `m=0`, the
+sharp-size construction uses one reusable real-frame flag. A strict
+zero-ancilla fallback has depth `O(N)` and size `O(nN)`.
 
 The diagonal block itself has an exact all-budget clean implementation of size
 `O(N)` and depth
@@ -71,11 +69,21 @@ later optimal all-ancilla frontier
 
 for every `m` remains open.
 
-The real proof audit is in
-[`docs/PROOF_AUDIT_ISSUE_1.md`](docs/PROOF_AUDIT_ISSUE_1.md). The complex
-common-workspace theorem is in
-[`docs/COMPLEX_COMMON_WORKSPACE.md`](docs/COMPLEX_COMMON_WORKSPACE.md).
-Neither document is external peer review.
+The compiler boundary is also now exact. State-column equality alone is
+insufficient for both global and checkpoint reverse circuits. The global method
+requires the complete differential-frame action. A checkpoint compiler may be
+weaker, but it must preserve the complete active checkpoint interface rather
+than only the one prepared prefix state. Exact two-qubit counterexamples and an
+active-interface substitution theorem are in
+[`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md).
+
+The main technical documents are:
+
+- [`docs/PROOF_AUDIT_ISSUE_1.md`](docs/PROOF_AUDIT_ISSUE_1.md): audited real-frame construction;
+- [`docs/COMPLEX_COMMON_WORKSPACE.md`](docs/COMPLEX_COMMON_WORKSPACE.md): separated complex common-workspace theorem;
+- [`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md): exact negative results and checkpoint interface theorem.
+
+These are internal mathematical audits, not external peer review.
 
 ## Conceptual claim
 
@@ -97,13 +105,33 @@ differential frame. The chart supplies:
 
 A compiler inherits global Hopf backpropagation scaling only when it implements
 the complete differential frame cleanly and at cost sufficiently close to
-forward state preparation. State-column equality alone is insufficient.
+forward state preparation. A checkpoint compiler instead needs a
+factorization-specific active-interface contract.
+
+## Exact compiler hierarchy
+
+| Compiler promise | Scalar state | Checkpoint means | Global distribution |
+|---|---:|---:|---:|
+| One prepared state column | sufficient | insufficient | insufficient |
+| Complete active checkpoint interface | sufficient | sufficient | generally insufficient |
+| Complete frame-safe operator | sufficient | sufficient where applicable | sufficient |
+
+The repository includes:
+
+- a two-qubit global example in which a SWAP of two marker columns preserves the
+  state but changes the decoded gradient from `(2,0,0)` to `(0,sqrt(2),0)`;
+- a two-qubit checkpoint suffix that preserves the final state but flips the
+  decoded derivative from `2` to `-2`;
+- an interface-safe suffix whose full output distribution changes by total
+  variation `1/4` while the checkpoint mean remains exact.
 
 ## Scope
 
 This repository studies:
 
 - frame-safe compilation;
+- checkpoint active-interface compilation;
+- exact state-column counterexamples;
 - exact conditioned-prefix identities for addressed Hopf frames;
 - unary realizations by parallel two-mode Givens layers;
 - ancillary-space versus circuit-depth tradeoffs;
@@ -113,9 +141,9 @@ This repository studies:
 - common phase, phase gauge, and singular leaves;
 - limits of compiler invariance.
 
-The main target is the **global differential-frame protocol**. Checkpoint
-protocols depend on intermediate circuit factorizations and are not assumed to
-survive arbitrary recompilation.
+The main positive resource theorem concerns the **global differential-frame
+protocol**. Checkpoint protocols remain tied to a chosen factorization, even
+though compilers may act arbitrarily outside the certified active interface.
 
 ## Relationship to the earlier repositories
 
@@ -146,47 +174,48 @@ python scripts/complex_workspace_ledger.py --n 10
 | Path | Role |
 |---|---|
 | `docs/RESEARCH_STATUS.md` | Current claim status, unresolved points, and release gates |
-| `docs/FRAME_SAFE_COMPILATION.md` | Logical contracts and the state-column obstruction |
+| `docs/FRAME_SAFE_COMPILATION.md` | Global and checkpoint logical contracts |
+| `docs/COMPILER_BOUNDARIES.md` | Explicit counterexamples and active-interface theorem |
 | `docs/ANCILLA_DEPTH_ROBUSTNESS.md` | Audited real-frame theorem and proof architecture |
 | `docs/PROOF_AUDIT_ISSUE_1.md` | Real-frame line-by-line audit and corrections |
-| `docs/COMPLEX_COMMON_WORKSPACE.md` | Common-workspace complex-frame theorem, gauge, and end-to-end accounting |
+| `docs/COMPLEX_COMMON_WORKSPACE.md` | Complex-frame theorem, gauge, and end-to-end accounting |
 | `docs/OPTIMAL_ALL_ANCILLA_TARGET.md` | Stronger optimal-frontier question and research routes |
 | `docs/OUTPUT_SENSITIVE_DECODING.md` | Classical decoding complexity |
 | `docs/CLAIM_SUPPORT.md` | Claim-by-claim evidence map |
 | `compiler_robust_hopf/` | Independent analytic implementation and resource ledgers |
 | `tests/` | Deterministic exact checks |
 | `scripts/ancilla_depth_ledger.py` | Real-frame term ledger |
-| `scripts/complex_workspace_ledger.py` | Separated complex common-workspace ledger |
+| `scripts/complex_workspace_ledger.py` | Complex common-workspace ledger |
 | `SYNC.md` | Authority, provenance, and synchronization procedure |
 | `provenance/upstream.json` | Exact upstream commits and file lineage |
-| `manuscript/` | Reserved for the paper after the remaining scientific gates |
+| `manuscript/` | Reserved for the paper after the remaining scientific decision |
 
 ## Current work queue
 
-1. [Independent proof audit of the real theorem](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/1) — addressed by the parent proof-audit branch.
-2. [Optimal all-ancilla depth of the complete Hopf frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/2) — open.
-3. [Common-workspace theorem for the separated complex frame](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/3) — addressed by the current stacked branch.
-4. [Minimal state-column counterexample and checkpoint boundary](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/4) — open.
+1. [Real-frame proof audit](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/1) — addressed by stacked PR #5.
+2. [Optimal all-ancilla depth](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/2) — open central research target.
+3. [Complex common-workspace theorem](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/3) — addressed by stacked PR #6.
+4. [State-column and checkpoint boundary](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/issues/4) — addressed by the current stacked branch.
 
 ## Evidence boundary
 
 Finite tests establish exact matrix identities, clean-subspace action,
 unary-code preservation, diagonal parameter transforms, phase gauge, singular
-leaves, decoder parity, endpoint bookkeeping, and explicit resource
-inequalities. They do not prove imported circuit-synthesis theorems. Those
-deductions are stated separately and tied to the hypotheses of the cited
+leaves, decoder parity, explicit counterexample distributions, endpoint
+bookkeeping, and resource inequalities. They do not prove imported
+circuit-synthesis theorems. Those deductions are tied separately to the cited
 compiler literature.
 
 The current project does not claim:
 
-- that the inverse of an arbitrary state-preparation compiler is a valid reverse
-  frame;
+- that an arbitrary state-preparation inverse is a valid reverse frame;
+- that one prepared checkpoint state determines a valid reverse interface;
 - preservation of one Hopf coordinate as one elementary gate angle;
 - optimal all-ancilla frame depth;
 - simultaneous `O(N)` size and strict zero additional workspace at `m=0`;
+- equality of full checkpoint distributions under active-interface compilation;
 - routed-device depth or noise robustness;
 - approximate Clifford+T error bounds;
-- compiler-invariant checkpoint interfaces;
 - a general theorem for arbitrary coordinate charts.
 
 ## License
