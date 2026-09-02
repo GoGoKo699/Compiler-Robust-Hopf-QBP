@@ -35,5 +35,7 @@ jobs:
         run: python validate.py
       - name: Exercise unified Yuan--Zhang resource ledger
         run: python scripts/unified_resource_ledger.py --n 12 --format json > /tmp/unified-ledger.json
+      - name: Exercise strict-zero echo candidate ledger
+        run: python scripts/strict_zero_echo_ledger.py --n 12 --format json > /tmp/strict-zero-echo-ledger.json
       - name: Validate synchronization metadata offline
         run: python scripts/check_upstream_sync.py --offline
