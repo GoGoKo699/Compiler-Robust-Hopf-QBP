@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "This repository is active research software. Cite the associated paper after it becomes available."
+title: "Compiler-Robust Hopf Quantum Backpropagation"
+type: software
+authors:
+  - family-names: Lin
+    given-names: Ruge
+    email: gogoko699@gmail.com
+repository-code: "https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP"
+version: 0.1.0-alpha
+license: MIT
+date-released: 2026-09-02
+keywords:
+  - quantum backpropagation
+  - quantum state preparation
+  - circuit compilation
+  - Hopf coordinates
+  - differential frames
