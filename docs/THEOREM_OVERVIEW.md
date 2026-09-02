@@ -1,8 +1,8 @@
 # Theorem overview
 
 This page gives the shortest complete route through the mathematical claims. It
-separates chart geometry, compiler correctness, resource optimality, and
-protocol consequences.
+separates chart geometry, compiler correctness, all-workspace resource
+optimality, and quantum-backpropagation consequences.
 
 ## Notation and circuit model
 
@@ -12,13 +12,13 @@ Let
 N=2^n
 ```
 
-be the Hilbert-space dimension and let `m` be the number of available clean
+be the Hilbert-space dimension and let `m>=0` be the number of available clean
 ancillary qubits. The exact logical circuit model consists of arbitrary
-one-qubit gates and CNOTs with all-to-all connectivity. Workspace qubits begin
-and end in `|0>`.
+one-qubit gates and CNOTs with all-to-all connectivity. Clean workspace begins
+and ends in `|0>`.
 
-The active external compiler framework is Yuan--Zhang, *Quantum* **7**, 956
-(2023). Sun et al., *IEEE TCAD* **42**, 3301--3314 (2023), is cited as the
+The sole active external compiler framework is Yuan--Zhang, *Quantum* **7**,
+956 (2023). Sun et al., *IEEE TCAD* **42**, 3301--3314 (2023), are cited as the
 historical predecessor and original source credited for selected primitives.
 
 ## Theorem A: Hopf differential frame
@@ -47,8 +47,7 @@ For the separated complex chart,
 W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}.
 ```
 
-This theorem is geometric. It does not depend on an elementary circuit
-compiler.
+This statement is geometric and independent of an elementary compiler.
 
 ## Theorem B: frame-safe substitution
 
@@ -65,11 +64,89 @@ Hopf gradient protocol by a frame-safe implementation preserves the complete
 measurement distribution, decoded mean, record norm, and concentration
 premises.
 
-State-column equality alone is insufficient. An explicit two-qubit compiler
-preserves the prepared Hopf state but changes the decoded gradient from
-`(2,0,0)` to `(0,sqrt(2),0)`.
+State-column equality alone is insufficient. An exact two-qubit compiler
+preserves the Hopf state but changes the decoded gradient from `(2,0,0)` to
+`(0,sqrt(2),0)`.
 
-## Lemma C: tree-cut identities
+## Lemma C: strict-zero borrowed-suffix echo
+
+Fix a nonfinal addressed depth `d<n-1`. Split the lower suffix into one original
+system qubit `b` and the remaining suffix `r`. Let
+
+```math
+h(r)=[r=0],
+\qquad
+C_p=R_y(\theta_p/2),
+```
+
+where `p` is the `d`-bit tree prefix. Let `T_h` toggle `b` exactly when
+`h(r)=1`. The chronological sequence
+
+```text
+controlled_b(X)
+T_h
+controlled_b(C_p)
+T_h
+controlled_b(X)
+T_h
+controlled_b(C_p)
+T_h
+```
+
+implements the addressed Hopf layer exactly and restores `b` on every input.
+The proof is the four-sector identity
+
+```math
+C_p^2=R_y(\theta_p),
+\qquad
+X C_p X=C_p^{-1},
+\qquad
+C_pXC_pX=I.
+```
+
+The construction uses no ancillary wire. Each nonfinal layer contains two
+zero-ancilla UCGs of total width `d+2`, four zero-ancilla predicate toggles, and
+two CNOT echoes.
+
+## Theorem D: optimal strict-zero frame
+
+Summing the echo layers and compiling the final depth as one ordinary
+`n`-qubit UCG gives
+
+```math
+S_{\mathbb R}(n,0)=\Theta(N),
+```
+
+```math
+D_{\mathbb R}(n,0)
+=\Theta\left(n+\frac{N}{n}\right).
+```
+
+The upper bound uses Yuan--Zhang Lemmas 5 and 6:
+
+```math
+S(L_d)=O(2^d+n-d),
+```
+
+```math
+D(L_d)=O\left(n+\frac{2^d}{d+2}\right).
+```
+
+The sums satisfy
+
+```math
+\sum_{d=0}^{n-2}2^d=O(N),
+```
+
+```math
+\sum_{d=0}^{n-2}\frac{2^d}{d+2}=O(N/n),
+```
+
+and `n**2=O(N/n)`. The matching size and depth lower bounds follow from the
+`N-1` dimensional real-state family and parameter counting on exactly `n`
+wires.
+
+## Lemma E: tree-cut identities
 
 For a cut after `t` Hopf depths, write
 
@@ -100,9 +177,9 @@ R_t^{(n)}
 
 Both are complete-operator identities.
 
-## Lemma D: clean binary--one-hot tree decoder
+## Lemma F: clean binary--one-hot tree decoder
 
-There is an explicit reversible circuit `D_t` with
+There is an explicit reversible circuit `D_t` satisfying
 
 ```math
 D_t
@@ -116,14 +193,14 @@ using
 3\,2^t-2-t
 ```
 
-clean ancillary qubits, depth `O(t)`, and size `O(2**t)`. It is built from
-X, CNOT, and Toffoli gates arranged in explicit disjoint layers.
+clean ancillary qubits, depth `O(t)`, and size `O(2**t)`. It is built from X,
+CNOT, and Toffoli gates arranged in explicit disjoint layers.
 
-Using `D_t`, one suffix-zero predicate, coherent fanout of that predicate, and
-`t` layers of controlled disjoint Givens rotations realizes the conditioned
-prefix with depth `O(n)` and size `O(2**t+n-t)`.
+Using `D_t`, one suffix-zero predicate, coherent predicate fanout, and `t`
+layers of controlled disjoint Givens rotations realizes the conditioned prefix
+with depth `O(n)` and size `O(2**t+n-t)`.
 
-## Lemma E: routed parallel tail
+## Lemma G: routed parallel tail
 
 A coherent binary-tree router moves the existing `s`-qubit suffix and one
 activation token into the branch selected by the `t`-qubit prefix. All `B`
@@ -143,17 +220,39 @@ clean ancillary qubits. The routed construction has size `O(N)` and depth
 O\left(n+s^2+\frac{2^s}{s}\right).
 ```
 
-## Theorem F: optimal positive-workspace real frame
+## Theorem H: optimal positive-workspace frame
 
-For every `n>=1` and every `m>=1`, select the largest nontrivial cut satisfying
+For every `m>=1`, use the direct flagged-UCG schedule when no useful routed cut
+fits. Otherwise choose the largest nontrivial cut satisfying
 
 ```math
-2\,2^t(n-t+1)\leq m
+2\,2^t(n-t+1)\leq m.
 ```
 
-when such a cut exists. Otherwise use the direct flagged-UCG schedule.
+The resulting exact frame-safe real compiler satisfies
 
-The resulting exact frame-safe compiler satisfies
+```math
+S_{\mathbb R}(n,m)=\Theta(N)
+```
+
+and
+
+```math
+D_{\mathbb R}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right).
+```
+
+For `1<=m<4n`, the direct schedule's `O(n**2)` term is absorbed by the
+state-preparation scale. For larger `m`, maximality of the routed cut gives the
+required bound on `2**s/s`.
+
+The lower bound follows because the frame prepares every real state: parameter
+counting gives `Omega(N)` size and `Omega(N/(n+m))` depth, while the backward
+light cone of the `n` system outputs gives `Omega(n)` depth.
+
+## Theorem I: optimal all-workspace real frame
+
+Combining Theorems D and H gives, for every integer `m>=0`,
 
 ```math
 \boxed{
@@ -170,12 +269,13 @@ D_{\mathbb R}(n,m)
 }
 ```
 
-The upper bound matches Yuan--Zhang's optimal QSP frontier. The lower bound
-follows because applying the frame to `|0^n>` prepares an arbitrary real state:
-parameter counting gives `Omega(N)` size and `Omega(N/(n+m))` depth, while the
-backward light cone of the `n` system outputs gives `Omega(n)` depth.
+The schedule is selected internally:
 
-## Corollary G: optimal positive-workspace complex frame
+- `m=0`: borrowed-suffix echo;
+- small positive `m`: direct flagged UCGs;
+- larger `m`: tree-decoder routed subframes.
+
+## Corollary J: optimal all-workspace complex frame
 
 The phase layer is exactly one `n`-qubit UCG:
 
@@ -185,14 +285,14 @@ D_{\mathrm{ph}}
 \operatorname{diag}\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right).
 ```
 
-Yuan--Zhang's UCG theorem gives size `O(N)` and depth
+Yuan--Zhang Lemma 6 gives size `O(N)` and depth
 
 ```math
 O\left(n+\frac{N}{n+m}\right)
 ```
 
-using at most `m` clean ancillary qubits. The phase layer and real frame reuse
-one workspace pool sequentially. Therefore
+for every `m>=0`. It reuses the real-frame workspace pool sequentially.
+Therefore
 
 ```math
 \boxed{
@@ -203,9 +303,9 @@ D_{\mathbb C}(n,m)
 }
 ```
 
-for every `m>=1`.
+for every integer `m>=0`.
 
-## Corollary H: compiler-robust global Hopf backpropagation
+## Corollary K: compiler-robust global Hopf backpropagation
 
 The global magnitude estimator uses the same output distribution under every
 frame-safe compiler. At fixed simultaneous coordinatewise accuracy and
@@ -216,8 +316,9 @@ O(\log n)=O(\log\log M),
 ```
 
 where `M=Theta(N)` is the number of Hopf coordinates. Because one compiled
-forward or inverse frame has the same asymptotic depth as optimal state
-preparation, compilation adds no asymptotic factor to this execution overhead.
+forward or inverse frame matches the optimal state-preparation depth for every
+ancillary budget, compilation adds no asymptotic factor to this execution
+overhead.
 
 The direct complex phase stream needs no inverse frame. Output-sensitive
 classical decoders cost
@@ -234,7 +335,7 @@ O(S_{\mathrm{ph}}+N)
 
 for phase outcomes.
 
-## Theorem I: checkpoint active-interface substitution
+## Theorem L: checkpoint active-interface substitution
 
 For checkpoint factorization `U=B_dA_d`, let `P_d` be the active-interface
 projector and `J` append clean workspace. The sufficient compiler contract is
@@ -247,33 +348,15 @@ Consistent forward and reverse use preserves every designated checkpoint
 estimator mean. Equality on only the prepared prefix state is insufficient, and
 active-interface equality need not preserve the complete output distribution.
 
-## Strict zero-workspace boundary
-
-The optimal theorem currently begins at `m=1`. At strict `m=0`, the known exact
-frame compiler has
-
-```math
-S(n,0)=O(nN),
-\qquad
-D(n,0)=O(N).
-```
-
-With one clean ancillary qubit, the sharp positive-workspace bounds already give
-
-```math
-S(n,1)=O(N),
-\qquad
-D(n,1)=O(n+N/n).
-```
-
-Whether strict zero workspace can attain both sharp size and optimal depth is
-open. The repository does not identify one clean qubit with zero workspace.
-
 ## Evidence classes
 
 - **Algebraic proof:** dimension-independent operator or resource argument.
+- **Explicit construction:** gate/register schedule supplied here.
 - **Imported theorem:** exact standard-circuit result from Yuan--Zhang.
-- **Explicit construction:** gate/register schedule supplied in this repository.
-- **Finite validation:** deterministic exact checks supplementing, not replacing,
-  the proof.
-- **Open boundary:** no claim of proof.
+- **Finite validation:** deterministic checks supplementing, not replacing, the
+  proof.
+- **Internal audit:** independent re-derivation within this project, not external
+  peer review.
+- **Prior-art boundary:** the abstract echo ingredients have antecedents; the
+  Hopf-specific aggregation and optimal complete-frame consequence are the
+  claimed project contribution.

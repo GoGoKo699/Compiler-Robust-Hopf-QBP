@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "active_compiler_framework": {
     "authors": [
       "Pei Yuan",
@@ -14,7 +14,7 @@
     "url": "https://quantum-journal.org/papers/q-2023-03-20-956/",
     "roles": {
       "theorem_1": "generic controlled-state-preparation benchmark and all-column comparison",
-      "theorem_2": "uniform optimal state-preparation size and depth frontier",
+      "theorem_2": "uniform optimal state-preparation size and depth frontier for every ancillary budget",
       "lemma_5": "exact ancilla-free multi-controlled-X primitive",
       "lemma_6": "exact uniformly controlled-gate size and depth tradeoff",
       "lemma_9": "coherent CNOT-tree copy-use-uncopy primitive"
@@ -56,7 +56,8 @@
       "volume": 5,
       "pages": "467-473",
       "year": 2005,
-      "arxiv": "quant-ph/0407010"
+      "arxiv": "quant-ph/0407010",
+      "role": "multiplexed state-preparation and uniformly controlled rotation lineage"
     },
     {
       "authors": [
@@ -70,13 +71,92 @@
       "volume": 71,
       "article": "052330",
       "year": 2005,
-      "arxiv": "quant-ph/0410066"
+      "arxiv": "quant-ph/0410066",
+      "role": "general UCG and quantum multiplexor lineage"
+    }
+  ],
+  "strict_zero_prior_art": [
+    {
+      "authors": [
+        "Adriano Barenco",
+        "Charles H. Bennett",
+        "Richard Cleve",
+        "David P. DiVincenzo",
+        "Norman Margolus",
+        "Peter Shor",
+        "Tycho Sleator",
+        "John A. Smolin",
+        "Harald Weinfurter"
+      ],
+      "title": "Elementary gates for quantum computation",
+      "journal": "Physical Review A",
+      "volume": 52,
+      "pages": "3457-3467",
+      "year": 1995,
+      "doi": "10.1103/PhysRevA.52.3457",
+      "arxiv": "quant-ph/9503016",
+      "role": "square-root and conjugation lineage for controlled-unitary decompositions"
+    },
+    {
+      "authors": [
+        "Baptiste Claudon",
+        "Julien Zylberman",
+        "Cesar Feniou",
+        "Fabrice Debbasch",
+        "Alberto Peruzzo",
+        "Jean-Philip Piquemal"
+      ],
+      "title": "Polylogarithmic-depth controlled-NOT gates without ancilla qubits",
+      "journal": "Nature Communications",
+      "volume": 15,
+      "article": 5886,
+      "year": 2024,
+      "doi": "10.1038/s41467-024-50065-x",
+      "role": "borrowed-ancilla and controlled-unitary-root lineage"
+    },
+    {
+      "authors": [
+        "Tanuj Khattar",
+        "Craig Gidney"
+      ],
+      "title": "Rise of conditionally clean ancillae for efficient quantum circuit constructions",
+      "journal": "Quantum",
+      "volume": 9,
+      "article": 1752,
+      "year": 2025,
+      "doi": "10.22331/q-2025-05-21-1752",
+      "arxiv": "2407.17966",
+      "role": "conditionally clean ancillas and laddered toggle-detection lineage"
+    },
+    {
+      "authors": [
+        "Chengzhuo Xu",
+        "Xiao Chen",
+        "Xi Li",
+        "Zhihao Liu",
+        "Zhigang Li"
+      ],
+      "title": "A Unified Framework for Optimizing Uniformly Controlled Structures in Quantum Circuits",
+      "year": 2025,
+      "arxiv": "2512.08675",
+      "role": "restricted and sparse uniformly controlled-gate context"
     }
   ],
   "active_construction_exclusions": [
     "No regime-by-regime choice between the two 2023 state-preparation papers",
     "No construction-level use of the earlier unary-to-binary routine",
     "No separately sourced phase-polynomial diagonal compiler",
-    "No generic all-column controlled-state-preparation implementation of the Hopf frame"
-  ]
+    "No generic all-column controlled-state-preparation implementation of the Hopf frame",
+    "No claim that the abstract square-root or borrowed-bit echo was invented in this project"
+  ],
+  "strict_zero_claim_policy": {
+    "do_not_claim": [
+      "invention of borrowed or dirty ancillas",
+      "invention of toggle detection",
+      "first square-root controlled-unitary decomposition",
+      "novelty of the abstract echo as a general circuit identity"
+    ],
+    "project_specific_claim": "One original suffix data qubit is used as a restored predicate carrier so that all prefix-dependent Hopf rotations at depth d are aggregated into two total-width-(d+2) UCGs, yielding the optimal complete-frame strict-zero size-depth frontier.",
+    "review_status": "internal technical prior-art survey completed; broader independent review required before submission"
+  }
 }

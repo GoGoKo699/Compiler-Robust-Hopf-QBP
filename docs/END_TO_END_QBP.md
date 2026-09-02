@@ -1,8 +1,8 @@
 # End-to-end Hopf-QBP accounting
 
 This page combines the chart-level gradient records with the unified
-Yuan--Zhang frame compiler. It keeps quantum executions, logical circuit depth,
-workspace, classical decoding, and output size separate.
+all-workspace Hopf-frame compiler. It keeps quantum executions, logical circuit
+depth, workspace, classical decoding, and output length separate.
 
 ## 1. Parameters
 
@@ -13,8 +13,7 @@ N=2^n
 ```
 
 and let `M=Theta(N)` denote the number of Hopf coordinates. The compiler has
-`m` clean workspace qubits. The positive-workspace theorem applies for
-`m>=1`.
+`m>=0` clean workspace qubits.
 
 The exact real and separated complex frames satisfy
 
@@ -24,11 +23,17 @@ S_{\mathrm{frame}}(n,m)=\Theta(N),
 
 ```math
 D_{\mathrm{frame}}(n,m)
-=\Theta\left(n+\frac{N}{n+m}\right).
+=\Theta\left(n+\frac{N}{n+m}\right)
 ```
 
-This is the same size and depth order as optimal arbitrary state preparation in
-the Yuan--Zhang circuit model.
+for every ancillary budget. This matches the optimal arbitrary-state-
+preparation frontier in the Yuan--Zhang circuit model.
+
+The active real compiler uses:
+
+- the borrowed-suffix echo at `m=0`;
+- a direct flagged-UCG schedule for small positive `m`;
+- a tree-decoder routed schedule for larger `m`.
 
 ## 2. Global magnitude stream
 
@@ -70,8 +75,8 @@ probability `delta`. At fixed accuracy and confidence,
 S_{\mathrm{mag}}=O(\log n)=O(\log\log M).
 ```
 
-Frame-safe compilation preserves the complete measurement distribution, so the
-sample bound is independent of the elementary frame compiler.
+Frame-safe compilation preserves the complete measurement distribution, so this
+sample bound is independent of the elementary frame compiler and of `m`.
 
 ## 3. Direct complex phase stream
 
@@ -92,8 +97,8 @@ zero phase derivative without division by an amplitude.
 
 The phase stream therefore has bounded-vector concentration without a union
 bound over `N` coordinates. Its fixed-accuracy execution requirement does not
-exceed the global magnitude stream and does not alter the overall
-`O(log n)` execution scaling.
+exceed the global magnitude stream and does not alter the overall `O(log n)`
+execution scaling.
 
 ## 4. Quantum circuit cost per execution
 
@@ -104,8 +109,8 @@ D_{\mathrm{prep}}(n,m)
 =\Theta\left(n+\frac{N}{n+m}\right)
 ```
 
-for the matched optimal state-preparation depth, and let `D_O` denote the cost
-assigned to the controlled observable response under the declared access model.
+for matched optimal state-preparation depth, and let `D_O` denote the assigned
+cost of controlled observable access.
 
 A magnitude execution has depth
 
@@ -120,12 +125,12 @@ A phase execution has depth
 O\left(D_{\mathrm{prep}}+D_O\right).
 ```
 
-Thus the differential frame introduces no asymptotic compiler penalty relative
-to state preparation for `m>=1`.
+Thus complete differential-frame access introduces no asymptotic compiler
+penalty relative to state preparation for any `m>=0`.
 
 If controlled access to `O` is charged comparably in scalar and gradient
-programs, the total global-gradient quantum time at fixed accuracy and
-confidence has overhead
+programs, total global-gradient quantum time at fixed accuracy and confidence
+has overhead
 
 ```math
 O(\log n)=O(\log\log M)
@@ -136,14 +141,14 @@ must be stated whenever this ratio is quoted.
 
 ## 5. Quantum workspace
 
-The real frame, complex phase UCG, and their inverses reuse the same `m` clean
-compiler workspace qubits sequentially. The gradient measurement adds one
-interferometric ancilla. Consequently the workspace difference from the matched
-state-preparation program is additive constant order.
+For `m>0`, the real-frame and complex phase blocks reuse the same `m` clean
+compiler workspace qubits sequentially. For `m=0`, both the borrowed-suffix real
+frame and the phase UCG are ancilla-free.
 
-At strict `m=0`, the current exact frame fallback has different size and depth
-and is reported separately. The theorem does not silently count one clean flag
-as zero workspace.
+The gradient protocol itself adds one interferometric ancilla. Therefore the
+workspace difference from the matched scalar program is additive constant
+order. The compiler never counts the borrowed suffix data qubit as an ancillary
+wire.
 
 ## 6. Magnitude decoding
 
@@ -171,14 +176,14 @@ costs
 T_{\mathrm{mag,FWHT}}=O(S+Nn).
 ```
 
-Selecting the better decoder gives
+Selecting the better route gives
 
 ```math
 T_{\mathrm{mag}}
 =O\bigl(S+N\min\{S,n\}\bigr).
 ```
 
-At fixed accuracy, `S=O(log n)`, so the record-wise route costs
+At fixed accuracy, `S=O(log n)`, so record-wise decoding costs
 
 ```math
 O(N\log n).
@@ -195,40 +200,34 @@ T_{\mathrm{phase}}=O(S+N)
 ```
 
 with `O(N)` output storage. Projection onto the known zero-sum gauge subspace is
-an optional `O(N)` postprocessing step and does not change the expectation.
+an optional `O(N)` postprocessing step and does not change the estimator
+expectation.
 
 ## 8. Compiler parameter generation
 
-The Hopf tree contains `N-1` magnitude angles. The exact cut decomposition
-partitions these angles into one prefix and `2**t` local subtree lists in
-`O(N)` indexing work.
+The Hopf tree contains `N-1` magnitude angles.
 
-The complex phase layer is represented directly as one UCG with blocks
-
-```math
-\operatorname{diag}
-\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right).
-```
-
-Building this block table from the `N` leaf phases takes `O(N)` arithmetic and
-storage. The earlier phase-polynomial Walsh transform is not part of the active
-compiler.
+- At `m=0`, each nonfinal echo layer directly uses the corresponding half-angle
+  prefix table; generating all half-angle tables is `O(N)` arithmetic.
+- In the routed schedule, the exact cut decomposition partitions the angles into
+  one prefix and `2**t` local subtree lists in `O(N)` indexing work.
+- The complex phase UCG block table pairs the `N` leaf phases directly in
+  `O(N)` arithmetic and storage.
 
 Generation of the final elementary UCG decomposition follows the published
 Yuan--Zhang compiler. The quantum depth theorem counts the resulting logical
-circuit, not the host-language wall time of a particular synthesis software
-implementation.
+circuit, not host-language wall time of a particular synthesis implementation.
 
 ## 9. Complete resource summary
 
-For `m>=1`:
+For every `m>=0`:
 
 | Resource | Real magnitude stream | Complex phase stream |
 |---|---:|---:|
 | Executions at fixed accuracy/confidence | `O(log n)` | no larger asymptotically |
 | Forward preparation depth | `Theta(n+N/(n+m))` | same |
 | Reverse frame depth | `Theta(n+N/(n+m))` | none |
-| Compiler workspace | `m` clean qubits | same pool for forward phase UCG |
+| Compiler workspace | at most `m` clean qubits | same pool; zero when `m=0` |
 | Additional protocol ancilla | one | one |
 | Classical decoding | `O(SN)` or `O(S+Nn)` | `O(S+N)` |
 | Output length | `N-1` | `N` with one gauge redundancy |
@@ -237,15 +236,19 @@ The complete complex gradient combines both streams. Constant allocation of
 accuracy and failure probability between them does not change the asymptotic
 scaling.
 
-## 10. Boundaries
+## 10. Correctness and evidence boundary
 
-This accounting does not include:
+The all-workspace resource statement applies only to frame-safe compilation. A
+state-equivalent preparation circuit is not automatically a valid reverse
+frame.
 
-- an application-independent cost for implementing controlled `O`;
-- strict-zero-workspace optimality;
-- hardware routing or native-gate constraints;
+The strict-zero echo has a complete-operator proof and exact finite checks, but
+the all-workspace theorem remains internally audited rather than externally
+verified. This accounting also excludes:
+
+- an application-independent cost for controlled `O`;
+- hardware routing and native-gate restrictions;
 - approximate Clifford+T synthesis and accumulated bias;
-- noise-dependent sample complexity; or
-- the factorization-specific checkpoint schedule.
-
-Those resources must be added explicitly when the model is broadened.
+- noise-dependent sample complexity;
+- the factorization-specific checkpoint schedule; and
+- generic coordinate charts beyond the Hopf structure.

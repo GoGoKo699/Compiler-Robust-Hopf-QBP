@@ -1,26 +1,13 @@
-# Unified Yuan--Zhang compiler for Hopf differential frames
+# Unified all-workspace compiler for Hopf differential frames
 
 ## Status
 
-This document gives the active compiler architecture of the project. It replaces
-the earlier regime-by-regime presentation and removes the construction-level
-dependency on the previous unary-to-binary compiler.
+This document gives the active compiler architecture of the project. It uses
+one external compiler framework—Yuan and Zhang, *Quantum* **7**, 956 (2023)—and
+three Hopf-specific internal schedules covering every clean-workspace budget.
 
-The sole external compiler framework and state-preparation benchmark used in the
-active proof is:
-
-P. Yuan and S. Zhang, "Optimal (controlled) quantum state preparation and
-improved unitary synthesis by quantum circuits with any number of ancillary
-qubits," *Quantum* **7**, 956 (2023),
-[PDF](https://quantum-journal.org/papers/q-2023-03-20-956/pdf/).
-
-The earlier work of Sun, Tian, Yang, Yuan, and Zhang remains cited as the
-historical predecessor and as the original source credited by Yuan--Zhang for
-selected primitives. It is not a second active compiler path.
-
-The construction below is exact in the all-to-all standard circuit model of
-arbitrary one-qubit gates and CNOTs. Every workspace statement refers to clean
-ancillary qubits that are returned to zero.
+The resulting all-workspace theorem has passed internal proof audits and exact
+finite validation. It has not received independent external proof review.
 
 ## 1. Result
 
@@ -30,18 +17,22 @@ Let
 N=2^n.
 ```
 
-For every integer `m>=1`, the complete real Hopf differential frame has an exact
+For every integer `m>=0`, the complete real Hopf differential frame has an exact
 frame-safe implementation using at most `m` clean ancillary qubits with
 
 ```math
+\boxed{
 S_{\mathbb R}(n,m)=\Theta(N)
+}
 ```
 
 and
 
 ```math
+\boxed{
 D_{\mathbb R}(n,m)
 =\Theta\left(n+\frac{N}{n+m}\right).
+}
 ```
 
 The separated complex frame
@@ -50,37 +41,228 @@ The separated complex frame
 W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}
 ```
 
-has the same positive-workspace size and depth profile. This matches the
-optimal arbitrary-state-preparation frontier in Yuan--Zhang Theorem 2.
+has the same size, depth, and workspace frontier.
 
-The strict `m=0` endpoint remains separate. The current exact fallback has size
-`O(nN)` and depth `O(N)`. One clean ancillary qubit is sufficient for size
-`O(N)` and depth `O(n+N/n)`.
+The compiler selects among three internal schedules:
+
+| Workspace | Schedule |
+|---:|---|
+| `m=0` | borrowed-suffix half-angle echo |
+| small positive `m` | direct flagged UCGs |
+| larger `m` | tree-decoder routed parallel subframes |
+
+These are components of one Hopf-frame compiler, not a choice between two prior
+state-preparation papers.
 
 ## 2. Yuan--Zhang results used
 
-The active proof uses the following statements from the 2023 paper.
+The active proof uses the following statements from Yuan and Zhang.
 
-| Result | Role in this project |
+| Result | Role |
 |---|---|
-| Standard circuit model in Section 2 | Arbitrary one-qubit gates, CNOTs, clean ancillary qubits, all-to-all logical connectivity |
-| Lemma 5 | Exact ancilla-free multi-controlled X with linear size and depth |
-| Lemma 6 | Exact `q`-qubit uniformly controlled gate with size `O(2**q)` and depth `O(q+2**q/(q+w))` using `w` ancillary qubits |
-| Lemma 9 | Coherent CNOT-tree copy--use--uncopy in logarithmic depth |
-| Theorem 1 | Generic controlled-state-preparation size, used to explain why treating all frame columns independently costs `O(N**2)` |
-| Theorem 2 | Optimal state-preparation size and depth for every ancillary budget |
+| Standard circuit model | arbitrary one-qubit gates, CNOTs, clean ancillary qubits, all-to-all logical connectivity |
+| Lemma 5 | exact ancilla-free multi-controlled X with linear size and depth |
+| Lemma 6 | exact total-width-`q` UCG with size `O(2**q)` and depth `O(q+2**q/(q+w))` using `w` ancillary qubits |
+| Lemma 9 | coherent CNOT-tree copy--use--uncopy in logarithmic depth |
+| Theorem 1 | generic controlled-state-preparation comparison |
+| Theorem 2 | optimal arbitrary-state-preparation size and depth for every ancillary budget |
 
-Figure 1 in that paper concerns general unitary synthesis. The state-preparation
-frontier used here is Theorem 2.
+The earlier Sun--Tian--Yang--Yuan--Zhang paper remains a historical and
+original-source citation. It is not an alternative active compiler path.
 
-## 3. Exact Hopf tree factorization
+## 3. Addressed Hopf frame
 
-Write the addressed real frame as
+Write the real frame as
 
 ```math
 W_{\mathbb R}^{(n)}
-=L_{n-1}^{(n)}\cdots L_0^{(n)}.
+=L_{n-1}^{(n)}\cdots L_1^{(n)}L_0^{(n)}.
 ```
+
+At depth `d`, let `p` be the `d`-bit upper prefix, let the next qubit be the
+target, and let `z` be the lower suffix of length
+
+```math
+s=n-d-1.
+```
+
+The addressed layer applies the prefix-selected rotation only on the zero-suffix
+sector:
+
+```math
+L_d^{(n)}
+=I+
+\sum_{p=0}^{2^d-1}
+|p\rangle\!\langle p|
+\otimes
+\bigl(R_y(\theta_{d,p})-I\bigr)
+\otimes
+|0^s\rangle\!\langle0^s|.
+```
+
+The compiler problem is to implement this complete operator, not only its
+action on the forward state-preparation input.
+
+## 4. Schedule Z: strict-zero borrowed-suffix echo
+
+Assume `m=0` and `d<n-1`. Split the lower suffix as one borrowed system qubit
+`b` followed by the remaining suffix `r`. Define
+
+```math
+h(r)=[r=0],
+```
+
+```math
+C_p=R_y(\theta_{d,p}/2),
+```
+
+and let `T_h` toggle `b` iff `h(r)=1`.
+
+Use the chronological circuit
+
+```text
+controlled_b(X)
+T_h
+controlled_b(C_p)
+T_h
+controlled_b(X)
+T_h
+controlled_b(C_p)
+T_h.
+```
+
+The controlled `C_p` operation is one UCG whose controls are the `d` prefix
+qubits and the borrowed bit; its target is the Hopf target. The remaining suffix
+qubits are idle during that UCG.
+
+### 4.1 Complete-operator proof
+
+The Hopf convention is
+
+```math
+R_y(\alpha)=e^{-i\alpha Y}
+=
+\begin{pmatrix}
+\cos\alpha&-\sin\alpha\\
+\sin\alpha&\cos\alpha
+\end{pmatrix}.
+```
+
+Therefore
+
+```math
+C_p^2=R_y(\theta_{d,p}),
+```
+
+```math
+X C_p X=C_p^{-1},
+```
+
+and
+
+```math
+C_pXC_pX=I.
+```
+
+Fix a prefix `p` and remaining suffix `r`. The target word and final borrowed
+bit in each sector are:
+
+| `h(r)` | initial `b` | chronological target word | final target action | final `b` |
+|---:|---:|---|---|---:|
+| 0 | 0 | none | `I` | 0 |
+| 0 | 1 | `X,C_p,X,C_p` | `C_pXC_pX=I` | 1 |
+| 1 | 0 | `C_p,C_p` | `C_p^2=R_y(theta)` | 0 |
+| 1 | 1 | `X,X` | `I` | 1 |
+
+Thus the desired rotation occurs exactly when the **original** complete suffix
+is zero. Every other sector receives identity. The borrowed system qubit is
+restored and no sector-dependent phase appears.
+
+The prefix and remaining suffix label mutually orthogonal invariant sectors, so
+this proves equality as a complete operator on arbitrary superpositions and
+entangled inputs.
+
+### 4.2 No hidden workspace
+
+`T_h` is a zero-controlled multi-controlled X whose target is the borrowed
+system wire. Negative controls are converted to ordinary controls by parallel X
+wrappers. Yuan--Zhang Lemma 5 supplies an exact implementation using no
+ancillary qubit.
+
+The half-angle UCG acts only on:
+
+- `d` prefix controls;
+- one borrowed-bit control;
+- one target.
+
+Its total width is therefore
+
+```math
+q=d+2.
+```
+
+The borrowed bit is data, not a clean or dirty ancillary wire. It is part of the
+original system and the complete-operator identity proves its exact restoration.
+
+### 4.3 Strict-zero size and depth
+
+Yuan--Zhang Lemma 6 gives, at zero ancillary workspace,
+
+```math
+S_{\mathrm{UCG}}(d+2,0)=O(2^d),
+```
+
+```math
+D_{\mathrm{UCG}}(d+2,0)
+=O\left(d+2+\frac{2^d}{d+2}\right).
+```
+
+Four predicate toggles contribute `O(n-d)` size and depth; the two target echoes
+are CNOTs. Hence
+
+```math
+S(L_d)=O(2^d+n-d),
+```
+
+```math
+D(L_d)=O\left(n+\frac{2^d}{d+2}\right).
+```
+
+The final depth has no lower suffix and is compiled as one ordinary `n`-qubit
+UCG. Therefore
+
+```math
+\begin{aligned}
+S(W_{\mathbb R})
+&=O\left(
+\sum_{d=0}^{n-2}2^d
++\sum_{d=0}^{n-2}(n-d)
++N
+\right)\\
+&=O(N).
+\end{aligned}
+```
+
+For depth,
+
+```math
+\sum_{d=0}^{n-2}\frac{2^d}{d+2}
+=O(N/n),
+```
+
+and all linear UCG-width and predicate terms sum to `O(n**2)`. Since
+`n**2=O(N/n)`,
+
+```math
+D(W_{\mathbb R})
+=O\left(n+\frac{N}{n}\right).
+```
+
+The dedicated proof and second audit are in
+[`STRICT_ZERO_BORROWED_SUFFIX_ECHO.md`](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) and
+[`STRICT_ZERO_ECHO_AUDIT.md`](STRICT_ZERO_ECHO_AUDIT.md).
+
+## 5. Exact Hopf tree factorization for positive workspace
 
 For a cut after the first `t` tree depths, define
 
@@ -89,10 +271,10 @@ F_t^{(n)}=L_{t-1}^{(n)}\cdots L_0^{(n)},
 ```
 
 ```math
-R_t^{(n)}=L_{n-1}^{(n)}\cdots L_t^{(n)}.
+R_t^{(n)}=L_{n-1}^{(n)}\cdots L_t^{(n)},
 ```
 
-Put
+and put
 
 ```math
 B=2^t,
@@ -102,7 +284,7 @@ s=n-t.
 
 The prefix and tail obey two complete-operator identities.
 
-### Conditioned prefix
+### 5.1 Conditioned prefix
 
 Let
 
@@ -120,14 +302,10 @@ F_t^{(n)}
 }
 ```
 
-Thus the first `t` Hopf depths form a `t`-qubit frame conditioned on the
-external suffix being zero.
+### 5.2 Tail direct sum
 
-### Tail direct sum
-
-For each prefix `r` of length `t`, define the local `s`-qubit subtree frame
-`W_s^(r)` by assigning local node `(ell,u)` the global breadth-first angle at
-node
+For prefix `r`, define the local `s`-qubit subtree frame `W_s^(r)` by assigning
+local node `(ell,u)` the global breadth-first angle at node
 
 ```math
 2^{t+\ell}+r2^\ell+u.
@@ -143,130 +321,49 @@ R_t^{(n)}
 ```
 
 The repository constructs both sides independently and checks every cut through
-`n=8`. The algebraic proof follows because every addressed rotation below the
-cut preserves the first `t` computational bits and reduces inside each prefix
-block to the corresponding local addressed rotation.
+`n=8`.
 
-## 4. Self-contained binary--one-hot tree decoder
+## 6. Clean binary--one-hot tree decoder
 
-The active prefix compiler uses a new reversible tree decoder rather than an
-imported unary-to-binary routine.
+For `B=2**t`, the reversible decoder allocates:
 
-### Registers
+- the existing `t`-qubit binary prefix register;
+- a clean `B`-qubit one-hot leaf register;
+- `B-1` clean internal-tree indicators;
+- `B-1-t` clean shared scratch qubits.
 
-For `B=2**t`, allocate:
-
-- the existing `t`-qubit binary prefix register `A`;
-- a clean `B`-qubit one-hot leaf register `U`;
-- `B-1` clean internal-tree indicator qubits `I`;
-- `B-1-t` clean scratch qubits `R`.
-
-The clean workspace is therefore
+The exact clean workspace count is
 
 ```math
-\boxed{
-B+(B-1)+(B-1-t)=3B-2-t.
-}
+3B-2-t.
 ```
 
-### Decoder identity
-
-The reversible circuit `D_t` satisfies
+The decoder satisfies
 
 ```math
-\boxed{
 D_t
-\bigl(|x\rangle_A|0\rangle_{UIR}\bigr)
-=|0^t\rangle_A|e_x\rangle_U|0\rangle_{IR}
-}
+\bigl(|x\rangle|0\rangle\bigr)
+=|0^t\rangle|e_x\rangle|0\rangle
 ```
 
-for every `t`-bit string `x`. Here `|e_x>` is the one-hot basis state with the
-single excitation at leaf `x`.
+for every binary address `x`. Its explicit X/CNOT/Toffoli layer schedule has
+depth `O(t)` and size `O(B)`, and the inverse is exact on the complete one-hot
+code.
 
-### Construction
+Using this decoder, one suffix-zero predicate, coherent predicate fanout, and
+`t` controlled disjoint Givens layers realizes the conditioned-prefix operator
+with depth `O(n)` and size `O(B+s)`.
 
-1. **Copy the address controls.** At tree depth `d`, copy binary bit `x_d` to
-   `2**d` coherent controls, counting the original. All address bits use
-   disjoint scratch pools and are copied concurrently by CNOT trees.
-2. **Build path indicators.** Set the root indicator to one. For every active
-   parent `p` and copied address bit `a`, compute
+## 7. Schedule P1: direct flagged UCGs
 
-   ```math
-   \mathrm{left}=p(1-a),
-   \qquad
-   \mathrm{right}=pa
-   ```
+For `m>=1`, a nonfinal depth may be implemented by:
 
-   using one CNOT, one Toffoli, and one CNOT. All nodes at one depth are
-   disjoint. The leaves become the one-hot register.
-3. **Uncopy the address controls.** The copied controls were never targets of
-   the path gates, so inverse CNOT trees return them to zero.
-4. **Erase the original binary address.** At depth `d`, the bit `x_d` equals the
-   parity of all right-child indicators at that depth. Compute these parities by
-   balanced CNOT trees in the shared scratch pool, XOR them into `A`, and
-   uncompute the parity trees.
-5. **Erase internal indicators.** Working from the leaves upward, clear every
-   parent with CNOTs from its two children. Exactly one child of an active parent
-   is one, so their XOR equals the parent indicator.
+1. computing the lower-suffix-zero predicate into one clean flag;
+2. applying one UCG controlled by the prefix and flag;
+3. uncomputing the flag.
 
-All gates are fixed-width reversible gates. A Toffoli is the two-control case of
-Yuan--Zhang Lemma 5 and has constant exact cost in the declared gate model.
-The decoder has depth `O(t)` and size `O(B)`. Reversing it gives the exact
-one-hot-to-binary decoder.
-
-The tests verify the clean-subspace identity, inverse recovery, and full basis
-permutation reversibility. The one-hot Givens network is independently checked
-against the complete `t`-qubit Hopf frame.
-
-## 5. Conditioned prefix compiler
-
-Apply the following clean sequence.
-
-1. Run `D_t` on the prefix register.
-2. If `s>0`, compute the predicate `[suffix=0]` into one clean internal/scratch
-   wire using Lemma 5.
-3. Copy that predicate to enough controls for the widest Givens layer using
-   Lemma 9.
-4. Apply the `t` Hopf tree depths as controlled disjoint two-mode Givens gates
-   on the one-hot register.
-5. Uncopy and uncompute the suffix predicate.
-6. Apply `D_t^dagger`.
-
-When the suffix is zero, the one-hot code undergoes the complete frame
-`W_R^(t)`. Otherwise the Givens network is inactive and the decoder round trip
-is the identity. This realizes the conditioned-prefix operator in Section 3 on
-every system input.
-
-The decoder's internal and shared scratch registers are clean after step 1 and
-are reused for the predicate and its copied controls. No extra register is added
-to the peak count. The complete prefix has
-
-```math
-S_{\mathrm{prefix}}=O(B+s),
-```
-
-```math
-D_{\mathrm{prefix}}=O(n),
-```
-
-and uses at most `3B-2-t` clean ancillary qubits.
-
-## 6. Direct low-workspace compiler
-
-When no useful routed cut fits, compile each addressed depth directly.
-
-For a nonfinal depth `d`:
-
-1. compute the lower-suffix-zero predicate into one reusable clean flag;
-2. apply one UCG with the `d` upper-prefix bits and the flag as controls;
-3. uncompute the flag.
-
-The UCG has width `d+2`; it receives the remaining `m-1` work qubits. The final
-depth has no suffix predicate and uses one `n`-qubit UCG with all `m` work
-qubits.
-
-Lemmas 5 and 6 give
+The flag is returned to zero before the next layer. The final depth has no suffix
+predicate. Yuan--Zhang Lemmas 5 and 6 give
 
 ```math
 S_{\mathrm{direct}}=O(N),
@@ -277,26 +374,15 @@ D_{\mathrm{direct}}
 =O\left(n^2+\frac{N}{n+m}\right).
 ```
 
-For `1<=m<4n`, the sequence `n**3/2**n` is uniformly bounded and
-`n+m<5n`, so
+For `1<=m<4n`, the polynomial term is absorbed by the exponential term, so the
+direct schedule already has depth `O(N/(n+m))`.
 
-```math
-n^2=O\left(\frac{N}{n+m}\right).
-```
+## 8. Schedule P2: routed parallel subframes
 
-The direct compiler therefore already has optimal-order depth throughout the
-small-positive-workspace range.
+For larger workspace, coherently route the existing suffix into one of `B`
+disjoint branch registers selected by the prefix.
 
-At strict `m=0`, synthesize every addressed layer as one full-width UCG with
-zero blocks on inactive suffix sectors. This exact fallback has size `O(nN)`
-and depth `O(N)`.
-
-## 7. Routed parallel-subframe compiler
-
-For larger workspace, coherently route the existing suffix register into one of
-`B` disjoint branch registers selected by the prefix.
-
-Allocate:
+The routed tail allocates:
 
 ```math
 (B-1)s
@@ -314,34 +400,18 @@ activation-token qubits, and
 (B-1)(s+1)-t
 ```
 
-copied routing controls. The copies are uncomputed before the subtree frames and
-are reused as one simultaneous suffix flag per branch when `s>1`.
+copied routing controls. After routing, those copied controls are uncomputed and
+their clean wires are reused as one suffix flag per branch when needed.
 
-The exact routed-tail peak is
-
-```math
-(B-1)s+B+
-\max\left\{(B-1)(s+1)-t,\,B\mathbf1_{s>1}\right\}.
-```
-
-Both the routed tail and the conditioned prefix fit inside the convenient
-common envelope
+The exact routed-tail peak and the conditioned prefix both fit in the common
+envelope
 
 ```math
-\boxed{
 2B(s+1).
-}
 ```
 
-The router consists of `t` levels of controlled swaps. Coherent copies of all
-prefix controls are made concurrently, the Fredkin gates at one level use
-disjoint targets, and all copies are uncomputed. Route and unroute have depth
-`O(n)` and size `O(B(s+1))`.
-
-After routing, all `B` controlled subtree frames act on disjoint registers. One
-controlled `s`-qubit subtree frame is compiled directly with one branch flag,
-zero UCG workspace, and the activation token as an additional UCG control. It
-has
+Route and unroute have depth `O(n)` and size `O(B(s+1))`. One controlled
+`s`-qubit subtree frame has
 
 ```math
 S_{\mathrm{csub}}(s)=O(2^s),
@@ -352,17 +422,10 @@ D_{\mathrm{csub}}(s)
 =O\left(s^2+\frac{2^s}{s}\right).
 ```
 
-All branches run in parallel, giving total branch size
+All `B` branches have disjoint support and execute in parallel, giving total
+branch size `O(B2**s)=O(N)` without multiplying the branch depth.
 
-```math
-B\,O(2^s)=O(N)
-```
-
-without multiplying the branch depth. Inverse routing returns the transformed
-suffix to the original system register and resets every auxiliary data, token,
-copy, and flag qubit.
-
-## 8. Cut selection and optimal upper bound
+## 9. Positive-workspace cut selection
 
 For `m>=4n`, choose the largest `t` with `1<=t<n` satisfying
 
@@ -370,17 +433,17 @@ For `m>=4n`, choose the largest `t` with `1<=t<n` satisfying
 2\,2^t(n-t+1)\leq m.
 ```
 
-With `B=2**t` and `s=n-t`, if `s>1`, maximality gives
+For `s=n-t>1`, maximality gives
 
 ```math
-m<4Bs.
+m<4\,2^t s.
 ```
 
-Therefore
+Hence
 
 ```math
 \frac{2^s}{s}
-=\frac{N}{Bs}
+=\frac{N}{2^t s}
 <4\frac{N}{m}
 =O\left(\frac{N}{n+m}\right).
 ```
@@ -391,68 +454,64 @@ Also
 s^2=O\left(n+\frac{2^s}{s}\right).
 ```
 
-The conditioned prefix and routing contribute only `O(n)` depth. Hence
+The routed schedule therefore has size `O(N)` and depth
 
 ```math
-D_{\mathrm{routed}}(n,m)
-=O\left(n+\frac{N}{n+m}\right)
+O\left(n+\frac{N}{n+m}\right).
 ```
 
-and
+Together with Schedule P1, this proves the upper bound for every `m>=1`.
 
-```math
-S_{\mathrm{routed}}(n,m)=O(N).
-```
+## 10. Matching lower bounds
 
-Combining this with the direct low-workspace schedule proves the upper bound for
-every `m>=1`.
-
-## 9. Matching lower bounds
-
-Applying the frame to `|0^n>` prepares every real normalized `n`-qubit state.
-That family has dimension `N-1`.
+Applying the frame to `|0^n>` prepares every real normalized `n`-qubit state, a
+family of dimension `N-1`.
 
 A circuit with `G` arbitrary one-qubit gates has at most `4G` continuous real
-parameters, while CNOTs carry no continuous parameters. Therefore
+parameters, so
 
 ```math
 S_{\mathbb R}(n,m)=\Omega(N).
 ```
 
 A depth-`D` circuit on `n+m` wires has at most `D(n+m)` one-qubit-gate locations,
-which gives
+giving
 
 ```math
 D=\Omega\left(\frac{N}{n+m}\right).
 ```
 
-For the independent linear term, trace the backward light cone of the `n`
-system outputs. At distance `j` it contains at most `n2**j` wires. The total
-number of relevant continuous parameters in depth `D` is therefore less than
-
-```math
-4n2^D.
-```
-
-Covering an `(N-1)`-dimensional real family requires
-
-```math
-4n2^D\geq N-1,
-```
-
-and hence `D=Omega(n)`. Together these bounds give
+For positive workspace, the backward light cone of the `n` system outputs gives
+the independent `Omega(n)` term. At `m=0`, parameter counting on exactly `n`
+wires already gives `Omega(N/n)`, which asymptotically includes the required
+linear term. Thus
 
 ```math
 D_{\mathbb R}(n,m)
-=\Omega\left(n+\frac{N}{n+m}\right).
+=\Omega\left(n+\frac{N}{n+m}\right)
 ```
 
-The upper and lower bounds match for every `m>=1`.
+for every `m>=0`.
 
-## 10. Complex frame as one additional UCG
+## 11. All-workspace theorem
 
-For leaf phases `phi_x`, choose the last system qubit as a UCG target and write
-`x=zb`, with `z` the `n-1` control bits and `b` the target bit. Then
+Combining Schedules Z, P1, and P2 with the lower bounds yields
+
+```math
+\boxed{
+S_{\mathbb R}(n,m)=\Theta(N),
+\qquad
+D_{\mathbb R}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right)
+}
+```
+
+for every integer `m>=0`.
+
+## 12. Separated complex frame
+
+For leaf phases `phi_x`, choose the final system qubit as a UCG target and write
+`x=zb`. Then
 
 ```math
 \boxed{
@@ -466,7 +525,7 @@ e^{i\phi_{z0}}&0\\
 }
 ```
 
-This is exactly one `n`-qubit UCG in the sense of Yuan--Zhang Lemma 6. It has
+This is one total-width-`n` UCG. Yuan--Zhang Lemma 6 gives
 
 ```math
 S_{\mathrm{diag}}(n,m)=O(N),
@@ -477,17 +536,27 @@ D_{\mathrm{diag}}(n,m)
 =O\left(n+\frac{N}{n+m}\right)
 ```
 
-using at most `m` clean ancillary qubits. The blocks are arbitrary `U(2)`
-matrices, so the complete diagonal, including its common phase, is represented
-without a separate correction gate or phase-polynomial transform.
+for every `m>=0`. The blocks are arbitrary `U(2)` matrices, so the common phase
+is retained exactly.
 
-The real frame and diagonal are sequential clean operators. They reuse the same
-workspace pool, so the separated complex frame has the same asymptotic size,
-depth, and workspace profile.
+The real frame and diagonal are sequential frame-safe operators. They reuse one
+workspace pool, including the empty pool at `m=0`. The real subfamily supplies
+the matching lower bounds. Therefore
 
-## 11. Compiler boundary
+```math
+\boxed{
+S_{\mathbb C}(n,m)=\Theta(N),
+\qquad
+D_{\mathbb C}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right)
+}
+```
 
-The theorem concerns a frame-safe implementation:
+for every integer `m>=0`.
+
+## 13. Compiler and novelty boundaries
+
+The theorem concerns full frame safety:
 
 ```math
 \widetilde W
@@ -495,36 +564,33 @@ The theorem concerns a frame-safe implementation:
 =(W|\varphi\rangle)|0^m\rangle
 ```
 
-for every system input. It is not enough to compile only
+for every system input. State-column equality is insufficient.
 
-```math
-\widetilde W|0^n\rangle=W|0^n\rangle.
-```
+The abstract strict-zero echo is not claimed as a wholly new general circuit
+identity. Square-root/conjugation decompositions and borrowed/dirty-bit toggle
+detection have close precedents. The claimed project contribution is the
+Hopf-specific use of one restored suffix data qubit to aggregate every
+prefix-dependent rotation into two width-`d+2` UCGs per tree depth, yielding the
+optimal strict-zero complete-frame frontier.
 
-The repository contains exact two-qubit counterexamples showing that state-column
-equality can corrupt both global and checkpoint gradient decoders.
+See [`STRICT_ZERO_PRIOR_ART.md`](STRICT_ZERO_PRIOR_ART.md) for the conservative
+claim boundary.
 
-## 12. Evidence boundary
+## 14. Evidence boundary
 
-The active implementation contains:
+The active repository contains:
 
-- independent exact matrices for every Hopf tree factor;
+- independent exact matrices for every Hopf factor;
 - an explicit reversible gate list for the binary--one-hot decoder;
-- exact basis-state and inverse checks of that decoder;
-- exact one-hot-code action checks;
+- exact strict-zero echo matrices and sector tests;
 - exact one-UCG phase-diagonal checks;
-- routed workspace and resource ledgers;
-- deterministic broad-grid integer diagnostics.
+- workspace and resource ledgers;
+- exact-rational inequality checks;
+- compiler-boundary counterexamples.
 
-Finite tests support the construction but do not replace the dimension-independent
-proof. The UCG, multi-controlled-X, and coherent-copy resource statements are
-imported from Yuan--Zhang under their stated circuit model.
+Finite tests support but do not replace the dimension-independent proof. The
+UCG, multi-controlled-X, coherent-copy, and QSP statements are imported from
+Yuan--Zhang under their declared exact standard-circuit hypotheses.
 
-The result does not currently cover:
-
-- simultaneous sharp size and optimal depth at strict `m=0`;
-- routed hardware connectivity;
-- approximate Clifford+T synthesis;
-- noise robustness;
-- arbitrary coordinate charts; or
-- external peer review.
+The theorem does not address routed hardware, approximate Clifford+T synthesis,
+noise, arbitrary coordinate charts, or external peer review.

@@ -13,7 +13,7 @@
       "repository": "GoGoKo699/Hopf-QBP",
       "tracked_branch": "ancilla-depth-robustness-2026",
       "tracked_commit": "9cc564f493caff62b847fc362df522a68c6e83bf",
-      "role": "historical research seed; superseded by the unified compiler in this repository"
+      "role": "historical research seed; superseded by the all-workspace unified compiler"
     }
   ],
   "file_lineage": {
@@ -31,10 +31,15 @@
   "project_native_paths": [
     "compiler_robust_hopf/tree_structure.py",
     "compiler_robust_hopf/tree_decoder.py",
+    "compiler_robust_hopf/strict_zero_echo.py",
+    "compiler_robust_hopf/strict_zero_audit.py",
     "compiler_robust_hopf/unified_compiler.py",
     "compiler_robust_hopf/resource_bounds.py",
     "compiler_robust_hopf/compiler_boundaries.py",
     "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
+    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
+    "docs/STRICT_ZERO_ECHO_AUDIT.md",
+    "docs/STRICT_ZERO_PRIOR_ART.md",
     "docs/THEOREM_OVERVIEW.md",
     "docs/PROOF_AUDIT.md"
   ],
