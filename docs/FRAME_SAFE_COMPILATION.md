@@ -59,51 +59,71 @@ A compiled frame with `w` workspace qubits is **frame-safe** when
 \bigl(W_{\boldsymbol\theta}|\varphi\rangle\bigr)|0^w\rangle
 ```
 
-for every system state `|varphi>`. Equivalently, if
+for every system state `|varphi>`. If
 
 ```math
 P_0=I\otimes|0^w\rangle\!\langle0^w|,
 ```
 
-then
+this is equivalently
 
 ```math
 \widetilde W_{\boldsymbol\theta}P_0
-=(W_{\boldsymbol\theta}\otimes I)P_0
+=(W_{\boldsymbol\theta}\otimes I)P_0.
 ```
 
-and no amplitude leaks from the clean-input sector into nonzero workspace at the
-output.
+The right-hand side maps the range of `P_0` unitarily onto the same subspace.
+Because `W_tilde` is unitary, the equality therefore implies that the clean
+workspace subspace is reducing, not merely invariant:
 
-The contract need not specify the compiler's action when the workspace starts in
-an arbitrary nonzero state.
+```math
+\widetilde W_{\boldsymbol\theta}P_0
+=P_0\widetilde W_{\boldsymbol\theta},
+\qquad
+\widetilde W_{\boldsymbol\theta}^{\dagger}P_0
+=P_0\widetilde W_{\boldsymbol\theta}^{\dagger}.
+```
+
+In particular, the inverse obeys the required clean-input identity
+
+```math
+\widetilde W_{\boldsymbol\theta}^{\dagger}P_0
+=(W_{\boldsymbol\theta}^{\dagger}\otimes I)P_0.
+```
+
+Thus the forward and inverse compiled frames both return the workspace to zero
+for every system input. The contract need not specify the compiler's action when
+the workspace starts in an arbitrary nonzero state.
 
 ## 3. Substitution theorem
 
 > **Frame-safe substitution.** Replace `W_theta` or `W_theta^dagger` in the
-> global Hopf protocol by a frame-safe compiled implementation or its inverse,
-> initialize the workspace in `|0^w>`, and leave that workspace unmeasured. Then
-> the reduced state of every original protocol register is unchanged. Therefore
-> the complete output distribution, decoded gradient mean, record norm, and
-> finite-shot concentration premises are unchanged.
+> global Hopf protocol by a frame-safe compiled implementation or its inverse.
+> Initialize its workspace in `|0^w>` and apply no unrelated operation to that
+> workspace while the compiled block is active. Then the joint output is the
+> original protocol output tensored with `|0^w>`. Consequently, the complete
+> distribution on the original measured registers, decoded gradient mean,
+> record norm, and finite-shot concentration premises are unchanged.
 
 ### Proof
 
-The forward clean-frame identity holds on every system input. Taking adjoints
-gives
+For a forward occurrence, the defining clean-frame identity gives the claim
+directly on every system input, including states entangled with untouched
+external registers by linear extension.
+
+For an inverse occurrence, Section 2 establishes
 
 ```math
-P_0\widetilde W_{\boldsymbol\theta}^{\dagger}
-=
-P_0(W_{\boldsymbol\theta}^{\dagger}\otimes I)
+\widetilde W_{\boldsymbol\theta}^{\dagger}P_0
+=(W_{\boldsymbol\theta}^{\dagger}\otimes I)P_0.
 ```
 
-on states whose workspace is clean. Because the compiled forward operation
-returns the workspace to zero, every subsequent inverse use begins in that
-sector. Substituting the identity at the frame location therefore leaves the
-joint state equal to the original protocol state tensored with `|0^w>`. Tracing
-out or ignoring the workspace preserves the original measurement distribution.
-All estimator statements that depend only on that distribution are identical.
+Hence a clean workspace input undergoes exactly the original inverse frame and
+returns to the clean subspace. Replacing either block therefore leaves the state
+of all original protocol registers unchanged and factors the workspace as
+`|0^w>`. Measuring only the original registers gives exactly the same
+probability distribution. Every estimator statement that is a function of that
+distribution is consequently preserved.
 
 ## 4. What compilation may change
 
