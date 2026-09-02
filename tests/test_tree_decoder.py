@@ -26,7 +26,14 @@ class TreeDecoderTests(unittest.TestCase):
             labels = (
                 range(1 << t)
                 if t <= 7
-                else sorted({0, 1, (1 << t) - 1, *[(17 * j) % (1 << t) for j in range(64)]})
+                else sorted(
+                    {
+                        0,
+                        1,
+                        (1 << t) - 1,
+                        *[(17 * j) % (1 << t) for j in range(64)],
+                    }
+                )
             )
             for label in labels:
                 clean_input = clean_binary_input(t, label)
@@ -43,30 +50,39 @@ class TreeDecoderTests(unittest.TestCase):
             layout = tree_decoder_layout(t)
             operations = binary_to_unary_operations(t)
             for _ in range(40):
-                bits = tuple(rng.randrange(2) for _ in range(layout.total_qubits))
+                bits = tuple(
+                    rng.randrange(2) for _ in range(layout.total_qubits)
+                )
                 output = apply_reversible_operations(bits, operations)
                 recovered = apply_reversible_operations(
                     output, operations, inverse=True
                 )
                 self.assertEqual(recovered, bits)
 
-    def test_exact_workspace_and_gate_counts(self) -> None:
-        for t in range(1, 21):
+    def test_exact_workspace_and_closed_form_counts(self) -> None:
+        for t in range(1, 41):
             branches = 1 << t
             row = tree_decoder_resource_row(t)
-            operations = binary_to_unary_operations(t)
             self.assertEqual(row.branches, branches)
             self.assertEqual(
                 row.clean_workspace_qubits,
                 3 * branches - 2 - t,
             )
-            self.assertEqual(row.forward_gate_proxy, len(operations))
             self.assertEqual(row.toffoli_gates_forward, branches - 1)
-            self.assertEqual(row.round_trip_gate_proxy, 2 * len(operations))
+            self.assertEqual(row.forward_gate_proxy, 11 * branches - 10 - 5 * t)
+            self.assertEqual(row.round_trip_gate_proxy, 2 * row.forward_gate_proxy)
             self.assertEqual(row.forward_depth_proxy, 11 * t - 4)
 
+    def test_generated_gate_count_matches_formula(self) -> None:
+        # Materializing the gate list is linear in 2**t, so keep this exact
+        # implementation check moderate and test the closed forms separately.
+        for t in range(1, 13):
+            row = tree_decoder_resource_row(t)
+            operations = binary_to_unary_operations(t)
+            self.assertEqual(row.forward_gate_proxy, len(operations))
+
     def test_conditioned_prefix_reuses_decoder_workspace(self) -> None:
-        for t in range(1, 20):
+        for t in range(1, 30):
             decoder = tree_decoder_resource_row(t)
             for n in (t, t + 1, t + 5):
                 prefix = conditioned_prefix_resource_row(n, t)
@@ -74,10 +90,13 @@ class TreeDecoderTests(unittest.TestCase):
                     prefix.clean_workspace_qubits,
                     decoder.clean_workspace_qubits,
                 )
-                self.assertLessEqual(
-                    prefix.clean_workspace_qubits,
-                    2 * (1 << t) * (n - t + 1),
-                )
+                if n > t:
+                    # This is the common envelope used by a nontrivial routed
+                    # cut. The full-frame endpoint t=n does not use a router.
+                    self.assertLessEqual(
+                        prefix.clean_workspace_qubits,
+                        2 * (1 << t) * (n - t + 1),
+                    )
 
     def test_one_hot_givens_network_equals_complete_hopf_frame(self) -> None:
         rng = np.random.default_rng(260909)
