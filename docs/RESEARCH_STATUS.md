@@ -4,8 +4,13 @@ Last updated: 2026-09-02.
 
 ## Current conclusion
 
-The project now has an internally audited optimal compiler theorem for every
-**positive** clean-workspace budget.
+The active project now uses one compiler architecture and one general
+state-preparation benchmark.
+
+- **Active framework:** Yuan and Zhang, *Quantum* **7**, 956 (2023).
+- **Historical predecessor:** Sun et al., *IEEE TCAD* **42**, 3301--3314
+  (2023).
+- **Hopf-specific construction:** this repository.
 
 Let
 
@@ -13,12 +18,13 @@ Let
 N=2^n.
 ```
 
-For every integer `m>=1`, the complete real Hopf differential frame has an
-exact frame-safe implementation using at most `m` clean ancillary qubits, with
+For every integer `m>=1`, the complete real Hopf differential frame and the
+separated complex frame have exact frame-safe implementations using at most the
+requested `m` clean ancillary qubits, with
 
 ```math
 \boxed{
-S_{\mathbb R}(n,m)=\Theta(N)
+S_{\mathbb R}(n,m)=S_{\mathbb C}(n,m)=\Theta(N)
 }
 ```
 
@@ -26,170 +32,173 @@ and
 
 ```math
 \boxed{
-D_{\mathbb R}(n,m)
+D_{\mathbb R}(n,m)=D_{\mathbb C}(n,m)
 =\Theta\left(n+\frac{N}{n+m}\right).
 }
 ```
 
-The separated complex frame
+This matches the optimal arbitrary-state-preparation frontier in Yuan--Zhang
+Theorem 2 for every positive workspace budget.
+
+The active proof is in
+[`UNIFIED_YUAN_ZHANG_COMPILER.md`](UNIFIED_YUAN_ZHANG_COMPILER.md), with the
+short theorem chain in [`THEOREM_OVERVIEW.md`](THEOREM_OVERVIEW.md) and the
+line-by-line internal check in [`PROOF_AUDIT.md`](PROOF_AUDIT.md).
+
+## Active construction
+
+The real compiler has two internal schedules inside one algorithm.
+
+### Direct schedule
+
+When no useful tree cut fits, every addressed Hopf depth is synthesized with a
+suffix-zero predicate and one Yuan--Zhang uniformly controlled gate. For
+`1<=m<4n`, this already has optimal-order depth.
+
+### Routed schedule
+
+For larger workspace, cut after `t` Hopf depths, put `B=2**t` and `s=n-t`, and
+use
 
 ```math
-W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}
+R_t^{(n)}=\bigoplus_{r=0}^{B-1}W_s^{(r)}.
 ```
 
-inherits the same positive-workspace size and depth profile by sequential clean
-reuse of the exact diagonal compiler.
+A coherent router moves the existing suffix into one of `B` branch registers,
+the controlled subtree frames run in parallel, and inverse routing cleans every
+auxiliary register. The prefix is implemented by a new self-contained
+binary--one-hot tree decoder with depth `O(t)`, size `O(B)`, and workspace
 
-The upper bound uses:
+```math
+3B-2-t.
+```
 
-1. the exact tree-cut identity
+Both prefix and tail fit inside the common routed envelope
 
-   ```math
-   R_t^{(n)}=\bigoplus_{r=0}^{2^t-1}W_{n-t}^{(r)};
-   ```
+```math
+2B(s+1).
+```
 
-2. coherent route--parallel-subframes--unroute under the workspace envelope
-
-   ```math
-   2\,2^t(n-t+1)\leq m;
-   ```
-
-3. the previously audited low-workspace compiler when `1<=m<4n`.
-
-The lower bound follows from the `(N-1)`-dimensional real unit sphere:
-parameter counting gives `Omega(N)` size and `Omega(N/(n+m))` depth, while the
-backward light cone of the `n` system outputs gives `Omega(n)` depth.
-
-The result matches the QSP frontier in Theorem 2 of Yuan and Zhang,
-*Quantum* 7, 956 (2023). Figure 1 of that paper concerns general unitary
-synthesis and is not the source of the QSP benchmark.
-
-The second internal audit is in
-[`OPTIMALITY_AUDIT_ISSUE_9.md`](OPTIMALITY_AUDIT_ISSUE_9.md). It sharpened the
-exact copied-control count and the light-cone parameter bound but found no
-failure of the routed construction.
+The complex phase layer is one exact `n`-qubit UCG, not a separate
+phase-polynomial compiler.
 
 ## Strict zero-workspace boundary
 
-The optimal theorem above is stated only for `m>=1`. At strict zero additional
-workspace, the current exact alternatives are:
+The optimal theorem is stated for `m>=1`. At strict zero additional workspace,
+the current exact alternatives are:
 
 | Clean ancillary qubits | Size | Depth |
 |---:|---:|---:|
 | `1` | `O(N)` | `O(n+N/n)` |
 | `0` | `O(nN)` | `O(N)` |
 
-It remains open whether one can obtain simultaneously
+It remains open whether one can achieve simultaneously
 
 ```math
-S=O(N),
+S(n,0)=O(N),
 \qquad
-D=O\left(n+\frac{N}{n}\right),
-\qquad
-m=0.
+D(n,0)=O\left(n+\frac{N}{n}\right).
 ```
 
-The cumulative near-optimal theorem package is frozen on
-`near-optimal-audited-2026-09` at commit
-`24f339b863faa2ac92e1adb3917cbef7dc24d3b8`.
+The repository never identifies one clean flag with zero workspace.
+
+## Compiler correctness boundary
+
+A state compiler is not automatically a frame compiler. The required clean
+operator contract is
+
+```math
+\widetilde W
+\bigl(|\varphi\rangle|0^m\rangle\bigr)
+=(W|\varphi\rangle)|0^m\rangle
+```
+
+for every system input. Exact two-qubit counterexamples show that equality on
+one prepared state column can corrupt both global and checkpoint gradient
+readout.
+
+Checkpoint recompilation has a weaker but factorization-specific sufficient
+condition: equality on the complete active checkpoint interface, up to one
+common phase. This preserves designated checkpoint means but need not preserve
+the full output distribution.
 
 ## Claim ledger
 
-| Claim | Status | Evidence | Remaining work |
+| Claim | Internal status | Main evidence | Remaining gate |
 |---|---|---|---|
-| Recursive and addressed real Hopf frames coincide | Proved and tested | Independent matrix constructions through `n=7` | External review only |
-| Conditioned-prefix identity | Proved and audited | Algebraic proof; every cut through `n=8` | External review only |
-| Tail below a cut is a direct sum of subtree frames | Proved and audited | Exact angle map; every cut through `n=8` | External review only |
-| Coherent router acts correctly on arbitrary prefix--suffix entanglement | Proved and audited | Basis-permutation proof; dense arbitrary-state checks | External review only |
-| Router auxiliary registers return clean | Proved and tested | Exact inverse routing and leakage checks | External review only |
-| Exact copied-control count is `(2**t-1)(s+1)-t` | Proved and tested | Independent combinatorial ledger | None internally |
-| Routed construction fits in `2*2**t*(s+1)` clean ancillas | Proved and tested | Complete data/token/copy/flag ledger | External review only |
-| One controlled `s`-qubit subtree frame has size `O(2**s)` and depth `O(s**2+2**s/s)` | Proved relative to exact UCG/MCT lemmas | Width-by-width summation | External review only |
-| All subtree frames run in parallel | Proved | Disjoint branch data, token, and flag registers | External review only |
-| Positive-workspace real frame has `O(N)` size and optimal depth | Internally audited theorem | Routed construction plus low-workspace reduction | External review |
-| Real-frame size lower bound is `Omega(N)` | Proved | Real-state manifold dimension | External review |
-| Real-frame depth lower bound is `Omega(n+N/(n+m))` | Proved | Parameter count and light-cone argument | External review |
-| Positive-workspace separated complex frame has the same optimal profile | Internally audited corollary | Clean diagonal reuse | External review |
-| Strict zero-ancilla frame has depth `O(N)` and size `O(nN)` | Proved relative to exact UCG synthesis | Full-width zero-angle UCG fallback | Sharp endpoint open |
-| Exact arbitrary diagonal has size `O(N)` and depth `O(n+N/(n+m))` | Proved relative to exact synthesis results | Common-workspace audit | External review |
-| Frame-safe recompilation preserves global estimator distribution | Proved algebraically | Reducing-subspace substitution theorem | External review |
-| State-column equality is insufficient for global Hopf QBP | Proved by explicit counterexample | Two-qubit marker SWAP | None internally |
-| Checkpoint active-interface safety preserves estimator means | Proved algebraically | Interface adjoint theorem | External review |
-| Checkpoint state-column equality is insufficient | Proved by explicit counterexample | Two-qubit sign-flip suffix | None internally |
-| Active-interface equality need not preserve full checkpoint distributions | Proved by explicit example | Same mean, TV distance `1/4` | None internally |
-| Record-wise magnitude decoding costs `O(SN)` | Established constructively | Exact parity/FWHT equivalence tests | Constants only if useful |
-| Direct phase decoding costs `O(S+N)` | Established constructively | Signed-bin tests; norm-two records | None internally |
-| Parameter generation costs `O(Nn)` classical work | Accounted for | UCG angle transforms and diagonal FWHT | Finite implementation constants |
-| General theorem for arbitrary charts | Not claimed | Current geometry and routing are Hopf-specific | Identify a proved larger class first |
+| Recursive and addressed Hopf frames coincide | Proved and tested | Independent matrix constructions | External review |
+| Conditioned-prefix identity | Proved and tested | Algebraic operator identity; every cut through `n=8` | External review |
+| Tail is a direct sum of subtree frames | Proved and tested | Exact angle map; every cut through `n=8` | External review |
+| Binary--one-hot tree decoder is clean and reversible | Proved and tested | Explicit X/CNOT/Toffoli schedule and basis permutation checks | External review |
+| Tree decoder has `O(t)` depth and `O(2**t)` size | Proved and scheduled | Pairwise-disjoint layer list; closed-form counts | External review |
+| Conditioned prefix has `O(n)` depth and `O(2**t+n-t)` size | Proved | Decoder, suffix predicate, copied control, disjoint Givens layers | External review |
+| Direct small-workspace compiler is optimal order | Proved relative to Yuan--Zhang Lemmas 5 and 6 | Width sum and low-workspace absorption | External review |
+| Routed tail is clean on arbitrary entangled inputs | Proved and tested | Coherent router and inverse; zero-leakage checks | External review |
+| Complete routed construction fits in `2*2**t*(n-t+1)` workspace | Proved and tested | Data/token/copy/flag ledger | External review |
+| Positive-workspace real frame has optimal size and depth | Internally audited theorem | Direct/routed upper bound plus real-state lower bound | External review |
+| Complex phase diagonal is exactly one UCG | Proved and tested | Complete block-diagonal matrix identity | External review |
+| Positive-workspace separated complex frame has the same optimum | Internally audited corollary | Sequential reuse of one clean pool | External review |
+| State-column equality is insufficient | Proved by counterexample | Exact two-qubit distributions and gradients | None internally |
+| Checkpoint active-interface safety preserves means | Proved algebraically | Interface adjoint theorem | External review |
+| Record-wise magnitude decoding costs `O(SN)` | Constructive | Exact parity/FWHT equivalence tests | Constants only if useful |
+| Direct phase decoding costs `O(S+N)` | Constructive | Signed-bin tests and norm-two records | None internally |
+| Phase UCG block table takes `O(N)` generation work | Constructive | Direct pairing of leaf phases | Elementary compiler host-time benchmark optional |
+| Strict-zero sharp joint frontier | Open | Current fallback is `O(nN)` size and `O(N)` depth | New construction or obstruction |
+| General theorem for arbitrary charts | Not claimed | Current frame and routing are Hopf-specific | Prove a larger class first |
 
-## Source and theorem hierarchy
+## End-to-end QBP status
 
-### Theorem A: frame-safe substitution
-
-A clean implementation of the same differential-frame operator preserves the
-complete global output distribution and every derived estimator property.
-
-### Proposition B: state-column obstruction
-
-Preparing the same state does not determine the tangent-marker columns. The
-original decoder can therefore return an incorrect gradient.
-
-### Theorem C: optimal positive-workspace real frame
-
-For every `m>=1`,
+Frame-safe substitution preserves the global magnitude distribution. At fixed
+simultaneous coordinatewise accuracy and confidence, the magnitude stream uses
 
 ```math
-S_{\mathbb R}(n,m)=\Theta(N),
-\qquad
-D_{\mathbb R}(n,m)
-=\Theta\left(n+\frac{N}{n+m}\right).
+O(\log n)=O(\log\log M)
 ```
 
-### Theorem D: optimal positive-workspace separated complex frame
+executions for `M=Theta(N)` coordinates. Because frame depth matches optimal
+state-preparation depth, the compiler contributes no additional asymptotic
+factor. The direct phase stream uses no inverse frame.
 
-The exact diagonal compiler reuses the same clean workspace pool and is
-asymptotically no larger than the real-frame block. Hence the same size and
-depth profile holds for `W_C`.
+The full accounting is in [`END_TO_END_QBP.md`](END_TO_END_QBP.md). Any quoted
+wall-clock ratio remains conditional on the declared controlled-observable
+access model.
 
-### Theorem E: checkpoint active-interface substitution
+## Source discipline
 
-A clean suffix compiler equal to the designated suffix on the complete active
-interface, up to one common phase, preserves every checkpoint estimator mean.
-State-column equality alone is insufficient.
+The active proof uses Yuan--Zhang Theorem 2 and Lemmas 5, 6, and 9. Sun et al.
+remains cited for the historical ancilla--depth development and original source
+attribution, but no active module invokes its unary-to-binary construction or
+selects its QSP compiler in any ancillary regime.
 
-### Corollary: compiler-robust Hopf backpropagation
+The exact policy is recorded in [`RELATED_WORK.md`](RELATED_WORK.md) and
+[`../provenance/literature.json`](../provenance/literature.json).
 
-Combine the frame-safe theorem, optimal compiler, shared global magnitude
-record, direct phase record, and output-sensitive decoders. Accuracy and
-controlled-observable assumptions must be stated separately.
+## Frozen fallback
 
-### Open endpoint problem
+The cumulative earlier package is preserved on
 
-Resolve the simultaneous strict-zero-workspace, sharp-size, optimal-depth
-triple, or prove that one clean flag changes the achievable tradeoff.
+```text
+near-optimal-audited-2026-09
+```
 
-## Paper threshold
+at manifest commit
 
-1. Frame-safe substitution theorem. **Met internally.**
-2. Explicit compiler-boundary counterexamples. **Met internally.**
-3. Audited real and separated-complex compiler theorem for all `m>=1`.
-   **Met internally.**
-4. Matching size and depth lower bounds. **Met internally.**
-5. Quantum size, depth, workspace, parameter-generation, and classical-decoder
-   accounting. **Met for the compiler/decoder core.**
-6. Clear strict `m=0` positioning. **Met as an explicit open endpoint; stronger
-   resolution remains desirable.**
-7. Controlled-observable and statistical-accuracy conventions. **To freeze for
-   the manuscript.**
-8. External proof review. **Open.**
-9. Full manuscript drafting and cross-check against the earlier Hopf papers.
-   **Open.**
+```text
+24f339b863faa2ac92e1adb3917cbef7dc24d3b8
+```
 
-## Present release decision
+The unified refactor does not rewrite this checkpoint.
 
-- Suitable for private research development: **yes**.
-- Positive-workspace optimal theorem internally audited: **yes**.
-- Suitable for public release as an externally checked theorem: **not yet**.
-- Suitable as the main technical basis of the new manuscript: **yes**.
-- Strict `m=0` endpoint fully solved: **no**.
-- Suitable for merging into the established `Hopf-QBP` paper repository: **no**.
+## Release gates
+
+- Unified proof and deterministic validation: **met internally**.
+- Historical and active-source separation: **met**.
+- Removal of obsolete active modules and chronological audit documents:
+  **in progress on the refactor branch**.
+- One clean consolidation pull request to `main`: **pending**.
+- External human proof review: **open**.
+- Strict `m=0` resolution: **open but not required for a positive-workspace
+  paper if stated explicitly**.
+- Controlled-observable and statistical notation freeze: **pending manuscript
+  work**.
+- Public release or submission: **not yet**.
