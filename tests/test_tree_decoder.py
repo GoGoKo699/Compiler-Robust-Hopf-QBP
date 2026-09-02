@@ -8,10 +8,12 @@ import numpy as np
 from compiler_robust_hopf.frames import direct_real_frame
 from compiler_robust_hopf.tree_decoder import (
     apply_reversible_operations,
+    binary_to_unary_layers,
     binary_to_unary_operations,
     clean_binary_input,
     conditioned_prefix_resource_row,
     expected_clean_unary_output,
+    reversible_layer_is_disjoint,
     tree_decoder_layout,
     tree_decoder_resource_row,
     unary_hopf_code_action,
@@ -59,6 +61,19 @@ class TreeDecoderTests(unittest.TestCase):
                 )
                 self.assertEqual(recovered, bits)
 
+    def test_explicit_layers_are_disjoint_and_match_depth_formula(self) -> None:
+        for t in range(1, 13):
+            layers = binary_to_unary_layers(t)
+            row = tree_decoder_resource_row(t)
+            self.assertEqual(len(layers), row.forward_depth_proxy)
+            self.assertTrue(
+                all(reversible_layer_is_disjoint(layer) for layer in layers)
+            )
+            self.assertEqual(
+                sum(len(layer) for layer in layers),
+                row.forward_gate_proxy,
+            )
+
     def test_exact_workspace_and_closed_form_counts(self) -> None:
         for t in range(1, 41):
             branches = 1 << t
@@ -69,17 +84,15 @@ class TreeDecoderTests(unittest.TestCase):
                 3 * branches - 2 - t,
             )
             self.assertEqual(row.toffoli_gates_forward, branches - 1)
-            self.assertEqual(row.forward_gate_proxy, 11 * branches - 10 - 5 * t)
-            self.assertEqual(row.round_trip_gate_proxy, 2 * row.forward_gate_proxy)
+            self.assertEqual(
+                row.forward_gate_proxy,
+                11 * branches - 10 - 5 * t,
+            )
+            self.assertEqual(
+                row.round_trip_gate_proxy,
+                2 * row.forward_gate_proxy,
+            )
             self.assertEqual(row.forward_depth_proxy, 11 * t - 4)
-
-    def test_generated_gate_count_matches_formula(self) -> None:
-        # Materializing the gate list is linear in 2**t, so keep this exact
-        # implementation check moderate and test the closed forms separately.
-        for t in range(1, 13):
-            row = tree_decoder_resource_row(t)
-            operations = binary_to_unary_operations(t)
-            self.assertEqual(row.forward_gate_proxy, len(operations))
 
     def test_conditioned_prefix_reuses_decoder_workspace(self) -> None:
         for t in range(1, 30):
