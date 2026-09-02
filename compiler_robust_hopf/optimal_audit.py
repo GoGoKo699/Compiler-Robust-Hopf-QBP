@@ -1,13 +1,12 @@
 """Independent bookkeeping checks for the routed optimal-frame candidate.
 
-This module does not synthesize circuits.  It exposes the exact combinatorial
+This module does not synthesize circuits. It exposes the exact combinatorial
 counts and elementary inequalities used by the second internal proof audit of
 the positive-workspace theorem.
 """
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-import math
 
 from .optimal_parallel import choose_routed_cut
 
@@ -63,9 +62,9 @@ def routing_level_fredkin_count(n: int, t: int, level: int) -> int:
 def exact_control_copy_count(n: int, t: int) -> int:
     """Return the exact number of extra coherent routing controls.
 
-    At level ``ell`` there are ``2**ell * (s+1)`` Fredkin gates.  The original
+    At level ``ell`` there are ``2**ell * (s+1)`` Fredkin gates. The original
     prefix qubit can control one of them, so that level needs one fewer copied
-    control.  Different prefix bits use disjoint copy pools and are fanned out
+    control. Different prefix bits use disjoint copy pools and are fanned out
     concurrently.
     """
 
@@ -126,7 +125,7 @@ def router_audit_row(n: int, t: int) -> RouterAuditRow:
 def low_workspace_absorption_holds(n: int, m: int) -> bool:
     """Check the explicit inequality ``n**2 <= 20*2**n/(n+m)``.
 
-    The hypothesis is ``n>=1`` and ``1<=m<4n``.  It follows from the uniform
+    The hypothesis is ``n>=1`` and ``1<=m<4n``. It follows from the uniform
     elementary bound ``n**3 <= 4*2**n``.
     """
 
@@ -141,7 +140,7 @@ def routed_geometric_inequality_holds(n: int, m: int) -> bool:
     """Check the maximal-cut inequality used for ``m>=4n``.
 
     If the selected cut is not the last possible cut, maximality must imply
-    ``2**s/s < 4*2**n/m``.  At the last cut, ``s=1`` and no geometric estimate
+    ``2**s/s < 4*2**n/m``. At the last cut, ``s=1`` and no geometric estimate
     is needed.
     """
 
@@ -171,21 +170,22 @@ def parameter_count_depth_lower_bound(n: int, m: int) -> int:
     """A conservative integer lower bound from gate-parameter counting.
 
     A one-qubit U(2) gate carries at most four real parameters and a depth layer
-    on ``n+m`` wires contains at most ``n+m`` such gates.  Covering the real
+    on ``n+m`` wires contains at most ``n+m`` such gates. Covering the real
     state sphere therefore requires at least this many layers.
     """
 
     if n < 1 or m < 0:
         raise ValueError("Require n>=1 and m>=0.")
     dimension = real_state_parameter_dimension(n)
-    return math.ceil(dimension / (4 * (n + m)))
+    denominator = 4 * (n + m)
+    return (dimension + denominator - 1) // denominator
 
 
 def lightcone_parameter_slots(n: int, depth: int) -> int:
     """Bound continuous gate parameters in the system-output light cone.
 
     Tracing backward from ``n`` system outputs, the number of wires at distance
-    ``j`` is at most ``n*2**j``.  Summing over ``depth`` layers and charging four
+    ``j`` is at most ``n*2**j``. Summing over ``depth`` layers and charging four
     real parameters per one-qubit gate gives ``4*n*(2**depth-1)``.
     """
 
