@@ -1,131 +1,136 @@
 # Claim support map
 
-This page separates exact finite checks, algebraic proofs, imported synthesis
-theorems, internally audited deductions, explicit counterexamples, and open
-problems. Finite tests supplement but do not replace the analytic arguments.
+This page maps every material claim to its proof type, executable support, and
+boundary. Finite tests supplement but do not replace dimension-independent
+arguments.
 
 ## Evidence classes
 
 | Class | Meaning |
 |---|---|
-| Exact matrix check | Independently constructed finite-dimensional operators are compared numerically |
-| Algebraic proof | Dimension-independent identity proved in the documentation or manuscript |
-| Explicit counterexample | Closed-form finite instance disproving a stronger statement |
-| Imported synthesis theorem | Resource deduction uses a published compiler theorem under its hypotheses |
-| Internally audited deduction | Logical, register, and asymptotic steps were re-derived in a separate audit |
-| Term ledger | Code exposes every contribution but does not infer an asymptotic proof from fitting |
-| Open problem | No proof claim |
+| Algebraic proof | Dimension-independent identity proved in project documentation |
+| Explicit construction | Register and gate schedule supplied in the repository |
+| Imported theorem | Exact circuit result used under the hypotheses of its source |
+| Exact finite check | Independently built operators or records compared numerically |
+| Explicit counterexample | Closed-form finite instance disproving a stronger claim |
+| Term ledger | Integer bookkeeping and regression diagnostics, not asymptotic fitting |
+| Open boundary | No proof claim |
 
-## Source map for the optimal theorem
+## Literature roles
 
-The positive-workspace optimal theorem uses two primary compiler sources.
-
-| Source | Results used |
+| Source | Active role |
 |---|---|
-| Yuan and Zhang, *Quantum* 7, 956 (2023) | Standard circuit model; ancilla-free MCT; UCG tradeoff; coherent copying; CQSP size benchmark; optimal QSP frontier; lower-bound architecture |
-| Sun, Tian, Yang, Yuan, and Zhang, IEEE TCAD 42, 3301--3314 (2023) | Unary-to-binary unitary used in the conditioned-prefix compiler and the earlier near-optimal construction |
+| Yuan--Zhang, *Quantum* 7, 956 (2023) | Sole active external compiler framework; Theorem 2 benchmark; Lemmas 5, 6, and 9 primitives |
+| Sun et al., *IEEE TCAD* 42, 3301--3314 (2023) | Historical predecessor and original attribution credited by Yuan--Zhang; not an active alternative compiler |
+| Möttönen et al. and Bergholm et al. (2005) | Historical uniformly controlled state-preparation lineage and earlier `Hopf-QBP` robustness context |
 
-The optimal QSP frontier is Theorem 2 of Yuan--Zhang. Figure 1 in that paper is
-a general unitary-synthesis figure. The older Figure 1 discussed in the original
-compiler question is from the Sun et al. paper.
+The machine-readable record is [`../provenance/literature.json`](../provenance/literature.json).
 
-## Compiler contracts and boundaries
+## Geometry and operator contracts
 
-| Statement | Status and evidence | Implementation/tests | Boundary |
+| Claim | Evidence | Implementation/tests | Boundary |
 |---|---|---|---|
-| Frame-safe recompilation preserves the complete global protocol distribution | Algebraic reducing-subspace substitution theorem | `FRAME_SAFE_COMPILATION.md` | Requires complete system action on every clean-workspace input |
-| State-column equality is insufficient for global Hopf QBP | Explicit two-qubit counterexample | `compiler_boundaries.py`, boundary tests | Marker SWAP preserves state but corrupts decoder |
-| Correct and corrupted gradients are `(2,0,0)` and `(0,sqrt(2),0)` | Exact Hopf derivative and output distributions | same | Observable `-Z tensor I`, all angles `pi/4` |
-| Checkpoint active-interface equality preserves all designated estimator means | Algebraic adjoint/interface theorem | `COMPILER_BOUNDARIES.md`, exact positive example | Full distribution need not agree |
-| Checkpoint state-column equality is insufficient | Explicit two-qubit counterexample | boundary tests | Final state remains `|++>` while derivative flips `2` to `-2` |
-| Active-interface equality need not preserve checkpoint distributions | Explicit positive example | boundary tests | Same mean, total-variation distance `1/4` |
+| Recursive balanced Hopf state and normalized tangent columns form the real differential frame | Algebraic construction | `frames.py`, `test_frames.py` | Hopf-specific chart |
+| Addressed real frame equals recursive real frame | Algebraic layer construction plus exact finite checks | `frames.py`, `test_frames.py` | Checked through finite `n`; formula general |
+| Separated complex frame is `D_ph W_R` | Algebraic identity plus unitarity checks | `frames.py`, complex tests | Exact separated construction |
+| Frame-safe substitution preserves the complete global distribution | Algebraic reducing-subspace theorem | `FRAME_SAFE_COMPILATION.md` | Requires full operator action on clean workspace inputs |
+| State-column equality is insufficient for global Hopf QBP | Explicit two-qubit counterexample | `compiler_boundaries.py`, `test_compiler_boundaries.py` | Original decoder held fixed |
+| Checkpoint active-interface equality preserves designated means | Algebraic interface theorem | `FRAME_SAFE_COMPILATION.md`, `COMPILER_BOUNDARIES.md` | Full distributions may change |
+| Checkpoint state-column equality is insufficient | Explicit two-qubit counterexample | boundary implementation/tests | Factorization-specific result |
 
-## Hopf-frame identities
+## Exact Hopf tree structure
 
-| Statement | Status and evidence | Implementation/tests | Boundary |
+| Claim | Evidence | Implementation/tests | Boundary |
 |---|---|---|---|
-| Recursive and addressed real Hopf frames coincide | Algebraic construction plus exact checks | `frames.py`, `test_frames.py` | Checked through `n=7`; formula general |
-| Real frame is orthogonal and separated complex frame unitary | Algebraic construction plus exact checks | frame tests | Numerical checks supplement proof |
-| Conditioned-prefix identity | Proved and first-audit verified | `ancilla_depth.py`, `PROOF_AUDIT_ISSUE_1.md` | Every cut through `n=8` checked |
-| Prefix frame is a unary network of disjoint Givens layers | Proved and tested | `ancilla_depth.py`, tests | Dense unary checks through `t=3` |
-| Tail below cut `t` is `direct_sum_r W_(n-t)^(r)` | Proved and second-audit verified | `optimal_parallel.py`, `OPTIMALITY_AUDIT_ISSUE_9.md` | Every cut through `n=8` checked |
-| Global-to-local subtree angle map is exact | Algebraic breadth-first index map | subtree partition tests | Checked through `n=12` |
+| First `t` depths equal a `t`-qubit frame conditioned on a zero external suffix | Algebraic operator proof | `tree_structure.py`, `test_unified_compiler.py` | Every cut checked through `n=8` |
+| Tail below a cut is a direct sum of subtree frames | Algebraic operator proof and exact angle map | `tree_structure.py`, unified tests | Every cut checked through `n=8` |
+| Prefix and tail reconstruct the complete frame | Exact factorization | `reconstructed_frame`, unified tests | Complete matrix equality |
 
-## Routed optimal positive-workspace compiler
+## Self-contained tree decoder
 
-| Statement | Status and evidence | Implementation/tests | Boundary |
+| Claim | Evidence | Implementation/tests | Boundary |
 |---|---|---|---|
-| Router is a coherent basis permutation on arbitrary prefix--suffix entanglement | Proved and internally audited | dense route tests | Small Hilbert spaces checked exhaustively |
-| Forward and inverse routing clean every auxiliary register | Proved and tested | route--subframe--unroute leakage tests | Exact logical model |
-| Fredkin count per level is `2**ell*(s+1)` | Exact combinatorial count | `optimal_audit.py`, tests | One count includes data and token lanes |
-| Exact copied-control count is `(B-1)(s+1)-t` | Proved and tested | independent audit ledger | Candidate's looser upper bound remains valid |
-| Concurrent fanout depth is `O(t+log(s+1))` | CNOT-tree proof using coherent copy/use/uncopy | audit document and tests | Prefix bits use disjoint copy pools |
-| Copy pool can be reused for all branch flags | Exact inequality and clean uncopy proof | audit ledger | Flags required only for `s>1` |
-| Complete routed cut fits in `2B(s+1)` clean ancillas | Internally audited register ledger | `router_audit_row`, tests | Conservative envelope, not exact minimum |
-| One controlled subtree frame has size `O(2**s)` | UCG geometric size sum | `optimal_parallel.py`, audit | Imported exact UCG/MCT synthesis |
-| One controlled subtree frame has depth `O(s**2+2**s/s)` | Width-by-width summation | audit document | All width shifts included |
-| All `B` controlled subtree frames run in parallel | Disjoint data/token/flag registers | routed construction | All-to-all logical circuit |
-| Routed construction has total size `O(N)` | Prefix, routing, and `B*O(2**s)` summation | size ledger and audit | Constants not optimized |
-| For `m>=4n`, maximal feasible cut yields optimal depth | Proved with `m<4Bs` and polynomial-term absorption | audit inequalities and tests | `s=1` handled separately |
-| For `1<=m<4n`, frozen compiler is already optimal order | Proved with `n**3<=4*2**n` | explicit constant-20 audit test | Small `n` included |
-| Real frame has upper bound `O(n+N/(n+m))` for every `m>=1` | Internally audited theorem | PR #8 construction plus PR #10 audit | External review pending |
-| Real frame has size `O(N)` for every `m>=1` | Internally audited theorem | same | External review pending |
+| Decoder maps `|x>|0>` to `|0>|e_x>|0>` | Explicit reversible construction and basis proof | `tree_decoder.py`, `test_tree_decoder.py` | Clean input subspace; inverse exact on one-hot code |
+| Decoder is a full basis permutation | X/CNOT/Toffoli circuit | arbitrary-register reversal tests | Fixed-width gates compiled in standard model |
+| Workspace is `3*2**t-2-t` | Exact register count | closed-form tests through `t=40` | Clean ancillary count |
+| High-level depth is `11t-4=O(t)` | Explicit disjoint layer schedule | every returned layer checked for disjoint support | Fixed-width Toffoli has constant standard-circuit cost |
+| High-level size is `11*2**t-10-5t=O(2**t)` | Exact gate count | generated schedule versus formula | Constant decomposition factors suppressed |
+| One-hot Givens network equals the complete `t`-qubit Hopf frame | Algebraic mode-pair map plus exact matrices | `unary_hopf_code_action`, tests through `t=8` | One-excitation code |
+| Conditioned prefix has depth `O(n)` and size `O(2**t+n-t)` | Decoder, suffix predicate, coherent fanout, controlled disjoint Givens | resource row and operator identity tests | Uses decoder scratch sequentially |
 
-## Lower bounds and optimality
+## Unified real compiler
 
-| Statement | Status and evidence | Implementation/tests | Boundary |
+| Claim | Evidence | Implementation/tests | Boundary |
 |---|---|---|---|
-| Real Hopf state family has dimension `N-1` | Standard real-sphere dimension | audit helper | Includes an open chart subset |
-| Any exact universal real-state preparation family needs `Omega(N)` parameterized gates | Parameter-count argument | audit document | Standard finite-layout circuit model |
-| Depth is `Omega(N/(n+m))` | Gate-slot count on `n+m` wires | integer audit helper | Constant parameter dimension per gate |
-| Backward system-output light cone contains fewer than `4n2**D` continuous parameters | Internally audited light-cone count | audit helper and tests | Arbitrary one-qubit plus CNOT model |
-| Depth is `Omega(n)` | `4n2**D >= N-1` | audit proof | Asymptotic statement; small cases absorbed |
-| Positive-workspace real frame has `Theta(N)` size and `Theta(n+N/(n+m))` depth | Upper and lower bounds combined | `OPTIMALITY_AUDIT_ISSUE_9.md` | `m>=1`; external review pending |
-| Generic all-column CQSP would have `O(N**2)` size | Theorem 1 with `k=n`, inferred | `generic_all_column_cqsp_size_proxy` | Does not exploit Hopf tree structure |
+| Direct nonfinal layer is suffix predicate plus one UCG | Explicit construction | `direct_frame_resource_row` | Yuan--Zhang Lemmas 5 and 6 |
+| Direct small-workspace schedule has size `O(N)` | Geometric UCG-size sum | unified ledger | Exact constants not claimed |
+| For `1<=m<4n`, direct depth is `O(N/(n+m))` | Algebraic absorption of `n**2` | broad integer regression | Positive workspace only |
+| Router acts coherently on arbitrary prefix--suffix entanglement | Controlled basis-permutation proof | retained router tests | All-to-all logical model |
+| Exact copied-control count is `(B-1)(s+1)-t` | Combinatorial count | workspace tests | `B=2**t`, `s=n-t` |
+| Prefix and routed tail fit in `2B(s+1)` workspace | Exact data/token/copy/flag and decoder ledger | `route_workspace_row`, broad-grid tests | Nontrivial cuts `1<=t<n` |
+| One controlled subtree frame has size `O(2**s)` and depth `O(s**2+2**s/s)` | Width-by-width UCG/MCT sum | direct controlled resource row | Yuan--Zhang Lemmas 5 and 6 |
+| All subtree frames run in parallel | Disjoint branch registers | construction and small routed checks | Requires allocated branch registers |
+| Maximal feasible cut gives depth `O(n+N/(n+m))` | Algebraic cut inequality | term diagnostics | `m>=4n`; direct schedule covers smaller positive `m` |
+| Complete real frame has size `O(N)` and optimal depth for every `m>=1` | Unified upper bound | `unified_compiler.py`, ledger/tests | Internal proof audit; external review open |
+| Real-frame size lower bound is `Omega(N)` | Real-state manifold parameter count | proof audit | Exact universal real family |
+| Real-frame depth lower bound is `Omega(n+N/(n+m))` | Layer parameter count and backward light cone | proof audit | Standard circuit model |
 
-## Complex frame and diagonal compilation
+## Complex frame
 
-| Statement | Status and evidence | Implementation/tests | Boundary |
+| Claim | Evidence | Implementation/tests | Boundary |
 |---|---|---|---|
-| Separated frame is `W_C=D_ph W_R` and contains phase-dressed magnitude tangents | Algebraic derivative identity | complex analysis tests | Exact separated construction |
-| Exact arbitrary diagonal has size `O(N)` and depth `O(n+N/(n+m))` | Audited piecewise use of exact synthesis results | `complex_resources.py`, complex ledger | Clean all-budget logical model |
-| Diagonal and real frame reuse one workspace pool | Clean sequential-composition theorem | common-workspace document | Both blocks return workspace to zero |
-| Positive-workspace complex frame has `O(N)` size and optimal depth | Internally audited corollary | optimal audit plus diagonal audit | `m>=1`; lower bound inherited from real subfamily |
-| Common phase is a gauge and exact phase gradient is zero-sum | Algebraic proof and exact checks | `complex_analysis.py` | Hermitian expectation objectives |
-| Zero-amplitude leaves have zero phase derivative and gradient | Direct formula and singular tests | complex analysis tests | No amplitude division |
-| Strict zero-ancilla complex fallback has depth `O(N)` and size `O(nN)` | Full-width zero-angle UCG construction | complex resource tests | Sharp `O(N)` size unresolved |
+| Arbitrary leaf-phase diagonal is exactly one `n`-qubit UCG | Direct block-diagonal identity | `diagonal_ucg_matrix`, tests through `n=9` | Choose one target and `n-1` controls |
+| Diagonal size is `O(N)` and depth is `O(n+N/(n+m))` | Yuan--Zhang Lemma 6 | `diagonal_ucg_resource_row` | Exact standard circuit |
+| Common phase is retained exactly | Arbitrary `U(2)` blocks | complete-matrix tests | No phase-polynomial gauge repair required |
+| Phase block table takes `O(N)` generation work | Direct pairing of leaf phases | implementation | Host time of elementary UCG synthesis not benchmarked |
+| Real and diagonal blocks reuse one clean workspace pool | Sequential clean composition | `unified_complex_frame_resource_row` | Both blocks must return workspace zero |
+| Separated complex frame has `Theta(N)` size and optimal depth for every `m>=1` | Real theorem plus one-UCG diagonal | complex resource row and composition tests | External review open |
 
-## End-to-end work
+## Backpropagation and classical work
 
-| Statement | Status and evidence | Implementation/tests | Boundary |
+| Claim | Evidence | Implementation/tests | Boundary |
 |---|---|---|---|
-| UCG/subtree parameter generation costs `O(Nn)` | Summed layer transforms | optimality audit | Arithmetic model |
-| Diagonal phase parameters cost `O(Nn)` | One length-`N` FWHT | exact reconstruction tests | Arithmetic model |
-| Record-wise magnitude decoder costs `O(SN)` | Direct character accumulation | decoder tests | Explicit full gradient output |
-| Direct phase decoder costs `O(S+N)` | Signed-bin accumulation | decoder tests | Output array length `N` |
-| Magnitude stream uses one inverse complex frame | Protocol factorization | common-workspace document | Controlled-observable cost separate |
-| Direct phase stream uses no inverse frame | Protocol factorization | same | Forward preparation still required |
+| Global magnitude sampling is compiler-independent under frame safety | Frame-safe substitution | contract theorem | Same logical frame and measurement convention |
+| Fixed-accuracy magnitude executions are `O(log n)` | Norm-two depth records and vector concentration | established `Hopf-QBP` result | Controlled-observable model unchanged |
+| Record-wise magnitude decoder costs `O(SN)` | Direct character generation | `decoders.py`, exact FWHT parity tests | Output length `Theta(N)` |
+| Histogram plus FWHT costs `O(S+Nn)` | Standard FWHT operation count | decoder tests | Alternative implementation |
+| Direct phase decoder costs `O(S+N)` | Signed-bin accumulation | exact sample tests | One gauge redundancy |
+| Complete compiler-robust QBP overhead is `O(log n)=O(log log M)` at fixed accuracy | Optimal per-execution frame depth plus magnitude execution count | `END_TO_END_QBP.md` | Controlled `O` charged comparably to scalar evaluation |
 
-## Open problems and nonclaims
+## Strict zero-workspace boundary
 
-| Statement | Status | Current evidence |
+| Statement | Status | Evidence |
 |---|---|---|
-| Strict `m=0` achieves both `O(N)` size and `O(n+N/n)` depth | Open | One-ancilla sharp compiler and zero-ancilla larger compiler known |
-| One clean flag is provably necessary for the sharp endpoint | Open | No separation proof |
-| General coherent-differential-frame theorem for arbitrary charts | Not claimed | Present geometry, marker map, and direct sum are Hopf-specific |
-| Routed-device or noisy implementation is optimal | Not claimed | Logical all-to-all theorem only |
-| Approximate Clifford+T version has the same bias/error profile | Not claimed | Requires a separate approximation analysis |
-| Active-interface compilation preserves full checkpoint distributions | False in general | Explicit TV-distance counterexample |
+| Strict `m=0` exact frame with size `O(nN)` and depth `O(N)` | Proved relative to Lemma 6 | Full-width UCG per addressed depth |
+| One clean qubit gives size `O(N)` and depth `O(n+N/n)` | Positive-workspace theorem at `m=1` | Unified compiler |
+| Strict `m=0` with simultaneous `O(N)` size and `O(n+N/n)` depth | Open boundary | No construction or impossibility proof |
+
+## Active files
+
+```text
+compiler_robust_hopf/frames.py
+compiler_robust_hopf/tree_structure.py
+compiler_robust_hopf/tree_decoder.py
+compiler_robust_hopf/unified_compiler.py
+compiler_robust_hopf/decoders.py
+compiler_robust_hopf/compiler_boundaries.py
+
+docs/THEOREM_OVERVIEW.md
+docs/FRAME_SAFE_COMPILATION.md
+docs/UNIFIED_YUAN_ZHANG_COMPILER.md
+docs/COMPILER_BOUNDARIES.md
+docs/END_TO_END_QBP.md
+docs/RELATED_WORK.md
+```
 
 ## Reproduction
 
 ```bash
 python -m pip install -r requirements.txt
 python validate.py
-python scripts/ancilla_depth_ledger.py --n 10
-python scripts/complex_workspace_ledger.py --n 10
-python scripts/optimality_ledger.py --n 12
+python scripts/unified_resource_ledger.py --n 12
 python scripts/check_upstream_sync.py --offline
 ```
 
-GitHub Actions runs the deterministic suite on Python 3.11 and 3.13.
+The resource ledger exposes integer contributions and regime choices. The proof
+does not infer asymptotics by fitting numerical slopes.
