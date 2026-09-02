@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "compiler-robust-hopf-qbp"
+version = "0.1.0a0"
+description = "Research utilities for compiler-robust quantum backpropagation from Hopf differential frames."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Ruge Lin", email = "gogoko699@gmail.com"}]
+dependencies = ["numpy>=1.24,<3"]
+
+[tool.setuptools]
+packages = ["compiler_robust_hopf"]
