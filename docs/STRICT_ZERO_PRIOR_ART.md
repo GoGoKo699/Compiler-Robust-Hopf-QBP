@@ -4,8 +4,8 @@
 
 This note records the current technical prior-art assessment for the exact
 `m=0` Hopf-frame compiler. It is deliberately conservative. It does not claim
-that the abstract echo is a newly invented universal identity, and it is not a
-legal novelty opinion.
+that the abstract echo is a newly invented universal identity. This note is not
+a legal novelty opinion.
 
 ## 1. The project construction
 
@@ -75,11 +75,11 @@ Borrowed qubits are unknown-state wires temporarily modified and restored by
 the end of a circuit. Claudon et al. use borrowed ancillas in exact
 multi-controlled-NOT constructions.
 
-Khattar and Gidney, "Rise of conditionally clean ancillae for optimizing quantum
-circuits" (2024), describe toggle detection: a self-inverse controlled
-operation can be repeated so that an unknown dirty-control branch cancels while
-the desired branch survives. They also develop conditionally clean system
-qubits as temporary workspace.
+Khattar and Gidney, "Rise of conditionally clean ancillae for efficient quantum
+circuit constructions" (2025), describe laddered toggle detection: a
+self-inverse controlled operation can be repeated so that an unknown dirty-
+control branch cancels while the desired branch survives. They also develop
+conditionally clean system qubits as temporary workspace.
 
 **Difference here:**
 
@@ -175,8 +175,8 @@ Primary references currently retained are:
    [doi:10.22331/q-2023-03-20-956](https://doi.org/10.22331/q-2023-03-20-956).
 5. B. Claudon et al., *Nature Communications* **15**, 5886 (2024),
    [doi:10.1038/s41467-024-50065-x](https://doi.org/10.1038/s41467-024-50065-x).
-6. T. Khattar and C. Gidney, arXiv:2407.17966,
-   [arXiv:2407.17966](https://arxiv.org/abs/2407.17966).
+6. T. Khattar and C. Gidney, *Quantum* **9**, 1752 (2025),
+   [doi:10.22331/q-2025-05-21-1752](https://doi.org/10.22331/q-2025-05-21-1752).
 7. C. Xu et al., arXiv:2512.08675,
    [arXiv:2512.08675](https://arxiv.org/abs/2512.08675).
 
