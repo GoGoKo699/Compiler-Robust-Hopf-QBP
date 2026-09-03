@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "active_compiler_framework": {
     "authors": [
       "Pei Yuan",
@@ -12,6 +12,9 @@
     "year": 2023,
     "doi": "10.22331/q-2023-03-20-956",
     "url": "https://quantum-journal.org/papers/q-2023-03-20-956/",
+    "published_eprint": "arXiv:2202.11302v2",
+    "checked_arxiv_revision": "arXiv:2202.11302v3",
+    "version_policy": "The published Quantum article and arXiv v2 are the normative bibliographic source. Theorem 2 and Lemmas 5, 6, and 9 were checked in arXiv v3 and retain the statements and circuit-model conventions used here.",
     "roles": {
       "theorem_1": "generic controlled-state-preparation benchmark and all-column comparison",
       "theorem_2": "uniform optimal state-preparation size and depth frontier for every ancillary budget",
