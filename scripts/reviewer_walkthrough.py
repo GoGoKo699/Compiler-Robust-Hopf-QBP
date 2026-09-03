@@ -10,26 +10,31 @@ from __future__ import annotations
 import math
 import sys
 from collections.abc import Callable
+from pathlib import Path
 
 import numpy as np
 
-from compiler_robust_hopf.compiler_boundaries import (
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from compiler_robust_hopf.compiler_boundaries import (  # noqa: E402
     two_qubit_global_state_column_counterexample,
 )
-from compiler_robust_hopf.frames import (
+from compiler_robust_hopf.frames import (  # noqa: E402
     direct_real_frame,
     hopf_ry,
     real_frame_matrix,
 )
-from compiler_robust_hopf.resource_bounds import (
+from compiler_robust_hopf.resource_bounds import (  # noqa: E402
     low_workspace_absorption_holds,
     routed_geometric_inequality_holds,
 )
-from compiler_robust_hopf.strict_zero_echo import (
+from compiler_robust_hopf.strict_zero_echo import (  # noqa: E402
     echo_layer_residual,
     echo_sector_action,
 )
-from compiler_robust_hopf.unified_compiler import (
+from compiler_robust_hopf.unified_compiler import (  # noqa: E402
     diagonal_ucg_matrix,
     unified_real_frame_resource_row,
 )
