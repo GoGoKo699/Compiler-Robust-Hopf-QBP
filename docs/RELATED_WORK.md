@@ -44,11 +44,11 @@ preparation constrains one initialized column, while the Hopf global-gradient
 protocol uses the inverse of a complete unitary with designated tangent-marker
 columns.
 
-The earlier paper of Sun, Tian, Yang, Yuan, and Zhang established the preceding
-broad ancilla–depth landscape and remains an important historical reference. It
-is cited briefly rather than treated as a second active compiler, because the
-later Yuan–Zhang theorem supplies the uniform all-workspace frontier used in the
-comparison.
+The earlier paper of Sun, Tian, Yang, Yuan, and Zhang is the historical
+predecessor to this uniform frontier. It established the preceding broad
+ancilla–depth landscape and remains an important reference. It is cited briefly
+rather than treated as a second active compiler, because the later Yuan–Zhang
+theorem supplies the all-workspace benchmark used throughout this repository.
 
 ## 2. Uniformly controlled gates and the Möttönen connection
 
