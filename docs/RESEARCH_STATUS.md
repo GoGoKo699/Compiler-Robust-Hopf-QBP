@@ -1,18 +1,13 @@
-# Research status and release gates
+# Research status
 
-Last updated: 2026-09-03.
+[Landing page](../README.md) · [Complete narrative](../REVIEW.md) · [Verification](VERIFICATION.md)
 
-## Current conclusion
+Last updated: September 2026.
 
-The repository contains one active all-workspace compiler architecture and one
-general state-preparation benchmark.
+## Current scientific conclusion
 
-- **Active compiler framework and benchmark:** P. Yuan and S. Zhang,
-  *Quantum* **7**, 956 (2023).
-- **Historical predecessor:** X. Sun, G. Tian, S. Yang, P. Yuan, and S. Zhang,
-  *IEEE TCAD* **42**, 3301--3314 (2023).
-- **Hopf-specific compiler, frame-safety, and backpropagation results:** this
-  repository.
+The repository contains one exact all-workspace compiler architecture for the
+complete real Hopf differential frame and the separated complex frame.
 
 Let
 
@@ -20,9 +15,7 @@ Let
 N=2^n.
 ```
 
-For every integer `m>=0`, the complete real Hopf differential frame and the
-separated complex frame have exact frame-safe implementations using at most the
-requested `m` clean ancillary qubits, with
+For every integer `m>=0`, the internally supported theorem is
 
 ```math
 \boxed{
@@ -39,167 +32,126 @@ D_{\mathbb R}(n,m)=D_{\mathbb C}(n,m)
 }
 ```
 
-This matches the optimal arbitrary-state-preparation frontier in Yuan--Zhang
-Theorem 2 for every ancillary budget. The theorem has passed multiple internal
-audits but has not received independent external proof review.
+The compiled circuit uses at most the requested `m` clean ancillary qubits,
+implements the complete frame on every clean-workspace system input, and
+returns its workspace to zero.
+
+This matches the optimal arbitrary-state-preparation frontier of Yuan and Zhang
+in the same exact logical circuit model.
 
 ## Active construction
 
-The real-frame compiler is one algorithm with three internal schedules.
+The real-frame compiler has three internal schedules.
 
-### Strict zero workspace
+| Workspace | Schedule | Status |
+|---:|---|---|
+| `m=0` | borrowed-suffix half-angle echo | complete operator proof, resource proof, and exact finite validation |
+| small positive `m` | direct suffix-flagged UCG layers | complete operator and all-workspace resource proof |
+| larger `m` | binary–one-hot prefix decoder and routed parallel subtree frames | complete tree identities, register ledger, cut proof, and exact finite validation |
 
-For `m=0`, a borrowed-suffix echo uses one original suffix data qubit as a
-restored predicate carrier. Two half-angle UCGs, four predicate toggles, and two
-CNOT echoes implement each nonfinal addressed depth without an ancillary wire.
-The final depth is one ordinary UCG.
+The complex phase layer is one exact `n`-qubit UCG and reuses the same
+workspace pool sequentially.
 
-### Small positive workspace
+## Source policy
 
-When no useful routed cut fits, every addressed depth is synthesized with a
-lower-suffix-zero flag and one Yuan--Zhang UCG. For `1<=m<4n`, the polynomial
-sequential term is absorbed by the state-preparation scale.
+The sole active external compiler framework and state-preparation benchmark is:
 
-### Larger workspace
+> P. Yuan and S. Zhang, *Quantum* **7**, 956 (2023).
 
-For a cut after `t` depths, write
+The proof uses their Theorem 2 and Lemmas 5, 6, and 9. The earlier work of Sun,
+Tian, Yang, Yuan, and Zhang is retained as the historical predecessor and
+original source credited for selected primitives.
 
-```math
-B=2^t,
-\qquad
-s=n-t.
+The Hopf chart and normalized tangent geometry are inherited from the first
+Hopf paper. The global, phase, and checkpoint gradient records are inherited
+from the Hopf-QBP paper. The frame-safe compiler contracts, all-workspace frame
+construction, and optimality proof are developed in this repository.
+
+The exact fact-level division is in [the source map](SOURCE_MAP.md).
+
+## Evidence completed
+
+### Analytic proofs
+
+The repository contains dimension-independent proofs of:
+
+- the addressed Hopf frame and marker interface;
+- frame-safe substitution;
+- the state-column and checkpoint obstructions;
+- the strict-zero four-sector echo;
+- exact restoration of the borrowed logical suffix qubit;
+- the conditioned-prefix and tail direct-sum identities;
+- the binary–one-hot decoder and coherent router;
+- all workspace peaks and cut inequalities;
+- matching size and depth lower bounds;
+- the separated complex corollary;
+- the global QBP compiler consequence.
+
+### Executable checks
+
+The deterministic suite covers complete frame matrices, exact compiler
+counterexamples, strict-zero sectors and full frames, decoder reversibility,
+routed workspace, one-UCG phase diagonals, resource inequalities, and gradient
+decoders. A short orientation run is available through
+
+```bash
+python scripts/reviewer_walkthrough.py
 ```
 
-The exact tail identity is
+The complete commands and evidence taxonomy are in
+[Verification and evidence](VERIFICATION.md).
 
-```math
-R_t^{(n)}=\bigoplus_{r=0}^{B-1}W_s^{(r)}.
-```
+### Internal proof reviews
 
-A self-contained reversible binary--one-hot decoder realizes the conditioned
-prefix. A coherent router moves the existing suffix into the branch selected by
-the prefix, all controlled subtree frames run on disjoint registers in parallel,
-and inverse routing returns every auxiliary register to zero. Choosing the
-largest feasible cut gives the optimal positive-workspace depth.
+Three detailed internal review records remain visible:
 
-The complex phase diagonal is one exact `n`-qubit UCG and reuses the real-frame
-workspace pool sequentially, including the empty pool at `m=0`.
+- [Consolidated proof audit](PROOF_AUDIT.md)
+- [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md)
+- [Clean-room all-workspace reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md)
 
-## Compiler correctness boundary
+They record re-derivations, resource checks, corrections, and evidence limits.
+They do not constitute independent external verification.
 
-A state-preparation circuit is not automatically a differential-frame circuit.
-The global method requires
+## Contribution boundary
 
-```math
-\widetilde W
-\bigl(|\varphi\rangle|0^m\rangle\bigr)
-=(W|\varphi\rangle)|0^m\rangle
-```
+The repository does not claim invention of uniformly controlled gates,
+controlled-unitary square-root identities, borrowed or conditionally clean
+qubits, or toggle detection.
 
-for every system input. Exact two-qubit examples show that equality on one
-prepared state column can preserve the scalar state while corrupting global or
-checkpoint gradient readout.
+The narrow strict-zero contribution is the use of one original suffix data
+qubit as a restored in-place predicate carrier, reducing all prefix-dependent
+Hopf rotations at depth `d` to two total-width-`d+2` UCGs and linear predicate
+toggles. Combined with the positive-workspace schedules, this yields the
+optimal complete-frame frontier for every ancillary budget.
 
-Checkpoint recompilation has a weaker but factorization-specific sufficient
-condition: equality on the complete active checkpoint interface, up to one
-common phase. It preserves designated checkpoint means but need not preserve the
-complete output distribution.
+The broader literature position and conservative claim wording are in
+[Related work](RELATED_WORK.md).
 
-## Evidence status
+## Review status
 
-| Claim | Status | Main evidence |
-|---|---|---|
-| Recursive and addressed real frames coincide | Proved and tested | Independent exact matrices |
-| Conditioned-prefix identity | Proved and tested | Complete-operator proof; every cut through `n=8` |
-| Tail is a direct sum of subtree frames | Proved and tested | Exact angle map; every cut through `n=8` |
-| Binary--one-hot decoder is clean and reversible | Proved and tested | Explicit X/CNOT/Toffoli schedule |
-| Routed compiler respects the requested workspace | Proved and tested | Complete data/token/copy/flag ledger |
-| Positive-workspace frame optimum | Internally audited theorem | Direct/routed upper bounds and real-state lower bounds |
-| Strict-zero borrowed-suffix echo | Proved and tested | Four-sector operator identity and complete-frame matrices |
-| Strict-zero frame optimum | Internally audited theorem | Echo upper bound and exact-wire parameter lower bound |
-| Complex phase diagonal is one exact UCG | Proved and tested | Complete block-diagonal identity |
-| Separated complex frame has the same optimum | Internally audited corollary | Sequential workspace reuse |
-| State-column equality is insufficient | Proved by counterexample | Exact distributions and decoded gradients |
-| Checkpoint active-interface safety preserves means | Proved algebraically | Interface theorem and finite examples |
-| Record-wise magnitude decoder costs `O(SN)` | Constructive and tested | Direct parity records versus FWHT |
-| Direct phase decoder costs `O(S+N)` | Constructive and tested | Signed-bin estimator and norm-two records |
-| Generic theorem for arbitrary charts | Not claimed | Present geometry and routing are Hopf-specific |
+The theorem is **under independent technical review**. The repository has been
+organized so that a reader can assess it without following development history
+or learning GitHub workflow concepts.
 
-Finite validation supplements but does not replace the analytic proof. The MCT,
-UCG, coherent-copy, and QSP statements are imported under the exact
-Yuan--Zhang hypotheses.
+The intended route is:
 
-## Strict-zero prior-art boundary
+1. [Complete narrative](../REVIEW.md)
+2. [Minimal Hopf interface](HOPF_INTERFACE.md)
+3. [Complete compiler theorem](COMPILER_THEOREM.md)
+4. [QBP consequence](QBP_CONSEQUENCE.md)
+5. [Verification and evidence](VERIFICATION.md)
+6. [Source map](SOURCE_MAP.md)
 
-The abstract square-root/conjugation and borrowed-bit ingredients have close
-antecedents in controlled-unitary decompositions and dirty/borrowed-ancilla
-toggle detection. The repository therefore does not claim a new generic echo
-identity.
+## Scope not presently claimed
 
-The project-specific novelty target is:
+The result does not establish:
 
-> using one original suffix data qubit as a restored predicate carrier,
-> aggregating all prefix-dependent Hopf rotations into two total-width-`d+2`
-> UCGs per nonfinal depth, and closing the optimal strict-zero complete-frame
-> size--depth frontier.
+- device-connectivity or routed hardware depth;
+- a native fault-tolerant gate count or T-depth;
+- approximate synthesis error bounds;
+- noise-dependent execution guarantees;
+- a universal implementation cost for controlled observable access;
+- optimal finite constants or crossover points;
+- compiler invariance for arbitrary non-Hopf charts.
 
-The current literature survey is recorded in
-[`STRICT_ZERO_PRIOR_ART.md`](STRICT_ZERO_PRIOR_ART.md). A broader independent
-prior-art review remains a release gate.
-
-## Consolidation and validation status
-
-Draft PR [#20](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/pull/20)
-is the single all-workspace consolidation candidate for `main`. Its branch is
-
-```text
-all-workspace-unified-final
-```
-
-Both branch-push and pull-request merge-ref validation pass on Python 3.11 and
-3.13. Each job completes:
-
-- source compilation;
-- **62 deterministic tests**;
-- the unified all-workspace resource ledger;
-- the dedicated strict-zero echo ledger; and
-- the offline upstream-synchronization audit.
-
-The active unified resource row selects the borrowed-suffix echo at `m=0`, the
-direct flagged-UCG schedule at small positive workspace, and the routed schedule
-when a useful cut fits. Exact cross-checks require the unified strict-zero row to
-coincide with the dedicated echo ledger.
-
-The prior positive-workspace PR #14 and strict-zero development PRs #18 and #19
-are superseded by PR #20. They remain available as historical review checkpoints
-but are not alternative merge paths.
-
-## Frozen fallback
-
-The earlier cumulative theorem package is preserved on
-
-```text
-near-optimal-audited-2026-09
-```
-
-at manifest commit
-
-```text
-24f339b863faa2ac92e1adb3917cbef7dc24d3b8
-```
-
-It is retained for provenance and is not an active compiler path.
-
-## Remaining release gates
-
-- All-workspace operator and resource proof: **met internally**.
-- One-framework source policy: **met**.
-- Strict-zero internal proof audit: **met**.
-- All-workspace unified branch and PR-level CI: **met**.
-- Final diff-level repository audit: **met internally**.
-- Independent human proof review: **open in Issue #12**.
-- Broader prior-art review and novelty wording: **open in Issue #17**.
-- Controlled-observable and statistical-accuracy notation freeze: **pending
-  manuscript work**.
-- Merge into private `main`: **deferred until the review decision**.
-- Public release or submission: **not yet**.
+These are separate extensions rather than hidden premises of the exact theorem.
