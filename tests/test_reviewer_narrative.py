@@ -24,6 +24,7 @@ PRIMARY_PAGES = (
     "docs/RESEARCH_STATUS.md",
     "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
     "docs/STRICT_ZERO_ECHO_AUDIT.md",
+    "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
     "manuscript/README.md",
 )
 
@@ -121,6 +122,36 @@ class ReviewerNarrativeTests(unittest.TestCase):
         qbp = files["docs/QBP_CONSEQUENCE.md"]
         self.assertIn("T_{\\mathrm{scalar}}^{\\mathrm{matched}}", qbp)
         self.assertIn("T_{\\mathrm{grad}}^{\\mathrm{matched}}", qbp)
+
+    def test_final_consistency_patch_is_present(self) -> None:
+        theorem = (ROOT / "docs" / "COMPILER_THEOREM.md").read_text(
+            encoding="utf-8"
+        )
+        theorem_compact = " ".join(theorem.split())
+        self.assertIn("fixed-width controlled Givens rotations", theorem_compact)
+        self.assertIn("C-B", theorem)
+        self.assertIn("If `s=1`", theorem)
+        self.assertIn("m\\geq2\\,2^{n-1}(1+1)=2^{n+1}=2N", theorem)
+
+        hopf = (ROOT / "docs" / "HOPF_INTERFACE.md").read_text(
+            encoding="utf-8"
+        )
+        hopf_compact = " ".join(hopf.split()).lower()
+        self.assertIn(
+            "chart-selected orthogonal continuation determined by the complete parameter tuple",
+            hopf_compact,
+        )
+        self.assertIn("regular_coordinate_mask(atol=...)", hopf)
+
+        clean_room = (
+            ROOT / "docs" / "CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("S_{\\mathbb C,\\mathrm{mag}}", clean_room)
+        self.assertIn("D_{\\mathbb C,\\mathrm{mag}}", clean_room)
+        self.assertIn("\\mathrm{diag}", clean_room)
+        self.assertIn("router.py", clean_room)
+        self.assertNotIn("S_{\\mathbb C}(n,m)", clean_room)
+        self.assertNotIn("D_{\\mathbb C}(n,m)", clean_room)
 
     def test_primary_local_links_resolve(self) -> None:
         for relative in PRIMARY_PAGES:
