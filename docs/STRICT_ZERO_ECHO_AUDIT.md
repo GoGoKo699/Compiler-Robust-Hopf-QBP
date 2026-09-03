@@ -7,22 +7,29 @@
 This document records a line-by-line internal reconstruction of the strict-zero
 compiler. It is not independent external review.
 
-No operator, workspace, size, depth, endpoint, inverse, or separated-complex
+No operator, workspace, size, depth, endpoint, inverse, or complex-magnitude
 obstruction was found. Relative to the exact no-ancilla multi-controlled-X and
 UCG statements imported from Yuan and Zhang, the construction supports
 
 ```math
-S_{\mathbb R}(n,0)=S_{\mathbb C}(n,0)=\Theta(2^n),
+S_{\mathbb R}(n,0)
+=S_{\mathbb C,\mathrm{mag}}(n,0)
+=\Theta(2^n),
 ```
 
 ```math
-D_{\mathbb R}(n,0)=D_{\mathbb C}(n,0)
+D_{\mathbb R}(n,0)
+=D_{\mathbb C,\mathrm{mag}}(n,0)
 =\Theta\left(n+\frac{2^n}{n}\right).
 ```
 
+The complex leaf-phase derivatives remain a separate direct measurement stream.
 The audit also narrows the contribution claim: the abstract echo has close
 precedents, while the Hopf-specific two-UCG aggregation and complete-frame
-resource consequence are the relevant new statements.
+resource consequence are the project-specific statements.
+
+The published Yuan–Zhang article is arXiv v2. Lemmas 5 and 6 were also checked
+in arXiv v3 and retain the forms used below.
 
 ## 1. Exact operator target
 
@@ -80,8 +87,6 @@ JCJ=C^{-1},
 CJCJ=I.
 ```
 
-The four sectors are:
-
 | `h` | original `b` | chronological target word | final target operator | final `b` |
 |---:|---:|---|---|---:|
 | 0 | 0 | none | `I` | 0 |
@@ -91,10 +96,9 @@ The four sectors are:
 
 The desired rotation appears only when the original complete suffix is zero.
 All other sectors receive identity. The borrowed bit is restored and no
-sector-dependent phase is produced.
-
-Because `p` and `r` label orthogonal invariant sectors, this proves equality on
-arbitrary superpositions and entangled inputs.
+sector-dependent phase is produced. Since `p` and `r` label orthogonal
+invariant sectors, this proves equality on arbitrary superpositions and
+entangled inputs.
 
 **Audit classification:** algebraically proved.
 
@@ -151,7 +155,7 @@ U_{p,1}=R_y(\theta_p/2).
 ```
 
 There are `d+1` controls—`d` prefix bits and the borrowed bit—and one target.
-The total UCG width in the Yuan–Zhang convention is therefore
+The total UCG width in the Yuan–Zhang convention is
 
 ```math
 \boxed{q=d+2.}
@@ -164,25 +168,11 @@ asymptotic proof.
 
 ## 6. Endpoint audit
 
-### `n=1`
-
-No borrowed-suffix layer exists. The complete real frame is one one-qubit
-rotation.
-
-### `d=0`
-
-There are no prefix controls. The half-angle UCG is a two-qubit controlled
-rotation selected only by the borrowed bit.
-
-### `d=n-2`
-
-The remaining suffix `r` is empty, so `h=1` identically and `T_h=X_b`. The same
-sector proof applies.
-
-### `d=n-1`
-
-No lower suffix exists. The final depth is one ordinary `n`-qubit UCG and is not
-passed through the echo.
+- `n=1`: no borrowed-suffix layer exists; the frame is one one-qubit rotation.
+- `d=0`: the half-angle UCG is a two-qubit controlled rotation.
+- `d=n-2`: the remaining suffix is empty, so `h=1` and `T_h=X_b`.
+- `d=n-1`: no lower suffix exists; the final depth is one ordinary `n`-qubit
+  UCG and does not use the echo.
 
 **Audit classification:** all endpoints explicit in code and tests.
 
@@ -260,13 +250,13 @@ D=\Omega(2^n/n),
 
 which supplies the matching lower bound.
 
-The regression suite evaluates the two uniform inequalities with exact rational
-or integer arithmetic across broad finite ranges. The proof itself is the
-preceding dimension-independent argument.
+The regression suite checks the uniform inequalities with exact rational or
+integer arithmetic over broad finite ranges. The proof is the preceding
+dimension-independent argument.
 
 **Audit classification:** matching asymptotic depth verified.
 
-## 9. Inverse and complex-frame audit
+## 9. Inverse and complex-magnitude audit
 
 The circuit is unitary and exact, so reversing and adjointing its gates gives
 `W_R^dagger` with the same resources.
@@ -276,19 +266,21 @@ The phase layer
 ```math
 D_{\mathrm{ph}}
 =\sum_z|z\rangle\!\langle z|\otimes
-\operatorname{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}})
+\mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}})
 ```
 
 is one exact `n`-qubit UCG. At zero workspace it has `O(2^n)` size and
 `O(n+2^n/n)` depth. Therefore
 
 ```math
-W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}
+W_{\mathbb C,\mathrm{mag}}
+=D_{\mathrm{ph}}W_{\mathbb R}
 ```
 
-inherits the same strict-zero frontier.
+inherits the same strict-zero frontier. This is the phase-dressed magnitude
+frame; the direct leaf-phase derivatives are not additional columns of it.
 
-**Audit classification:** no additional complex obstruction found.
+**Audit classification:** no additional complex-magnitude obstruction found.
 
 ## 10. Prior-art boundary
 
@@ -312,11 +304,11 @@ See [Related work](RELATED_WORK.md) and
 
 The internal reconstruction found no mathematical reason to exclude `m=0`
 from the all-workspace theorem. The strict-zero result is consistent with the
-operator contract, uses no hidden wire, covers every endpoint, and matches the
-real-state lower bound.
+complete operator contract, uses no hidden wire, covers every endpoint, and
+matches the real-state lower bound.
 
-The result remains under independent technical review. The executable checks
-are supporting evidence, and the prior-art classification remains subject to a
+The result remains under independent technical review. Executable checks are
+supporting evidence, and the prior-art classification remains subject to a
 broader specialist assessment.
 
 ---
