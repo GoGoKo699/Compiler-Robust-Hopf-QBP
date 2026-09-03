@@ -1,20 +1,19 @@
 {
   "schema_version": 1,
-  "recorded_at_utc": "2026-09-02T04:00:00Z",
+  "recorded_at_utc": "2026-09-03T00:00:00Z",
   "current_repository": "GoGoKo699/Compiler-Robust-Hopf-QBP",
   "upstreams": [
     {
       "repository": "GoGoKo699/Hopf-QBP",
       "tracked_branch": "main",
       "tracked_commit": "9957815767ef3649275960fd5e860fb91725ff26",
-      "role": "established Hopf-QBP definitions and Möttönen-style compiler robustness"
+      "role": "established Hopf-QBP conventions, frame definitions, and gradient protocols"
     },
     {
       "repository": "GoGoKo699/Hopf-QBP",
       "tracked_branch": "ancilla-depth-robustness-2026",
       "tracked_commit": "9cc564f493caff62b847fc362df522a68c6e83bf",
-      "pull_request": 5,
-      "role": "audited research seed migrated and refactored into this repository"
+      "role": "historical research seed; superseded by the all-workspace unified compiler"
     }
   ],
   "file_lineage": {
@@ -25,18 +24,32 @@
       "Hopf-QBP:qbp_validation/reference.py@9957815767ef3649275960fd5e860fb91725ff26",
       "Hopf-QBP:qbp_validation/optimized_compiler.py@9957815767ef3649275960fd5e860fb91725ff26"
     ],
-    "compiler_robust_hopf/ancilla_depth.py": [
-      "Hopf-QBP:qbp_validation/ancilla_depth_compiler.py@9cc564f493caff62b847fc362df522a68c6e83bf"
-    ],
     "compiler_robust_hopf/decoders.py": [
       "Hopf-QBP:qbp_validation/decoders.py@9cc564f493caff62b847fc362df522a68c6e83bf"
-    ],
-    "docs/ANCILLA_DEPTH_ROBUSTNESS.md": [
-      "Hopf-QBP:docs/ANCILLA_DEPTH_ROBUSTNESS.md@9cc564f493caff62b847fc362df522a68c6e83bf"
     ]
   },
+  "project_native_paths": [
+    "compiler_robust_hopf/tree_structure.py",
+    "compiler_robust_hopf/tree_decoder.py",
+    "compiler_robust_hopf/strict_zero_echo.py",
+    "compiler_robust_hopf/strict_zero_audit.py",
+    "compiler_robust_hopf/unified_compiler.py",
+    "compiler_robust_hopf/resource_bounds.py",
+    "compiler_robust_hopf/compiler_boundaries.py",
+    "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
+    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
+    "docs/STRICT_ZERO_ECHO_AUDIT.md",
+    "docs/STRICT_ZERO_PRIOR_ART.md",
+    "docs/THEOREM_OVERVIEW.md",
+    "docs/PROOF_AUDIT.md"
+  ],
+  "frozen_fallback": {
+    "branch": "near-optimal-audited-2026-09",
+    "manifest_commit": "24f339b863faa2ac92e1adb3917cbef7dc24d3b8",
+    "policy": "preserved for provenance; not an active compiler path"
+  },
   "synchronization_policy": {
-    "foundational_corrections": "mirror deliberately in both repositories",
+    "foundational_corrections": "port deliberately to both repositories after review",
     "new_compiler_research": "authoritative only in Compiler-Robust-Hopf-QBP",
     "automatic_overwrite": false
   }

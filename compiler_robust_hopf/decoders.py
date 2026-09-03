@@ -1,4 +1,4 @@
-"""Exact-distribution and output-sensitive decoders for global Hopf records."""
+"""Exact-distribution and output-sensitive decoders for Hopf records."""
 from __future__ import annotations
 
 import numpy as np
@@ -171,3 +171,99 @@ def decode_balanced_magnitude_samples_recordwise(
         ],
         dtype=float,
     )
+
+
+def phase_record(ancilla_bit: int, leaf: int, dimension: int) -> np.ndarray:
+    """Return the norm-two signed one-hot complex phase-gradient record."""
+
+    if ancilla_bit not in (0, 1):
+        raise ValueError("ancilla_bit must be 0 or 1.")
+    if dimension < 1 or dimension & (dimension - 1):
+        raise ValueError("dimension must be a positive power of two.")
+    if not 0 <= leaf < dimension:
+        raise ValueError("leaf is outside the phase-gradient vector.")
+    record = np.zeros(dimension, dtype=float)
+    record[leaf] = 2.0 * (-1.0 if ancilla_bit else 1.0)
+    return record
+
+
+def decode_phase_gradient(probabilities: object) -> np.ndarray:
+    """Decode the complete phase gradient from an exact joint distribution."""
+
+    probs = reshape_ancilla_system(probabilities)
+    return 2.0 * (probs[0] - probs[1])
+
+
+def decode_phase_samples(
+    ancilla_bits: object,
+    leaf_labels: object,
+    dimension: int,
+) -> np.ndarray:
+    """Decode phase-gradient samples in ``O(S + dimension)`` work."""
+
+    if dimension < 1 or dimension & (dimension - 1):
+        raise ValueError("dimension must be a positive power of two.")
+    ancilla = _integer_outcomes(ancilla_bits, name="ancilla_bits")
+    leaves = _integer_outcomes(leaf_labels, name="leaf_labels")
+    if ancilla.size != leaves.size:
+        raise ValueError("ancilla_bits and leaf_labels must have the same length.")
+    if ancilla.size == 0:
+        raise ValueError("At least one measured outcome is required.")
+    if np.any((ancilla < 0) | (ancilla > 1)):
+        raise ValueError("ancilla_bits must contain only 0 and 1.")
+    if np.any((leaves < 0) | (leaves >= dimension)):
+        raise ValueError("leaf_labels lie outside the phase-gradient vector.")
+    weights = np.where(ancilla == 0, 2.0, -2.0)
+    return np.bincount(leaves, weights=weights, minlength=dimension) / ancilla.size
+
+
+def decode_checkpoint_gradient(
+    probabilities: object,
+    n: int,
+    depth: int,
+) -> np.ndarray:
+    """Decode one complete checkpoint depth block from exact probabilities.
+
+    The flattened distribution is ancilla-major. System labels are big-endian;
+    the checkpoint target is system index ``depth``. Lower-suffix outcomes are
+    summed out exactly.
+    """
+
+    if n < 1:
+        raise ValueError("n must be positive.")
+    if not 0 <= depth < n:
+        raise ValueError("depth must lie in 0, ..., n-1.")
+    probs = reshape_ancilla_system(probabilities)
+    if probs.shape[1] != 1 << n:
+        raise ValueError("Probability vector does not match n.")
+    width = 1 << depth
+    result = np.zeros(width, dtype=float)
+    target_shift = n - depth - 1
+    for ancilla in (0, 1):
+        for system_label in range(1 << n):
+            prefix = system_label >> (n - depth) if depth else 0
+            target = (system_label >> target_shift) & 1
+            sign = -2.0 * (-1.0 if (ancilla + target) & 1 else 1.0)
+            result[prefix] += sign * probs[ancilla, system_label]
+    return result
+
+
+def checkpoint_record(
+    ancilla_bit: int,
+    target_bit: int,
+    prefix: int,
+    width: int,
+) -> np.ndarray:
+    """Return the norm-two one-hot checkpoint score record."""
+
+    if ancilla_bit not in (0, 1) or target_bit not in (0, 1):
+        raise ValueError("ancilla_bit and target_bit must be 0 or 1.")
+    if width < 1 or width & (width - 1):
+        raise ValueError("width must be a positive power of two.")
+    if not 0 <= prefix < width:
+        raise ValueError("prefix lies outside the checkpoint block.")
+    record = np.zeros(width, dtype=float)
+    record[prefix] = -2.0 * (
+        -1.0 if (ancilla_bit + target_bit) & 1 else 1.0
+    )
+    return record
