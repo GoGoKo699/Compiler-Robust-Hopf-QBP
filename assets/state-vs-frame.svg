@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">State preparation versus differential-frame compilation</title>
+  <desc id="desc">The left panel fixes only one output column, while the right panel fixes the state and designated tangent columns of the Hopf differential frame.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#61788d"/>
+    </marker>
+    <style>
+      .title{font:700 28px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#243746}
+      .label{font:600 21px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#2f4858}
+      .body{font:18px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#425b6b}
+      .small{font:16px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#526b7b}
+      .math{font:20px Georgia,"Times New Roman",serif;fill:#233746}
+    </style>
+  </defs>
+  <rect width="1200" height="520" rx="20" fill="#f8fbfd"/>
+  <text x="600" y="48" text-anchor="middle" class="title">The stronger object being compiled</text>
+
+  <rect x="50" y="82" width="470" height="370" rx="18" fill="#ffffff" stroke="#9bb0c2" stroke-width="2"/>
+  <text x="285" y="122" text-anchor="middle" class="label">Ordinary state preparation</text>
+  <text x="285" y="158" text-anchor="middle" class="math">U |0ⁿ⟩ = |ψ⟩</text>
+  <g transform="translate(105,190)">
+    <rect x="0" y="0" width="360" height="190" rx="12" fill="#eef4f8" stroke="#a8bac8"/>
+    <rect x="18" y="18" width="70" height="154" rx="8" fill="#9fb9d1" stroke="#61788d" stroke-width="2"/>
+    <rect x="104" y="18" width="70" height="154" rx="8" fill="#f7fafc" stroke="#c2ced8"/>
+    <rect x="190" y="18" width="70" height="154" rx="8" fill="#f7fafc" stroke="#c2ced8"/>
+    <rect x="276" y="18" width="66" height="154" rx="8" fill="#f7fafc" stroke="#c2ced8"/>
+    <text x="53" y="104" text-anchor="middle" class="math">ψ</text>
+    <text x="139" y="104" text-anchor="middle" class="small">free</text>
+    <text x="225" y="104" text-anchor="middle" class="small">free</text>
+    <text x="309" y="104" text-anchor="middle" class="small">free</text>
+    <text x="180" y="218" text-anchor="middle" class="body">Only the initialized column is prescribed.</text>
+  </g>
+
+  <rect x="680" y="82" width="470" height="370" rx="18" fill="#ffffff" stroke="#6e8ba3" stroke-width="2.5"/>
+  <text x="915" y="122" text-anchor="middle" class="label">Hopf differential frame</text>
+  <text x="915" y="158" text-anchor="middle" class="math">W|0ⁿ⟩=|ψ⟩,  W|λ(j)⟩=|eⱼ⟩</text>
+  <g transform="translate(735,190)">
+    <rect x="0" y="0" width="360" height="190" rx="12" fill="#eef4f8" stroke="#8fa8bb"/>
+    <rect x="18" y="18" width="70" height="154" rx="8" fill="#9fb9d1" stroke="#61788d" stroke-width="2"/>
+    <rect x="104" y="18" width="70" height="154" rx="8" fill="#dce9f2" stroke="#7f9ab0" stroke-width="2"/>
+    <rect x="190" y="18" width="70" height="154" rx="8" fill="#dce9f2" stroke="#7f9ab0" stroke-width="2"/>
+    <rect x="276" y="18" width="66" height="154" rx="8" fill="#dce9f2" stroke="#7f9ab0" stroke-width="2"/>
+    <text x="53" y="104" text-anchor="middle" class="math">ψ</text>
+    <text x="139" y="104" text-anchor="middle" class="math">e₁</text>
+    <text x="225" y="104" text-anchor="middle" class="math">e₂</text>
+    <text x="309" y="104" text-anchor="middle" class="math">…</text>
+    <text x="180" y="218" text-anchor="middle" class="body">The state and tangent-marker columns are prescribed.</text>
+  </g>
+
+  <line x1="540" y1="270" x2="660" y2="270" stroke="#61788d" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="600" y="244" text-anchor="middle" class="small">stronger</text>
+  <text x="600" y="300" text-anchor="middle" class="small">operator contract</text>
+
+  <text x="600" y="492" text-anchor="middle" class="body">Quantum backpropagation applies W†, so the completion outside the first column is operational.</text>
+</svg>
