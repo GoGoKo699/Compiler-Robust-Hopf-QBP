@@ -103,8 +103,10 @@ g_{j,j}=a_j^2.
 
 Here `a_j` is the oriented incoming amplitude. On the canonical Hopf domains,
 `a_j>=0` and therefore `a_j=sqrt(g_(j,j))`. If `g_(j,j)=0`, the raw differential
-vanishes; the unit marker column remains a canonical orthogonal continuation of
-the frame rather than a normalized nonzero derivative.
+vanishes; the unit marker column remains a **chart-selected orthogonal
+continuation determined by the complete parameter tuple**, rather than a
+normalized nonzero derivative. The numerical implementation uses a
+tolerance-aware regular-coordinate mask at chart boundaries.
 
 A compiler may preserve the first column while permuting the marker columns.
 The repository gives an exact two-qubit example in which the state is unchanged
@@ -131,7 +133,7 @@ state-column equality.
 | `1<=m<4n` | direct flagged UCG | compute one reusable clean suffix flag and apply a smaller uniformly controlled gate |
 | larger `m` | routed parallel subframes | cut the Hopf tree, route the suffix coherently, and run disjoint subtree frames in parallel |
 
-The large-workspace route is now an explicit reversible construction in
+The large-workspace route is an explicit reversible construction in
 [`compiler_robust_hopf/router.py`](compiler_robust_hopf/router.py), not only a
 resource formula. Exact tests route arbitrary complex prefix–suffix-entangled
 inputs, apply all token-controlled subtree frames, unroute, and verify zero
@@ -203,7 +205,7 @@ The complete statement and its assumptions are in
 
 ## Verification boundary
 
-The repository now checks:
+The repository checks:
 
 - complete real and phase-dressed magnitude-frame operators at finite sizes;
 - exact borrowed-qubit restoration;
