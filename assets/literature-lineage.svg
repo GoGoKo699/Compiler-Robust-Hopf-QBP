@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600" role="img" aria-labelledby="title desc">
+  <title id="title">Two lines of ideas meeting in optimal Hopf-frame compilation</title>
+  <desc id="desc">The upper line follows uniformly controlled gates through exact state-preparation tradeoffs to the optimal state-preparation frontier. The lower line follows the Hopf chart through its differential frame and quantum backpropagation interface. The present compiler joins both lines.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#61788d"/>
+    </marker>
+    <style>
+      .title{font:700 30px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#243746}
+      .lane{font:700 18px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#526b7b;letter-spacing:.5px}
+      .label{font:600 19px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#304b5d}
+      .body{font:16px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#465f70}
+      .small{font:14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#526b7b}
+      .box{fill:#ffffff;stroke:#91a8b9;stroke-width:2}
+      .box2{fill:#e8f1f7;stroke:#6e8ba3;stroke-width:2}
+      .current{fill:#d9e8f2;stroke:#526f85;stroke-width:3}
+      .edge{stroke:#61788d;stroke-width:3;fill:none}
+    </style>
+  </defs>
+  <rect width="1400" height="600" rx="22" fill="#f8fbfd"/>
+  <text x="700" y="47" text-anchor="middle" class="title">Two lines of ideas meet in the complete-frame compiler</text>
+
+  <text x="55" y="132" class="lane">COMPILER LINE</text>
+  <rect x="205" y="88" width="235" height="96" rx="14" class="box"/>
+  <text x="323" y="122" text-anchor="middle" class="label">Möttönen / Bergholm</text>
+  <text x="323" y="148" text-anchor="middle" class="body">multiplexed rotations</text>
+  <text x="323" y="171" text-anchor="middle" class="small">uniformly controlled gates</text>
+
+  <line x1="440" y1="136" x2="516" y2="136" class="edge" marker-end="url(#arrow)"/>
+  <rect x="528" y="88" width="235" height="96" rx="14" class="box"/>
+  <text x="646" y="122" text-anchor="middle" class="label">Sun et al.</text>
+  <text x="646" y="148" text-anchor="middle" class="body">broad ancilla–depth landscape</text>
+  <text x="646" y="171" text-anchor="middle" class="small">historical predecessor</text>
+
+  <line x1="763" y1="136" x2="839" y2="136" class="edge" marker-end="url(#arrow)"/>
+  <rect x="851" y="88" width="270" height="96" rx="14" class="box2"/>
+  <text x="986" y="122" text-anchor="middle" class="label">Yuan–Zhang</text>
+  <text x="986" y="148" text-anchor="middle" class="body">optimal QSP for every m</text>
+  <text x="986" y="171" text-anchor="middle" class="small">MCT, UCG, copy primitives</text>
+
+  <text x="55" y="362" class="lane">HOPF LINE</text>
+  <rect x="205" y="318" width="235" height="96" rx="14" class="box"/>
+  <text x="323" y="352" text-anchor="middle" class="label">Hopf chart</text>
+  <text x="323" y="378" text-anchor="middle" class="body">state, inverse, metric</text>
+  <text x="323" y="401" text-anchor="middle" class="small">normalized tangents</text>
+
+  <line x1="440" y1="366" x2="516" y2="366" class="edge" marker-end="url(#arrow)"/>
+  <rect x="528" y="318" width="235" height="96" rx="14" class="box"/>
+  <text x="646" y="352" text-anchor="middle" class="label">Differential frame</text>
+  <text x="646" y="378" text-anchor="middle" class="body">state and tangent columns</text>
+  <text x="646" y="401" text-anchor="middle" class="small">complete operator W</text>
+
+  <line x1="763" y1="366" x2="839" y2="366" class="edge" marker-end="url(#arrow)"/>
+  <rect x="851" y="318" width="270" height="96" rx="14" class="box2"/>
+  <text x="986" y="352" text-anchor="middle" class="label">Hopf QBP</text>
+  <text x="986" y="378" text-anchor="middle" class="body">inverse-frame gradient record</text>
+  <text x="986" y="401" text-anchor="middle" class="small">compiler must preserve W</text>
+
+  <path d="M986,184 C1010,245 1100,245 1135,285" class="edge" marker-end="url(#arrow)"/>
+  <path d="M1121,366 C1160,366 1160,305 1135,285" class="edge" marker-end="url(#arrow)"/>
+
+  <rect x="1065" y="228" width="285" height="130" rx="17" class="current"/>
+  <text x="1208" y="267" text-anchor="middle" class="label">This repository</text>
+  <text x="1208" y="296" text-anchor="middle" class="body">Hopf-specific frame compiler</text>
+  <text x="1208" y="322" text-anchor="middle" class="body">matching the optimal QSP frontier</text>
+  <text x="1208" y="346" text-anchor="middle" class="small">every clean-workspace budget</text>
+
+  <rect x="185" y="492" width="1030" height="72" rx="14" fill="#edf4f8" stroke="#8da5b7" stroke-width="2"/>
+  <text x="700" y="521" text-anchor="middle" class="body">The published state-preparation results can be adapted once the Hopf complete-operator structure is exposed.</text>
+  <text x="700" y="548" text-anchor="middle" class="body">The adaptation is not a direct extension: it requires frame identities, compiler contracts, and Hopf-specific schedules.</text>
+</svg>
