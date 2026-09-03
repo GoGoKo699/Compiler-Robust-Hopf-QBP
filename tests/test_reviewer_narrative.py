@@ -23,6 +23,7 @@ PRIMARY_PAGES = (
     "docs/RESEARCH_STATUS.md",
     "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
     "docs/STRICT_ZERO_ECHO_AUDIT.md",
+    "manuscript/README.md",
 )
 
 DIAGRAMS = (
