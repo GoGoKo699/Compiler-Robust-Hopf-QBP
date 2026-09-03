@@ -51,8 +51,7 @@ class LiteraturePolicyTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        entries = payload["strict_zero_prior_art"]
-        titles = {entry["title"] for entry in entries}
+        titles = {entry["title"] for entry in payload["strict_zero_prior_art"]}
         self.assertIn("Elementary gates for quantum computation", titles)
         self.assertIn(
             "Polylogarithmic-depth controlled-NOT gates without ancilla qubits",
@@ -113,6 +112,20 @@ class LiteraturePolicyTests(unittest.TestCase):
             "docs/CLAIM_SUPPORT.md",
             "manuscript/README.md",
         )
+        theorem_bearing_docs = (
+            "README.md",
+            "REVIEW.md",
+            "docs/HOPF_INTERFACE.md",
+            "docs/COMPILER_THEOREM.md",
+            "docs/QBP_CONSEQUENCE.md",
+            "docs/THEOREM_OVERVIEW.md",
+            "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
+            "docs/END_TO_END_QBP.md",
+            "docs/PROOF_AUDIT.md",
+            "docs/RESEARCH_STATUS.md",
+            "docs/CLAIM_SUPPORT.md",
+            "manuscript/README.md",
+        )
         retired_names = (
             "ancilla_depth.py",
             "complex_resources.py",
@@ -125,9 +138,17 @@ class LiteraturePolicyTests(unittest.TestCase):
         for relative in active_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
             self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
-            self.assertIn("m>=0", text, msg=f"missing all-workspace scope in {relative}")
             for retired in retired_names:
                 self.assertNotIn(retired, text, msg=f"{retired} in {relative}")
+
+        for relative in theorem_bearing_docs:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            compact = "".join(text.split())
+            self.assertIn(
+                "m>=0",
+                compact,
+                msg=f"missing all-workspace theorem scope in {relative}",
+            )
 
         primary = " ".join(
             (ROOT / relative).read_text(encoding="utf-8")
@@ -185,8 +206,14 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("apply_router_forward", router)
         self.assertIn("apply_parallel_controlled_subframes", router)
         self.assertIn("routed_tail_residual", router)
-        self.assertIn("arbitrary_complex_inputs", tests)
-        self.assertIn("prefix–suffix-entangled", tests)
+        self.assertIn(
+            "test_route_inverse_is_identity_on_arbitrary_entangled_inputs",
+            tests,
+        )
+        self.assertIn(
+            "test_routed_tail_matches_direct_sum_on_arbitrary_complex_inputs",
+            tests,
+        )
         self.assertIn("branch_flags_are_clean", tests)
 
     def test_retired_paths_are_absent_from_active_tree(self) -> None:
