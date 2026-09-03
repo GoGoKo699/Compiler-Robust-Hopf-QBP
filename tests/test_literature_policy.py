@@ -15,12 +15,16 @@ class LiteraturePolicyTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        self.assertGreaterEqual(int(payload["schema_version"]), 2)
+        self.assertGreaterEqual(int(payload["schema_version"]), 3)
 
         active = payload["active_compiler_framework"]
         self.assertEqual(active["authors"], ["Pei Yuan", "Shengyu Zhang"])
         self.assertEqual(active["journal"], "Quantum")
         self.assertEqual(active["article"], 956)
+        self.assertEqual(active["published_eprint"], "arXiv:2202.11302v2")
+        self.assertEqual(active["checked_arxiv_revision"], "arXiv:2202.11302v3")
+        self.assertIn("normative", active["version_policy"])
+        self.assertIn("retain", active["version_policy"])
         self.assertIn("sole active", active["policy"])
         self.assertEqual(
             set(active["roles"]),
@@ -75,6 +79,7 @@ class LiteraturePolicyTests(unittest.TestCase):
         active_paths = (
             "compiler_robust_hopf/tree_structure.py",
             "compiler_robust_hopf/tree_decoder.py",
+            "compiler_robust_hopf/router.py",
             "compiler_robust_hopf/strict_zero_echo.py",
             "compiler_robust_hopf/unified_compiler.py",
         )
@@ -94,6 +99,12 @@ class LiteraturePolicyTests(unittest.TestCase):
     def test_active_docs_use_one_framework_and_all_workspace_scope(self) -> None:
         active_docs = (
             "README.md",
+            "REVIEW.md",
+            "docs/HOPF_INTERFACE.md",
+            "docs/COMPILER_THEOREM.md",
+            "docs/QBP_CONSEQUENCE.md",
+            "docs/VERIFICATION.md",
+            "docs/SOURCE_MAP.md",
             "docs/THEOREM_OVERVIEW.md",
             "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
             "docs/END_TO_END_QBP.md",
@@ -117,6 +128,25 @@ class LiteraturePolicyTests(unittest.TestCase):
             self.assertIn("m>=0", text, msg=f"missing all-workspace scope in {relative}")
             for retired in retired_names:
                 self.assertNotIn(retired, text, msg=f"{retired} in {relative}")
+
+        primary = " ".join(
+            (ROOT / relative).read_text(encoding="utf-8")
+            for relative in (
+                "README.md",
+                "REVIEW.md",
+                "docs/HOPF_INTERFACE.md",
+                "docs/COMPILER_THEOREM.md",
+                "docs/QBP_CONSEQUENCE.md",
+                "docs/VERIFICATION.md",
+                "docs/SOURCE_MAP.md",
+            )
+        )
+        normalized_primary = " ".join(primary.split()).lower()
+        self.assertIn("incoming amplitude", normalized_primary)
+        self.assertIn("complex magnitude frame", normalized_primary)
+        self.assertIn("router.py", primary)
+        self.assertIn("matched", normalized_primary)
+        self.assertIn("raw coordinate", normalized_primary)
 
         related = (ROOT / "docs" / "RELATED_WORK.md").read_text(
             encoding="utf-8"
@@ -143,6 +173,21 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("strict_zero_echo_frame_resource_row", text)
         self.assertIn("if ancillas == 0", text)
         self.assertIn("strict-zero-full-width-ucg-baseline", text)
+
+    def test_router_is_explicit_and_operator_tested(self) -> None:
+        router = (ROOT / "compiler_robust_hopf" / "router.py").read_text(
+            encoding="utf-8"
+        )
+        tests = (ROOT / "tests" / "test_router.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("router_swap_layers", router)
+        self.assertIn("apply_router_forward", router)
+        self.assertIn("apply_parallel_controlled_subframes", router)
+        self.assertIn("routed_tail_residual", router)
+        self.assertIn("arbitrary_complex_inputs", tests)
+        self.assertIn("prefix–suffix-entangled", tests)
+        self.assertIn("branch_flags_are_clean", tests)
 
     def test_retired_paths_are_absent_from_active_tree(self) -> None:
         retired = (
