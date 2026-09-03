@@ -21,13 +21,18 @@ class CleanRoomReviewTests(unittest.TestCase):
         )
         text = normalized_markdown(raw)
         lower = text.lower()
-        self.assertIn("third internal proof review", lower)
+        self.assertIn("third internal reconstruction", lower)
         self.assertIn("not external peer review", lower)
         self.assertIn("not a legal novelty opinion", lower)
         self.assertIn("for every integer `m>=0`", text)
+        self.assertIn("S_{\\mathbb C,\\mathrm{mag}}", text)
+        self.assertIn("D_{\\mathbb C,\\mathrm{mag}}", text)
         self.assertIn("q=d+2", text)
         self.assertIn("2B(s+1)", text)
-        self.assertIn("independent specialist review", lower)
+        self.assertIn("C-B", text)
+        self.assertIn("If `s=1`", text)
+        self.assertIn("router.py", text)
+        self.assertIn("independent human review", lower)
 
     def test_prior_art_search_is_machine_readable_and_conservative(self) -> None:
         payload = json.loads(
