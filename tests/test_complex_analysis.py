@@ -14,7 +14,10 @@ from compiler_robust_hopf.complex_analysis import (
     zero_amplitude_phase_residual,
 )
 from compiler_robust_hopf.conventions import marker_label
-from compiler_robust_hopf.frames import complex_frame_matrix, real_tree_data
+from compiler_robust_hopf.frames import (
+    complex_magnitude_frame_matrix,
+    real_tree_data,
+)
 
 
 def random_hermitian(rng: np.random.Generator, dimension: int) -> np.ndarray:
@@ -25,15 +28,17 @@ def random_hermitian(rng: np.random.Generator, dimension: int) -> np.ndarray:
 
 
 class ComplexAnalysisTests(unittest.TestCase):
-    def test_frame_contains_state_and_weighted_magnitude_tangents(self) -> None:
+    def test_frame_contains_state_and_oriented_magnitude_differentials(self) -> None:
         rng = np.random.default_rng(260910)
         for n in range(1, 6):
             dimension = 1 << n
+            # Unrestricted angles deliberately exercise negative incoming
+            # amplitudes.  The exact differential uses a_j, not |a_j|.
             magnitude = rng.uniform(-1.1, 1.1, size=dimension - 1)
             phase = rng.uniform(-1.5, 1.5, size=dimension)
             real = real_tree_data(magnitude)
             data = complex_chart_data(magnitude, phase)
-            frame = complex_frame_matrix(magnitude, phase)
+            frame = complex_magnitude_frame_matrix(magnitude, phase)
             np.testing.assert_allclose(
                 frame[:, 0], data.state, atol=1e-12, rtol=0.0
             )
@@ -42,11 +47,17 @@ class ComplexAnalysisTests(unittest.TestCase):
             ):
                 np.testing.assert_allclose(
                     derivative,
-                    real.sqrt_metric[node - 1]
+                    real.incoming_amplitude[node - 1]
                     * frame[:, marker_label(node, n)],
                     atol=1e-12,
                     rtol=0.0,
                 )
+            np.testing.assert_allclose(
+                real.sqrt_metric,
+                np.abs(real.incoming_amplitude),
+                atol=1e-12,
+                rtol=0.0,
+            )
 
     def test_common_phase_is_a_projective_gauge(self) -> None:
         rng = np.random.default_rng(260911)

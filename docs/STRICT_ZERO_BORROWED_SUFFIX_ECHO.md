@@ -12,7 +12,7 @@ Let
 N=2^n.
 ```
 
-The result is
+The real-frame result is
 
 ```math
 S_{\mathbb R}(n,0)=\Theta(N),
@@ -20,10 +20,11 @@ S_{\mathbb R}(n,0)=\Theta(N),
 
 ```math
 D_{\mathbb R}(n,0)
-=\Theta\left(n+\frac{N}{n}\right),
+=\Theta\left(n+\frac{N}{n}\right).
 ```
 
-with the same asymptotic bounds for the separated complex frame.
+The phase-dressed complex magnitude frame has the same asymptotic bounds; the
+leaf-phase derivatives use a separate direct measurement stream.
 
 ## 1. Addressed Hopf layer
 
@@ -51,8 +52,8 @@ L_d
 \otimes|0^{n-d-1}\rangle\!\langle0^{n-d-1}|.
 ```
 
-The circuit must equal this operator on the complete Hilbert space. It is not
-enough to agree on the forward state-preparation input.
+The circuit must equal this operator on the complete Hilbert space. Agreement
+only on the forward state-preparation input would be insufficient.
 
 ## 2. Echo construction
 
@@ -100,17 +101,13 @@ Hence
 
 ```math
 C_p^2=R_y(\theta_{d,p}),
-```
-
-and
-
-```math
+\qquad
 X C_p X=C_p^{-1}.
 ```
 
 ## 3. Complete four-sector proof
 
-Fix one prefix `p` and one remaining suffix `r`. The target actions are:
+Fix one prefix `p` and one remaining suffix `r`.
 
 | `h(r)` | original `b` | chronological target word | net target action | final `b` |
 |---:|---:|---|---|---:|
@@ -151,14 +148,17 @@ Each controlled `C_p` is one UCG. Its participating wires are:
 - the borrowed bit as one additional control;
 - the Hopf target.
 
-The exact total width is therefore
+The exact total width is
 
 ```math
 q=d+2.
 ```
 
-The remaining suffix bits are idle during the UCG and are not counted as work
-qubits. Every wire belongs to the original `n`-qubit logical system.
+The remaining suffix bits are idle during the UCG and are not work qubits. Every
+wire belongs to the original `n`-qubit logical system.
+
+The published Yuan–Zhang article is arXiv v2. Lemmas 5 and 6 were also checked
+in arXiv v3 and retain the exact statements used here.
 
 ## 5. Size and depth of one layer
 
@@ -233,7 +233,7 @@ D_{\mathbb R}(n,0)=O(n+N/n).
 ```
 
 The real state family has dimension `N-1`. Parameter counting gives
-`Omega(N)` size, and on exactly `n` wires gives `Omega(N/n)` depth. These lower
+`Omega(N)` size and, on exactly `n` wires, `Omega(N/n)` depth. These lower
 bounds match the construction.
 
 ## 7. Endpoint cases
@@ -246,20 +246,34 @@ bounds match the construction.
 
 The implementation handles each endpoint explicitly.
 
-## 8. Inverse and complex frame
+## 8. Inverse and complex-magnitude corollary
 
 The inverse circuit reverses the gate order and adjoints each gate. It has the
 same size, depth, and zero-workspace property.
 
-The separated complex frame is
+The phase-dressed complex magnitude frame is
 
 ```math
-W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}.
+W_{\mathbb C,\mathrm{mag}}
+=D_{\mathrm{ph}}W_{\mathbb R}.
 ```
 
 The arbitrary leaf-phase diagonal is one exact `n`-qubit UCG, so it also has
-`O(N)` size and `O(n+N/n)` depth with zero ancillary qubits. The complex frame
-therefore inherits the same strict-zero frontier.
+`O(N)` size and `O(n+N/n)` depth with zero ancillary qubits. Sequential
+composition therefore gives
+
+```math
+S_{\mathbb C,\mathrm{mag}}(n,0)=\Theta(N),
+```
+
+```math
+D_{\mathbb C,\mathrm{mag}}(n,0)
+=\Theta(n+N/n).
+```
+
+This unitary contains the phase-dressed magnitude directions. The leaf-phase
+derivatives are recovered through the separate direct phase stream and are not
+additional columns of the same `N`-dimensional frame.
 
 ## 9. Relation to familiar techniques
 
@@ -277,13 +291,13 @@ total-width-`d+2` UCGs, using one restored original suffix bit, and the resultin
 optimal complete-frame strict-zero bound.
 
 See [Related work](RELATED_WORK.md) for the comparison and
-[the strict-zero audit](STRICT_ZERO_ECHO_AUDIT.md) for the independent internal
+[the strict-zero audit](STRICT_ZERO_ECHO_AUDIT.md) for a separate internal
 reconstruction.
 
 ## 10. Executable support
 
 - [Circuit and resource implementation](../compiler_robust_hopf/strict_zero_echo.py)
-- [Complete sector, layer, frame, inverse, and complex tests](../tests/test_strict_zero_echo.py)
+- [Complete sector, layer, frame, inverse, and complex-magnitude tests](../tests/test_strict_zero_echo.py)
 - [Exact-rational asymptotic checks](../compiler_robust_hopf/strict_zero_audit.py)
 - [Audit tests](../tests/test_strict_zero_audit.py)
 - [Human-readable ledger](../scripts/strict_zero_echo_ledger.py)

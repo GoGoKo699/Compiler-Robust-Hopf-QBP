@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "recorded_at_utc": "2026-09-03T00:00:00Z",
+  "recorded_at_utc": "2026-09-03T05:00:00Z",
   "current_repository": "GoGoKo699/Compiler-Robust-Hopf-QBP",
   "upstreams": [
     {
       "repository": "GoGoKo699/Hopf-QBP",
       "tracked_branch": "main",
-      "tracked_commit": "9957815767ef3649275960fd5e860fb91725ff26",
-      "role": "established Hopf-QBP conventions, frame definitions, and gradient protocols"
+      "tracked_commit": "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
+      "role": "current authority for Hopf-QBP conventions, gradient protocols, task boundaries, and statistical-accuracy statements"
     },
     {
       "repository": "GoGoKo699/Hopf-QBP",
@@ -28,9 +28,23 @@
       "Hopf-QBP:qbp_validation/decoders.py@9cc564f493caff62b847fc362df522a68c6e83bf"
     ]
   },
+  "upstream_reconciliation": {
+    "previous_main_commit": "9957815767ef3649275960fd5e860fb91725ff26",
+    "reviewed_main_commit": "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
+    "commits_reviewed": 10,
+    "relevant_changes": [
+      "raw coordinatewise l_infinity is the primary finite-shot target",
+      "complete raw-gradient l_2, relative, directional, frame, and natural-gradient targets are distinct",
+      "small metric weights suppress raw-coordinate records but condition inverse-metric outputs",
+      "the complex phase block uses the ambient round-sphere metric unless a projective quotient is declared",
+      "matched scalar-versus-gradient comparisons must separate executions, logical depth, output size, and controlled-observable cost"
+    ],
+    "local_resolution": "The peer-review revision ports these task and geometry boundaries into REVIEW.md, QBP_CONSEQUENCE.md, HOPF_INTERFACE.md, SOURCE_MAP.md, and the executable chart-domain tests. No upstream source file was copied wholesale."
+  },
   "project_native_paths": [
     "compiler_robust_hopf/tree_structure.py",
     "compiler_robust_hopf/tree_decoder.py",
+    "compiler_robust_hopf/router.py",
     "compiler_robust_hopf/strict_zero_echo.py",
     "compiler_robust_hopf/strict_zero_audit.py",
     "compiler_robust_hopf/unified_compiler.py",

@@ -1,9 +1,9 @@
 """Complex Hopf-chart geometry independent of any elementary compiler.
 
 The active compiler represents the leaf-phase diagonal as one uniformly
-controlled gate. This module therefore contains only chart identities,
-derivatives, gauge checks, and objective gradients; compiler-parameter
-transforms live in :mod:`compiler_robust_hopf.unified_compiler`.
+controlled gate.  The resulting ``D_ph W_R`` unitary is the phase-dressed
+*magnitude* frame.  Leaf-phase derivatives form a separate direct measurement
+stream and are analyzed here alongside the magnitude derivatives.
 """
 from __future__ import annotations
 
@@ -11,7 +11,11 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .frames import complex_frame_matrix, phase_layer_matrix, real_tree_data
+from .frames import (
+    complex_magnitude_frame_matrix,
+    phase_layer_matrix,
+    real_tree_data,
+)
 
 
 @dataclass(frozen=True)
@@ -132,7 +136,7 @@ def centered_leaf_phases(theta_ph: object) -> tuple[float, np.ndarray]:
     """Separate one common phase from the relative leaf phases.
 
     This is a geometric gauge decomposition, not the active diagonal-compiler
-    parameterization. The active compiler stores the original phase pairs
+    parameterization.  The active compiler stores the original phase pairs
     directly as one uniformly controlled gate.
     """
 
@@ -163,8 +167,8 @@ def phase_gauge_residual(
     shifted = common_phase_shifted(phase, shift)
     state = complex_state(theta_mag, phase)
     shifted_state = complex_state(theta_mag, shifted)
-    frame = complex_frame_matrix(theta_mag, phase)
-    shifted_frame = complex_frame_matrix(theta_mag, shifted)
+    frame = complex_magnitude_frame_matrix(theta_mag, phase)
+    shifted_frame = complex_magnitude_frame_matrix(theta_mag, shifted)
     magnitude = complex_magnitude_gradient(theta_mag, phase, observable)
     shifted_magnitude = complex_magnitude_gradient(theta_mag, shifted, observable)
     phase_gradient = complex_phase_gradient(theta_mag, phase, observable)

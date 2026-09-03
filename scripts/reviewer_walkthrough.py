@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Readable eight-step walkthrough of the repository's central identities.
+"""Readable ten-step walkthrough of the repository's central identities.
 
 This script is an orientation tool. It checks representative exact finite
 identities and integer resource conditions, but it does not replace the
@@ -21,15 +21,19 @@ if str(ROOT) not in sys.path:
 from compiler_robust_hopf.compiler_boundaries import (  # noqa: E402
     two_qubit_global_state_column_counterexample,
 )
+from compiler_robust_hopf.conventions import marker_label  # noqa: E402
 from compiler_robust_hopf.frames import (  # noqa: E402
     direct_real_frame,
     hopf_ry,
+    in_canonical_magnitude_domain,
     real_frame_matrix,
+    real_tree_data,
 )
 from compiler_robust_hopf.resource_bounds import (  # noqa: E402
     low_workspace_absorption_holds,
     routed_geometric_inequality_holds,
 )
+from compiler_robust_hopf.router import routed_tail_residual  # noqa: E402
 from compiler_robust_hopf.strict_zero_echo import (  # noqa: E402
     echo_layer_residual,
     echo_sector_action,
@@ -70,6 +74,44 @@ def step_frame_identity() -> str:
     require(residual <= TOL, f"frame residual {residual:.3e}")
     require(orthogonality <= TOL, f"orthogonality residual {orthogonality:.3e}")
     return f"addressed/recursive residual={residual:.1e}; orthogonality={orthogonality:.1e}"
+
+
+def step_chart_domain_and_singularity() -> str:
+    canonical = np.asarray([0.41, 1.7, 5.2], dtype=float)
+    require(
+        in_canonical_magnitude_domain(canonical),
+        "valid real canonical angles were rejected",
+    )
+    canonical_data = real_tree_data(canonical)
+    require(
+        bool(np.all(canonical_data.incoming_amplitude >= -TOL)),
+        "canonical incoming amplitudes are not nonnegative",
+    )
+    require(
+        max_residual(
+            canonical_data.incoming_amplitude,
+            canonical_data.sqrt_metric,
+        )
+        <= TOL,
+        "canonical incoming amplitude does not equal sqrt(metric)",
+    )
+
+    singular = np.asarray([0.0, 0.43, 0.71], dtype=float)
+    singular_data = real_tree_data(singular)
+    require(
+        abs(float(singular_data.incoming_amplitude[2])) <= TOL,
+        "singular incoming amplitude is nonzero",
+    )
+    require(
+        float(np.linalg.norm(singular_data.derivatives[2])) <= TOL,
+        "singular raw differential is nonzero",
+    )
+    continuation = real_frame_matrix(singular)[:, marker_label(3, 2)]
+    require(
+        abs(float(np.linalg.norm(continuation)) - 1.0) <= TOL,
+        "singular marker column is not a unit continuation",
+    )
+    return "canonical a_j=sqrt(g_jj); singular derivative=0 with unit frame continuation"
 
 
 def step_state_column_obstruction() -> str:
@@ -123,6 +165,18 @@ def step_borrowed_layer() -> str:
     residual = echo_layer_residual(4, 1, angles)
     require(residual <= TOL, f"echo/addressed layer residual {residual:.3e}")
     return f"n=4, depth=1 complete-layer residual={residual:.1e}; no work wire"
+
+
+def step_explicit_router() -> str:
+    rng = np.random.default_rng(260924)
+    n, t = 4, 2
+    theta = rng.uniform(-0.9, 0.9, size=(1 << n) - 1)
+    state = rng.normal(size=1 << n) + 1j * rng.normal(size=1 << n)
+    state /= np.linalg.norm(state)
+    residual, leakage = routed_tail_residual(state, n, t, theta)
+    require(residual <= TOL, f"routed-tail residual {residual:.3e}")
+    require(leakage <= TOL, f"router workspace leakage {leakage:.3e}")
+    return f"entangled complex input: tail residual={residual:.1e}; leakage={leakage:.1e}"
 
 
 def step_phase_ucg() -> str:
@@ -179,9 +233,11 @@ def step_resource_inequalities() -> str:
 def main() -> int:
     checks: tuple[tuple[str, Callable[[], str]], ...] = (
         ("canonical two-qubit frame", step_frame_identity),
+        ("chart domain and singular continuation", step_chart_domain_and_singularity),
         ("state-column equality is insufficient", step_state_column_obstruction),
         ("strict-zero four-sector identity", step_four_sector_echo),
         ("borrowed suffix bit is restored", step_borrowed_layer),
+        ("explicit coherent routed tail", step_explicit_router),
         ("complex phase layer is one UCG", step_phase_ucg),
         ("workspace schedule selection", step_schedule_selection),
         ("peak workspace respects m", step_workspace_peak),

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -41,6 +42,7 @@ PROCESS_PHRASES = (
     "merge-ref",
     "all-workspace-unified-final",
     "reviewer-narrative-redesign",
+    "peer-review-revision-2026-09",
 )
 
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -66,16 +68,59 @@ class ReviewerNarrativeTests(unittest.TestCase):
             for phrase in PROCESS_PHRASES:
                 self.assertNotIn(phrase, text, msg=f"{phrase!r} in {relative}")
 
+    def test_primary_pages_use_github_safe_math_commands(self) -> None:
+        for relative in PRIMARY_PAGES:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertNotIn(
+                "\\operatorname",
+                text,
+                msg=f"unsupported GitHub math command in {relative}",
+            )
+
     def test_landing_page_is_short_and_review_is_substantial(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
-        self.assertLess(len(readme), 12_000)
+        self.assertLess(len(readme), 15_000)
         self.assertGreater(len(review), 30_000)
         self.assertIn("# Optimal Compilation of Hopf Differential Frames", readme)
         self.assertIn("## Main result under technical review", readme)
         self.assertIn("## 3. Two qubits", review)
         self.assertIn("## 6. Strict zero workspace", review)
+        self.assertIn("## 8. Larger workspace", review)
         self.assertIn("## 11. Quantum-backpropagation consequence", review)
+
+    def test_peer_review_corrections_are_visible_in_primary_route(self) -> None:
+        files = {
+            relative: (ROOT / relative).read_text(encoding="utf-8")
+            for relative in (
+                "README.md",
+                "REVIEW.md",
+                "docs/HOPF_INTERFACE.md",
+                "docs/COMPILER_THEOREM.md",
+                "docs/QBP_CONSEQUENCE.md",
+                "docs/VERIFICATION.md",
+                "docs/SOURCE_MAP.md",
+            )
+        }
+        combined = " ".join(files.values())
+        normalized = " ".join(combined.split()).lower()
+        self.assertIn("oriented incoming amplitude", normalized)
+        self.assertIn("singular", normalized)
+        self.assertIn("complex magnitude frame", normalized)
+        self.assertIn("matched", normalized)
+        self.assertIn("raw hopf-coordinate gradient", normalized)
+        self.assertIn("router.py", combined)
+        self.assertIn("arxiv:2202.11302v2", normalized)
+        self.assertIn("arxiv:2202.11302v3", normalized)
+
+        verification = files["docs/VERIFICATION.md"]
+        self.assertIn("explicit CNOT-fanout and Fredkin layers", verification)
+        self.assertIn("arbitrary prefix–suffix-entangled inputs", verification)
+        self.assertIn("implementation levels", verification.lower())
+
+        qbp = files["docs/QBP_CONSEQUENCE.md"]
+        self.assertIn("T_{\\mathrm{scalar}}^{\\mathrm{matched}}", qbp)
+        self.assertIn("T_{\\mathrm{grad}}^{\\mathrm{matched}}", qbp)
 
     def test_primary_local_links_resolve(self) -> None:
         for relative in PRIMARY_PAGES:
@@ -127,6 +172,33 @@ class ReviewerNarrativeTests(unittest.TestCase):
         self.assertIn("PROOF_AUDIT.md", verification)
         self.assertIn("STRICT_ZERO_ECHO_AUDIT.md", verification)
         self.assertIn("CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md", verification)
+
+    def test_router_and_source_versions_are_machine_checkable(self) -> None:
+        self.assertTrue((ROOT / "compiler_robust_hopf" / "router.py").is_file())
+        self.assertTrue((ROOT / "tests" / "test_router.py").is_file())
+
+        upstream = json.loads(
+            (ROOT / "provenance" / "upstream.json").read_text(encoding="utf-8")
+        )
+        current = next(
+            record
+            for record in upstream["upstreams"]
+            if record["repository"] == "GoGoKo699/Hopf-QBP"
+            and record["tracked_branch"] == "main"
+        )
+        self.assertEqual(
+            current["tracked_commit"],
+            "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
+        )
+
+        literature = json.loads(
+            (ROOT / "provenance" / "literature.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        active = literature["active_compiler_framework"]
+        self.assertEqual(active["published_eprint"], "arXiv:2202.11302v2")
+        self.assertEqual(active["checked_arxiv_revision"], "arXiv:2202.11302v3")
 
 
 if __name__ == "__main__":
