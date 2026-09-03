@@ -1,12 +1,13 @@
-"""Strict-zero borrowed-suffix echo for addressed Hopf-frame layers.
+"""Strict-zero borrowed-suffix compiler for addressed Hopf-frame layers.
 
-This module records a theorem candidate for the exact ``m=0`` endpoint. It
-does not modify the active compiler in :mod:`compiler_robust_hopf.unified_compiler`.
+This module implements the active ``m=0`` schedule selected by
+:mod:`compiler_robust_hopf.unified_compiler`.
 
-For a nonfinal addressed depth, one suffix qubit is borrowed in place. Four
-predicate-controlled toggles and two half-angle UCGs implement the desired
-suffix-zero-controlled Hopf rotation while restoring the borrowed qubit on
-every input. No clean or dirty ancillary qubit is introduced.
+For a nonfinal addressed depth, one original suffix data qubit is used in place
+as a restored predicate carrier. Four predicate-controlled toggles and two
+half-angle UCGs implement the desired suffix-zero-controlled Hopf rotation on
+the complete Hilbert space. The borrowed logical qubit is returned exactly on
+every input, and no clean or dirty ancillary wire is introduced.
 
 Resource values are transparent integer proxies for the asymptotic terms
 imported from Yuan--Zhang's exact zero-ancilla UCG and multi-controlled-X
@@ -265,7 +266,7 @@ def echo_sector_action(
 
 
 def echo_algebra_residual(theta: float) -> dict[str, float]:
-    """Return residuals in the two one-qubit identities used by the echo."""
+    """Return residuals in the one-qubit identities used by the echo."""
 
     half = hopf_ry(float(theta) / 2.0)
     echo = np.asarray([[0.0, 1.0], [1.0, 0.0]], dtype=complex)
