@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIMARY_PAGES = (
     "README.md",
     "REVIEW.md",
+    "docs/README.md",
     "docs/HOPF_INTERFACE.md",
     "docs/COMPILER_THEOREM.md",
     "docs/QBP_CONSEQUENCE.md",
@@ -113,10 +114,16 @@ class ReviewerNarrativeTests(unittest.TestCase):
         ):
             self.assertIn(target, readme)
 
+        documentation_index = (ROOT / "docs" / "README.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Main reading route", documentation_index)
+        self.assertIn("Evidence and internal review", documentation_index)
+
         verification = (ROOT / "docs" / "VERIFICATION.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("docs/PROOF_AUDIT.md".split("/", 1)[1], verification)
+        self.assertIn("PROOF_AUDIT.md", verification)
         self.assertIn("STRICT_ZERO_ECHO_AUDIT.md", verification)
         self.assertIn("CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md", verification)
 
