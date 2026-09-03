@@ -1,170 +1,130 @@
 # Claim support map
 
-This page maps every material claim to its proof type, executable support, and
-boundary. Finite tests supplement but do not replace dimension-independent
-arguments.
+[← Verification](VERIFICATION.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)
+
+This page maps each material claim to its proof type, executable support, and
+scope boundary. It is intended as a compact audit table after the main proof,
+not as a substitute for reading the proof itself.
 
 ## Evidence classes
 
 | Class | Meaning |
 |---|---|
-| Algebraic proof | Dimension-independent identity proved in project documentation |
-| Explicit construction | Register and gate schedule supplied in the repository |
-| Imported theorem | Exact circuit result used under the hypotheses of its source |
-| Exact finite check | Independently built operators or records compared numerically |
-| Explicit counterexample | Closed-form finite instance disproving a stronger claim |
-| Exact term ledger | Integer or rational bookkeeping; not asymptotic fitting |
-| Internal audit | Independent re-derivation within this project; not external review |
-| Prior-art boundary | Conservative technical comparison; not a legal novelty opinion |
+| **Algebraic proof** | dimension-independent identity proved in the documentation |
+| **Explicit construction** | complete register or gate schedule supplied in the repository |
+| **Imported theorem** | exact circuit result used under the hypotheses of its source |
+| **Exact finite check** | independently built operators, records, or schedules compared numerically |
+| **Explicit counterexample** | closed-form instance disproving a stronger compiler claim |
+| **Exact term ledger** | integer or rational bookkeeping; not an asymptotic fit |
+| **Internal audit** | a separate re-derivation within this project; not independent external review |
 
-## Literature roles
+Finite checks are valuable because they can expose sign, ordering, marker, and
+workspace errors. They do not prove statements for arbitrary `n`.
 
-| Source | Active role |
+## 1. Hopf geometry and compiler contract
+
+| Claim | Proof or source | Executable support | Boundary |
+|---|---|---|---|
+| The balanced real Hopf chart prepares every normalized real state | inherited from the first Hopf paper; restated in [Minimal Hopf interface](HOPF_INTERFACE.md) | [`frames.py`](../compiler_robust_hopf/frames.py), [`test_frames.py`](../tests/test_frames.py) | real state-vector sphere |
+| Normalized tangent columns obey `partial_(theta_j)|psi> = sqrt(g_(j,j)) |e_j>` | inherited from the first Hopf paper | [`real_tree_data`](../compiler_robust_hopf/frames.py), complex tangent tests | regular coordinates; raw differential vanishes at zero metric weight |
+| Computational markers place the state and normalized tangents in one unitary frame | inherited from Hopf-QBP and restated here | [`conventions.py`](../compiler_robust_hopf/conventions.py), [`frames.py`](../compiler_robust_hopf/frames.py) | balanced Hopf chart |
+| Addressed and recursive real frames coincide | algebraic layer construction | exact matrices through finite sizes | all-size conclusion is analytic |
+| A frame-safe implementation preserves the global QBP distribution | reducing-subspace proof in [`FRAME_SAFE_COMPILATION.md`](FRAME_SAFE_COMPILATION.md) | compiler-boundary tests | requires complete clean-input operator equality |
+| State-column equality alone is insufficient | explicit two-qubit counterexample | [`compiler_boundaries.py`](../compiler_robust_hopf/compiler_boundaries.py), tests | decoder and marker convention held fixed |
+
+## 2. Strict zero workspace
+
+| Claim | Proof or source | Executable support | Boundary |
+|---|---|---|---|
+| The four-toggle half-angle echo equals one nonfinal addressed layer | complete four-sector proof in [Compiler theorem](COMPILER_THEOREM.md) | every nonfinal depth through `n=8` | exact Hopf `R_y` convention |
+| The original suffix qubit is restored exactly | same complete-operator proof | sector and full-matrix tests | qubit may be unknown and entangled |
+| No ancillary wire is used | explicit register audit | source implementation and resource rows | borrowed wire remains logical system data |
+| Each half-angle UCG has total width `d+2` | exact participant count | layer resource tests | `d` prefix controls, one borrowed control, one target |
+| Predicate toggles require no ancillary qubit | Yuan–Zhang Lemma 5 plus negative-control wrappers | strict-zero ledger | exact all-to-all standard-circuit model |
+| One nonfinal layer has size `O(2^d+n-d)` and depth `O(n+2^d/(d+2))` | Yuan–Zhang Lemmas 5–6 and direct summation | exact integer ledger | constants are not optimized |
+| The strict-zero real frame has size `Theta(N)` and depth `Theta(n+N/n)` | upper-bound sums plus real-family parameter lower bound | exact-rational audit tests | internally audited theorem |
+| The inverse has the same resources | adjoint of the exact circuit | inverse matrix tests | exact unitary model |
+
+## 3. Positive workspace structure
+
+| Claim | Proof or source | Executable support | Boundary |
+|---|---|---|---|
+| The first `t` depths equal a `t`-qubit frame conditioned on a zero external suffix | complete-operator proof | every cut through `n=8` | balanced addressed frame |
+| The tail below a cut is a direct sum of subtree frames | exact angle map and block proof | every cut through `n=8` | complete operator, not one column |
+| The binary–one-hot decoder maps `|x>|0>` to `|0>|e_x>|0>` | explicit X/CNOT/Toffoli construction | basis permutation, inverse, and layer-disjointness tests | clean decoder input |
+| Decoder workspace is `3·2^t-2-t`, depth is `O(t)`, and size is `O(2^t)` | exact register and gate-layer count | closed-form schedule checks | fixed-width Toffoli has constant cost |
+| The conditioned prefix has depth `O(n)` and size `O(2^t+n-t)` | decoder, predicate, fanout, controlled Givens layers | identity and resource tests | decoder scratch reused sequentially |
+| The coherent router is valid on entangled prefix–suffix input | controlled-permutation proof | small exact routed matrices | all-to-all logical connectivity |
+| Prefix and routed tail fit inside `2B(s+1)` clean workspace | simultaneous register ledger | broad-grid workspace tests | `B=2^t`, `s=n-t` |
+| Controlled subtree frames run in parallel | disjoint physical branch registers | resource rows and finite construction checks | requires the allocated branch registers |
+| The maximal feasible cut gives optimal positive-workspace depth | algebraic cut inequality | exact integer diagnostics | asymptotic scheduling threshold, not a finite crossover claim |
+
+## 4. All-workspace real and complex frames
+
+| Claim | Proof or source | Executable support | Boundary |
+|---|---|---|---|
+| The unified compiler selects the strict-zero echo at `m=0` | explicit dispatch | unified/strict-zero cross-check | top-level real frame |
+| The requested workspace is never exceeded | simultaneous peak ledger | broad grid of `n,m` values | clean ancillary model |
+| The real frame has `Theta(N)` size for every `m>=0` | strict-zero and positive-workspace upper bounds plus parameter lower bound | both resource ledgers | exact standard circuit |
+| The real frame has `Theta(n+N/(n+m))` depth for every `m>=0` | three schedules plus matching lower bounds | term diagnostics | all-to-all logical depth |
+| An arbitrary leaf-phase diagonal is one exact `n`-qubit UCG | direct block identity | complete diagonal matrices | arbitrary `U(2)` blocks allowed |
+| The phase layer reuses the real-frame workspace | sequential clean composition | complex resource rows | both blocks return workspace to zero |
+| The separated complex frame has the same all-workspace frontier | real theorem plus one phase UCG | complex matrices and ledgers | separated complex construction |
+
+## 5. Quantum-backpropagation consequence
+
+| Claim | Proof or source | Executable support | Boundary |
+|---|---|---|---|
+| One global magnitude outcome contributes to every magnitude coordinate | inherited Hopf-QBP record identity | decoder parity/FWHT tests | controlled Hermitian-unitary observable model |
+| Fixed-accuracy magnitude executions scale as `O(log n)` | inherited fixed-norm concentration theorem | norm and decoder checks | simultaneous coordinatewise accuracy |
+| Record-wise decoding costs `O(SN)` | direct character accumulation | record-wise/FWHT parity tests | materialized output has length `Theta(N)` |
+| Histogram plus FWHT costs `O(S+Nn)` | standard FWHT count | dense/FWHT comparisons | alternative decoding route |
+| Direct complex phase decoding costs `O(S+N)` | signed one-hot accumulation | phase-record tests | one global-phase redundancy |
+| Frame-safe compilation adds no asymptotic per-execution depth factor | optimal frame compiler and substitution theorem | reviewer walkthrough and complete suite | matched exact logical cost model |
+| Fixed-accuracy global magnitude overhead is `O(log n)=O(log log M)` | sample count plus constant per-execution compiler ratio | [QBP consequence](QBP_CONSEQUENCE.md) | controlled-observable cost must be charged consistently |
+
+## 6. Source and contribution boundaries
+
+The active compiler framework and optimal state-preparation benchmark are Yuan
+and Zhang, *Quantum* **7**, 956 (2023). The earlier Sun et al. paper is retained
+as the historical predecessor. Möttönen/Bergholm, controlled-unitary roots, and
+borrowed or conditionally clean workspace are credited in
+[Related work](RELATED_WORK.md).
+
+The repository does not claim invention of UCGs, borrowed qubits, toggle
+detection, or square-root/conjugation identities. The narrow strict-zero
+contribution is the Hopf-specific reduction of one addressed depth to two
+width-`d+2` UCGs using a restored logical suffix qubit, together with the
+resulting optimal complete-frame resource theorem.
+
+Detailed search methodology and any negative search observations are confined
+to the supporting prior-art records. They are not premises of the theorem.
+
+## 7. Internal review records
+
+| Record | Purpose |
 |---|---|
-| Yuan--Zhang, *Quantum* 7, 956 (2023) | Sole active external compiler framework; Theorem 2 benchmark; Lemmas 5, 6, and 9 primitives |
-| Sun et al., *IEEE TCAD* 42, 3301--3314 (2023) | Historical predecessor and original attribution; not an alternative compiler |
-| Möttönen et al. and Bergholm et al. (2005) | Uniformly controlled-gate lineage and earlier `Hopf-QBP` robustness context |
-| Barenco et al. (1995), Claudon et al. (2024) | Square-root controlled-unitary and borrowed-ancilla lineage |
-| Khattar--Gidney (2024) | Conditionally clean ancillas and toggle-detection lineage |
-| Xu et al. (2025) | Restricted/sparse UCG context |
+| [Consolidated proof audit](PROOF_AUDIT.md) | register, operator, and asymptotic reconstruction of the full compiler |
+| [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | chronological order, sector phases, hidden-workspace, endpoint, and summation checks |
+| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem rederived from the operator target and imported primitives rather than construction chronology |
 
-The machine-readable record is [`../provenance/literature.json`](../provenance/literature.json).
+These records make the internal checking process visible. They do not replace
+independent technical review.
 
-## Geometry and operator contracts
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Recursive Hopf state and normalized tangent columns form the real differential frame | Algebraic construction | `frames.py`, `test_frames.py` | Hopf-specific chart |
-| Addressed real frame equals recursive real frame | Algebraic layer construction and finite checks | `frames.py`, `test_frames.py` | Formula general; matrices checked finitely |
-| Separated complex frame is `D_ph W_R` | Algebraic identity and unitarity checks | `frames.py`, complex tests | Exact separated construction |
-| Frame-safe substitution preserves the global distribution | Reducing-subspace proof | `FRAME_SAFE_COMPILATION.md` | Requires full clean-input operator action |
-| State-column equality is insufficient for global QBP | Exact two-qubit counterexample | `compiler_boundaries.py`, tests | Original decoder held fixed |
-| Checkpoint active-interface equality preserves designated means | Algebraic interface theorem | boundary docs/tests | Full distributions may change |
-| Checkpoint state-column equality is insufficient | Exact counterexample | boundary implementation/tests | Factorization-specific |
-
-## Strict-zero addressed layers
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Four-toggle half-angle echo equals one addressed nonfinal layer | Four-sector algebraic proof | `strict_zero_echo.py`, every nonfinal depth through `n=8` | Exact Hopf `R_y` convention |
-| Borrowed suffix qubit is restored exactly | Same complete-operator proof | sector tests and full matrices | Qubit may be unknown and entangled |
-| No ancillary wire is used | Explicit register audit | source and audit document | Borrowed wire is original system data |
-| Half-angle UCG total width is `d+2` | Exact participant count | resource-row tests | `d` prefix controls, borrowed control, target |
-| Predicate toggle uses zero ancillary qubits | Imported theorem and negative-control wrappers | resource audit | Yuan--Zhang Lemma 5 |
-| Nonfinal layer has size `O(2**d+n-d)` | Two UCGs plus four MCTs and two CNOTs | strict-zero ledger | Exact constants not claimed |
-| Nonfinal layer has depth `O(n+2**d/(d+2))` | Yuan--Zhang Lemmas 5 and 6 | strict-zero ledger | All-to-all standard circuit |
-| Complete strict-zero real frame has size `Theta(N)` | Geometric size sum plus parameter lower bound | strict-zero audit tests | Internal theorem audit |
-| Complete strict-zero real frame has depth `Theta(n+N/n)` | Dyadic-harmonic upper bound and exact-wire parameter lower bound | exact-rational audit tests | Internal theorem audit |
-| Inverse has the same resources | Adjoint of exact unitary circuit | inverse matrix tests | Exact circuit model |
-
-## Positive-workspace Hopf tree structure
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| First `t` depths are a `t`-qubit frame conditioned on zero external suffix | Complete-operator proof | `tree_structure.py`, unified tests | Every cut checked through `n=8` |
-| Tail below a cut is a direct sum of subtree frames | Algebraic proof and exact angle map | tree structure/tests | Every cut checked through `n=8` |
-| Prefix and tail reconstruct the frame | Exact factorization | unified tests | Complete matrix equality |
-
-## Binary--one-hot decoder
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Decoder maps `|x>|0>` to `|0>|e_x>|0>` | Explicit reversible construction | `tree_decoder.py`, tests | Clean input subspace; inverse exact on code |
-| Decoder is a full basis permutation | X/CNOT/Toffoli schedule | arbitrary-register reversal tests | Fixed-width gate decomposition |
-| Workspace is `3*2**t-2-t` | Exact register count | closed-form tests | Clean ancillary count |
-| Depth is `11t-4=O(t)` | Explicit disjoint layer schedule | support-disjointness tests | Fixed-width Toffoli constant cost |
-| Size is `O(2**t)` | Exact high-level count | generated schedule versus formula | Constant factors suppressed |
-| One-hot Givens network equals complete prefix frame | Mode-pair proof and matrices | code-action tests | One-excitation code |
-| Conditioned prefix has depth `O(n)` and size `O(2**t+n-t)` | Decoder, predicate, fanout, controlled Givens | resource row and identity tests | Decoder scratch reused sequentially |
-
-## Positive-workspace unified compiler
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Direct nonfinal layer is suffix flag plus one UCG | Explicit construction | `direct_frame_resource_row` | Yuan--Zhang Lemmas 5 and 6 |
-| Direct schedule has size `O(N)` | Geometric UCG-size sum | unified ledger | Positive workspace |
-| For `1<=m<4n`, direct depth is optimal order | Polynomial absorption | exact integer regression | Positive workspace |
-| Router acts coherently on entangled inputs | Controlled permutation proof | small routed matrices | All-to-all logical model |
-| Copied-control count is `(B-1)(s+1)-t` | Combinatorial count | workspace tests | `B=2**t`, `s=n-t` |
-| Prefix and routed tail fit in `2B(s+1)` workspace | Exact peak ledger | broad-grid tests | Nontrivial cuts |
-| Controlled subtree frame has size `O(2**s)` and depth `O(s**2+2**s/s)` | UCG/MCT sum | controlled resource row | Imported exact primitives |
-| All subtree frames run in parallel | Disjoint branch registers | construction/tests | Requires allocated branch registers |
-| Maximal feasible cut gives optimal depth | Algebraic cut inequality | exact diagnostics | Routed regime |
-| Positive-workspace real frame is optimal | Unified upper and lower bounds | compiler/ledger/tests | Internal proof audit |
-
-## All-workspace theorem
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Unified compiler selects echo at `m=0` | Explicit dispatch | `unified_compiler.py`, cross-check tests | Top-level real frame only |
-| Unified compiler respects every requested `m>=0` | Workspace ledger | broad-grid tests | Clean workspace model |
-| Real frame has `Theta(N)` size for every `m>=0` | Strict-zero and positive theorems | unified and dedicated ledgers | Internal proof audit |
-| Real frame has `Theta(n+N/(n+m))` depth for every `m>=0` | Schedule union and lower bounds | exact term diagnostics | Internal proof audit |
-
-## Complex frame
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Arbitrary phase diagonal is one `n`-qubit UCG | Direct block identity | `diagonal_ucg_matrix`, tests | One target, `n-1` controls |
-| Diagonal size/depth match the QSP scale for every `m>=0` | Yuan--Zhang Lemma 6 | resource row | Exact standard circuit |
-| Common phase is retained exactly | Arbitrary `U(2)` blocks | complete-matrix tests | No gauge repair needed |
-| Block table generation is `O(N)` | Direct phase pairing | implementation | Host decomposition time not benchmarked |
-| Real and diagonal blocks reuse one workspace pool | Sequential clean composition | complex resource row | Both blocks return workspace |
-| Complex frame has the all-workspace optimum | Real theorem plus phase UCG | complex tests/ledger | Internal audited corollary |
-
-## Backpropagation and classical work
-
-| Claim | Evidence | Implementation/tests | Boundary |
-|---|---|---|---|
-| Magnitude sampling is compiler-independent under frame safety | Substitution theorem | contract proof | Same frame and measurement convention |
-| Fixed-accuracy magnitude executions are `O(log n)` | Norm-two records and vector concentration | established `Hopf-QBP` result | Controlled-observable model |
-| Record-wise magnitude decoder costs `O(SN)` | Direct character generation | decoder/FWHT parity tests | Output length `Theta(N)` |
-| Histogram plus FWHT costs `O(S+Nn)` | Standard FWHT count | decoder tests | Alternative route |
-| Direct phase decoder costs `O(S+N)` | Signed-bin accumulation | exact sample tests | One gauge redundancy |
-| Compiler-robust QBP overhead is `O(log n)=O(log log M)` for every `m>=0` | Optimal per-execution frame depth and sample count | `END_TO_END_QBP.md` | Controlled `O` charged comparably |
-
-## Prior-art boundary
-
-| Statement | Status |
-|---|---|
-| Square-root/conjugation controlled-unitary techniques predate this project | Established lineage |
-| Borrowed/dirty-bit toggle detection predates this project | Established lineage |
-| Standard UCG synthesis is imported | Established lineage |
-| Same Hopf-specific two-UCG borrowed-suffix reduction found in current search | Not found, but search not conclusive |
-| Novelty claim to use | Hopf-specific aggregation and optimal complete-frame consequence |
-
-See [`STRICT_ZERO_PRIOR_ART.md`](STRICT_ZERO_PRIOR_ART.md).
-
-## Active files
-
-```text
-compiler_robust_hopf/frames.py
-compiler_robust_hopf/tree_structure.py
-compiler_robust_hopf/tree_decoder.py
-compiler_robust_hopf/strict_zero_echo.py
-compiler_robust_hopf/strict_zero_audit.py
-compiler_robust_hopf/unified_compiler.py
-compiler_robust_hopf/resource_bounds.py
-compiler_robust_hopf/decoders.py
-compiler_robust_hopf/compiler_boundaries.py
-
-docs/THEOREM_OVERVIEW.md
-docs/UNIFIED_YUAN_ZHANG_COMPILER.md
-docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md
-docs/STRICT_ZERO_ECHO_AUDIT.md
-docs/STRICT_ZERO_PRIOR_ART.md
-docs/FRAME_SAFE_COMPILATION.md
-docs/COMPILER_BOUNDARIES.md
-docs/END_TO_END_QBP.md
-docs/RELATED_WORK.md
-```
-
-## Reproduction
+## 8. Reproduction
 
 ```bash
 python -m pip install -r requirements.txt
+python scripts/reviewer_walkthrough.py
 python validate.py
 python scripts/unified_resource_ledger.py --n 12
 python scripts/strict_zero_echo_ledger.py --n 12
 python scripts/check_upstream_sync.py --offline
 ```
+
+The short walkthrough is an orientation tool. The full suite and ledgers are
+described in [Verification and evidence](VERIFICATION.md).
+
+---
+
+[← Verification](VERIFICATION.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)

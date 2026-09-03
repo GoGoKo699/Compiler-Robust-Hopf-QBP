@@ -121,7 +121,8 @@ class LiteraturePolicyTests(unittest.TestCase):
         related = (ROOT / "docs" / "RELATED_WORK.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("historical predecessor", related.lower())
+        normalized_related = " ".join(related.split())
+        self.assertIn("historical predecessor", normalized_related.lower())
         self.assertIn("Sun", related)
         self.assertIn("Yuan", related)
         self.assertIn("Barenco", related)

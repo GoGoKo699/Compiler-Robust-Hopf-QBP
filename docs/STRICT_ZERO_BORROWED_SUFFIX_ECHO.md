@@ -1,28 +1,10 @@
 # Strict-zero borrowed-suffix echo
 
-## Status
+[← Complete narrative](../REVIEW.md) · [Complete compiler theorem](COMPILER_THEOREM.md) · [Verification](VERIFICATION.md)
 
-This document records a **theorem candidate** for the strict zero-workspace
-endpoint. It is developed on the branch
-
-```text
-strict-zero-borrowed-suffix-echo
-```
-
-and is not yet part of the active theorem in PR #14.
-
-The exact operator construction, full-frame matrix checks, and integer resource
-ledgers are implemented in:
-
-```text
-compiler_robust_hopf/strict_zero_echo.py
-tests/test_strict_zero_echo.py
-scripts/strict_zero_echo_ledger.py
-```
-
-Independent proof and prior-art review are tracked in Issue #17.
-
-## 1. Candidate result
+This page isolates the `m=0` component of the all-workspace theorem. The
+construction uses no ancillary wire. One original suffix data qubit is used as a
+temporary predicate carrier and is restored exactly on every input.
 
 Let
 
@@ -30,37 +12,22 @@ Let
 N=2^n.
 ```
 
-In the exact all-to-all standard circuit model of arbitrary one-qubit gates and
-CNOTs, the construction below appears to give the complete real Hopf
-differential frame at strict zero additional workspace with
+The result is
 
 ```math
-S_{\mathbb R}(n,0)=\Theta(N)
+S_{\mathbb R}(n,0)=\Theta(N),
 ```
-
-and
 
 ```math
 D_{\mathbb R}(n,0)
-=\Theta\left(n+\frac{N}{n}\right).
+=\Theta\left(n+\frac{N}{n}\right),
 ```
 
-The separated complex frame
+with the same asymptotic bounds for the separated complex frame.
 
-```math
-W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}
-```
+## 1. Addressed Hopf layer
 
-would have the same strict-zero size and depth. Combined with the audited
-positive-workspace compiler, this would match the Yuan--Zhang optimal
-state-preparation frontier for every integer `m>=0`.
-
-No clean or dirty ancillary qubit is introduced. One existing suffix qubit is
-temporarily borrowed and restored exactly on every input.
-
-## 2. One addressed Hopf layer
-
-At nonfinal tree depth `d<n-1`, write the computational register as
+At nonfinal tree depth `d<n-1`, write the system register as
 
 ```math
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R,
@@ -71,65 +38,33 @@ where:
 - `p` is the `d`-bit Hopf prefix;
 - `x` is the addressed rotation target;
 - `b` is the suffix bit immediately below the target;
-- `r` contains the remaining
-  ```math
-  n-d-2
-  ```
-  suffix bits.
+- `r` contains the remaining `n-d-2` suffix bits.
 
-Put
+The desired complete layer applies the prefix-selected rotation only when the
+original lower suffix `br` is all zero:
 
 ```math
-h(r)=[r=0].
+L_d
+=I+
+\sum_p|p\rangle\!\langle p|
+\otimes\bigl(R_y(\theta_{d,p})-I\bigr)
+\otimes|0^{n-d-1}\rangle\!\langle0^{n-d-1}|.
 ```
 
-The addressed layer must apply the prefix-selected rotation
+The circuit must equal this operator on the complete Hilbert space. It is not
+enough to agree on the forward state-preparation input.
 
-```math
-R_y(\theta_p)
-```
-
-exactly when
-
-```math
-h(r)=1,
-\qquad
-b=0.
-```
-
-That is precisely the condition that the entire original suffix is zero.
+## 2. Echo construction
 
 Define
 
 ```math
-C_p=R_y(\theta_p/2)
+h(r)=[r=0],
+\qquad
+C_p=R_y(\theta_{d,p}/2).
 ```
 
-and let `X_T` be Pauli `X` on the target. In the Hopf convention
-
-```math
-R_y(\alpha)=
-\begin{pmatrix}
-\cos\alpha&-\sin\alpha\\
-\sin\alpha&\cos\alpha
-\end{pmatrix},
-```
-
-we have
-
-```math
-C_p^2=R_y(\theta_p)
-```
-
-and
-
-```math
-X_T C_p X_T=C_p^{-1}.
-```
-
-## 3. In-place predicate toggle
-
-Let `T_h` be the zero-ancilla reversible operation
+Let `T_h` toggle `b` iff `h(r)=1`:
 
 ```math
 T_h:
@@ -138,161 +73,150 @@ T_h:
 |b\oplus h(r)\rangle|r\rangle.
 ```
 
-Thus `T_h` toggles the borrowed bit exactly when all remaining suffix bits are
-zero.
-
-When `r` is nonempty, `T_h` is a multi-controlled `X` on `b` with zero-valued
-controls. The zero controls are obtained by parallel `X` wrappers around an
-ordinary multi-controlled `X`. Yuan--Zhang Lemma 5 supplies an exact
-ancilla-free linear-size, linear-depth implementation of the controlled `X`
-core.
-
-At the endpoint `d=n-2`, `r` is empty and `h=1` identically, so
-
-```math
-T_h=X_B.
-```
-
-## 4. Four-toggle echo
-
-Let `Lambda_B(X_T)` denote the CNOT from the borrowed bit to the target, and let
-`Lambda_B(C_p)` denote the UCG that applies the prefix-selected half rotation
-`C_p` when `b=1`.
-
-Use the following **chronological** sequence:
+Apply the following sequence from left to right:
 
 ```text
-Lambda_B(X_T)
+controlled_b(X)
 T_h
-Lambda_B(C_p)
+controlled_b(C_p)
 T_h
-Lambda_B(X_T)
+controlled_b(X)
 T_h
-Lambda_B(C_p)
-T_h
+controlled_b(C_p)
+T_h.
 ```
 
-The target word in each sector is:
+<p align="center">
+  <img src="../assets/strict-zero-echo.svg" width="1040" alt="Strict-zero borrowed-suffix echo circuit." />
+</p>
 
-| `h(r)` | original `b` | chronological target gates | net operator |
-|---:|---:|---|---|
-| 0 | 0 | none | `I` |
-| 0 | 1 | `X, C_p, X, C_p` | `C_p X C_p X=I` |
-| 1 | 0 | `C_p, C_p` | `C_p^2=R_y(theta_p)` |
-| 1 | 1 | `X, X` | `I` |
-
-The matrix product in the second row is written in reverse chronological order,
-as usual for operators acting on column vectors.
-
-The borrowed bit is restored:
-
-- when `h=0`, it is never toggled;
-- when `h=1`, it is toggled four times.
-
-Therefore, in every prefix and remaining-suffix sector, the echo applies
-`R_y(theta_p)` exactly when the original full suffix is zero and otherwise
-applies the identity. It follows that
+The Hopf rotation convention is
 
 ```math
-\boxed{E_d=L_d}
+R_y(\alpha)=e^{-i\alpha Y}.
 ```
 
-as complete operators on the entire `n`-qubit Hilbert space.
+Hence
 
-This is stronger than equality on the state-preparation input. It remains valid
-for arbitrary superpositions and entanglement among the prefix, target,
-borrowed bit, and remaining suffix.
+```math
+C_p^2=R_y(\theta_{d,p}),
+```
 
-## 5. UCG width
+and
 
-The half-angle operation `Lambda_B(C_p)` has:
+```math
+X C_p X=C_p^{-1}.
+```
+
+## 3. Complete four-sector proof
+
+Fix one prefix `p` and one remaining suffix `r`. The target actions are:
+
+| `h(r)` | original `b` | chronological target word | net target action | final `b` |
+|---:|---:|---|---|---:|
+| 0 | 0 | none | `I` | 0 |
+| 0 | 1 | `X,C_p,X,C_p` | `C_p X C_p X=I` | 1 |
+| 1 | 0 | `C_p,C_p` | `C_p^2=R_y(theta_(d,p))` | 0 |
+| 1 | 1 | `X,X` | `I` | 1 |
+
+The chronological word `X,C_p,X,C_p` acts on column vectors as
+`C_p X C_p X`; this distinction prevents a common order error.
+
+The active sector is `h(r)=1` and original `b=0`, exactly the condition that the
+complete original suffix is zero. Every other sector receives identity. The
+borrowed bit is toggled either zero or four times and returns to its original
+value. No sector-dependent scalar phase appears.
+
+The prefix and remaining-suffix labels define mutually orthogonal invariant
+sectors. The sector calculation therefore proves equality on arbitrary
+superpositions and on inputs in which the borrowed bit is entangled with the
+rest of the system:
+
+```math
+\boxed{
+E_d=L_d.
+}
+```
+
+## 4. No hidden workspace
+
+The predicate operation `T_h` is a multi-controlled X whose target is the
+borrowed logical qubit. Its controls are the bits of `r`, surrounded by X gates
+to recognize the all-zero string. Yuan–Zhang Lemma 5 supplies an exact
+ancilla-free implementation with linear size and depth.
+
+Each controlled `C_p` is one UCG. Its participating wires are:
 
 - `d` prefix controls;
 - the borrowed bit as one additional control;
 - the Hopf target.
 
-It is therefore a UCG on
+The exact total width is therefore
 
 ```math
-q=d+2
+q=d+2.
 ```
 
-qubits. Its block table contains identity blocks for `b=0` and
-`R_y(theta_p/2)` blocks for `b=1`.
+The remaining suffix bits are idle during the UCG and are not counted as work
+qubits. Every wire belongs to the original `n`-qubit logical system.
 
-Yuan--Zhang Lemma 6 gives, with no ancillary qubits,
+## 5. Size and depth of one layer
+
+Yuan–Zhang Lemma 6 gives, with no ancillary workspace,
 
 ```math
-S_{\mathrm{UCG}}(q,0)=O(2^q)
+S_{\mathrm{UCG}}(d+2,0)=O(2^d),
 ```
-
-and
 
 ```math
-D_{\mathrm{UCG}}(q,0)
-=O\left(q+\frac{2^q}{q}\right).
+D_{\mathrm{UCG}}(d+2,0)
+=O\left(d+2+\frac{2^d}{d+2}\right).
 ```
 
-Each nonfinal Hopf layer uses two such half-angle UCGs, four predicate toggles,
-and two CNOT echoes. With
+A nonfinal layer contains two such UCGs, four predicate toggles, and two CNOT
+echoes. Thus
 
 ```math
-s=n-d-1,
+S(L_d)=O(2^d+n-d),
 ```
-
-the resulting layer bounds are
-
-```math
-S(L_d)=O(2^d+s)
-```
-
-and
 
 ```math
 D(L_d)
-=O\left(n+\frac{2^d}{d+1}\right).
+=O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-No ancillary wire is present in this count.
+## 6. Complete real frame
 
-## 6. Complete real-frame upper bound
-
-The final Hopf depth has no lower suffix and is compiled as one ordinary
-`n`-qubit UCG.
-
-Summing size over the nonfinal depths gives
+The final depth has no lower suffix and is one ordinary `n`-qubit UCG. Summing
+size gives
 
 ```math
 \begin{aligned}
 S(W_{\mathbb R})
 &=O\left(
 \sum_{d=0}^{n-2}2^d
-+\sum_{d=0}^{n-2}(n-d-1)
++\sum_{d=0}^{n-2}(n-d)
 +N
 \right)\\
-&=O(N+n^2)\\
-&=O(N).
+&=O(N+n^2)=O(N).
 \end{aligned}
 ```
 
-For depth,
+For the UCG depth terms,
 
 ```math
-D(W_{\mathbb R})
-=O\left(
-n^2+
-\sum_{d=0}^{n-2}\frac{2^d}{d+1}
-+n+\frac{N}{n}
-\right).
+\sum_{d=0}^{n-2}\frac{2^d}{d+2}
+=O(N/n).
 ```
 
-Split the dyadic sum at `d=floor(n/2)`:
+One uniform bound used by the audit is
 
-- the early part is `O(2**(n/2))`;
-- every denominator in the late part is `Omega(n)`, so the late part is
-  `O(N/n)`.
+```math
+\sum_{q=2}^{n}\frac{2^q}{q}
+\leq6\frac{2^n}{n}.
+```
 
-Also `n**3=O(2**n)`, hence
+All predicate and linear-width terms sum to `O(n^2)`, and
 
 ```math
 n^2=O(N/n).
@@ -301,142 +225,72 @@ n^2=O(N/n).
 Therefore
 
 ```math
-\boxed{
-S(W_{\mathbb R})=O(N),
-\qquad
-D(W_{\mathbb R})=O\left(n+\frac{N}{n}\right).
-}
+S_{\mathbb R}(n,0)=O(N),
 ```
-
-Taking the adjoint of the exact circuit implements `W_R^dagger` with identical
-resources.
-
-## 7. Lower bound
-
-Applying the frame to `|0^n>` prepares an arbitrary real normalized `n`-qubit
-state. The family has `N-1` real degrees of freedom. The parameter-count and
-backward-light-cone arguments already used by the unified compiler therefore
-give
 
 ```math
-S(W_{\mathbb R})=\Omega(N)
+D_{\mathbb R}(n,0)=O(n+N/n).
 ```
 
-and
+The real state family has dimension `N-1`. Parameter counting gives
+`Omega(N)` size, and on exactly `n` wires gives `Omega(N/n)` depth. These lower
+bounds match the construction.
 
-```math
-D(W_{\mathbb R})
-=\Omega\left(n+\frac{N}{n}\right).
-```
+## 7. Endpoint cases
 
-If the upper-bound audit survives, the strict-zero real-frame result is
+- `n=1`: there is no echo layer; the frame is one one-qubit rotation.
+- `d=0`: the half-angle UCG has total width two.
+- `d=n-2`: the remaining suffix is empty, so `T_h=X_b`.
+- `d=n-1`: there is no borrowed bit; the final layer is the ordinary full-width
+  UCG.
 
-```math
-\boxed{
-S_{\mathbb R}(n,0)=\Theta(N),
-\qquad
-D_{\mathbb R}(n,0)
-=\Theta\left(n+\frac{N}{n}\right).
-}
-```
+The implementation handles each endpoint explicitly.
 
-## 8. Separated complex frame
+## 8. Inverse and complex frame
 
-The phase diagonal is already one exact `n`-qubit UCG:
+The inverse circuit reverses the gate order and adjoints each gate. It has the
+same size, depth, and zero-workspace property.
 
-```math
-D_{\mathrm{ph}}
-=\sum_z |z\rangle\!\langle z|
-\otimes
-\operatorname{diag}
-\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right).
-```
-
-At zero workspace it has `O(N)` size and `O(n+N/n)` depth by Yuan--Zhang
-Lemma 6. Sequential composition with the strict-zero real frame therefore gives
-the same candidate bounds for
+The separated complex frame is
 
 ```math
 W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}.
 ```
 
-## 9. Why direct sparse Möttönen pruning is insufficient
+The arbitrary leaf-phase diagonal is one exact `n`-qubit UCG, so it also has
+`O(N)` size and `O(n+N/n)` depth with zero ancillary qubits. The complex frame
+therefore inherits the same strict-zero frontier.
 
-For one addressed depth, the logical angle table is
+## 9. Relation to familiar techniques
 
-```math
-\alpha(p,z)=\theta_p\,\delta_{z,0}.
-```
+The circuit combines established ingredients:
 
-The standard Möttönen/Gray-code physical angles are obtained from a signed
-Walsh transform. For prefix frequency `u` and suffix frequency `v`,
+- UCGs and multiplexed rotations;
+- controlled-unitary square roots;
+- Pauli conjugation;
+- borrowed or conditionally clean logical qubits;
+- toggle-detection cancellation.
 
-```math
-\widehat\alpha(u,v)
-\propto
-\sum_{p,z}
-(-1)^{u\cdot p+v\cdot z}
-\theta_p\delta_{z,0}
-=
-\sum_p(-1)^{u\cdot p}\theta_p.
-```
+The claim is not that these ingredients are new. The Hopf-specific contribution
+is the aggregation of every prefix-dependent rotation at depth `d` into two
+total-width-`d+2` UCGs, using one restored original suffix bit, and the resulting
+optimal complete-frame strict-zero bound.
 
-The result is independent of `v`. For generic Hopf angles, each nonzero prefix
-coefficient is replicated across every suffix frequency. Thus a sparse logical
-block table becomes generically dense in the standard full-width Möttönen
-parameterization.
+See [Related work](RELATED_WORK.md) for the comparison and
+[the strict-zero audit](STRICT_ZERO_ECHO_AUDIT.md) for the independent internal
+reconstruction.
 
-The echo avoids that dense transform. It uses a smaller
-prefix-plus-borrowed-bit UCG and handles the remaining suffix condition through
-in-place toggles.
+## 10. Executable support
 
-## 10. Executable evidence
+- [Circuit and resource implementation](../compiler_robust_hopf/strict_zero_echo.py)
+- [Complete sector, layer, frame, inverse, and complex tests](../tests/test_strict_zero_echo.py)
+- [Exact-rational asymptotic checks](../compiler_robust_hopf/strict_zero_audit.py)
+- [Audit tests](../tests/test_strict_zero_audit.py)
+- [Human-readable ledger](../scripts/strict_zero_echo_ledger.py)
 
-The deterministic suite checks:
+The tests support the operator proof and resource ledger; they do not replace
+the dimension-independent argument.
 
-- the two one-qubit echo identities;
-- all four `(h,b)` sectors;
-- exact restoration of the borrowed bit;
-- self-inverse predicate and target-echo permutations;
-- every nonfinal depth through `n=8`;
-- complete real frames through `n=8`;
-- inverse-frame equality;
-- separated complex frames through `n=7`;
-- strict zero-workspace resource ledgers through `n=256`;
-- the zero-control endpoint `d=n-2`.
+---
 
-The matrix tests compare independently constructed complete operators. They do
-not merely test the initialized state column.
-
-Run:
-
-```bash
-python validate.py
-python scripts/strict_zero_echo_ledger.py --n 12 --layers
-```
-
-## 11. Evidence and novelty boundary
-
-This branch should not yet replace the `m>=1` theorem in PR #14.
-
-The following remain required:
-
-1. an independent line-by-line proof audit;
-2. verification of every imported Yuan--Zhang hypothesis and width convention;
-3. a prior-art review covering dirty or borrowed controls, toggle detection,
-   sparse UCGs, and multi-controlled rotations;
-4. final integration into the unified resource theorem only after those gates
-   pass.
-
-The repository makes no novelty claim for the abstract echo before that review.
-
-## Primary compiler source
-
-P. Yuan and S. Zhang, “Optimal (controlled) quantum state preparation and
-improved unitary synthesis by quantum circuits with any number of ancillary
-qubits,” *Quantum* **7**, 956 (2023),
-[PDF](https://quantum-journal.org/papers/q-2023-03-20-956/pdf/).
-
-The historical Möttönen-style compilation remains relevant as the source of the
-multiplexor viewpoint, but the active asymptotic primitive is Yuan--Zhang
-Lemma 6.
+[← Complete narrative](../REVIEW.md) · [Complete compiler theorem](COMPILER_THEOREM.md) · [Verification](VERIFICATION.md)

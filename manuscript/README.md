@@ -1,15 +1,16 @@
 # Manuscript workspace
 
 The repository contains one internally audited all-workspace compiler
-architecture. A full paper draft should begin only after the final consolidation
-branch is stable and the independent proof/prior-art review plan is fixed.
+architecture. This page records the intended paper structure and claim
+boundaries. The reader-facing mathematical route begins in
+[`../REVIEW.md`](../REVIEW.md).
 
 ## Working title
 
 **Optimal Compilation of Hopf Differential Frames for Quantum Backpropagation**
 
-The title should remain Hopf-specific unless a theorem is proved for a broader
-class of coordinate charts.
+The title should remain Hopf-specific unless a theorem is established for a
+broader class of coordinate charts.
 
 ## Central claim
 
@@ -25,11 +26,11 @@ D=\Theta\left(n+\frac{N}{n+m}\right),
 
 using at most the requested `m` clean ancillary qubits. Complete coherent access
 to the Hopf state and all normalized magnitude-coordinate directions therefore
-matches the optimal arbitrary-state-preparation space--time frontier for every
+matches the optimal arbitrary-state-preparation size–depth frontier for every
 ancillary budget.
 
-The result is internally audited and should not be described as externally
-verified.
+The result is internally audited and is presented for independent technical
+review.
 
 ## One-source compiler policy
 
@@ -39,15 +40,14 @@ The active external compiler framework and QSP benchmark are Yuan and Zhang,
 - Theorem 2 for the optimal QSP frontier;
 - Lemma 5 for exact multi-controlled X;
 - Lemma 6 for uniformly controlled gates;
-- Lemma 9 for coherent copy--use--uncopy.
+- Lemma 9 for coherent copy–use–uncopy.
 
-Sun et al., *IEEE TCAD* **42**, 3301--3314 (2023), should be cited for the
-historical ancilla--depth development and original attribution of selected
-primitives. It is not presented as an alternative compiler selected in another
-workspace regime.
+Sun et al., *IEEE TCAD* **42**, 3301–3314 (2023), are cited for the historical
+ancilla–depth development. The paper is not presented as an alternative
+compiler selected in another workspace regime.
 
-Möttönen and Bergholm should be cited for the UCG/multiplexor lineage and the
-earlier `Hopf-QBP` robustness result.
+Möttönen and Bergholm are cited for the UCG and multiplexor lineage and for the
+context of the earlier `Hopf-QBP` robustness result.
 
 ## Compiler contribution chain
 
@@ -58,7 +58,7 @@ earlier `Hopf-QBP` robustness result.
 5. Derive optimal strict-zero real and complex frame resources.
 6. Prove the conditioned-prefix identity.
 7. Prove the tree-cut tail direct sum.
-8. Construct the clean binary--one-hot tree decoder.
+8. Construct the clean binary–one-hot tree decoder.
 9. Construct coherent branch routing and parallel controlled subtree frames.
 10. Prove the optimal positive-workspace frame upper bound.
 11. Prove the matching real-state size and depth lower bounds.
@@ -76,7 +76,7 @@ earlier `Hopf-QBP` robustness result.
 - **Theorem 5: optimal strict-zero Hopf frame.**
 - **Lemma 6: conditioned-prefix identity.**
 - **Lemma 7: tail direct-sum identity.**
-- **Lemma 8: clean binary--one-hot tree decoder.**
+- **Lemma 8: clean binary–one-hot tree decoder.**
 - **Lemma 9: coherent routed parallel tail.**
 - **Theorem 10: optimal all-workspace real Hopf frame.**
 - **Corollary 11: optimal all-workspace separated complex frame.**
@@ -100,27 +100,27 @@ The numbering is provisional.
 11. Discussion and broader applicability
 
 The strict-zero echo should appear before the routed construction because it
-closes the only endpoint not handled by the workspace-parallel architecture.
-The complete register schedules and constant-bearing inequalities may be placed
-in appendices, but the four-sector echo proof and the all-workspace theorem
-belong in the main text.
+closes the endpoint not handled by the workspace-parallel architecture. The
+complete register schedules and constant-bearing inequalities may be placed in
+appendices, but the four-sector echo proof and the all-workspace theorem belong
+in the main text.
 
 ## Novelty discipline
 
 The paper should not claim that square-root controlled-unitary decompositions,
-borrowed ancillas, or toggle detection are new. Those ideas have established
-lineages.
+borrowed ancillas, conditionally clean workspace, or toggle detection are new.
+Those ideas have established lineages.
 
-The claim-safe strict-zero contribution is:
+The narrow strict-zero contribution is:
 
 > one original suffix data qubit is used as a restored predicate carrier so that
 > all prefix-dependent Hopf rotations at tree depth `d` are implemented by two
 > total-width-`d+2` UCGs and linear-size predicate toggles, yielding an optimal
 > ancilla-free complete-frame compiler.
 
-A broader prior-art review is required before this wording is frozen.
+The detailed comparison is in [`../docs/RELATED_WORK.md`](../docs/RELATED_WORK.md).
 
-## Completed internal gates
+## Completed internal checks
 
 - frame-safe global substitution;
 - exact global and checkpoint compiler-boundary examples;
@@ -133,15 +133,13 @@ A broader prior-art review is required before this wording is frozen.
 - all-workspace upper and lower bounds;
 - complete workspace reuse;
 - output-sensitive magnitude and direct-phase decoders;
-- frozen earlier fallback branch;
-- consolidated internal proof and claim-support maps.
+- consolidated proof, source, verification, and claim-support maps.
 
-## Remaining drafting and release gates
+## Remaining scientific work
 
-- finish one final all-workspace consolidation pull request;
-- obtain independent human review of the strict-zero echo, routed register
+- obtain independent technical review of the strict-zero echo, routed register
   ledger, cut inequality, and lower bounds;
-- broaden the prior-art search and freeze novelty wording;
+- verify the claim boundary against the closest circuit-synthesis literature;
 - freeze controlled-observable and accuracy notation;
 - cross-check notation against both earlier Hopf papers;
 - decide the minimum useful circuit diagrams and resource plots;
@@ -150,7 +148,7 @@ A broader prior-art review is required before this wording is frozen.
 
 ## Abstract discipline
 
-Until independent review, the abstract may state the theorem as the paper's
-proved result, but the repository status should continue to distinguish internal
-audit from external verification. The abstract should not describe the generic
-echo as newly invented.
+The abstract may state the theorem as the paper's mathematical result. The
+repository should continue to distinguish internal audit from independent
+verification, and it should not describe the general echo ingredients as newly
+invented.

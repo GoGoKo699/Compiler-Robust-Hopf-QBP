@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "Cite this repository when using the compiler constructions or validation code."
-title: "Compiler-Robust Hopf Quantum Backpropagation"
+title: "Optimal Compilation of Hopf Differential Frames"
 type: software
 version: 0.3.0-alpha
 date-released: 2026-09-03
@@ -13,6 +13,7 @@ license: MIT
 keywords:
   - quantum backpropagation
   - Hopf coordinates
+  - differential frames
   - quantum state preparation
   - circuit depth
   - ancillary qubits
