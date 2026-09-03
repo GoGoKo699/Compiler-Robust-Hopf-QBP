@@ -56,13 +56,14 @@ a_j=\sqrt{g_{j,j}}.
 
 At a regular point, `g_(j,j)>0`, the vector `|e_j>` is the normalized coordinate
 derivative up to the canonical positive metric weight. At a singular point,
-`g_(j,j)=0`, the raw differential vanishes. The unit vector `|e_j>` remains the
-canonical orthogonal continuation occupying the marker column of the frame, but
-it should not be interpreted as normalization of a nonzero derivative.
+`g_(j,j)=0`, the raw differential vanishes. The unit vector `|e_j>` remains a
+**chart-selected orthogonal continuation determined by the complete parameter
+tuple** and occupies the same marker column, but it is not the normalization of
+a nonzero derivative.
 
-The state and the `N-1` continuation vectors form an orthonormal basis for every
-choice of angles. The **real Hopf differential frame** is therefore the unitary
-`W_R` satisfying
+The state and the `N-1` chart-selected continuation vectors form an orthonormal
+basis for every choice of angles. The **real Hopf differential frame** is the
+unitary `W_R` satisfying
 
 ```math
 W_{\mathbb R}|0^n\rangle
@@ -77,7 +78,7 @@ W_{\mathbb R}|\lambda(j)\rangle
 
 The marker `lambda(j)` is a nonzero computational-basis label assigned to node
 `j`. The frame converts a known computational basis into the state and its
-canonical differential directions.
+marker-frame directions.
 
 This is the geometric interface required by the compiler theorem. The inverse
 coordinate map, optimization architecture, and numerical studies remain in the
@@ -118,11 +119,14 @@ The implementation exposes both views:
 
 - `incoming_amplitude` stores the oriented value valid for unrestricted angles;
 - `sqrt_metric` is the principal nonnegative square root;
-- `regular_mask` identifies coordinates with nonzero metric weight;
+- `regular_mask` uses a documented numerical tolerance for nonzero metric
+  weight;
+- `regular_coordinate_mask(atol=...)` permits a caller-selected tolerance;
 - `in_canonical_magnitude_domain` checks the declared domains.
 
 This separation prevents unrestricted algebraic tests from silently changing
-the meaning of `sqrt(g_(j,j))`.
+the meaning of `sqrt(g_(j,j))` and prevents floating-point chart boundaries from
+being mislabeled as regular coordinates.
 
 ## 3. Tree and marker conventions
 
@@ -175,7 +179,7 @@ The addressed rotation at node `j` mixes exactly
 | `theta_(d,p)` | Hopf magnitude angle at that node |
 | `a_j` | oriented incoming amplitude multiplying coordinate `j` |
 | `g_(j,j)=a_j^2` | diagonal metric weight |
-| `|e_j>` | unit frame continuation; a normalized derivative direction when `g_(j,j)>0` |
+| `|e_j>` | unit marker-frame direction; a normalized derivative direction when `g_(j,j)>0`, otherwise a chart-selected continuation |
 | `lambda(j)` | computational marker assigned to `|e_j>` |
 | `W_R` | real Hopf differential frame |
 | `D_ph` | diagonal complex leaf-phase layer |
@@ -322,7 +326,8 @@ The oriented differential factors are
 
 On the canonical domain `theta_1 in [0,pi/2]`, these factors are the principal
 metric square roots. At `theta_1=0`, the third derivative vanishes while
-`|e_3>` remains a unit marker-column continuation.
+`|e_3>` remains the chart-selected unit continuation fixed by the complete
+parameter tuple.
 
 The markers are
 
@@ -406,7 +411,7 @@ The unchanged marker decoder returns
 (2,0,0)
 ```
 
-for the canonical frame but
+for the Hopf frame but
 
 ```math
 (0,\sqrt2,0)

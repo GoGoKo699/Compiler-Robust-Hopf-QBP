@@ -1,8 +1,8 @@
 """Independent analytic constructions of balanced Hopf states and frames.
 
-The recursive formulas are valid for unrestricted real angles.  In that form a
+The recursive formulas are valid for unrestricted real angles. In that form a
 coordinate derivative carries an *oriented incoming amplitude* ``a_j``, which
-may be negative, and the metric entry is ``g_jj=a_j**2``.  On the canonical
+may be negative, and the metric entry is ``g_jj=a_j**2``. On the canonical
 Hopf coordinate domains the incoming amplitudes are nonnegative, so
 ``a_j=sqrt(g_jj)`` with the principal square root.
 """
@@ -15,14 +15,21 @@ import numpy as np
 from .conventions import infer_n_from_theta_mag, marker_label
 
 
+DEFAULT_REGULAR_ATOL = 1e-12
+
+
 @dataclass(frozen=True)
 class RealTreeData:
     """Recursive data for the balanced real Hopf tree.
 
-    ``incoming_amplitude[j-1]`` is the signed ancestor-product multiplying the
-    normalized complement at internal node ``j``.  ``sqrt_metric`` is retained
+    ``incoming_amplitude[j-1]`` is the signed ancestor product multiplying the
+    normalized complement at internal node ``j``. ``sqrt_metric`` is retained
     as a read-only principal-square-root property for geometric notation; it is
     generally ``abs(incoming_amplitude)`` outside the canonical chart.
+
+    ``regular_mask`` uses :data:`DEFAULT_REGULAR_ATOL` rather than exact
+    floating-point inequality. Call :meth:`regular_coordinate_mask` when a
+    different numerical tolerance is appropriate.
     """
 
     n: int
@@ -39,6 +46,15 @@ class RealTreeData:
         """Return the principal nonnegative square roots of the metric entries."""
 
         return np.sqrt(self.metric)
+
+    def regular_coordinate_mask(
+        self, *, atol: float = DEFAULT_REGULAR_ATOL
+    ) -> np.ndarray:
+        """Return a tolerance-aware mask for nonvanishing coordinate weights."""
+
+        if atol < 0:
+            raise ValueError("atol must be nonnegative.")
+        return np.abs(self.incoming_amplitude) > float(atol)
 
 
 def basis_vector(dimension: int, label: int, *, dtype: type = complex) -> np.ndarray:
@@ -65,10 +81,10 @@ def canonical_magnitude_angle_mask(
 ) -> np.ndarray:
     """Return which magnitude angles lie in the canonical Hopf domains.
 
-    For the complex chart, every magnitude angle lies in ``[0, pi/2]``.  For
+    For the complex chart, every magnitude angle lies in ``[0, pi/2]``. For
     the real chart, depths ``0,...,n-2`` lie in ``[0, pi/2]`` and the final
     depth lies in ``[0, 2*pi)`` so that leaf signs are represented without
-    phases.  Endpoints are accepted up to ``atol``; the upper ``2*pi`` endpoint
+    phases. Endpoints are accepted up to ``atol``; the upper ``2*pi`` endpoint
     is identified with zero and is therefore excluded except for tolerance.
     """
 
@@ -114,16 +130,16 @@ def in_canonical_magnitude_domain(
 def real_tree_data(theta_mag: object) -> RealTreeData:
     """Return the recursive state, complements, metric, and derivatives.
 
-    The calculation does not restrict angles to a canonical chart.  For each
+    The calculation does not restrict angles to a canonical chart. For each
     internal node ``j`` it constructs a unit complement ``e_j`` and the exact
     differential
 
     ``partial_(theta_j)|psi> = a_j |e_j>``,
 
-    where ``a_j`` is the oriented incoming amplitude.  At ``a_j=0`` the raw
-    derivative vanishes.  The marker column remains a canonical orthogonal
-    continuation of the frame, but it is not a derivative-normalized tangent at
-    that singular coordinate.
+    where ``a_j`` is the oriented incoming amplitude. At ``a_j=0`` the raw
+    derivative vanishes. The marker column remains a chart-selected orthogonal
+    continuation determined by the full parameter tuple, but it is not a
+    derivative-normalized tangent at that singular coordinate.
     """
 
     theta = np.asarray(theta_mag, dtype=float).reshape(-1)
@@ -173,7 +189,7 @@ def real_tree_data(theta_mag: object) -> RealTreeData:
         complements=tuple(complements),
         incoming_amplitude=incoming_amplitude,
         metric=metric,
-        regular_mask=metric > 0.0,
+        regular_mask=np.abs(incoming_amplitude) > DEFAULT_REGULAR_ATOL,
         derivatives=tuple(derivatives),
     )
 
@@ -183,7 +199,7 @@ def real_state(theta_mag: object) -> np.ndarray:
 
 
 def real_frame_matrix(theta_mag: object) -> np.ndarray:
-    """Return the canonical real Hopf differential-frame continuation."""
+    """Return the chart-selected real Hopf differential-frame continuation."""
 
     data = real_tree_data(theta_mag)
     dimension = 1 << data.n

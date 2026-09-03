@@ -7,8 +7,8 @@ frame and the phase-dressed complex magnitude frame. The proof uses one external
 circuit framework—Yuan and Zhang, *Quantum* **7**, 956 (2023)—and three
 Hopf-specific schedules covering every clean-workspace budget `m>=0`.
 
-The large-workspace schedule is specified as an explicit coherent router, not
-only as an ideal direct sum or a resource formula.
+The large-workspace schedule is an explicit coherent router, not only an ideal
+direct sum or a resource formula.
 
 ## 1. Circuit model and imported primitives
 
@@ -26,10 +26,10 @@ compiler. The circuit model is exact and logical:
 - all-to-all logical connectivity;
 - clean ancillas initialized in `|0>` and returned exactly to `|0>`.
 
-Toffoli, Fredkin, and controlled one-qubit gates are used as readable
-constant-width primitives in explicit schedules. Each has a constant-size,
-constant-depth exact decomposition into arbitrary one-qubit gates and CNOTs, so
-this notation changes only constant factors.
+Toffoli, Fredkin, controlled one-qubit gates, and the fixed-width controlled
+Givens rotations used in the explicit schedules each have an exact
+constant-size, constant-depth decomposition into arbitrary one-qubit gates and
+CNOTs. Using them as readable primitives therefore changes only constants.
 
 The proof imports the following Yuan–Zhang results.
 
@@ -145,6 +145,11 @@ W_{\mathbb R}^{(n)}
 
 with `L_0` acting first. All schedules below implement these same operators on
 every system input.
+
+For unrestricted angles, the marker columns are chart-selected orthogonal
+continuations determined by the complete parameter tuple. At regular
+coordinates they are normalized derivative directions; at zero metric weight
+the raw differential vanishes while the unit frame column remains defined.
 
 ## 4. Schedule Z: strict zero workspace
 
@@ -398,9 +403,9 @@ have disjoint support within each declared layer, depth `11t-4=O(t)`, and size
 `O(B)`. Reversing the layers gives the exact inverse.
 
 On the one-hot code, all Givens pairs at one Hopf depth are disjoint. The
-external suffix-zero predicate is computed, fanned out to the live Givens
-controls, used, and uncomputed. Internal decoder wires that are clean after
-encoding are reused for these control copies.
+external suffix-zero predicate is computed, fanned out to the live fixed-width
+controlled Givens rotations, used, and uncomputed. Internal decoder wires that
+are clean after encoding are reused for these control copies.
 
 Consequently
 
@@ -489,10 +494,24 @@ measurement or classical branch selection occurs.
 ### 8.3 Controlled subtree frames and cleanup
 
 Once prefix copies are zero, their wires are reused as one clean suffix flag per
-branch when `s>1`. Token `z_r` controls the complete frame `W_s^(r)` on branch
-`r`. At each nonfinal local depth, the branch's lower-suffix predicate is
-computed into its flag, a token-and-flag-controlled UCG is applied, and the flag
-is uncomputed. Final local depth needs no flag.
+branch when `s>1`. The reuse is valid because
+
+```math
+\begin{aligned}
+C-B
+&=(B-1)(s+1)-t-B\\
+&=(B-1)s-t-1\\
+&\geq0,
+\end{aligned}
+```
+
+for `B=2^t`, `t>=1`, and `s>=2`. Thus the cleared copy pool contains at least
+`B` wires without enlarging the peak workspace.
+
+Token `z_r` controls the complete frame `W_s^(r)` on branch `r`. At each
+nonfinal local depth, the branch's lower-suffix predicate is computed into its
+flag, a token-and-flag-controlled UCG is applied, and the flag is uncomputed.
+Final local depth needs no flag.
 
 All branch circuits act on disjoint data, token, and flag registers and therefore
 run in parallel. After every branch flag is zero, the prefix copies are
@@ -579,8 +598,10 @@ For `m>=4n`, choose the largest `t` such that
 2\,2^t(n-t+1)\leq m.
 ```
 
-This envelope guarantees the complete prefix and tail workspace fits inside
-`m`. If `s=n-t>1`, failure of the next cut gives
+This envelope guarantees that the complete prefix and tail workspace fits inside
+`m`.
+
+If `s=n-t>1`, failure of the next cut gives
 
 ```math
 m<4\,2^t s.
@@ -601,7 +622,18 @@ because `m>=4n` implies `n+m=Theta(m)`. Also
 s^2=O\left(n+\frac{2^s}{s}\right).
 ```
 
-Therefore the routed schedule satisfies
+If `s=1`, every controlled subtree frame has constant depth. The conditioned
+prefix and route–unroute stages have `O(n)` depth. Feasibility of the cut
+`t=n-1` requires
+
+```math
+m\geq2\,2^{n-1}(1+1)=2^{n+1}=2N,
+```
+
+so `N/(n+m)=O(1)` and the target depth is `Theta(n)`. The routed schedule again
+matches the target.
+
+Therefore
 
 ```math
 S_{\mathrm{routed}}(n,m)=O(N),
@@ -703,6 +735,8 @@ The repository implements different objects at appropriate levels:
 - the binary–one-hot decoder as explicit reversible layers;
 - the coherent router as explicit CNOT/Fredkin layers and a sparse-state
   route–operate–unroute simulator;
+- controlled subtree frames as exact logical UCG block actions with explicit
+  flag cleanup;
 - UCG and multi-controlled-X elementary synthesis through the published
   Yuan–Zhang theorems;
 - resource bounds through integer and exact-rational ledgers.

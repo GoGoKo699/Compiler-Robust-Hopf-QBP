@@ -6,6 +6,7 @@ import numpy as np
 
 from compiler_robust_hopf.conventions import marker_label
 from compiler_robust_hopf.frames import (
+    DEFAULT_REGULAR_ATOL,
     canonical_magnitude_angle_mask,
     complex_frame_matrix,
     complex_magnitude_frame_matrix,
@@ -95,6 +96,20 @@ class FrameTests(unittest.TestCase):
         )
         continuation = real_frame_matrix(theta)[:, marker_label(3, 2)]
         self.assertAlmostEqual(float(np.linalg.norm(continuation)), 1.0)
+
+    def test_regular_mask_is_tolerance_aware_at_chart_boundaries(self) -> None:
+        # cos(pi/2) is not represented as exact zero in floating point. The
+        # default mask should nevertheless classify the left subtree as
+        # numerically singular, while an explicitly zero tolerance exposes the
+        # raw floating-point value.
+        theta = np.asarray([0.5 * np.pi, 0.43, 0.71])
+        data = real_tree_data(theta)
+        self.assertLess(abs(float(data.incoming_amplitude[1])), DEFAULT_REGULAR_ATOL)
+        self.assertFalse(bool(data.regular_mask[1]))
+        self.assertFalse(bool(data.regular_coordinate_mask()[1]))
+        self.assertTrue(bool(data.regular_coordinate_mask(atol=0.0)[1]))
+        with self.assertRaises(ValueError):
+            data.regular_coordinate_mask(atol=-1.0)
 
     def test_separated_complex_magnitude_frame_is_unitary(self) -> None:
         rng = np.random.default_rng(260910)
