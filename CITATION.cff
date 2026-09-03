@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "Cite this repository when using the compiler constructions or validation code."
 title: "Optimal Compilation of Hopf Differential Frames"
 type: software
-version: 0.3.0-alpha
+version: 0.4.0-alpha
 date-released: 2026-09-03
 authors:
   - family-names: Lin
@@ -18,3 +18,4 @@ keywords:
   - circuit depth
   - ancillary qubits
   - borrowed qubits
+  - coherent routing
