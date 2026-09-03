@@ -2,19 +2,21 @@
 
 ### Compiler-robust quantum backpropagation at the optimal state-preparation frontier
 
-Yuan and Zhang determine the optimal size–depth frontier for preparing one
+Yuan and Zhang determine the optimal exact size–depth frontier for preparing one
 arbitrary quantum state. This repository asks whether a stronger structured
 unitary can attain the same frontier.
 
-The **Hopf differential frame** contains the target state as one column and its
-normalized coordinate tangents as designated additional columns. Quantum
-backpropagation uses the inverse of this complete frame, so preserving only the
-prepared state is not enough. The compiler must preserve the full logical
-operator on every system input while returning its workspace to zero.
+The **Hopf differential frame** contains the target state as one column and
+designated coordinate directions as the remaining columns. Quantum
+backpropagation applies the inverse of this frame, so preserving only the
+prepared state is insufficient: compilation must preserve the complete logical
+operator and return every work qubit to zero.
 
-This repository gives exact frame-safe constructions for the real and separated
-complex Hopf frames. The result has passed internal analytic and executable
-checks and is presented for independent technical review.
+The repository gives exact frame-safe constructions for the real Hopf frame and
+the phase-dressed complex **magnitude** frame. The complex leaf-phase
+derivatives use a separate direct record. The result has passed internal
+analytic and executable checks and is presented for independent technical
+review.
 
 <p align="center">
   <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column; Hopf differential-frame compilation fixes the state and tangent-marker columns." />
@@ -28,14 +30,15 @@ Let
 N=2^n
 ```
 
-and let `m>=0` be the number of available clean ancillary qubits. In the exact
-all-to-all circuit model with arbitrary one-qubit gates and CNOTs, the complete
-real Hopf frame and the separated complex frame admit frame-safe
-implementations with
+and let `m>=0` be the number of clean ancillary qubits available to the
+compiler. In the exact all-to-all logical model with arbitrary one-qubit gates
+and CNOTs,
 
 ```math
 \boxed{
-S_{\mathbb R}(n,m)=S_{\mathbb C}(n,m)=\Theta(N)
+S_{\mathbb R}(n,m)
+=S_{\mathbb C,\mathrm{mag}}(n,m)
+=\Theta(N)
 }
 ```
 
@@ -43,15 +46,16 @@ and
 
 ```math
 \boxed{
-D_{\mathbb R}(n,m)=D_{\mathbb C}(n,m)
+D_{\mathbb R}(n,m)
+=D_{\mathbb C,\mathrm{mag}}(n,m)
 =\Theta\left(n+\frac{N}{n+m}\right).
 }
 ```
 
 The circuit uses at most the requested `m` clean ancillary qubits and returns
-them to zero. Thus coherent access to the complete Hopf differential frame has
-the same asymptotic size–depth frontier as optimal arbitrary state preparation
-in the Yuan–Zhang model.
+them to zero. Thus coherent access to the real frame and the phase-dressed
+complex magnitude frame has the same asymptotic size–depth frontier as optimal
+arbitrary state preparation in the Yuan–Zhang model.
 
 ## Begin here
 
@@ -60,27 +64,27 @@ software manual.
 
 | Reading route | Purpose |
 |---|---|
-| **[Start the complete narrative](REVIEW.md)** | A self-contained 35–45 minute route from the synthesis question to the QBP consequence |
-| **[Learn the minimal Hopf interface](docs/HOPF_INTERFACE.md)** | The state, tangent columns, marker convention, and addressed layers used by the compiler |
-| **[Audit the compiler theorem](docs/COMPILER_THEOREM.md)** | The three workspace schedules, workspace ledger, upper bounds, and matching lower bounds |
-| **[See what compilation changes for QBP](docs/QBP_CONSEQUENCE.md)** | Frame-safe substitution, gradient records, and the final scaling consequence |
-| **[Inspect the verification](docs/VERIFICATION.md)** | Analytic identities, exact finite tests, resource ledgers, and internal proof reviews |
-| **[Trace every dependency](docs/SOURCE_MAP.md)** | Exact paper results, inherited Hopf facts, local implementations, and tests |
-| **[Read the literature context](docs/RELATED_WORK.md)** | State preparation, UCGs, borrowed workspace, and the narrow claim boundary |
+| **[Start the complete narrative](REVIEW.md)** | A self-contained route from the synthesis question to the QBP consequence |
+| **[Learn the minimal Hopf interface](docs/HOPF_INTERFACE.md)** | Canonical angle domains, oriented incoming amplitudes, marker columns, singular coordinates, and addressed layers |
+| **[Audit the compiler theorem](docs/COMPILER_THEOREM.md)** | The three workspace schedules, explicit coherent router, workspace ledger, upper bounds, and matching lower bounds |
+| **[See what compilation changes for QBP](docs/QBP_CONSEQUENCE.md)** | Frame-safe substitution, statistical task boundaries, and the matched-program depth comparison |
+| **[Inspect the verification](docs/VERIFICATION.md)** | Analytic identities, exact operator tests, implementation levels, resource ledgers, and internal proof reviews |
+| **[Trace every dependency](docs/SOURCE_MAP.md)** | Exact paper versions, inherited Hopf facts, imported compiler results, local implementations, and tests |
+| **[Read the literature context](docs/RELATED_WORK.md)** | State preparation, UCGs, borrowed workspace, and the narrow contribution boundary |
 
-A circuit-synthesis reader can audit the central theorem through the first four
-links without first learning the full Hopf optimization framework.
+A circuit-synthesis reader can audit the compiler theorem before learning the
+complete Hopf optimization framework.
 
 ## Why ordinary state preparation is insufficient
 
-A state-preparation compiler is required only to satisfy
+A state-preparation compiler need only satisfy
 
 ```math
 U_{\mathrm{prep}}|0^n\rangle=|\psi\rangle.
 ```
 
-The global Hopf gradient protocol instead applies the inverse of a unitary `W`
-whose designated columns obey
+The global Hopf gradient protocol instead uses a unitary `W` with designated
+columns
 
 ```math
 W|0^n\rangle=|\psi\rangle,
@@ -88,12 +92,23 @@ W|0^n\rangle=|\psi\rangle,
 W|\lambda(j)\rangle=|e_j\rangle.
 ```
 
-Here `|e_j>` is the normalized tangent associated with coordinate `j`, and
-`|lambda(j)>` is its computational marker. A compiler may preserve the first
-column while permuting the tangent-marker columns.
+At a regular chart point, the coordinate differential is
 
-The repository includes an exact two-qubit example in which the state is
-unchanged but the decoded gradient changes from
+```math
+\partial_{\theta_j}|\psi\rangle
+=a_j|e_j\rangle,
+\qquad
+g_{j,j}=a_j^2.
+```
+
+Here `a_j` is the oriented incoming amplitude. On the canonical Hopf domains,
+`a_j>=0` and therefore `a_j=sqrt(g_(j,j))`. If `g_(j,j)=0`, the raw differential
+vanishes; the unit marker column remains a canonical orthogonal continuation of
+the frame rather than a normalized nonzero derivative.
+
+A compiler may preserve the first column while permuting the marker columns.
+The repository gives an exact two-qubit example in which the state is unchanged
+but the decoded gradient changes from
 
 ```math
 (2,0,0)
@@ -105,13 +120,10 @@ unchanged but the decoded gradient changes from
   <img src="assets/two-qubit-obstruction.svg" width="900" alt="A two-qubit state-equivalent compiler swaps two tangent-marker columns and changes the decoded gradient." />
 </p>
 
-The correct compiler contract is therefore operator-level **frame safety**, not
+The correct contract is therefore operator-level **frame safety**, not
 state-column equality.
 
 ## One compiler, three internal schedules
-
-The real-frame compiler chooses a schedule according to the available clean
-workspace.
 
 | Workspace | Internal schedule | Main idea |
 |---:|---|---|
@@ -119,14 +131,19 @@ workspace.
 | `1<=m<4n` | direct flagged UCG | compute one reusable clean suffix flag and apply a smaller uniformly controlled gate |
 | larger `m` | routed parallel subframes | cut the Hopf tree, route the suffix coherently, and run disjoint subtree frames in parallel |
 
+The large-workspace route is now an explicit reversible construction in
+[`compiler_robust_hopf/router.py`](compiler_robust_hopf/router.py), not only a
+resource formula. Exact tests route arbitrary complex prefix–suffix-entangled
+inputs, apply all token-controlled subtree frames, unroute, and verify zero
+workspace leakage.
+
 These are three schedules of one Hopf-specific compiler. They are not a
 regime-by-regime choice between two published state-preparation constructions.
 The threshold `4n` is a convenient asymptotic scheduling threshold, not a claim
 about the best finite-size crossover.
 
-The complex phase layer is one additional exact `n`-qubit uniformly controlled
-gate and reuses the same workspace pool sequentially, including the empty pool
-at `m=0`.
+The complex phase diagonal is one additional exact `n`-qubit UCG. It reuses the
+same workspace pool sequentially, including the empty pool at `m=0`.
 
 ## Compiler lineage and contribution boundary
 
@@ -137,11 +154,13 @@ benchmark are from:
 > improved unitary synthesis by quantum circuits with any number of ancillary
 > qubits,” *Quantum* **7**, 956 (2023).
 
-Their results supply the optimal state-preparation frontier and the exact
-multi-controlled-X, uniformly controlled-gate, and coherent-copy primitives.
-Those primitives can be adapted once the complete-operator structure of the
-Hopf frame is exposed; the adaptation is not direct because the frame must
-preserve many designated columns rather than one prepared state.
+The published article corresponds to arXiv v2. The imported statements—Theorem
+2 and Lemmas 5, 6, and 9—were also checked in arXiv v3 and retain the forms used
+here. Their results supply the optimal state-preparation frontier and the exact
+multi-controlled-X, UCG, and coherent-copy primitives. Those primitives can be
+adapted after the complete-operator structure of the Hopf frame is exposed; the
+adaptation is not direct because the frame fixes many designated columns rather
+than one initialized state column.
 
 The earlier result of Sun, Tian, Yang, Yuan, and Zhang is retained as the
 historical predecessor. Möttönen and Bergholm supply the multiplexor/UCG
@@ -160,30 +179,42 @@ qubits, toggle detection, controlled-unitary square roots, or generic UCGs.
 
 ## Consequence for quantum backpropagation
 
-The balanced Hopf chart supplies orthogonal coordinate tangents, known metric
-weights, and computational markers. A frame-safe compiler transports this
-interface without changing the global gradient measurement distribution.
+The primary finite-shot target inherited from `Hopf-QBP` is simultaneous
+absolute accuracy of the **raw Hopf-coordinate gradient**. Complete-vector,
+relative, normalized-frame, and natural-gradient targets have different
+conditioning and execution requirements.
 
-For a complete chart with `M=Theta(N)` coordinates, the global magnitude stream
-uses
+For a chart with `M=Theta(N)` coordinates, the global magnitude stream uses
 
 ```math
 O(\log n)=O(\log\log M)
 ```
 
-independent executions at fixed simultaneous coordinatewise accuracy and
-confidence. Because one compiled forward or inverse frame now matches the
-optimal state-preparation depth for every `m>=0`, compilation adds no further
-asymptotic depth factor to this execution overhead. This comparison is made
-under the controlled-observable and accuracy assumptions stated in the QBP
-paper and in [the QBP consequence page](docs/QBP_CONSEQUENCE.md).
+independent executions at fixed raw-coordinate `l_infinity` accuracy and
+confidence. The runtime statement is a matched-program comparison: scalar and
+gradient executions use the same forward preparation and controlled observable,
+and the gradient program adds one inverse frame whose logical depth has the
+same asymptotic order as optimal state preparation. It is not a comparison with
+an instance-specialized scalar circuit, and it does not make materializing an
+`M`-entry classical output sublinear.
+
+The complete statement and its assumptions are in
+[the QBP consequence page](docs/QBP_CONSEQUENCE.md).
 
 ## Verification boundary
 
-The repository checks complete operators at finite dimensions, exact borrowed-
-qubit restoration, reversible decoder schedules, workspace peaks, resource
-inequalities, gradient decoders, and compiler counterexamples. The validation
-suite and ledgers do not replace the dimension-independent proofs.
+The repository now checks:
+
+- complete real and phase-dressed magnitude-frame operators at finite sizes;
+- exact borrowed-qubit restoration;
+- explicit binary–one-hot decoder layers;
+- explicit coherent route–operate–unroute on arbitrary complex inputs;
+- branch-flag, copy-pool, and total-workspace cleanup;
+- resource inequalities, gradient decoders, and compiler counterexamples.
+
+The elementary UCG and multi-controlled-X decompositions are imported from
+Yuan–Zhang rather than regenerated locally. Finite tests and ledgers support but
+do not replace the dimension-independent proofs.
 
 The result does not address device routing, native-gate depth, approximate
 Clifford+T synthesis, hardware noise, arbitrary state-space charts, or an
@@ -207,7 +238,7 @@ python scripts/strict_zero_echo_ledger.py --n 12
 | Repository | Role |
 |---|---|
 | [`Hopf-ansatz`](https://github.com/GoGoKo699/Hopf-ansatz) | Hopf coordinates, inverse map, metric, tangent preparation, and optimization interface |
-| [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | Global, direct-phase, and checkpoint gradient records, together with Möttönen-style robustness |
+| [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | Global, direct-phase, and checkpoint gradient records, together with Möttönen-style robustness and statistical task boundaries |
 | **This repository** | Complete-frame compiler contracts, optimal all-workspace synthesis, and the resulting compiler-robust QBP consequence |
 
 The exact fact-level dependencies are listed in
