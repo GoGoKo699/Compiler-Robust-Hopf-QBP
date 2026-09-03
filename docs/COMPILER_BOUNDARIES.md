@@ -1,22 +1,20 @@
 # Compiler boundaries: state columns, global frames, and checkpoint interfaces
 
-## Status
+[← Complete narrative](../REVIEW.md) · [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) · [QBP consequence](QBP_CONSEQUENCE.md)
 
-Completed internally: 2026-09-02.
+This page isolates four exact finite-dimensional statements:
 
-This document resolves the compiler-boundary task in Issue #4. It provides:
+1. a compiler may prepare the correct Hopf state while returning the wrong
+   global coordinate gradient;
+2. equality on a complete active checkpoint interface is sufficient for the
+   designated checkpoint estimator means;
+3. equality on only the prepared checkpoint state can still flip a derivative;
+4. active-interface equality may preserve the decoded mean without preserving
+   the complete output distribution.
 
-1. an explicit two-qubit counterexample showing that a compiler may prepare the
-   correct Hopf state but return the wrong global coordinate gradient;
-2. an objective-independent active-interface condition sufficient for
-   checkpoint estimator means;
-3. an explicit checkpoint compiler that preserves the final state but flips the
-   decoded derivative; and
-4. an interface-safe checkpoint compiler that changes the complete output
-   distribution while preserving the decoded mean.
-
-The results are exact finite-dimensional statements. They do not depend on
-asymptotic resource estimates.
+These boundaries do not depend on asymptotic resource estimates. Their purpose
+is to identify the operator contract that each reverse-mode protocol actually
+uses.
 
 ## 1. Three different compiler contracts
 
@@ -24,8 +22,7 @@ Let `J` append clean workspace:
 
 ```math
 J|\varphi\rangle
-=
-|\varphi\rangle|0^w\rangle.
+=|\varphi\rangle|0^w\rangle.
 ```
 
 Three contracts must not be conflated.
@@ -36,8 +33,7 @@ For one prepared input state `|alpha>`,
 
 ```math
 \widetilde UJ|\alpha\rangle
-=
-e^{i\chi}JU|\alpha\rangle.
+=e^{i\chi}JU|\alpha\rangle.
 ```
 
 This certifies one output state, up to a common phase. It places no useful
@@ -49,8 +45,7 @@ For an active-interface projector `P`,
 
 ```math
 \widetilde UJP
-=
-e^{i\chi}JUP.
+=e^{i\chi}JUP.
 ```
 
 This certifies the complete isometry on every state that can appear at the
@@ -62,9 +57,7 @@ input sector.
 For a complete differential-frame unitary `W`,
 
 ```math
-\widetilde WJ
-=
-JW.
+\widetilde WJ=JW.
 ```
 
 This certifies the complete system action on every clean-workspace input. It is
@@ -84,9 +77,9 @@ while neither converse holds in general.
 
 ## 2. Two-qubit global state-column counterexample
 
-The following is the smallest Hopf example that can **mix two distinct marker
-labels**. A one-qubit example can already change the phase or sign of its only
-tangent column, but it cannot display marker-to-marker reassignment.
+This is the smallest Hopf example that can mix two distinct marker labels. A
+one-qubit example can change the phase or sign of its only nonzero marker
+column, but cannot display marker-to-marker reassignment.
 
 Choose the regular real Hopf point
 
@@ -98,8 +91,7 @@ The state is
 
 ```math
 |\psi\rangle
-=
-\frac{|00\rangle+|01\rangle+|10\rangle+|11\rangle}{2}.
+=\frac{|00\rangle+|01\rangle+|10\rangle+|11\rangle}{2}.
 ```
 
 In computational-column order `0,1,2,3`, the canonical real Hopf frame is
@@ -124,7 +116,7 @@ The marker map is
 \lambda(3)=3,
 ```
 
-and the metric square roots are
+and the metric square roots at this regular point are
 
 ```math
 \bigl(1,2^{-1/2},2^{-1/2}\bigr).
@@ -154,15 +146,14 @@ Because `Q|00>=|00>`,
 V|00\rangle=W|00\rangle=|\psi\rangle.
 ```
 
-Thus `V` is a perfectly valid state-preparation replacement for this point.
-It is not a valid replacement for the Hopf differential frame.
+Thus `V` is an exact state-preparation replacement for this point, but not a
+valid replacement for the Hopf differential frame.
 
-Choose the Hermitian-unitary observable
+Choose
 
 ```math
 O=-Z\otimes I
-=
-\mathrm{diag}(-1,-1,1,1).
+=\mathrm{diag}(-1,-1,1,1).
 ```
 
 At this point,
@@ -186,28 +177,25 @@ V^\dagger O|\psi\rangle
 ```
 
 The response amplitude has moved from the root marker to the left-child marker.
-The exact analytic coordinate gradient is
+The exact coordinate gradient is
 
 ```math
-\nabla_{\boldsymbol\theta}E
-=
-(2,0,0).
+\nabla_{\boldsymbol\theta}E=(2,0,0).
 ```
 
-The original Walsh-marker decoder returns this value with `W`, but with `V`
-it returns
+The fixed Walsh-marker decoder returns this value with `W`, but with `V` it
+returns
 
 ```math
 \widetilde\nabla_{\boldsymbol\theta}E
-=
-(0,\sqrt2,0).
+=(0,\sqrt2,0).
 ```
 
 ### Complete output distributions
 
 Write one measured outcome as `(b,y)`, where `b` is the ancilla X-basis bit and
-`y` is the two-bit system X-basis label. The correct frame has probability
-`1/4` on
+`y` the two-bit system X-basis label. The correct frame has probability `1/4`
+on
 
 ```text
 (0,00), (0,01), (1,10), (1,11),
@@ -221,12 +209,12 @@ and zero elsewhere. The state-equivalent compiler has probability `1/4` on
 
 and zero elsewhere. Their total-variation distance is `1/2`.
 
-> **Negative proposition: state-column equality is insufficient for global
-> Hopf backpropagation.** There exist exact unitaries `V` and `W` with
-> `V|0>=W|0>` and a Hermitian-unitary observable `O` for which the designated
-> global Walsh-marker decoder gives different gradients. Therefore an arbitrary
-> exact state-preparation compiler cannot be inverted as a Hopf reverse frame
-> without an additional operator-level contract.
+> **State-column equality is insufficient for global Hopf backpropagation.**
+> There exist exact unitaries `V` and `W` with `V|0>=W|0>` and a
+> Hermitian-unitary observable `O` for which the designated global marker
+> decoder gives different gradients. An exact state-preparation compiler cannot
+> therefore be inverted as a Hopf reverse frame without an additional
+> operator-level contract.
 
 ## 3. Checkpoint notation
 
@@ -248,8 +236,7 @@ The active-interface projector is
 
 ```math
 P_d
-=
-I_{2^{d+1}}
+=I_{2^{d+1}}
 \otimes
 |0^{n-d-1}\rangle\!\langle0^{n-d-1}|.
 ```
@@ -264,8 +251,7 @@ For prefix label `r`, the checkpoint score uses an operator of the form
 
 ```math
 K_{d,r}
-=
-|r\rangle\!\langle r|
+=|r\rangle\!\langle r|
 \otimes Y_{q_d}
 \otimes I_{\mathrm{suffix}}.
 ```
@@ -286,17 +272,16 @@ Assume that, for one phase `chi` independent of the active-interface input,
 
 ```math
 \widetilde B_dJP_d
-=
-e^{i\chi}JB_dP_d.
+=e^{i\chi}JB_dP_d.
 ```
 
 Use `B_tilde_d` consistently in the forward suffix and
 `B_tilde_d^dagger` after the controlled observable.
 
-> **Theorem (checkpoint active-interface substitution).** Under the condition
-> above, every designated checkpoint gradient estimator at depth `d` has
-> exactly the same expectation as under `B_d`, for every allowed controlled
-> observable. The complete measurement distribution need not be the same.
+> **Checkpoint active-interface substitution.** Under the condition above,
+> every designated checkpoint gradient estimator at depth `d` has exactly the
+> same expectation as under `B_d`, for every allowed controlled observable. The
+> complete measurement distribution need not be the same.
 
 ### Proof
 
@@ -304,24 +289,21 @@ Taking the adjoint of the interface condition gives
 
 ```math
 P_dJ^\dagger\widetilde B_d^\dagger
-=
-e^{-i\chi}P_dB_d^\dagger J^\dagger.
+=e^{-i\chi}P_dB_d^\dagger J^\dagger.
 ```
 
 The consistent compiled forward branch is
 
 ```math
 \widetilde B_dJ|\alpha_d\rangle
-=
-e^{i\chi}J|\psi\rangle.
+=e^{i\chi}J|\psi\rangle.
 ```
 
-After the controlled observable and the compiled inverse, the two system-work
+After the controlled observable and compiled inverse, the two system-work
 branches are
 
 ```math
-|\beta_0\rangle
-=J|\alpha_d\rangle,
+|\beta_0\rangle=J|\alpha_d\rangle
 ```
 
 and
@@ -335,8 +317,7 @@ Their active clean component obeys
 
 ```math
 P_dJ^\dagger|\beta_1\rangle
-=
-P_dB_d^\dagger O|\psi\rangle.
+=P_dB_d^\dagger O|\psi\rangle.
 ```
 
 Every checkpoint score is an ancilla-off-diagonal correlation between
@@ -347,16 +328,16 @@ this active clean component. It is therefore identical to the score produced by
 
 Components of `beta_1` outside the active clean sector are orthogonal to the
 reference branch in the score correlation. They may nevertheless change
-suffix-resolved probabilities and other observables. Hence equality of means
-does not imply equality of complete distributions.
+suffix-resolved probabilities and other observables. Equality of means does not
+therefore imply equality of complete distributions.
 
 ### On minimality
 
-For a fixed state, fixed score family, and fixed observable class, the condition
-can be weakened to equality of only the relevant score matrix elements. Such a
+For a fixed state, score family, and observable class, the condition can be
+weakened to equality of only the relevant score matrix elements. Such a
 condition depends on the particular checkpoint state and decoder and is not a
 compositional compiler contract. Active-interface equality is the natural
-objective-independent sufficient condition: it certifies the entire isometry
+objective-independent sufficient condition: it certifies the complete isometry
 that the checkpoint can probe.
 
 ## 5. State-column-only checkpoint failure
@@ -400,7 +381,7 @@ C_{\mathrm{bad}}|\alpha\rangle
 =|\psi\rangle.
 ```
 
-The complete prepared state is exactly correct. However,
+The complete prepared state is correct, but
 
 ```math
 C_{\mathrm{bad}}P\neq BP.
@@ -417,42 +398,28 @@ O=-Z\otimes I.
 
 The exact root derivative is `2`. Under the designated inverse suffix, the two
 checkpoint branches before Y-basis readout are the prefix state and its root
-coordinate tangent. The nonzero measured outcomes are
+coordinate direction. The nonzero measured outcomes are
 
 ```text
 correct B:      (ancilla,target,suffix) = (0,1,0), (1,0,0), each 1/2;
 compiled C_bad: (ancilla,target,suffix) = (0,0,0), (1,1,0), each 1/2.
 ```
 
-The checkpoint decoder therefore returns
+The checkpoint decoder therefore returns `2` with `B`, but `-2` with
+`C_bad`.
 
-```math
-2
-```
-
-with `B`, but
-
-```math
--2
-```
-
-with `C_bad`.
-
-> **Negative proposition: checkpoint state-column equality is insufficient.**
-> A recompiled suffix may preserve the exact final prepared state while changing
-> a checkpoint derivative, even when the same recompiled suffix is used in the
-> forward and reverse directions. The missing condition is preservation of the
-> complete active interface, not merely its one prepared vector.
+> **Checkpoint state-column equality is insufficient.** A recompiled suffix may
+> preserve the exact final prepared state while changing a checkpoint
+> derivative, even when the same suffix is used in the forward and reverse
+> directions. The missing condition is preservation of the complete active
+> interface, not merely its one prepared vector.
 
 ## 6. Interface safety preserves means, not full distributions
 
-The active-interface theorem does not assert too much. Keep the same `A`, `B`,
-and `P`, but define
+Keep the same `A`, `B`, and `P`, but define
 
 ```math
-Q_\perp
-=
-\mathrm{diag}(1,1,1,i),
+Q_\perp=\mathrm{diag}(1,1,1,i),
 \qquad
 C_{\mathrm{safe}}=BQ_\perp.
 ```
@@ -473,7 +440,7 @@ O=I\otimes Z.
 ```
 
 The depth-zero checkpoint derivative is zero. Both suffixes decode exactly zero,
-as required by the theorem. Their complete distributions differ:
+as required. Their complete distributions differ:
 
 - the reference distribution is uniform over all eight ancilla-system outcomes;
 - the compiled distribution, in ancilla-major order, is
@@ -487,7 +454,7 @@ as required by the theorem. Their complete distributions differ:
 
 The total-variation distance is `1/4`.
 
-This example establishes the precise boundary:
+This establishes the precise boundary:
 
 ```math
 \text{active-interface equality}
@@ -503,36 +470,35 @@ but not
 \text{complete distribution equality}.
 ```
 
-## 7. Consequences for the paper
-
-The global and checkpoint methods have different compiler contracts.
+## 7. Consequences
 
 | Protocol | Natural sufficient contract | What state-column equality misses |
 |---|---|---|
-| Global differential frame | Complete frame-safe operator action | Tangent-marker columns can be permuted, phased, or mixed |
-| Checkpoint reverse sweep | Suffix isometry on the active checkpoint interface | The prepared prefix vector does not determine the remaining interface directions |
-| Scalar objective | One initialized state column | No derivative interface is required |
+| Global differential frame | complete frame-safe operator action | marker columns can be permuted, phased, or mixed |
+| Checkpoint reverse sweep | suffix isometry on the active checkpoint interface | one prepared prefix vector does not determine the remaining interface directions |
+| Scalar objective | one initialized state column | no derivative interface is required |
 
-The global method is therefore **chart-native but frame-implementation
-conditional**. The checkpoint method is **factorization- and
-interface-dependent**. It can tolerate more compiler freedom than the global
-frame because behavior outside `P_d` is irrelevant to its means, but it cannot
-be inferred from final-state preparation alone.
+The global method is chart-native but frame-implementation conditional. The
+checkpoint method is factorization- and interface-dependent. It can tolerate
+more freedom than the global frame because behavior outside `P_d` is irrelevant
+to its means, but it cannot be inferred from final-state preparation alone.
 
 ## 8. Executable support
 
-```text
-compiler_robust_hopf/compiler_boundaries.py
-compiler_robust_hopf/decoders.py
-tests/test_compiler_boundaries.py
-```
+- [Boundary constructions](../compiler_robust_hopf/compiler_boundaries.py)
+- [Magnitude decoders](../compiler_robust_hopf/decoders.py)
+- [Exact boundary tests](../tests/test_compiler_boundaries.py)
 
-Run:
+Run the complete suite with
 
 ```bash
 python validate.py
 ```
 
-The deterministic tests verify all operator identities, exact distributions,
-analytic gradients, decoded gradients, interface residuals, and
-total-variation distances stated above.
+The deterministic tests verify the operator identities, exact distributions,
+analytic gradients, decoded gradients, interface residuals, and total-variation
+distances stated above.
+
+---
+
+[← Complete narrative](../REVIEW.md) · [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) · [QBP consequence](QBP_CONSEQUENCE.md)
