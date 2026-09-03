@@ -1,9 +1,26 @@
-# Compiler-Robust Hopf Quantum Backpropagation
+# Optimal Compilation of Hopf Differential Frames
 
-Exact differential-frame compilation, compiler boundaries, and end-to-end
-resource accounting for Hopf-coordinate quantum backpropagation.
+### Compiler-robust quantum backpropagation at the optimal state-preparation frontier
 
-## Main theorem candidate
+Yuan and Zhang determine the optimal size–depth frontier for preparing one
+arbitrary quantum state. This repository asks whether a stronger structured
+unitary can attain the same frontier.
+
+The **Hopf differential frame** contains the target state as one column and its
+normalized coordinate tangents as designated additional columns. Quantum
+backpropagation uses the inverse of this complete frame, so preserving only the
+prepared state is not enough. The compiler must preserve the full logical
+operator on every system input while returning its workspace to zero.
+
+This repository gives exact frame-safe constructions for the real and separated
+complex Hopf frames. The result has passed internal analytic and executable
+checks and is presented for independent technical review.
+
+<p align="center">
+  <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column; Hopf differential-frame compilation fixes the state and tangent-marker columns." />
+</p>
+
+## Main result under technical review
 
 Let
 
@@ -11,9 +28,10 @@ Let
 N=2^n
 ```
 
-and let `m>=0` be the number of clean ancillary qubits available to the
-compiler. The complete real Hopf differential frame and the separated complex
-frame admit exact frame-safe implementations with
+and let `m>=0` be the number of available clean ancillary qubits. In the exact
+all-to-all circuit model with arbitrary one-qubit gates and CNOTs, the complete
+real Hopf frame and the separated complex frame admit frame-safe
+implementations with
 
 ```math
 \boxed{
@@ -32,284 +50,168 @@ D_{\mathbb R}(n,m)=D_{\mathbb C}(n,m)
 
 The circuit uses at most the requested `m` clean ancillary qubits and returns
 them to zero. Thus coherent access to the complete Hopf differential frame has
-the same asymptotic size--depth frontier as optimal arbitrary state preparation
-in the exact Yuan--Zhang circuit model.
+the same asymptotic size–depth frontier as optimal arbitrary state preparation
+in the Yuan–Zhang model.
 
-This result has passed multiple internal proof audits and deterministic
-validation. It has not received independent external proof review.
+## Begin here
 
-## One active compiler framework
+The repository is arranged as a linear technical narrative rather than as a
+software manual.
 
-The sole active external compiler framework and optimal state-preparation
-benchmark are:
+| Reading route | Purpose |
+|---|---|
+| **[Start the complete narrative](REVIEW.md)** | A self-contained 35–45 minute route from the synthesis question to the QBP consequence |
+| **[Learn the minimal Hopf interface](docs/HOPF_INTERFACE.md)** | The state, tangent columns, marker convention, and addressed layers used by the compiler |
+| **[Audit the compiler theorem](docs/COMPILER_THEOREM.md)** | The three workspace schedules, workspace ledger, upper bounds, and matching lower bounds |
+| **[See what compilation changes for QBP](docs/QBP_CONSEQUENCE.md)** | Frame-safe substitution, gradient records, and the final scaling consequence |
+| **[Inspect the verification](docs/VERIFICATION.md)** | Analytic identities, exact finite tests, resource ledgers, and internal proof reviews |
+| **[Trace every dependency](docs/SOURCE_MAP.md)** | Exact paper results, inherited Hopf facts, local implementations, and tests |
+| **[Read the literature context](docs/RELATED_WORK.md)** | State preparation, UCGs, borrowed workspace, and the narrow claim boundary |
 
-> P. Yuan and S. Zhang, "Optimal (controlled) quantum state preparation and
-> improved unitary synthesis by quantum circuits with any number of ancillary
-> qubits," *Quantum* **7**, 956 (2023).
+A circuit-synthesis reader can audit the central theorem through the first four
+links without first learning the full Hopf optimization framework.
 
-The proof uses their Theorem 2 and Lemmas 5, 6, and 9. It does not choose between
-two published state-preparation compilers as a function of the workspace.
+## Why ordinary state preparation is insufficient
 
-The earlier work of Sun, Tian, Yang, Yuan, and Zhang remains cited as the
-historical predecessor and as the original source credited for selected
-primitives. Möttönen and Bergholm provide the earlier uniformly controlled-gate
-lineage. See [`docs/RELATED_WORK.md`](docs/RELATED_WORK.md).
-
-## Why a frame compiler is needed
-
-Ordinary state preparation requires only
+A state-preparation compiler is required only to satisfy
 
 ```math
 U_{\mathrm{prep}}|0^n\rangle=|\psi\rangle.
 ```
 
-Global Hopf backpropagation requires the stronger clean operator contract
+The global Hopf gradient protocol instead applies the inverse of a unitary `W`
+whose designated columns obey
 
 ```math
-\widetilde W
-\bigl(|\varphi\rangle|0^m\rangle\bigr)
-=(W|\varphi\rangle)|0^m\rangle
-```
-
-for every system input `|varphi>`. Exact two-qubit counterexamples in this
-repository show that a compiler can preserve the prepared Hopf state while
-permuting tangent-marker columns and returning the wrong gradient.
-
-The positive result is therefore not a generic consequence of state
-preparation. It comes from the structured Hopf frame and a compiler that
-preserves its complete action.
-
-## Unified compiler architecture
-
-The active compiler has three internal schedules.
-
-### 1. Strict-zero borrowed-suffix echo (`m=0`)
-
-At a nonfinal Hopf depth `d`, borrow one original suffix data qubit `b`, let
-`h(r)` test whether the remaining suffix `r` is zero, and set
-
-```math
-C_p=R_y(\theta_p/2).
-```
-
-The chronological echo
-
-```text
-controlled-X
-T_h
-controlled-C_p
-T_h
-controlled-X
-T_h
-controlled-C_p
-T_h
-```
-
-uses no ancillary wire. Here `T_h` toggles the borrowed bit iff `r=0`. The
-identities
-
-```math
-C_p^2=R_y(\theta_p),
+W|0^n\rangle=|\psi\rangle,
 \qquad
-X C_p X=C_p^{-1}
+W|\lambda(j)\rangle=|e_j\rangle.
 ```
 
-make the unwanted borrowed-bit sector cancel while the original full-suffix-zero
-sector receives the desired rotation. The borrowed qubit is restored exactly on
-all inputs.
+Here `|e_j>` is the normalized tangent associated with coordinate `j`, and
+`|lambda(j)>` is its computational marker. A compiler may preserve the first
+column while permuting the tangent-marker columns.
 
-Each nonfinal layer uses two zero-ancilla UCGs of total width `d+2`, four
-zero-ancilla predicate toggles, and two CNOT echoes. Summing the layers gives
-size `O(N)` and depth `O(n+N/n)`.
-
-The abstract square-root/conjugation and borrowed-bit ideas have close prior
-art. The project-specific contribution is their Hopf-layer aggregation and the
-resulting optimal strict-zero complete-frame frontier. See
-[`docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md`](docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md),
-[`docs/STRICT_ZERO_ECHO_AUDIT.md`](docs/STRICT_ZERO_ECHO_AUDIT.md), and
-[`docs/STRICT_ZERO_PRIOR_ART.md`](docs/STRICT_ZERO_PRIOR_ART.md).
-
-### 2. Direct flagged-UCG schedule (small positive workspace)
-
-For a nonfinal addressed depth, compute the lower-suffix-zero predicate into one
-clean flag, apply one prefix-and-flag Yuan--Zhang UCG, and uncompute the flag.
-For `1<=m<4n`, the polynomial sequential term is absorbed by the
-state-preparation scale, so this schedule already has optimal asymptotic depth.
-
-### 3. Tree-cut routed schedule (larger workspace)
-
-Cut the addressed frame after `t` depths and write
+The repository includes an exact two-qubit example in which the state is
+unchanged but the decoded gradient changes from
 
 ```math
-B=2^t,
-\qquad
-s=n-t.
+(2,0,0)
+\quad\longmapsto\quad
+(0,\sqrt2,0).
 ```
 
-The exact operator factorization is
+<p align="center">
+  <img src="assets/two-qubit-obstruction.svg" width="900" alt="A two-qubit state-equivalent compiler swaps two tangent-marker columns and changes the decoded gradient." />
+</p>
 
-```math
-W_{\mathbb R}^{(n)}=R_t^{(n)}F_t^{(n)},
-```
+The correct compiler contract is therefore operator-level **frame safety**, not
+state-column equality.
 
-with
+## One compiler, three internal schedules
 
-```math
-F_t^{(n)}
-=W_{\mathbb R}^{(t)}\otimes|0^s\rangle\!\langle0^s|
-+I\otimes\left(I-|0^s\rangle\!\langle0^s|\right)
-```
+The real-frame compiler chooses a schedule according to the available clean
+workspace.
 
-and
+| Workspace | Internal schedule | Main idea |
+|---:|---|---|
+| `m=0` | borrowed-suffix echo | use one original suffix data qubit as a restored in-place predicate carrier |
+| `1<=m<4n` | direct flagged UCG | compute one reusable clean suffix flag and apply a smaller uniformly controlled gate |
+| larger `m` | routed parallel subframes | cut the Hopf tree, route the suffix coherently, and run disjoint subtree frames in parallel |
 
-```math
-R_t^{(n)}
-=\bigoplus_{r=0}^{B-1}W_s^{(r)}.
-```
+These are three schedules of one Hopf-specific compiler. They are not a
+regime-by-regime choice between two published state-preparation constructions.
+The threshold `4n` is a convenient asymptotic scheduling threshold, not a claim
+about the best finite-size crossover.
 
-A self-contained reversible binary--one-hot decoder realizes the conditioned
-prefix. A coherent router moves the existing suffix to the branch selected by
-the prefix, all controlled subtree frames run on disjoint registers in
-parallel, and inverse routing returns every auxiliary register to zero.
-Choosing the largest feasible cut gives depth
+The complex phase layer is one additional exact `n`-qubit uniformly controlled
+gate and reuses the same workspace pool sequentially, including the empty pool
+at `m=0`.
 
-```math
-O\left(n+\frac{N}{n+m}\right).
-```
+## Compiler lineage and contribution boundary
 
-### Complex frame
+The sole active external compiler framework and optimal state-preparation
+benchmark are from:
 
-The leaf-phase diagonal is exactly one additional `n`-qubit UCG:
+> P. Yuan and S. Zhang, “Optimal (controlled) quantum state preparation and
+> improved unitary synthesis by quantum circuits with any number of ancillary
+> qubits,” *Quantum* **7**, 956 (2023).
 
-```math
-D_{\mathrm{ph}}
-=\sum_z|z\rangle\!\langle z|\otimes
-\operatorname{diag}\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right).
-```
+Their results supply the optimal state-preparation frontier and the exact
+multi-controlled-X, uniformly controlled-gate, and coherent-copy primitives.
+Those primitives can be adapted once the complete-operator structure of the
+Hopf frame is exposed; the adaptation is not direct because the frame must
+preserve many designated columns rather than one prepared state.
 
-It reuses the real-frame workspace pool sequentially, including at `m=0`.
+The earlier result of Sun, Tian, Yang, Yuan, and Zhang is retained as the
+historical predecessor. Möttönen and Bergholm supply the multiplexor/UCG
+lineage that also motivated the earlier Hopf-QBP compilation.
+
+<p align="center">
+  <img src="assets/literature-lineage.svg" width="940" alt="The compiler-synthesis and Hopf-geometry lines meet in the optimal complete-frame compiler." />
+</p>
+
+The strict-zero circuit combines familiar square-root, conjugation, and
+borrowed-workspace ideas. The narrow Hopf-specific contribution is the reduction
+of every addressed depth to two total-width-`d+2` UCGs using one restored
+logical suffix qubit, together with the resulting optimal strict-zero
+complete-frame frontier. The repository does not claim invention of borrowed
+qubits, toggle detection, controlled-unitary square roots, or generic UCGs.
 
 ## Consequence for quantum backpropagation
 
-The balanced Hopf chart supplies orthogonal coordinate tangents, metric weights,
-computational markers, and bounded shared gradient records. A frame-safe
-compiler transports that differential interface without changing the global
-measurement distribution.
+The balanced Hopf chart supplies orthogonal coordinate tangents, known metric
+weights, and computational markers. A frame-safe compiler transports this
+interface without changing the global gradient measurement distribution.
 
-At fixed simultaneous coordinatewise accuracy and confidence, the global
-magnitude stream uses
+For a complete chart with `M=Theta(N)` coordinates, the global magnitude stream
+uses
 
 ```math
 O(\log n)=O(\log\log M)
 ```
 
-executions for `M=Theta(N)` Hopf coordinates. Since one forward or inverse frame
-matches the optimal state-preparation depth for every `m>=0`, compilation adds
-no asymptotic factor to this execution overhead. The direct complex phase stream
-uses no inverse frame.
+independent executions at fixed simultaneous coordinatewise accuracy and
+confidence. Because one compiled forward or inverse frame now matches the
+optimal state-preparation depth for every `m>=0`, compilation adds no further
+asymptotic depth factor to this execution overhead. This comparison is made
+under the controlled-observable and accuracy assumptions stated in the QBP
+paper and in [the QBP consequence page](docs/QBP_CONSEQUENCE.md).
 
-The quantum and classical accounting is in
-[`docs/END_TO_END_QBP.md`](docs/END_TO_END_QBP.md).
+## Verification boundary
 
-## Compiler correctness hierarchy
+The repository checks complete operators at finite dimensions, exact borrowed-
+qubit restoration, reversible decoder schedules, workspace peaks, resource
+inequalities, gradient decoders, and compiler counterexamples. The validation
+suite and ledgers do not replace the dimension-independent proofs.
 
-| Compiler promise | Scalar state | Checkpoint means | Global Hopf distribution |
-|---|---:|---:|---:|
-| One prepared state column | sufficient | insufficient | insufficient |
-| Complete active checkpoint interface | sufficient | sufficient | generally insufficient |
-| Complete frame-safe operator | sufficient | sufficient where applicable | sufficient |
+The result does not address device routing, native-gate depth, approximate
+Clifford+T synthesis, hardware noise, arbitrary state-space charts, or an
+application-independent implementation cost for controlled observable access.
 
-For checkpoint factorization `U=B_dA_d`, the sufficient interface contract is
-
-```math
-\widetilde B_dJP_d=e^{i\chi}JB_dP_d.
-```
-
-It preserves the designated checkpoint means but need not preserve the complete
-output distribution. See
-[`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md).
-
-## Start here
-
-- [`docs/THEOREM_OVERVIEW.md`](docs/THEOREM_OVERVIEW.md): theorem chain;
-- [`docs/UNIFIED_YUAN_ZHANG_COMPILER.md`](docs/UNIFIED_YUAN_ZHANG_COMPILER.md):
-  complete all-workspace compiler and resource proof;
-- [`docs/PROOF_AUDIT.md`](docs/PROOF_AUDIT.md): consolidated internal audit;
-- [`docs/FRAME_SAFE_COMPILATION.md`](docs/FRAME_SAFE_COMPILATION.md): operator
-  contracts;
-- [`docs/COMPILER_BOUNDARIES.md`](docs/COMPILER_BOUNDARIES.md): exact negative
-  examples and checkpoint theorem;
-- [`docs/END_TO_END_QBP.md`](docs/END_TO_END_QBP.md): execution, depth,
-  workspace, and decoder accounting;
-- [`docs/CLAIM_SUPPORT.md`](docs/CLAIM_SUPPORT.md): claim-by-claim evidence map;
-- [`docs/RESEARCH_STATUS.md`](docs/RESEARCH_STATUS.md): review and release gates.
-
-## Repository map
-
-```text
-compiler_robust_hopf/
-  frames.py                 exact real and separated complex frames
-  tree_structure.py         prefix and tail operator identities
-  tree_decoder.py           explicit binary--one-hot reversible decoder
-  strict_zero_echo.py       exact ancilla-free addressed-layer compiler
-  unified_compiler.py       all-workspace compiler and resource selection
-  resource_bounds.py        exact integer proof diagnostics
-  decoders.py               output-sensitive magnitude and phase decoders
-  compiler_boundaries.py    global and checkpoint counterexamples
-
-tests/
-  test_frames.py
-  test_tree_decoder.py
-  test_strict_zero_echo.py
-  test_strict_zero_audit.py
-  test_unified_compiler.py
-  test_decoders.py
-  test_compiler_boundaries.py
-
-scripts/
-  unified_resource_ledger.py
-  strict_zero_echo_ledger.py
-  check_upstream_sync.py
-```
-
-## Reproduce
+## Reproduce the checks
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+python scripts/reviewer_walkthrough.py
 python validate.py
 python scripts/unified_resource_ledger.py --n 12
 python scripts/strict_zero_echo_ledger.py --n 12
-python scripts/check_upstream_sync.py --offline
 ```
 
-The ledgers expose explicit integer contributions and selected schedules. The
-asymptotic theorem is proved analytically rather than inferred from numerical
-fits.
-
-## Relationship to earlier repositories
+## Relationship to the two Hopf repositories
 
 | Repository | Role |
 |---|---|
-| [`Hopf-ansatz`](https://github.com/GoGoKo699/Hopf-ansatz) | Hopf coordinates, inverse map, metric, and tangent preparation |
-| [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | Established gradient protocols and Möttönen-style robustness |
-| **This repository** | Optimal all-workspace frame compilation, compiler boundaries, and the new paper |
+| [`Hopf-ansatz`](https://github.com/GoGoKo699/Hopf-ansatz) | Hopf coordinates, inverse map, metric, tangent preparation, and optimization interface |
+| [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | Global, direct-phase, and checkpoint gradient records, together with Möttönen-style robustness |
+| **This repository** | Complete-frame compiler contracts, optimal all-workspace synthesis, and the resulting compiler-robust QBP consequence |
 
-Shared definitions and upstream commits are recorded in [`SYNC.md`](SYNC.md) and
-[`provenance/upstream.json`](provenance/upstream.json). Literature roles are
-recorded in [`provenance/literature.json`](provenance/literature.json).
-
-The earlier fallback remains preserved on `near-optimal-audited-2026-09` at
-commit `24f339b863faa2ac92e1adb3917cbef7dc24d3b8`.
-
-## Evidence boundary
-
-The current theorem is internally audited, not externally verified. The result
-does not address routed hardware, native-gate depth, approximate Clifford+T
-synthesis, noise-dependent sampling, arbitrary state-space charts, or an
-application-independent cost for controlled access to the observable.
+The exact fact-level dependencies are listed in
+[`docs/SOURCE_MAP.md`](docs/SOURCE_MAP.md).
 
 ## License
 
