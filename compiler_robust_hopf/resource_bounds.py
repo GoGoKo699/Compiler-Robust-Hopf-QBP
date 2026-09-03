@@ -1,8 +1,8 @@
 """Exact integer helpers for the unified Hopf-frame resource proof.
 
 These routines expose the elementary inequalities used by the analytic proof.
-They are regression checks and transparent ledgers, not substitutes for the
-proof in ``docs/UNIFIED_YUAN_ZHANG_COMPILER.md``.
+They are transparent regression checks and ledgers, not substitutes for the
+proof in ``docs/COMPILER_THEOREM.md``.
 """
 from __future__ import annotations
 
