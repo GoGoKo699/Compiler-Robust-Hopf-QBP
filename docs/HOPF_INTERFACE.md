@@ -2,11 +2,15 @@
 
 [← Landing page](../README.md) · [Read the complete narrative](../REVIEW.md) · [Next: compiler theorem →](COMPILER_THEOREM.md)
 
-This page isolates the Hopf facts used by the compiler result. It is not a
-replacement for the full Hopf-ansatz or Hopf-QBP papers. The purpose is narrower:
-a circuit-synthesis reader should be able to identify the exact unitary being
-compiled, the columns that matter, and the addressed-layer structure without
-first learning the full optimization framework.
+This page isolates the Hopf facts consumed by the compiler theorem. It is not a
+replacement for the full Hopf-ansatz or Hopf-QBP papers. Its purpose is
+narrower: a circuit-synthesis reader should be able to identify the exact
+unitary being compiled, the columns that matter, the coordinate domain, and the
+addressed-layer structure without first learning the full optimization
+framework.
+
+The final all-workspace result uses the Yuan–Zhang exact circuit framework and
+covers every clean-workspace budget `m>=0`.
 
 ## 1. The object is a coordinate frame, not only a state loader
 
@@ -16,48 +20,111 @@ Fix `n` system qubits and write
 N=2^n.
 ```
 
-The real Hopf chart uses one angle for each internal node of a complete binary
-tree, hence `N-1` real coordinates. The root angle splits amplitude between the
-left and right halves of the computational basis. The next two angles split
-those halves, and so on until the final layer splits sibling basis states.
+The real Hopf chart assigns one angle to each internal node of a complete binary
+tree, hence `N-1` magnitude coordinates. The root angle splits amplitude
+between the left and right halves of the computational basis. Each descendant
+angle splits the amplitude entering its subtree, and the recursion continues to
+sibling leaves.
 
-For one internal node `j`, differentiating its local split replaces the local
-subtree state by its orthogonal complement. Repeating this fact through the tree
-gives a normalized direction `|e_j>` and a known scalar weight
-`sqrt(g_(j,j))` such that
+For internal node `j`, let `a_j(theta)` be the **oriented incoming amplitude**:
+the product of the sine or cosine factors selected along the path from the root
+to that node. Differentiating the split at `j` replaces the local subtree state
+by a unit orthogonal complement `|e_j>`. The exact differential is
 
 ```math
+\boxed{
 \partial_{\theta_j}|\psi(\boldsymbol\theta)\rangle
-=\sqrt{g_{j,j}}\,|e_j(\boldsymbol\theta)\rangle.
+=a_j(\boldsymbol\theta)|e_j(\boldsymbol\theta)\rangle,
+\qquad
+g_{j,j}=a_j(\boldsymbol\theta)^2.
+}
 ```
 
-The normalized directions are mutually orthogonal and orthogonal to the state.
-They therefore complete the state to an orthonormal basis.
+This formulation is valid for unrestricted real angles. The principal metric
+square root is
 
-The **real Hopf differential frame** is the unitary `W_R` whose designated
-columns satisfy
+```math
+\sqrt{g_{j,j}}=|a_j|.
+```
+
+On the canonical Hopf domains described below, every ancestor factor entering
+`a_j` is nonnegative, so
+
+```math
+a_j=\sqrt{g_{j,j}}.
+```
+
+At a regular point, `g_(j,j)>0`, the vector `|e_j>` is the normalized coordinate
+derivative up to the canonical positive metric weight. At a singular point,
+`g_(j,j)=0`, the raw differential vanishes. The unit vector `|e_j>` remains the
+canonical orthogonal continuation occupying the marker column of the frame, but
+it should not be interpreted as normalization of a nonzero derivative.
+
+The state and the `N-1` continuation vectors form an orthonormal basis for every
+choice of angles. The **real Hopf differential frame** is therefore the unitary
+`W_R` satisfying
 
 ```math
 W_{\mathbb R}|0^n\rangle
-=|\psi(\boldsymbol\theta)\rangle,
+=|\psi_{\mathbb R}(\boldsymbol\theta)\rangle,
 ```
 
 ```math
 W_{\mathbb R}|\lambda(j)\rangle
-=|e_j(\boldsymbol\theta)\rangle,
+=|e_j^{\mathbb R}(\boldsymbol\theta)\rangle,
 \qquad 1\leq j<N.
 ```
 
 The marker `lambda(j)` is a nonzero computational-basis label assigned to node
-`j`. Thus the frame converts a known computational basis into the state and its
-normalized coordinate directions.
+`j`. The frame converts a known computational basis into the state and its
+canonical differential directions.
 
-This is the only geometric interface required by the global compiler theorem.
-The inverse coordinate map, optimizer construction, and numerical optimization
-studies remain important parts of the first Hopf paper, but they are not used in
-the synthesis proof here.
+This is the geometric interface required by the compiler theorem. The inverse
+coordinate map, optimization architecture, and numerical studies remain in the
+first Hopf paper and repository.
 
-## 2. Tree and marker conventions
+## 2. Canonical coordinate domains
+
+The compiler identities are algebraic and remain valid for unrestricted real
+angles. The geometric notation `a_j=sqrt(g_(j,j))`, however, uses the canonical
+chart domains.
+
+For the **real chart**:
+
+- every magnitude angle at depths `0,...,n-2` lies in
+  ```math
+  [0,\pi/2];
+  ```
+- every angle at the final magnitude depth lies in
+  ```math
+  [0,2\pi),
+  ```
+  so the last sibling split can encode signs without a separate phase layer.
+
+For the **complex chart**, every magnitude angle lies in
+
+```math
+[0,\pi/2],
+```
+
+and one phase `phi_l` is attached to each leaf.
+
+Only ancestor angles enter an internal node's incoming amplitude. In the real
+chart, the final-depth angles therefore do not affect the sign of any internal
+`a_j`. Hence every `a_j` is nonnegative on the canonical real and complex
+magnitude domains.
+
+The implementation exposes both views:
+
+- `incoming_amplitude` stores the oriented value valid for unrestricted angles;
+- `sqrt_metric` is the principal nonnegative square root;
+- `regular_mask` identifies coordinates with nonzero metric weight;
+- `in_canonical_magnitude_domain` checks the declared domains.
+
+This separation prevents unrestricted algebraic tests from silently changing
+the meaning of `sqrt(g_(j,j))`.
+
+## 3. Tree and marker conventions
 
 Internal nodes are indexed breadth first, beginning at one. If node `j` lies at
 depth `d` and position `r`, then
@@ -68,7 +135,7 @@ j=2^d+r,
 0\leq r<2^d.
 ```
 
-The computational marker for this node is
+Its computational marker is
 
 ```math
 \lambda(j)
@@ -78,16 +145,16 @@ The computational marker for this node is
 Equivalently, the marker bit string consists of:
 
 - the `d`-bit prefix describing the node position;
-- a one in the node's target position;
+- a one at the node's target position;
 - zeros in every lower suffix position.
 
-The corresponding left-subtree anchor has label
+The corresponding left-subtree anchor is
 
 ```math
 \ell_0(j)=r2^{n-d}.
 ```
 
-The addressed rotation at node `j` mixes exactly the two basis states
+The addressed rotation at node `j` mixes exactly
 
 ```math
 |\ell_0(j)\rangle
@@ -101,26 +168,25 @@ The addressed rotation at node `j` mixes exactly the two basis states
 |---|---|
 | `n` | number of system qubits |
 | `N=2^n` | Hilbert-space dimension |
+| `m` | clean ancillary qubits supplied to the compiler, `m>=0` |
 | `j` | breadth-first internal-node index, `1<=j<N` |
 | `d` | depth of an internal node, `0<=d<n` |
 | `r` or `p` | node position or prefix at depth `d` |
-| `theta_(d,p)` | Hopf angle attached to that node |
-| `|psi>` | current real or complex Hopf state |
-| `|e_j>` | normalized magnitude-coordinate tangent |
-| `g_(j,j)` | diagonal coordinate-metric weight |
+| `theta_(d,p)` | Hopf magnitude angle at that node |
+| `a_j` | oriented incoming amplitude multiplying coordinate `j` |
+| `g_(j,j)=a_j^2` | diagonal metric weight |
+| `|e_j>` | unit frame continuation; a normalized derivative direction when `g_(j,j)>0` |
 | `lambda(j)` | computational marker assigned to `|e_j>` |
 | `W_R` | real Hopf differential frame |
 | `D_ph` | diagonal complex leaf-phase layer |
-| `W_C=D_ph W_R` | separated complex magnitude frame |
-| `m` | number of clean ancillary qubits supplied to the compiler |
+| `W_(C,mag)=D_ph W_R` | phase-dressed complex magnitude frame |
 
 Basis labels are ordered from the most significant tree decision to the least
-significant one. In code, computational labels are ordinary nonnegative
-integers in this bit order.
+significant one. In code they are ordinary nonnegative integers in this order.
 
-## 3. The complete addressed layer
+## 4. The complete addressed layer
 
-At depth `d`, split the system label as
+At depth `d`, split a basis label as
 
 ```math
 |p\rangle_P|x\rangle_T|z\rangle_Z,
@@ -135,7 +201,7 @@ where:
   s=n-d-1.
   ```
 
-The depth-`d` addressed layer is
+The complete depth operator is
 
 ```math
 \boxed{
@@ -146,11 +212,11 @@ L_d^{(n)}
 \otimes
 \bigl(R_y(\theta_{d,p})-I\bigr)
 \otimes
-|0^s\rangle\!\langle0^s|
+|0^s\rangle\!\langle0^s|.
 }
 ```
 
-with the Hopf convention
+The rotation convention is
 
 ```math
 R_y(\alpha)=e^{-i\alpha Y}
@@ -161,13 +227,13 @@ R_y(\alpha)=e^{-i\alpha Y}
 \end{pmatrix}.
 ```
 
-This equation is the compiler's local target. It says:
+Thus:
 
 1. the prefix selects one of `2^d` angles;
-2. the target is rotated only when every lower suffix bit is zero;
-3. every other computational sector is fixed.
+2. the target rotates only when every lower suffix bit is zero;
+3. every nonzero-suffix sector is fixed.
 
-The complete real frame is the ordered product
+The complete real frame is
 
 ```math
 \boxed{
@@ -176,27 +242,25 @@ W_{\mathbb R}^{(n)}
 }
 ```
 
-where the root layer `L_0` acts first on state vectors.
+with `L_0` acting first on state vectors.
 
-The zero-suffix restriction is not incidental. It is what preserves the
-state-and-complement columns already established higher in the tree. It is also
-the source of the strict-zero compilation problem: a clean implementation must
-recognize this long shared predicate without disturbing arbitrary input
-columns.
+The zero-suffix restriction is essential. It preserves the state-and-complement
+columns established at earlier depths. It is also the compiler's central
+structural feature: the long shared predicate must be recognized without
+corrupting arbitrary frame columns.
 
-> **What should be checked here?**  Verify the basis ordering, the marker
-> formula, the state-update order of the layers, and the fact that the operator
-> is identity on every nonzero-suffix sector. A state-preparation-only formula
-> is not sufficient.
+> **What should be checked here?** Verify the basis ordering, marker formula,
+> layer order, and identity action on every nonzero-suffix sector. A formula
+> valid only on the state-preparation input is not enough.
 
 ### Executable counterpart
 
 - [Marker and anchor conventions](../compiler_robust_hopf/conventions.py)
-- [Recursive state, tangent, and frame construction](../compiler_robust_hopf/frames.py)
+- [Recursive state, oriented differentials, and frame](../compiler_robust_hopf/frames.py)
 - [Independent addressed-layer construction](../compiler_robust_hopf/frames.py)
-- [Frame parity tests](../tests/test_frames.py)
+- [Frame and chart-domain tests](../tests/test_frames.py)
 
-## 4. A complete two-qubit example
+## 5. A complete two-qubit example
 
 For two qubits, the real chart has three angles:
 
@@ -218,7 +282,7 @@ The state is
       \sin\theta_3|11\rangle\bigr).
 ```
 
-The normalized directions are
+The unit frame continuations are
 
 ```math
 |e_1\rangle
@@ -242,7 +306,7 @@ The normalized directions are
  \cos\theta_3|11\rangle.
 ```
 
-Their metric weights are
+The oriented differential factors are
 
 ```math
 \partial_{\theta_1}|\psi\rangle=|e_1\rangle,
@@ -256,6 +320,10 @@ Their metric weights are
 =\sin\theta_1|e_3\rangle.
 ```
 
+On the canonical domain `theta_1 in [0,pi/2]`, these factors are the principal
+metric square roots. At `theta_1=0`, the third derivative vanishes while
+`|e_3>` remains a unit marker-column continuation.
+
 The markers are
 
 ```math
@@ -266,8 +334,7 @@ The markers are
 \lambda(3)=11_2.
 ```
 
-Hence, in the computational column order
-`|00>,|01>,|10>,|11>`, the frame is
+Hence in computational column order the frame is
 
 ```math
 W_{\mathbb R}
@@ -279,7 +346,7 @@ W_{\mathbb R}
 \end{pmatrix}.
 ```
 
-At the symmetric point
+At
 
 ```math
 \theta_1=\theta_2=\theta_3=\frac{\pi}{4},
@@ -298,13 +365,9 @@ W_{\mathbb R}
 \end{pmatrix}.
 ```
 
-The first column is the uniform state. The other three columns are fixed by the
-differential geometry and are not arbitrary choices of unitary completion.
+## 6. Why one correct state column is not enough
 
-## 5. Why one correct state column is not enough
-
-Let `Q` swap the computational basis states `|01>` and `|10>` while fixing
-`|00>` and `|11>`, and define
+Let `Q` swap `|01>` and `|10>` while fixing `|00>` and `|11>`, and define
 
 ```math
 V=W_{\mathbb R}Q.
@@ -316,8 +379,8 @@ Because `Q|00>=|00>`,
 V|00\rangle=W_{\mathbb R}|00\rangle=|\psi\rangle.
 ```
 
-Thus `V` is an exact state-preparation completion for the same target state.
-But it exchanges the marker columns for `e_1` and `e_2`.
+Thus `V` is an exact state-preparation completion for the same target state,
+but it exchanges the marker columns for `e_1` and `e_2`.
 
 Choose
 
@@ -337,17 +400,19 @@ whereas
 V^{\dagger}O|\psi\rangle=|01\rangle.
 ```
 
-The canonical marker decoder returns the exact coordinate gradient
+The unchanged marker decoder returns
 
 ```math
-(2,0,0),
+(2,0,0)
 ```
 
-but the state-equivalent completion returns
+for the canonical frame but
 
 ```math
-(0,\sqrt2,0).
+(0,\sqrt2,0)
 ```
+
+for the state-equivalent completion.
 
 <p align="center">
   <img src="../assets/two-qubit-obstruction.svg" width="900" alt="Two unitaries prepare the same two-qubit state, but one swaps tangent-marker columns and changes the decoded gradient." />
@@ -355,23 +420,17 @@ but the state-equivalent completion returns
 
 ```math
 \boxed{
-\text{State-column equality is sufficient for loading }|\psi\rangle,
-\text{ but insufficient for inverse-frame gradient readout.}
+\text{State-column equality loads }|\psi\rangle,
+\text{ but does not guarantee inverse-frame gradient readout.}
 }
 ```
-
-> **What should be checked here?**  Confirm that `Q` fixes `|00>`, that both
-> circuits prepare the same state, that the response marker moves from `|10>`
-> to `|01>`, and that the decoder is intentionally unchanged. The example is a
-> compiler-contract obstruction, not a claim that every state-preparation
-> completion fails.
 
 ### Executable counterpart
 
 - [Exact counterexample construction](../compiler_robust_hopf/compiler_boundaries.py)
 - [Distribution and decoded-gradient tests](../tests/test_compiler_boundaries.py)
 
-## 6. Complex magnitudes require only a diagonal dressing
+## 7. The phase-dressed complex magnitude frame
 
 For the complex chart, attach one phase `phi_l` to each computational leaf and
 define
@@ -382,32 +441,33 @@ D_{\mathrm{ph}}
 e^{i\phi_\ell}|\ell\rangle\!\langle\ell|.
 ```
 
-The separated complex magnitude frame is
+The unitary compiled by the inverse-frame magnitude protocol is
 
 ```math
 \boxed{
-W_{\mathbb C}=D_{\mathrm{ph}}W_{\mathbb R}.
+W_{\mathbb C,\mathrm{mag}}
+=D_{\mathrm{ph}}W_{\mathbb R}.
 }
 ```
 
 It satisfies
 
 ```math
-W_{\mathbb C}|0^n\rangle=|\psi_{\mathbb C}\rangle,
+W_{\mathbb C,\mathrm{mag}}|0^n\rangle
+=|\psi_{\mathbb C}\rangle,
 ```
 
 ```math
-W_{\mathbb C}|\lambda(j)\rangle
+W_{\mathbb C,\mathrm{mag}}|\lambda(j)\rangle
 =|e_j^{\mathbb C}\rangle.
 ```
 
-The magnitude compiler therefore consists of the real frame followed by one
-diagonal unitary. The leaf-phase derivatives themselves are already localized
-in the computational basis and are read by a separate direct record in the QBP
-protocol.
+This is a frame for the `N-1` complex-chart **magnitude** directions. The `N`
+leaf-phase differentials cannot all be additional columns of the same
+`N`-dimensional unitary. They are localized in the computational basis and use
+a separate direct signed one-hot record in the QBP protocol.
 
-The diagonal is also one `n`-qubit uniformly controlled one-qubit gate. Writing
-a basis label as `x=zb`, with the final bit chosen as target,
+Writing a basis label as `x=zb`, with the final bit as target,
 
 ```math
 D_{\mathrm{ph}}
@@ -420,36 +480,37 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-This observation makes the complex compiler a short corollary once the real
-frame is compiled.
+Thus the phase dressing is one exact `n`-qubit UCG, and the complex magnitude
+compiler is a short corollary of the real-frame compiler.
 
-> **What should be checked here?**  Verify complete operator equality, including
-> the common phase, and distinguish the complex magnitude frame from the direct
-> phase-gradient record.
+> **What should be checked here?** Verify complete operator equality, including
+> common phase, and keep the magnitude-frame stream distinct from the direct
+> leaf-phase stream.
 
 ### Executable counterpart
 
-- [Separated complex frame](../compiler_robust_hopf/frames.py)
-- [Complex chart identities](../compiler_robust_hopf/complex_analysis.py)
+- [Phase-dressed magnitude frame](../compiler_robust_hopf/frames.py)
+- [Complex magnitude and phase derivatives](../compiler_robust_hopf/complex_analysis.py)
 - [One-UCG phase diagonal](../compiler_robust_hopf/unified_compiler.py)
 - [Complex composition tests](../tests/test_unified_compiler.py)
 
-## 7. What is inherited and what is proved here
+## 8. What is inherited and what is proved here
 
-The first Hopf paper supplies the balanced coordinate chart, inverse map,
-diagonal metric, and normalized tangent-state construction. The Hopf-QBP paper
-assembles the normalized magnitude directions into the addressed frame and uses
-its inverse in shared gradient records.
+The first Hopf paper supplies the balanced chart, inverse map, diagonal metric,
+and normalized tangent construction on regular coordinates. `Hopf-QBP` supplies
+the addressed frame, global and direct-phase records, checkpoint interface, and
+statistical task boundaries.
 
-This repository takes that complete frame as the synthesis target. It proves:
+This repository takes the complete real frame and phase-dressed complex
+magnitude frame as synthesis targets. It proves:
 
-- the operator-level compiler contract required by the global record;
+- the operator-level frame-safe compiler contract;
 - explicit failure of the weaker state-column contract;
-- exact all-workspace constructions of the complete frame;
+- exact all-workspace constructions, including an explicit coherent router;
 - matching size and depth bounds;
-- preservation of the QBP distribution under frame-safe substitution.
+- preservation of the global QBP distribution under frame-safe substitution.
 
-For exact theorem, equation, repository, implementation, and test locations, see
+For exact theorem, repository, implementation, and test locations, see
 [the source map](SOURCE_MAP.md).
 
 ---
