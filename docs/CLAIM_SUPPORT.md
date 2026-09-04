@@ -38,7 +38,7 @@ support, and scope boundary.  It is a navigation aid after the proof.
 | the construction uses no ancillary wire | explicit register count | strict-zero source and resource rows | borrowed bit remains logical data |
 | each half-angle UCG has total width $d+2$ | participant count | layer-resource checks | $d$ prefix controls, one borrowed control, one target |
 | the predicate toggle is ancilla free | imported MCT theorem plus negative-control wrappers | strict-zero ledger | exact all-to-all logical model |
-| the complete strict-zero frame has $\Theta(N)$ size and $\Theta(n+N/n)$ depth | analytic sums plus real-state lower bound | exact-rational resource tests | asymptotic constants not optimized |
+| the complete strict-zero frame has $\Theta(N)$ size and $\Theta(n+\frac{N}{n})$ depth | analytic sums plus real-state lower bound | exact-rational resource tests | asymptotic constants not optimized |
 
 ## 3. Positive workspace
 
@@ -47,7 +47,7 @@ support, and scope boundary.  It is a navigation aid after the proof.
 | the first $t$ depths are a $t$-qubit frame conditioned on the external suffix being zero | complete-operator sector proof | all finite cuts in the test range | balanced addressed frame |
 | the tail is a direct sum of subtree frames | prefix invariance and exact angle map | all finite cuts in the test range | complete operator, not state column |
 | the binary–one-hot decoder realizes $\lvert x\rangle\lvert0\rangle\mapsto\lvert0\rangle\lvert e_x\rangle\lvert0\rangle$ | explicit X/CNOT/Toffoli construction | basis action, arbitrary-basis reversibility, layer disjointness, clean return | clean intended input for the forward encoding |
-| decoder workspace is $3\cdot2^t-2-t$, depth $O(t)$, and size $O(2^t)$ | exact register and layer count | closed formulas and explicit schedule checks | fixed-width gates have constant elementary cost |
+| decoder workspace is $3\cdot2^t-2-t$, depth $O\!\left(t\right)$, and size $O\!\left(2^t\right)$ | exact register and layer count | closed formulas and explicit schedule checks | fixed-width gates have constant elementary cost |
 | the coherent router sends the suffix-token block to the prefix-selected branch | explicit CNOT/Fredkin construction | every clean basis input and arbitrary complex entangled inputs | all-to-all logical connectivity |
 | copy and forward-Fredkin counts are $(2^t-1)(s+1)-t$ and $(2^t-1)(s+1)$ | exact schedule count | router schedule versus ledger | branch-block width $s+1$ |
 | the cleared copy pool contains all simultaneous branch flags when $s\geq2$ | inequality $C-B=(B-1)s-t-1\geq0$ | register assertions and resource tests | $t\geq1$ |
@@ -73,11 +73,11 @@ support, and scope boundary.  It is a navigation aid after the proof.
 | Claim | Basis | Executable support | Boundary |
 |---|---|---|---|
 | one magnitude outcome contributes to every magnitude coordinate | inherited parity-record identity | parity and FWHT decoder checks | phase-calibrated controlled Hermitian-unitary observable |
-| fixed raw-coordinate $\ell_\infty$ accuracy needs $O\!\left((1+\log(n/\delta))/\varepsilon^2\right)$ magnitude executions | inherited fixed-norm concentration theorem | deterministic record-norm checks | absolute raw-coordinate target |
+| fixed raw-coordinate $\ell_\infty$ accuracy needs $O\!\left((1+\log(\frac{n}{\delta}))/\varepsilon^2\right)$ magnitude executions | inherited fixed-norm concentration theorem | deterministic record-norm checks | absolute raw-coordinate target |
 | other gradient outputs have different conditioning | output-task analysis | [QBP consequence](QBP_CONSEQUENCE.md) | may depend on dimension, gradient norm, or metric weights |
 | materialized decoding costs $O\!\left(S+N\min\{S,n\}\right)$ | minimum of record-wise and histogram/FWHT routes | decoder-route equality tests | output length is $\Theta(N)$ |
 | frame-safe compilation adds no asymptotic per-execution depth factor | all-workspace frame theorem and substitution lemma | walkthrough and complete suite | matched general-family programs |
-| fixed-accuracy matched overhead is $O(\log n)=O(\log\log M)$ | execution count and constant per-execution depth ratio | [QBP consequence](QBP_CONSEQUENCE.md) | same state family, observable access, and accuracy convention; output materialization excluded |
+| fixed-accuracy matched overhead is $O\!\left(\log n\right)=O\!\left(\log\log M\right)$ | execution count and constant per-execution depth ratio | [QBP consequence](QBP_CONSEQUENCE.md) | same state family, observable access, and accuracy convention; output materialization excluded |
 
 ## 6. Sources and claim boundary
 

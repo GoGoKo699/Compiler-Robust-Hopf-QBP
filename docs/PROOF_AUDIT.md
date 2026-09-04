@@ -231,7 +231,7 @@ conditioned prefix and routed tail execute sequentially. Both fit inside
 2B(s+1).
 ```
 
-Route and unroute have $O\!\left(n\right)$ depth and $O(B(s+1))$ size. One controlled
+Route and unroute have $O\!\left(n\right)$ depth and $O\!\left(B(s+1)\right)$ size. One controlled
 subtree has size $O\!\left(2^s\right)$ and depth $O\!\left(s^2+\frac{2^s}{s}\right)$; all branches run in
 parallel.
 
@@ -241,7 +241,7 @@ For $m\geq 4n$, the largest cut satisfying
 2\,2^t(n-t+1)\leq m
 ```
 
-obeys $\frac{2^s}{s}=O(\frac{N}{n+m})$. For $1\leq m<4n$, the direct flagged schedule's
+obeys $\frac{2^s}{s}=O\!\left(\frac{N}{n+m}\right)$. For $1\leq m<4n$, the direct flagged schedule's
 $O\!\left(n^2\right)$ term is absorbed. Therefore all positive budgets attain the target
 frontier.
 
@@ -250,7 +250,7 @@ Classification: **proved, with explicit schedule-to-ledger regression tests**.
 ## 9. Lower bounds
 
 The first frame column covers an open $(N-1)$-dimensional real-state family.
-Parameter counting gives $\Omega\!\left(N\right)$ size and $Omega(\frac{N}{n+m})$ depth. Backward
+Parameter counting gives $\Omega\!\left(N\right)$ size and $\Omega\!\left(\frac{N}{n+m}\right)$ depth. Backward
 light cones of the $n$ system outputs give $\Omega\!\left(n\right)$ depth. At $m=0$, the
 parameter bound $\Omega\!\left(\frac{N}{n}\right)$ already dominates $n$.
 
@@ -264,7 +264,7 @@ The phase diagonal is one total-width-$n$ UCG with blocks
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}}).
 ```
 
-It has size $O\!\left(N\right)$ and depth $O(n+\frac{N}{n+m})$, and reuses the real-frame work
+It has size $O\!\left(N\right)$ and depth $O\!\left(n+\frac{N}{n+m}\right)$, and reuses the real-frame work
 pool sequentially. The result concerns the complex **magnitude** frame. The
 leaf-phase derivatives remain a separate direct stream.
 

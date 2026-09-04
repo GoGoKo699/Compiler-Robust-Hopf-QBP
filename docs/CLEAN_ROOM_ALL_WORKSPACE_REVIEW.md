@@ -66,10 +66,10 @@ The review uses:
 - arbitrary one-qubit gates and CNOTs with all-to-all logical connectivity;
 - Lemma 5: exact ancilla-free multi-controlled X with linear size and depth;
 - Lemma 6: a total-width-$q$ UCG using $w$ clean work qubits has size
-  $O\!\left(2^q\right)$ and depth $O(q+2^q/(q+w))$;
+  $O\!\left(2^q\right)$ and depth $O\!\left(q+2^q/(q+w)\right)$;
 - Lemma 9: coherent CNOT-tree copying and exact uncopying;
 - Theorem 2: exact state preparation has size $\Theta\!\left(2^n\right)$ and depth
-  $Theta(n+\frac{2^n}{n+m})$ for every ancillary budget.
+  $\Theta\!\left(n+\frac{2^n}{n+m}\right)$ for every ancillary budget.
 
 The published article corresponds to `arXiv:2202.11302v2`. The imported
 statements were also checked in v3 and retain the forms used here.
@@ -349,7 +349,7 @@ The tail peak is
 ```
 
 and the sequential prefix/tail construction fits inside $2B(s+1)$ clean qubits.
-Route and unroute have $O\!\left(n\right)$ depth and $O(B(s+1))$ size.
+Route and unroute have $O\!\left(n\right)$ depth and $O\!\left(B(s+1)\right)$ size.
 
 **Classification:** explicit reversible construction, exact register count, and
 operator-level finite validation.
@@ -414,8 +414,8 @@ of dimension $2^n-1$.
 
 - A fixed topology with $G$ arbitrary one-qubit gates has $O\!\left(G\right)$ continuous
   parameters, giving $G=\Omega\!\left(2^n\right)$.
-- A depth-$D$ circuit on $n+m$ wires has $O(D(n+m))$ parameterized one-qubit
-  locations, giving $D=Omega(\frac{2^n}{n+m})$.
+- A depth-$D$ circuit on $n+m$ wires has $O\!\left(D(n+m)\right)$ parameterized one-qubit
+  locations, giving $D=\Omega\!\left(\frac{2^n}{n+m}\right)$.
 - The union of the backward light cones of the $n$ system outputs gives the
   independent $D=\Omega\!\left(n\right)$ term.
 - At $m=0$, $\Omega\!\left(\frac{2^n}{n}\right)$ already dominates the linear term asymptotically.
@@ -433,7 +433,7 @@ D_{\mathrm{ph}}
 ```
 
 This is one total-width-$n$ UCG with arbitrary $U(2)$ blocks. Lemma 6 gives size
-$O\!\left(2^n\right)$ and depth $O(n+\frac{2^n}{n+m})$ for every $m\geq 0$. Because the real frame
+$O\!\left(2^n\right)$ and depth $O\!\left(n+\frac{2^n}{n+m}\right)$ for every $m\geq 0$. Because the real frame
 and phase UCG each return the pool clean, they reuse one workspace sequentially.
 The real subfamily supplies the lower bounds.
 

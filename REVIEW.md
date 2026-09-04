@@ -398,8 +398,8 @@ framework.
 | Imported result | Form used here |
 |---|---|
 | optimal QSP theorem | $\Theta(2^q)$ size and $\Theta\!\left(q+\frac{2^q}{q+w}\right)$ depth for a general $q$-qubit state with $w$ clean ancillas |
-| ancilla-free MCT lemma | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
-| all-workspace UCG lemma | a total-width-$q$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
+| ancilla-free MCT lemma | an $r$-controlled X has $O\!\left(r\right)$ size and depth with no ancillary qubit |
+| all-workspace UCG lemma | a total-width-$q$ UCG has $O\!\left(2^q\right)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
 | coherent-copy lemma | CNOT trees copy and uncopy one computational-basis control coherently in logarithmic depth |
 
 Toffoli, Fredkin, controlled one-qubit gates, and the fixed-width controlled
@@ -780,7 +780,7 @@ The conditioned prefix and routed tail execute sequentially, and both fit inside
 
 clean ancillary qubits.
 
-Route and unroute have $O\!\left(n\right)$ depth and $O(B(s+1))$ size.  One controlled
+Route and unroute have $O\!\left(n\right)$ depth and $O\!\left(B(s+1)\right)$ size.  One controlled
 subtree frame has $O\!\left(2^s\right)$ size and
 
 ```math
@@ -866,7 +866,7 @@ families cannot cover an open subset of the real-state manifold.  Therefore
 S_{\mathbb R}(n,m)=\Omega(N).
 ```
 
-A depth-$D$ circuit on $n+m$ wires has at most $O(D(n+m))$ parameterized
+A depth-$D$ circuit on $n+m$ wires has at most $O\!\left(D(n+m)\right)$ parameterized
 one-qubit locations, giving
 
 ```math
