@@ -44,6 +44,7 @@ PROCESS_PHRASES = (
     "all-workspace-unified-final",
     "reviewer-narrative-redesign",
     "peer-review-revision-2026-09",
+    "compiler-reader-refurnishing-2026-09",
 )
 
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -78,19 +79,59 @@ class ReviewerNarrativeTests(unittest.TestCase):
                 msg=f"unsupported GitHub math command in {relative}",
             )
 
-    def test_landing_page_is_short_and_review_is_substantial(self) -> None:
+    def test_landing_page_starts_from_the_prescribed_completion(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
+        opening = " ".join(readme[:2500].split()).lower()
         self.assertLess(len(readme), 15_000)
-        self.assertGreater(len(review), 30_000)
-        self.assertIn("# Optimal Compilation of Hopf Differential Frames", readme)
-        self.assertIn("## Main result under technical review", readme)
-        self.assertIn("## 3. Two qubits", review)
-        self.assertIn("## 6. Strict zero workspace", review)
-        self.assertIn("## 8. Larger workspace", review)
-        self.assertIn("## 11. Quantum-backpropagation consequence", review)
+        self.assertIn("# optimal compilation of hopf differential frames", opening)
+        self.assertIn("prescribed unitary completion", opening)
+        self.assertIn("exact state preparation normally specifies one initialized input", opening)
+        self.assertIn("this repository asks whether the prescribed hopf completion", opening)
+        self.assertNotIn("yuan and zhang determine", opening)
 
-    def test_peer_review_corrections_are_visible_in_primary_route(self) -> None:
+    def test_complete_narrative_follows_the_compiler_first_chain(self) -> None:
+        review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
+        self.assertGreater(len(review), 30_000)
+        headings = (
+            "## 0. Problem and result",
+            "## 1. Why the prescribed completion matters",
+            "## 2. The Hopf operator seen by a compiler",
+            "## 3. Exact compiler toolkit",
+            "## 4. Strict zero workspace",
+            "## 5. Small positive workspace",
+            "## 6. Larger workspace: cut, route, and parallelize",
+            "## 7. Matching lower bounds",
+            "## 8. Phase-dressed complex magnitude frame",
+            "## 9. Consequence for quantum backpropagation",
+        )
+        positions = [review.index(heading) for heading in headings]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("### 1.2 A complete two-qubit obstruction", review)
+        self.assertIn("> **Proof checkpoint.**", review)
+        self.assertNotIn("What should be checked here?", review)
+
+    def test_relation_to_prior_work_is_precise_and_generous(self) -> None:
+        pages = {
+            relative: (ROOT / relative).read_text(encoding="utf-8")
+            for relative in (
+                "README.md",
+                "REVIEW.md",
+                "docs/COMPILER_THEOREM.md",
+                "docs/SOURCE_MAP.md",
+                "docs/RELATED_WORK.md",
+            )
+        }
+        combined = " ".join(pages.values())
+        normalized = " ".join(combined.split()).lower()
+        self.assertIn("can be adapted", normalized)
+        self.assertIn("prescribed", normalized)
+        self.assertNotIn("does not provide", normalized)
+        self.assertNotIn("failed to provide", normalized)
+        self.assertIn("historical predecessor", normalized)
+        self.assertIn("p. yuan and s. zhang", normalized)
+        self.assertIn("x. sun", pages["docs/RELATED_WORK.md"].lower())
+
+    def test_scientific_corrections_remain_visible(self) -> None:
         files = {
             relative: (ROOT / relative).read_text(encoding="utf-8")
             for relative in (
@@ -106,7 +147,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
         combined = " ".join(files.values())
         normalized = " ".join(combined.split()).lower()
         self.assertIn("oriented incoming amplitude", normalized)
-        self.assertIn("singular", normalized)
+        self.assertIn("chart-selected orthogonal continuation", normalized)
         self.assertIn("complex magnitude frame", normalized)
         self.assertIn("matched", normalized)
         self.assertIn("raw hopf-coordinate gradient", normalized)
@@ -114,35 +155,21 @@ class ReviewerNarrativeTests(unittest.TestCase):
         self.assertIn("arxiv:2202.11302v2", normalized)
         self.assertIn("arxiv:2202.11302v3", normalized)
 
+        theorem = files["docs/COMPILER_THEOREM.md"]
+        self.assertIn("fixed-width controlled Givens rotations", theorem)
+        self.assertIn("C-B", theorem)
+        self.assertIn("If `s=1`", theorem)
+
         verification = files["docs/VERIFICATION.md"]
         self.assertIn("explicit CNOT-fanout and Fredkin layers", verification)
-        self.assertIn("arbitrary prefix–suffix-entangled inputs", verification)
-        self.assertIn("implementation levels", verification.lower())
+        self.assertIn("prefix–suffix-entangled inputs", verification)
+        self.assertIn("Evidence levels", verification)
 
         qbp = files["docs/QBP_CONSEQUENCE.md"]
         self.assertIn("T_{\\mathrm{scalar}}^{\\mathrm{matched}}", qbp)
         self.assertIn("T_{\\mathrm{grad}}^{\\mathrm{matched}}", qbp)
 
-    def test_final_consistency_patch_is_present(self) -> None:
-        theorem = (ROOT / "docs" / "COMPILER_THEOREM.md").read_text(
-            encoding="utf-8"
-        )
-        theorem_compact = " ".join(theorem.split())
-        self.assertIn("fixed-width controlled Givens rotations", theorem_compact)
-        self.assertIn("C-B", theorem)
-        self.assertIn("If `s=1`", theorem)
-        self.assertIn("m\\geq2\\,2^{n-1}(1+1)=2^{n+1}=2N", theorem)
-
-        hopf = (ROOT / "docs" / "HOPF_INTERFACE.md").read_text(
-            encoding="utf-8"
-        )
-        hopf_compact = " ".join(hopf.split()).lower()
-        self.assertIn(
-            "chart-selected orthogonal continuation determined by the complete parameter tuple",
-            hopf_compact,
-        )
-        self.assertIn("regular_coordinate_mask(atol=...)", hopf)
-
+    def test_clean_room_review_matches_the_active_theorem(self) -> None:
         clean_room = (
             ROOT / "docs" / "CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md"
         ).read_text(encoding="utf-8")
@@ -178,7 +205,13 @@ class ReviewerNarrativeTests(unittest.TestCase):
             self.assertIsNotNone(root.find(f"{namespace}desc"), msg=relative)
             self.assertIn("viewBox", root.attrib, msg=relative)
 
-    def test_navigation_covers_the_complete_reader_route(self) -> None:
+        state_figure = (ROOT / DIAGRAMS[0]).read_text(encoding="utf-8")
+        self.assertIn("prescribed unitary completion", state_figure)
+        lineage_figure = (ROOT / DIAGRAMS[-1]).read_text(encoding="utf-8")
+        self.assertIn("All-workspace frontier", lineage_figure)
+        self.assertNotIn("Sun et al.", lineage_figure)
+
+    def test_navigation_covers_the_three_reading_passes(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         for target in (
             "REVIEW.md",
@@ -194,8 +227,9 @@ class ReviewerNarrativeTests(unittest.TestCase):
         documentation_index = (ROOT / "docs" / "README.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("Main reading route", documentation_index)
-        self.assertIn("Evidence and internal review", documentation_index)
+        self.assertIn("Pass I: orient the synthesis question", documentation_index)
+        self.assertIn("Pass II: inspect the proof by component", documentation_index)
+        self.assertIn("Pass III: inspect evidence and provenance", documentation_index)
 
         verification = (ROOT / "docs" / "VERIFICATION.md").read_text(
             encoding="utf-8"
