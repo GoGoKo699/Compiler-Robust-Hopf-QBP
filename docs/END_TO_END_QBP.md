@@ -7,6 +7,10 @@ logical depth of the complete inverse frame. This page keeps that cost separate
 from quantum executions, classical decoding, output materialization, and
 controlled-observable access.
 
+The preparation-depth benchmark is the optimal all-workspace theorem of P. Yuan
+and S. Zhang. Their framework and the Hopf-frame compiler use the same exact
+all-to-all arbitrary-one-qubit+CNOT model.
+
 ## 1. Cost axes
 
 Four quantities should not be collapsed into one runtime symbol.
@@ -113,7 +117,7 @@ D_{\mathrm{frame}}(n,m)
 
 be the compiled inverse-frame depth.
 
-The all-workspace QSP theorem gives
+The Yuan–Zhang all-workspace QSP theorem gives
 
 ```math
 D_{\mathrm{prep}}(n,m)
