@@ -1,0 +1,66 @@
+name: finalize-inline-math
+
+on:
+  push:
+    branches:
+      - inline-math-rendering-2026-09-v2
+    paths:
+      - .github/workflows/finalize-inline-math.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: inline-math-rendering-2026-09-v2
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Synchronize the working branch
+        run: git pull --rebase origin inline-math-rendering-2026-09-v2
+      - name: Complete and audit the notation conversion
+        run: |
+          python scripts/normalize_inline_math_v3.py
+          python scripts/normalize_inline_math_v4.py
+      - name: Remove one-time migration machinery
+        run: |
+          git rm -f \
+            .github/workflows/inline-math-audit.yml \
+            .github/workflows/inline-math-normalize.yml \
+            .github/workflows/inline-math-normalize-v2.yml \
+            .github/workflows/inline-math-normalize-v3.yml \
+            .github/workflows/inline-math-normalize-v4.yml \
+            .github/workflows/finalize-inline-math.yml \
+            scripts/audit_inline_math.py \
+            scripts/normalize_inline_math.py \
+            scripts/normalize_inline_math_v2.py \
+            scripts/normalize_inline_math_v3.py \
+            scripts/normalize_inline_math_v4.py
+          rm -f \
+            provenance/inline_math_candidates.txt \
+            provenance/inline_math_normalization.json
+          git add -A
+      - name: Validate the finalized repository
+        run: |
+          python -m compileall -q compiler_robust_hopf scripts tests validate.py
+          python scripts/reviewer_walkthrough.py
+          python validate.py
+          python scripts/unified_resource_ledger.py --n 12
+          python scripts/strict_zero_echo_ledger.py --n 12
+          python scripts/check_upstream_sync.py --offline
+      - name: Commit the finalized cleanup
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          if git diff --cached --quiet; then
+            echo 'No finalization changes were required.'
+            exit 0
+          fi
+          git commit -m 'Finalize inline mathematical notation throughout prose'
+          git pull --rebase origin inline-math-rendering-2026-09-v2
+          git push origin HEAD:inline-math-rendering-2026-09-v2
