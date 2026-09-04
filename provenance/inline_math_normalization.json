@@ -3,37 +3,17 @@
   "remaining_math_like_code_spans": [],
   "suspicious_inline_math": [],
   "unbalanced_inline_math_delimiters": [],
-  "changed_files": [
+  "additional_changed_files": [
     {
-      "path": "REVIEW.md",
-      "replacement_count": 4
+      "path": "docs/COMPILER_BOUNDARIES.md",
+      "replacement_count": 8
     },
     {
-      "path": "docs/CLAIM_SUPPORT.md",
-      "replacement_count": 5
+      "path": "docs/RELATED_WORK.md",
+      "replacement_count": 1
     },
     {
-      "path": "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
-      "replacement_count": 6
-    },
-    {
-      "path": "docs/COMPILER_THEOREM.md",
-      "replacement_count": 4
-    },
-    {
-      "path": "docs/END_TO_END_QBP.md",
-      "replacement_count": 2
-    },
-    {
-      "path": "docs/PROOF_AUDIT.md",
-      "replacement_count": 4
-    },
-    {
-      "path": "docs/SOURCE_MAP.md",
-      "replacement_count": 5
-    },
-    {
-      "path": "docs/THEOREM_OVERVIEW.md",
+      "path": "docs/STRICT_ZERO_PRIOR_ART.md",
       "replacement_count": 1
     }
   ]

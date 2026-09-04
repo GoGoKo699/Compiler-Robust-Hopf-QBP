@@ -94,7 +94,7 @@ The state is
 =\frac{|00\rangle+|01\rangle+|10\rangle+|11\rangle}{2}.
 ```
 
-In computational-column order `0,1,2,3`, the canonical real Hopf frame is
+In computational-column order $0,1,2,3$, the canonical real Hopf frame is
 
 ```math
 W=
@@ -194,20 +194,20 @@ returns
 ### Complete output distributions
 
 Write one measured outcome as $(b,y)$, where $b$ is the ancilla X-basis bit and
-$y$ the two-bit system X-basis label. The correct frame has probability `1/4`
+$y$ the two-bit system X-basis label. The correct frame has probability $1/4$
 on
 
 ```text
 (0,00), (0,01), (1,10), (1,11),
 ```
 
-and zero elsewhere. The state-equivalent compiler has probability `1/4` on
+and zero elsewhere. The state-equivalent compiler has probability $1/4$ on
 
 ```text
 (0,00), (0,10), (1,01), (1,11),
 ```
 
-and zero elsewhere. Their total-variation distance is `1/2`.
+and zero elsewhere. Their total-variation distance is $1/2$.
 
 > **State-column equality is insufficient for global Hopf backpropagation.**
 > There exist exact unitaries $V$ and $W$ with $V\lvert 0\rangle=W\lvert 0\rangle$ and a
@@ -396,7 +396,7 @@ Choose
 O=-Z\otimes I.
 ```
 
-The exact root derivative is `2`. Under the designated inverse suffix, the two
+The exact root derivative is $2$. Under the designated inverse suffix, the two
 checkpoint branches before Y-basis readout are the prefix state and its root
 coordinate direction. The nonzero measured outcomes are
 
@@ -405,7 +405,7 @@ correct B:      (ancilla,target,suffix) = (0,1,0), (1,0,0), each 1/2;
 compiled C_bad: (ancilla,target,suffix) = (0,0,0), (1,1,0), each 1/2.
 ```
 
-The checkpoint decoder therefore returns `2` with $B$, but `-2` with
+The checkpoint decoder therefore returns $2$ with $B$, but $-2$ with
 $C_{\mathrm{bad}}$.
 
 > **Checkpoint state-column equality is insufficient.** A recompiled suffix may
@@ -452,7 +452,7 @@ as required. Their complete distributions differ:
 \right).
 ```
 
-The total-variation distance is `1/4`.
+The total-variation distance is $1/4$.
 
 This establishes the precise boundary:
 

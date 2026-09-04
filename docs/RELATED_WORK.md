@@ -82,7 +82,7 @@ Several established techniques are close to the strict-zero circuit.
   restoring them exactly.
 - Conditionally clean ancillas and toggle-detection patterns organize
   cancellation across different original values of a borrowed wire.
-- Ancilla-free multi-controlled `SU(2)` constructions give related individual
+- Ancilla-free multi-controlled $SU(2)$ constructions give related individual
   controlled-rotation primitives.
 
 For one Hopf prefix, put

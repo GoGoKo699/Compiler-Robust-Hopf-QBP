@@ -125,7 +125,7 @@ restricted-UCG work. This absence is not a proof of novelty.
 
 ## 6. Multi-controlled rotations
 
-There is substantial literature on ancilla-free multi-controlled `SU(2)` gates
+There is substantial literature on ancilla-free multi-controlled $SU(2)$ gates
 and multi-controlled-NOT gates. Such results can implement one conditioned
 rotation efficiently in the number of controls, but applying them independently
 for all $2^d$ prefix values may introduce an extra factor in size or depth.
