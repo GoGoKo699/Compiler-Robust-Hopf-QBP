@@ -87,12 +87,12 @@ JCJ=C^{-1},
 CJCJ=I.
 ```
 
-| `h` | original `b` | chronological target word | final target operator | final `b` |
+| $h$ | original $b$ | chronological target word | final target operator | final $b$ |
 |---:|---:|---|---|---:|
-| 0 | 0 | none | `I` | 0 |
-| 0 | 1 | `J,C,J,C` | `CJCJ=I` | 1 |
-| 1 | 0 | `C,C` | `C^2=R_y(theta_p)` | 0 |
-| 1 | 1 | `J,J` | `I` | 1 |
+| 0 | 0 | none | $I$ | 0 |
+| 0 | 1 | $J,C,J,C$ | $CJCJ=I$ | 1 |
+| 1 | 0 | $C,C$ | $C^2=R_y(\theta_p)$ | 0 |
+| 1 | 1 | $J,J$ | $I$ | 1 |
 
 The desired rotation appears only when the original complete suffix is zero.
 All other sectors receive identity. The borrowed bit is restored and no

@@ -17,8 +17,8 @@ unitary is then used to read a common objective response.
 
 | Synthesis task | Required action |
 |---|---|
-| Exact state preparation | fix `U|0^n>` |
-| Hopf differential-frame compilation | fix `W|x>` for every system basis state `|x>` and return all workspace clean |
+| Exact state preparation | fix $U\lvert 0^n\rangle$ |
+| Hopf differential-frame compilation | fix $W\lvert x\rangle$ for every system basis state $\lvert x\rangle$ and return all workspace clean |
 
 This repository asks whether the prescribed Hopf completion can retain the same
 size–depth frontier as arbitrary state preparation.  It can.
@@ -79,9 +79,9 @@ all-zero predicate.  Three schedules exploit this structure.
 
 | Workspace | Schedule | Mechanism |
 |---:|---|---|
-| `m=0` | borrowed-suffix echo | one original suffix data qubit carries the predicate temporarily and is restored exactly |
-| `1<=m<4n` | direct flagged UCG | one reusable clean flag stores the suffix-zero predicate |
-| larger `m` | routed parallel subframes | a tree cut turns the tail into a direct sum; the suffix is routed coherently and the subtree frames run in parallel |
+| $m=0$ | borrowed-suffix echo | one original suffix data qubit carries the predicate temporarily and is restored exactly |
+| $1\leq m<4n$ | direct flagged UCG | one reusable clean flag stores the suffix-zero predicate |
+| larger $m$ | routed parallel subframes | a tree cut turns the tail into a direct sum; the suffix is routed coherently and the subtree frames run in parallel |
 
 The threshold `4n` is a convenient uniform proof threshold, not an optimized
 finite-size crossover.

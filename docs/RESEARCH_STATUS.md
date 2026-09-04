@@ -47,9 +47,9 @@ zero.
 
 | Workspace | Schedule | Supporting structure |
 |---:|---|---|
-| `m=0` | borrowed-suffix half-angle echo | complete four-sector operator proof and strict-zero resource sum |
-| `1<=m<4n` | direct suffix-flagged UCG layers | one reusable clean predicate flag and all-workspace UCG synthesis |
-| larger `m` | conditioned prefix plus coherently routed subtree frames | exact tree cut, clean binary–one-hot decoder, explicit CNOT/Fredkin router, and maximal feasible cut |
+| $m=0$ | borrowed-suffix half-angle echo | complete four-sector operator proof and strict-zero resource sum |
+| $1\leq m<4n$ | direct suffix-flagged UCG layers | one reusable clean predicate flag and all-workspace UCG synthesis |
+| larger $m$ | conditioned prefix plus coherently routed subtree frames | exact tree cut, clean binary–one-hot decoder, explicit CNOT/Fredkin router, and maximal feasible cut |
 
 The phase diagonal is one exact `n`-qubit UCG and reuses the same workspace pool
 sequentially.

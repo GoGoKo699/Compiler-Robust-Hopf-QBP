@@ -33,6 +33,22 @@ PRIMARY_PAGES = (
     "manuscript/README.md",
 )
 
+TABLE_MATH_PAGES = (
+    "README.md",
+    "REVIEW.md",
+    "docs/HOPF_INTERFACE.md",
+    "docs/COMPILER_THEOREM.md",
+    "docs/QBP_CONSEQUENCE.md",
+    "docs/END_TO_END_QBP.md",
+    "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
+    "docs/CLAIM_SUPPORT.md",
+    "docs/SOURCE_MAP.md",
+    "docs/RESEARCH_STATUS.md",
+    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
+    "docs/STRICT_ZERO_ECHO_AUDIT.md",
+    "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
+)
+
 DIAGRAMS = (
     "assets/state-vs-frame.svg",
     "assets/two-qubit-obstruction.svg",
@@ -54,6 +70,14 @@ PROCESS_PHRASES = (
 
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 HTML_IMAGE = re.compile(r"<img\s+[^>]*src=\"([^\"]+)\"", re.IGNORECASE)
+INLINE_CODE = re.compile(r"`([^`\n]+)`")
+MATH_FUNCTION_CODE = re.compile(
+    r"(?<![A-Za-z])(?:Theta|Omega|sqrt|partial|lambda|min|max|diag|O)\s*[(_]"
+)
+KET_CODE = re.compile(r"\|[^`]*>")
+SINGLE_SYMBOL_CODE = re.compile(r"^[A-Za-z](?:_[A-Za-z0-9]+)?$")
+GROUP_SYMBOL_CODE = re.compile(r"^[A-Z]{1,3}\(\d+\)$")
+ARITHMETIC_CODE = re.compile(r"^[0-9A-Za-z_{}(), ]*[+*/-][0-9A-Za-z_{}(), +*/-]*$")
 
 
 def local_target(page: Path, raw_target: str) -> Path | None:
@@ -68,6 +92,28 @@ def local_target(page: Path, raw_target: str) -> Path | None:
 
 def compact(text: str) -> str:
     return " ".join(text.split())
+
+
+def markdown_table_body_line(line: str) -> bool:
+    stripped = line.strip()
+    if not (stripped.startswith("|") and stripped.endswith("|")):
+        return False
+    return bool(stripped.strip("|: -"))
+
+
+def code_span_looks_mathematical(span: str) -> bool:
+    if any(token in span for token in ("<=", ">=", "=", "^", "**")):
+        return True
+    if MATH_FUNCTION_CODE.search(span) or KET_CODE.search(span):
+        return True
+    if "pi/" in span or SINGLE_SYMBOL_CODE.fullmatch(span):
+        return True
+    if GROUP_SYMBOL_CODE.fullmatch(span):
+        return True
+    if ARITHMETIC_CODE.fullmatch(span):
+        words = re.findall(r"[A-Za-z]+", span)
+        return bool(words) and all(len(word) <= 3 for word in words)
+    return False
 
 
 class ReviewerNarrativeTests(unittest.TestCase):
@@ -87,6 +133,37 @@ class ReviewerNarrativeTests(unittest.TestCase):
                 text,
                 msg=f"unsupported GitHub math command in {relative}",
             )
+
+    def test_markdown_tables_render_mathematics_instead_of_code(self) -> None:
+        offenders: list[str] = []
+        for relative in TABLE_MATH_PAGES:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            for line_number, line in enumerate(text.splitlines(), start=1):
+                if not markdown_table_body_line(line):
+                    continue
+                for span in INLINE_CODE.findall(line):
+                    if code_span_looks_mathematical(span):
+                        offenders.append(f"{relative}:{line_number}: `{span}`")
+
+        self.assertFalse(
+            offenders,
+            msg="Math-like code spans remain in Markdown tables:\n"
+            + "\n".join(offenders),
+        )
+
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn(r"$U\lvert 0^n\rangle$", readme)
+        hopf = (ROOT / "docs" / "HOPF_INTERFACE.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(
+            r"$W_{\mathbb C,\mathrm{mag}}=D_{\mathrm{ph}}W_{\mathbb R}$",
+            hopf,
+        )
+        accounting = (ROOT / "docs" / "END_TO_END_QBP.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(r"$\ell_\infty$", accounting)
 
     def test_landing_page_starts_from_the_prescribed_completion(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

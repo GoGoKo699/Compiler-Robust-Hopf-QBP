@@ -240,10 +240,10 @@ Different guarantees include:
 
 | Requested output | Additional sensitivity |
 |---|---|
-| complete raw-gradient `l_2` accuracy | concatenated record norm grows as `sqrt(n)` |
+| complete raw-gradient $\ell_2$ accuracy | concatenated record norm grows as $\sqrt{n}$ |
 | relative or directional accuracy | depends on the gradient norm |
-| normalized-frame coefficients | division by `sqrt(g_(j,j))` conditions small metric weights |
-| natural-gradient coordinates | division by `g_(j,j)` is still more sensitive |
+| normalized-frame coefficients | division by $\sqrt{g_{j,j}}$ conditions small metric weights |
+| natural-gradient coordinates | division by $g_{j,j}$ is still more sensitive |
 
 At a singular coordinate, the raw coordinate record is exactly zero.  The
 compiler theorem concerns the frame operator and does not remove conditioning

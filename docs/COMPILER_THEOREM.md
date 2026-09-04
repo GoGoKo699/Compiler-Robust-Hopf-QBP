@@ -31,9 +31,9 @@ The proof imports the following results from P. Yuan and S. Zhang, *Quantum*
 
 | Imported result | Form used here |
 |---|---|
-| Yuan–Zhang Theorem 2 | exact `q`-qubit state preparation has `Theta(2^q)` size and `Theta(q+2^q/(q+w))` depth with `w` clean ancillary qubits |
-| Yuan–Zhang Lemma 5 | an `r`-controlled X has `O(r)` size and depth with no ancillary qubit |
-| Yuan–Zhang Lemma 6 | a total-width-`q` UCG has `O(2^q)` size and `O(q+2^q/(q+w))` depth with `w` clean ancillary qubits |
+| Yuan–Zhang Theorem 2 | exact $q$-qubit state preparation has $\Theta(2^q)$ size and $\Theta\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillary qubits |
+| Yuan–Zhang Lemma 5 | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
+| Yuan–Zhang Lemma 6 | a total-width-$q$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillary qubits |
 | Yuan–Zhang Lemma 9 | coherent CNOT-tree copying and exact uncopying have logarithmic depth and linear size |
 
 The published article corresponds to `arXiv:2202.11302v2`.  The imported
@@ -180,12 +180,12 @@ XC_pX=C_p^{-1}.
 
 For fixed `p` and `r`, the four invariant sectors are:
 
-| `h(r)` | original `b` | chronological target word | net action | final `b` |
+| $h(r)$ | original $b$ | chronological target word | net action | final $b$ |
 |---:|---:|---|---|---:|
-| 0 | 0 | none | `I` | 0 |
-| 0 | 1 | `X,C_p,X,C_p` | `C_pXC_pX=I` | 1 |
-| 1 | 0 | `C_p,C_p` | `R_y(theta_(d,p))` | 0 |
-| 1 | 1 | `X,X` | `I` | 1 |
+| 0 | 0 | none | $I$ | 0 |
+| 0 | 1 | $X,C_p,X,C_p$ | $C_pXC_pX=I$ | 1 |
+| 1 | 0 | $C_p,C_p$ | $R_y(\theta_{d,p})$ | 0 |
+| 1 | 1 | $X,X$ | $I$ | 1 |
 
 The active sector is exactly the sector in which the original complete suffix
 `br` is zero.  Every other sector receives identity.  The borrowed bit is
@@ -360,10 +360,10 @@ clean ancillary qubits, has depth `11t-4=O(t)`, and has size `O(B)`.
 
 | Register | Qubits |
 |---|---:|
-| one-hot leaves | `B` |
-| internal indicators | `B-1` |
-| shared scratch and fanout pool | `B-1-t` |
-| **total** | `3B-2-t` |
+| one-hot leaves | $B$ |
+| internal indicators | $B-1$ |
+| shared scratch and fanout pool | $B-1-t$ |
+| **total** | $3B-2-t$ |
 
 The explicit schedule propagates one active tree indicator according to the
 binary address, reconstructs each address bit as a parity of active right-child

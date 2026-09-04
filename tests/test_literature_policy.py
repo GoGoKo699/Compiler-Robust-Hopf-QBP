@@ -156,14 +156,13 @@ class LiteraturePolicyTests(unittest.TestCase):
             self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
 
         # Only pages that actually state the all-workspace theorem are required
-        # to carry its explicit m>=0 scope.  Interface and verification pages
-        # may remain focused on their local task.
+        # to carry its explicit m>=0 scope. ASCII and rendered LaTeX forms are
+        # equivalent for this policy check.
         for relative in all_workspace_statement_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
             compact_text = "".join(text.split())
-            self.assertIn(
-                "m>=0",
-                compact_text,
+            self.assertTrue(
+                "m>=0" in compact_text or "m\\geq0" in compact_text,
                 msg=f"missing all-workspace theorem scope in {relative}",
             )
 

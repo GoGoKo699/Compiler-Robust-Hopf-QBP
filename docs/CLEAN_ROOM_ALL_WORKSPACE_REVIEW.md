@@ -167,12 +167,12 @@ X C_p X=C_p^{-1}.
 
 For fixed `p` and `r`, the sectors are:
 
-| `h(r)` | original `b` | chronological target word | resulting matrix | final `b` |
+| $h(r)$ | original $b$ | chronological target word | resulting matrix | final $b$ |
 |---:|---:|---|---|---:|
-| 0 | 0 | none | `I` | 0 |
-| 0 | 1 | `X,C_p,X,C_p` | `C_p X C_p X=I` | 1 |
-| 1 | 0 | `C_p,C_p` | `C_p^2=R_y(theta_p)` | 0 |
-| 1 | 1 | `X,X` | `I` | 1 |
+| 0 | 0 | none | $I$ | 0 |
+| 0 | 1 | $X,C_p,X,C_p$ | $C_pXC_pX=I$ | 1 |
+| 1 | 0 | $C_p,C_p$ | $C_p^2=R_y(\theta_p)$ | 0 |
+| 1 | 1 | $X,X$ | $I$ | 1 |
 
 The desired rotation appears only when the original complete suffix is zero.
 The borrowed qubit is restored and no relative phase appears. Orthogonality of
