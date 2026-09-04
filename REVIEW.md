@@ -82,9 +82,9 @@ Three schedules cover the complete workspace range.
 
 | Workspace | Schedule | Core idea |
 |---:|---|---|
-| `m=0` | borrowed-suffix echo | use one original suffix data qubit as a temporary predicate carrier and restore it exactly |
-| `1<=m<4n` | direct flagged UCG | store the lower-suffix-zero predicate in one reusable clean flag |
-| larger `m` | routed parallel subframes | cut the tree, route the suffix coherently, and apply disjoint subtree frames in parallel |
+| $m=0$ | borrowed-suffix echo | use one original suffix data qubit as a temporary predicate carrier and restore it exactly |
+| $1\leq m<4n$ | direct flagged UCG | store the lower-suffix-zero predicate in one reusable clean flag |
+| larger $m$ | routed parallel subframes | cut the tree, route the suffix coherently, and apply disjoint subtree frames in parallel |
 
 The proof uses the all-workspace state-preparation toolkit as an exact compiler
 framework.  The Hopf-specific work is to expose the complete-operator layer
@@ -397,9 +397,9 @@ framework.
 
 | Imported result | Form used here |
 |---|---|
-| optimal QSP theorem | `Theta(2^q)` size and `Theta(q+2^q/(q+w))` depth for a general `q`-qubit state with `w` clean ancillas |
-| ancilla-free MCT lemma | an `r`-controlled X has `O(r)` size and depth with no ancillary qubit |
-| all-workspace UCG lemma | a total-width-`q` UCG has `O(2^q)` size and `O(q+2^q/(q+w))` depth with `w` clean ancillas |
+| optimal QSP theorem | $\Theta(2^q)$ size and $\Theta\!\left(q+\frac{2^q}{q+w}\right)$ depth for a general $q$-qubit state with $w$ clean ancillas |
+| ancilla-free MCT lemma | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
+| all-workspace UCG lemma | a total-width-$q$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
 | coherent-copy lemma | CNOT trees copy and uncopy one computational-basis control coherently in logarithmic depth |
 
 Toffoli, Fredkin, controlled one-qubit gates, and the fixed-width controlled
@@ -468,12 +468,12 @@ XC_pX=C_p^{-1}.
 
 For fixed `p` and `r`, the four invariant sectors are:
 
-| `h(r)` | original `b` | chronological target word | resulting matrix | final `b` |
+| $h(r)$ | original $b$ | chronological target word | resulting matrix | final $b$ |
 |---:|---:|---|---|---:|
-| 0 | 0 | none | `I` | 0 |
-| 0 | 1 | `X,C_p,X,C_p` | `C_pXC_pX=I` | 1 |
-| 1 | 0 | `C_p,C_p` | `C_p^2=R_y(theta_(d,p))` | 0 |
-| 1 | 1 | `X,X` | `I` | 1 |
+| 0 | 0 | none | $I$ | 0 |
+| 0 | 1 | $X,C_p,X,C_p$ | $C_pXC_pX=I$ | 1 |
+| 1 | 0 | $C_p,C_p$ | $C_p^2=R_y(\theta_{d,p})$ | 0 |
+| 1 | 1 | $X,X$ | $I$ | 1 |
 
 The active sector is precisely the sector in which the **original** complete
 suffix `br` is zero.  Every other sector receives identity.  The borrowed bit
@@ -681,10 +681,10 @@ For `B=2^t`, the decoder uses:
 
 | Register | Qubits |
 |---|---:|
-| one-hot leaves | `B` |
-| internal tree indicators | `B-1` |
-| shared scratch and fanout pool | `B-1-t` |
-| **total** | `3B-2-t` |
+| one-hot leaves | $B$ |
+| internal tree indicators | $B-1$ |
+| shared scratch and fanout pool | $B-1-t$ |
+| **total** | $3B-2-t$ |
 
 The explicit X/CNOT/Toffoli layers have disjoint support within each declared
 layer, depth `11t-4=O(t)`, and size `O(B)`.  On the one-excitation code, the
