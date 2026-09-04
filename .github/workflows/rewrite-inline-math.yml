@@ -3,7 +3,7 @@ name: rewrite inline mathematics
 on:
   push:
     branches:
-      - inline-math-rendering-2026-09
+      - inline-math-rendering-clean-2026-09
     paths:
       - scripts/rewrite_inline_math.py
       - .github/workflows/rewrite-inline-math.yml
@@ -19,13 +19,38 @@ jobs:
       - name: Check out the working branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: inline-math-rendering-2026-09
+          ref: inline-math-rendering-clean-2026-09
           fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.13'
+
+      - name: Prevent duplicate conversion inside ket labels
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/rewrite_inline_math.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''def replace_kets(text: str) -> str:
+              def ket(match: re.Match[str]) -> str:
+                  label = convert_atoms(match.group(1))
+                  return rf"\\lvert {label}\\rangle"
+
+              return re.sub(r"\\|([^|>]+)>", ket, text)
+          '''
+          new = '''def replace_kets(text: str) -> str:
+              def ket(match: re.Match[str]) -> str:
+                  return rf"\\lvert {match.group(1)}\\rangle"
+
+              return re.sub(r"\\|([^|>]+)>", ket, text)
+          '''
+          if old not in text:
+              raise SystemExit('Expected ket conversion block was not found.')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
 
       - name: Rewrite mathematical code spans
         run: python scripts/rewrite_inline_math.py
@@ -43,4 +68,4 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add README.md REVIEW.md docs compiler_robust_hopf/README.md manuscript/README.md
           git commit -m 'Render mathematical symbols in scientific prose'
-          git push origin HEAD:inline-math-rendering-2026-09
+          git push origin HEAD:inline-math-rendering-clean-2026-09
