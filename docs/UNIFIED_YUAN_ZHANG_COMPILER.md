@@ -65,9 +65,9 @@ predecessor and original source of selected ingredients.
 
 | Workspace | Schedule | Width or parallelism gained |
 |---:|---|---|
-| `m=0` | borrowed-suffix echo | each nonfinal depth uses two UCGs of total width `d+2` |
-| `1<=m<4n` | direct clean flag | one shared suffix predicate reduces the UCG to prefix plus flag |
-| `m>=4n` | tree cut and coherent routing | `2^t` disjoint subtree frames run in parallel |
+| $m=0$ | borrowed-suffix echo | each nonfinal depth uses two UCGs of total width $d+2$ |
+| $1\leq m<4n$ | direct clean flag | one shared suffix predicate reduces the UCG to prefix plus flag |
+| $m\geq4n$ | tree cut and coherent routing | $2^t$ disjoint subtree frames run in parallel |
 
 The threshold `4n` is selected for a uniform asymptotic proof rather than as a
 finite-size tuning rule.
