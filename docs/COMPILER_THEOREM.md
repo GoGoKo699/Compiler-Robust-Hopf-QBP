@@ -29,12 +29,12 @@ constant-depth decompositions in this model.
 The proof imports the following results from P. Yuan and S. Zhang, *Quantum*
 **7**, 956 (2023).
 
-| Result | Form used here |
+| Imported result | Form used here |
 |---|---|
-| Theorem 2 | exact `q`-qubit state preparation has `Theta(2^q)` size and `Theta(q+2^q/(q+w))` depth with `w` clean ancillary qubits |
-| Lemma 5 | an `r`-controlled X has `O(r)` size and depth with no ancillary qubit |
-| Lemma 6 | a total-width-`q` UCG has `O(2^q)` size and `O(q+2^q/(q+w))` depth with `w` clean ancillary qubits |
-| Lemma 9 | coherent CNOT-tree copying and exact uncopying have logarithmic depth and linear size |
+| Yuan–Zhang Theorem 2 | exact `q`-qubit state preparation has `Theta(2^q)` size and `Theta(q+2^q/(q+w))` depth with `w` clean ancillary qubits |
+| Yuan–Zhang Lemma 5 | an `r`-controlled X has `O(r)` size and depth with no ancillary qubit |
+| Yuan–Zhang Lemma 6 | a total-width-`q` UCG has `O(2^q)` size and `O(q+2^q/(q+w))` depth with `w` clean ancillary qubits |
+| Yuan–Zhang Lemma 9 | coherent CNOT-tree copying and exact uncopying have logarithmic depth and linear size |
 
 The published article corresponds to `arXiv:2202.11302v2`.  The imported
 statements were also checked in v3 and retain the forms and model conventions
@@ -53,7 +53,7 @@ J_m|\varphi\rangle
 =|\varphi\rangle|0^m\rangle.
 ```
 
-### Definition 1: frame-safe implementation
+### Definition: frame-safe implementation
 
 A unitary `W_tilde` on the system and `m` clean work qubits is frame-safe for
 `W` when
@@ -100,7 +100,7 @@ W_{\mathbb C,\mathrm{mag}}
 
 ## 3. Main theorem
 
-### Theorem 2: optimal exact Hopf-frame compilation
+### Main theorem: optimal exact Hopf-frame compilation
 
 For every integer `n>=1` and `m>=0`, the real Hopf differential frame has an
 exact frame-safe implementation using at most `m` clean ancillary qubits with
@@ -151,7 +151,7 @@ C_p=R_y(\theta_{d,p}/2),
 
 and let `T_h` toggle `b` when `h(r)=1`.
 
-### Lemma 3: borrowed-suffix echo
+### Lemma Z: borrowed-suffix echo
 
 The chronological sequence
 
@@ -193,7 +193,7 @@ restored and no sector-dependent phase appears.  Orthogonality of the `p,r`
 sectors gives the complete operator identity on arbitrary superpositions and
 entangled inputs.  ∎
 
-### Proposition 4: strict-zero resources
+### Proposition Z: strict-zero resources
 
 Each controlled `C_p` is one UCG with:
 
@@ -207,8 +207,8 @@ Its total width is
 q=d+2.
 ```
 
-The remaining suffix bits participate only in `T_h`.  Lemma 5 implements `T_h`
-without an ancillary qubit.  Therefore
+The remaining suffix bits participate only in `T_h`.  Yuan–Zhang Lemma 5
+implements `T_h` without an ancillary qubit.  Therefore
 
 ```math
 S(L_d)=O(2^d+n-d),
@@ -242,7 +242,7 @@ D(W_{\mathbb R})
 ```
 
 For `n=1`, only the final one-qubit rotation remains.  For `d=n-2`, `r` is
-empty and `T_h=X_b`; Lemma 3 is unchanged.
+empty and `T_h=X_b`; Lemma Z is unchanged.
 
 ## 5. Small positive workspace
 
@@ -250,7 +250,7 @@ Assume `m>=1`.  At each nonfinal depth, compute the complete lower-suffix-zero
 predicate into one reusable clean flag, apply one UCG selected by the prefix and
 flag, and uncompute the flag.
 
-### Proposition 5: direct flagged schedule
+### Proposition D: direct flagged schedule
 
 The direct schedule has
 
@@ -269,9 +269,9 @@ D_{\mathrm{direct}}(n,m)
 
 The nonfinal depth-`d` UCG has total width `d+2` and may use `m-1` additional
 clean qubits.  The final depth has no predicate flag and may use all `m` clean
-qubits.  Lemma 6 gives a geometric `O(2^n)` total size and the displayed UCG
-depth term.  The compute–uncompute predicates contribute `O(n^2)` total size and
-depth.  ∎
+qubits.  Yuan–Zhang Lemma 6 gives a geometric `O(2^n)` total size and the
+displayed UCG depth term.  The compute–uncompute predicates contribute
+`O(n^2)` total size and depth.  ∎
 
 If
 
@@ -285,7 +285,7 @@ then `n+m<5n`.  Since `n^3=O(2^n)`,
 n^2=O\left(\frac{2^n}{n+m}\right),
 ```
 
-so Proposition 5 already attains the target depth throughout this regime.
+so Proposition D already attains the target depth throughout this regime.
 
 ## 6. Exact tree cut
 
@@ -304,7 +304,7 @@ W_{\mathbb R}^{(n)}
 =R_t^{(n)}F_t^{(n)}.
 ```
 
-### Lemma 6: conditioned prefix identity
+### Lemma T1: conditioned prefix identity
 
 ```math
 F_t^{(n)}
@@ -318,7 +318,7 @@ Every layer above the cut contains the complete external suffix in its
 zero-suffix predicate.  On the sector `|0^s>`, these layers form the `t`-qubit
 Hopf frame.  On the orthogonal complement, every layer is identity.  ∎
 
-### Lemma 7: tail direct sum
+### Lemma T2: tail direct sum
 
 ```math
 R_t^{(n)}
@@ -339,7 +339,7 @@ that subtree with the displayed angle map.  ∎
 
 ## 7. Conditioned prefix construction
 
-### Lemma 8: clean binary–one-hot decoder
+### Lemma P: clean binary–one-hot decoder
 
 For `B=2^t`, there is an explicit reversible X/CNOT/Toffoli circuit satisfying
 
@@ -382,7 +382,7 @@ D(F_t)=O(n).
 
 ## 8. Routed parallel tail
 
-### Lemma 9: explicit coherent router
+### Lemma R: explicit coherent router
 
 There is an exact route–operate–unroute circuit for `R_t^(n)` using:
 
@@ -458,7 +458,7 @@ O\left(s^2+\frac{2^s}{s}\right)
 depth.  Parallel execution multiplies the size by `B` but not the depth.  Since
 `B2^s=2^n`, the routed tail has `O(2^n)` total size.
 
-### Proposition 10: maximal-cut depth
+### Proposition R: maximal-cut depth
 
 Assume `m>=4n`.  Choose the largest `t` satisfying
 
@@ -547,8 +547,8 @@ D_{\mathbb R}(n,m)
 
 for every `m>=0`.
 
-Proposition 4, Proposition 5, and Proposition 10 match these lower bounds and
-prove the real part of Theorem 2.
+Proposition Z, Proposition D, and Proposition R match these lower bounds and
+prove the real part of the main theorem.
 
 ## 10. Phase-dressed complex magnitude frame
 
@@ -565,8 +565,8 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-This is one total-width-`n` UCG with arbitrary one-qubit unitary blocks.  Lemma
-6 gives
+This is one total-width-`n` UCG with arbitrary one-qubit unitary blocks.
+Yuan–Zhang Lemma 6 gives
 
 ```math
 S(D_{\mathrm{ph}})=O(N),
@@ -579,7 +579,7 @@ D(D_{\mathrm{ph}})
 
 Both `W_R` and `D_ph` return the workspace clean, so they reuse one pool
 sequentially.  The real subfamily supplies the matching lower bounds.  This
-proves the complex-magnitude part of Theorem 2.
+proves the complex-magnitude part of the main theorem.
 
 The leaf-phase derivatives remain a separate direct measurement stream and are
 not additional columns of `W_(C,mag)`.
