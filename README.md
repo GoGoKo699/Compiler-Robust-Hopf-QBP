@@ -35,7 +35,7 @@ Let
 N=2^n
 ```
 
-and let `m>=0` be the number of clean ancillary qubits.  In the exact all-to-all
+and let $m\geq0$ be the number of clean ancillary qubits.  In the exact all-to-all
 logical model with arbitrary one-qubit gates and CNOTs,
 
 ```math
@@ -65,15 +65,15 @@ W_{\mathbb C,\mathrm{mag}}
 ```
 
 The leaf-phase derivatives form a separate direct measurement stream; they are
-not additional columns of the same `N`-dimensional unitary.
+not additional columns of the same $N$-dimensional unitary.
 
-The construction uses at most the requested `m` clean ancillary qubits and
+The construction uses at most the requested $m$ clean ancillary qubits and
 returns them exactly to zero.  Thus a prescribed Hopf completion reaches the
 optimal arbitrary-state-preparation frontier for every clean-workspace budget.
 
 ## Construction at a glance
 
-The Hopf frame is a product of addressed tree layers.  At depth `d`, the prefix
+The Hopf frame is a product of addressed tree layers.  At depth $d$, the prefix
 selects one rotation angle and the complete lower suffix supplies a shared
 all-zero predicate.  Three schedules exploit this structure.
 
@@ -131,8 +131,8 @@ At a regular coordinate,
 g_{j,j}=a_j^2,
 ```
 
-where `a_j` is the oriented amplitude entering the corresponding tree node.  On
-the canonical Hopf domains, `a_j>=0` and equals the principal metric square
+where $a_j$ is the oriented amplitude entering the corresponding tree node.  On
+the canonical Hopf domains, $a_j\geq0$ and equals the principal metric square
 root.  At zero metric weight the raw derivative vanishes, while the marker
 column remains the chart-selected orthogonal continuation determined by the
 complete parameter tuple.
@@ -155,7 +155,7 @@ The relevant compiler contract is therefore
 =(W|\varphi\rangle)|0^m\rangle
 ```
 
-for every system input `|varphi>`, not only the forward preparation input.
+for every system input $\lvert \\varphi\rangle$, not only the forward preparation input.
 
 ## Relation to the all-workspace state-preparation framework
 
@@ -195,12 +195,12 @@ O(\log n)=O(\log\log M)
 ```
 
 independent executions at fixed accuracy and confidence, where
-`M=Theta(2^n)` is the number of coordinates.
+$M=\Theta(2^n)$ is the number of coordinates.
 
 This is a matched-program statement: scalar and gradient programs use the same
 forward preparation family and controlled observable, while the gradient
 program adds one inverse frame of the same asymptotic logical depth as optimal
-state preparation.  Classical materialization of an `M`-entry output is not
+state preparation.  Classical materialization of an $M$-entry output is not
 included in that quantum-depth ratio.
 
 ## Verification boundary

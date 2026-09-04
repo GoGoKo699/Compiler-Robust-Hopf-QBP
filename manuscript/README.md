@@ -14,7 +14,7 @@ is proved.
 
 ## Central statement
 
-Let `N=2^n`.  For every clean-workspace budget `m>=0`, the real Hopf
+Let $N=2^n$.  For every clean-workspace budget $m\geq0$, the real Hopf
 differential frame and phase-dressed complex magnitude frame have exact
 frame-safe implementations with
 
@@ -62,16 +62,16 @@ For unrestricted magnitude angles,
 g_{j,j}=a_j^2,
 ```
 
-where `a_j` is the oriented incoming amplitude.  On the canonical Hopf domains,
-`a_j>=0` and equals the principal metric square root.
+where $a_j$ is the oriented incoming amplitude.  On the canonical Hopf domains,
+$a_j\geq0$ and equals the principal metric square root.
 
 Canonical domains:
 
-- real depths `0,...,n-2`: `[0,pi/2]`;
-- final real depth: `[0,2pi)`;
-- complex magnitude angles: `[0,pi/2]`.
+- real depths $0,\ldots,n-2$: $[0,\\frac{pi}{2}]$;
+- final real depth: $[0,2\pi)$;
+- complex magnitude angles: $[0,\\frac{pi}{2}]$.
 
-If `g_(j,j)=0`, the raw differential vanishes.  The marker column is the
+If $g_{j,j}=0$, the raw differential vanishes.  The marker column is the
 chart-selected orthogonal continuation determined by the complete parameter
 tuple, not a normalized nonzero derivative.
 
@@ -108,11 +108,11 @@ The preferred relational wording is:
    strict zero workspace.
 5. **Strict-zero optimality.** The complete real frame has `Theta(N)` size and
    `Theta(n+N/n)` depth.
-6. **Conditioned-prefix identity.** The first `t` depths are a smaller frame
+6. **Conditioned-prefix identity.** The first $t$ depths are a smaller frame
    conditioned on the external zero suffix.
-7. **Tail direct sum.** The remaining depths split into `2^t` subtree frames.
-8. **Binary–one-hot decoder.** The prefix frame is implemented in `O(t)` depth
-   and `O(2^t)` size.
+7. **Tail direct sum.** The remaining depths split into $2^t$ subtree frames.
+8. **Binary–one-hot decoder.** The prefix frame is implemented in $O(t)$ depth
+   and $O(2^t)$ size.
 9. **Coherent router.** Route–controlled-subframes–unroute realizes the tail and
    clears all workspace.
 10. **All-workspace real theorem.** Direct and routed schedules attain the upper
@@ -162,7 +162,7 @@ T_{\mathrm{grad}}^{\mathrm{matched}}
 
 At fixed comparable scalar and raw-coordinate absolute accuracy and confidence,
 the inverse frame changes per-execution depth only by a constant asymptotic
-factor and the execution overhead is `O(log n)=O(log log M)`.  The statement is
+factor and the execution overhead is $O(\log n)=O(\log \log M)$.  The statement is
 for the same general state family and controlled observable; it excludes
 classical output materialization and instance-specific scalar shortcuts.
 
@@ -173,7 +173,7 @@ echoes, borrowed or conditionally clean qubits, toggle detection, or reversible
 routing.
 
 The strict-zero statement is the Hopf-specific reduction of one addressed depth
-to two total-width-`d+2` UCGs and linear predicate toggles using one restored
+to two total-width-$d+2$ UCGs and linear predicate toggles using one restored
 logical suffix bit.  The positive-workspace statement is the Hopf-specific tree
 cut, clean decoder, and coherent router attaining the full workspace frontier.
 

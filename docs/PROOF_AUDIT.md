@@ -28,7 +28,7 @@ D_{\mathbb R}(n,m)
 =\Theta\left(n+\frac{2^n}{n+m}\right)
 ```
 
-for every integer `m>=0`.
+for every integer $m\geq0$.
 
 ## 1. Source and version discipline
 
@@ -61,11 +61,11 @@ For unrestricted angles, the exact differential is
 g_{j,j}=a_j^2,
 ```
 
-where `a_j` is the oriented incoming amplitude. The principal square root is
-`|a_j|`. On the canonical Hopf domains, `a_j>=0` and therefore
-`a_j=sqrt(g_(j,j))`.
+where $a_j$ is the oriented incoming amplitude. The principal square root is
+`|a_j|`. On the canonical Hopf domains, $a_j\geq0$ and therefore
+$a_j=\sqrt{g_{j,j}}$.
 
-At `g_(j,j)=0`, the raw differential vanishes. The unit vector occupying the
+At $g_{j,j}=0$, the raw differential vanishes. The unit vector occupying the
 marker column remains a canonical orthogonal frame continuation but is not the
 normalization of a nonzero derivative. The implementation and tests now encode
 this distinction explicitly.
@@ -91,8 +91,8 @@ Classification: **proved and enforced by counterexample**.
 
 ## 4. Strict-zero borrowed-suffix echo
 
-For a nonfinal depth, fix prefix `p`, split the suffix into original bit `b` and
-remaining string `r`, and set
+For a nonfinal depth, fix prefix $p$, split the suffix into original bit $b$ and
+remaining string $r$, and set
 
 ```math
 h=[r=0],
@@ -119,12 +119,12 @@ JCJ=C^{-1},
 CJCJ=I.
 ```
 
-The four `(h,b)` sectors give the addressed rotation only on the original
+The four $(h,b)$ sectors give the addressed rotation only on the original
 complete-zero-suffix sector. The borrowed bit is restored and no relative phase
 is introduced. Orthogonality of the sectors proves equality on arbitrary
 superpositions and entanglement.
 
-The two UCGs have total width `d+2`; the predicate toggles use no ancillary wire.
+The two UCGs have total width $d+2$; the predicate toggles use no ancillary wire.
 Thus
 
 ```math
@@ -135,14 +135,14 @@ S(L_d)=O(2^d+n-d),
 D(L_d)=O\left(n+\frac{2^d}{d+2}\right),
 ```
 
-and summation gives `Theta(N)` size and `Theta(n+N/n)` depth at `m=0`.
+and summation gives `Theta(N)` size and `Theta(n+N/n)` depth at $m=0$.
 
 Classification: **proved relative to Lemmas 5–6 and tested as complete
 operators**.
 
 ## 5. Tree-cut identities
 
-For a cut after `t` depths, with `B=2^t` and `s=n-t`,
+For a cut after $t$ depths, with $B=2^t$ and $s=n-t$,
 
 ```math
 F_t^{(n)}
@@ -160,7 +160,7 @@ Classification: **proved and matrix-tested**.
 
 ## 6. Binary–one-hot decoder
 
-For `B=2^t`, the explicit decoder uses `B` one-hot leaves, `B-1` internal
+For $B=2^t$, the explicit decoder uses $B$ one-hot leaves, `B-1` internal
 indicators, and `B-1-t` shared scratch wires:
 
 ```math
@@ -168,14 +168,14 @@ indicators, and `B-1-t` shared scratch wires:
 ```
 
 clean workspace qubits in total. Its X/CNOT/Toffoli layers are disjoint, have
-depth `11t-4=O(t)`, and implement
+depth $11t-4=O(t)$, and implement
 
 ```math
 D_t|x\rangle|0\rangle
 =|0^t\rangle|e_x\rangle|0\rangle.
 ```
 
-The one-hot Givens network equals the complete `t`-qubit Hopf frame on the code.
+The one-hot Givens network equals the complete $t$-qubit Hopf frame on the code.
 
 Classification: **explicitly constructed and tested**.
 
@@ -184,10 +184,10 @@ Classification: **explicitly constructed and tested**.
 The earlier evidence gap—resource formulas without an operator-tested
 route–operate–unroute implementation—has been closed.
 
-Treat each branch's `s` data wires and one token as a block of width `s+1`.
-At routing level `j`, prefix bit `j` controls `2^j(s+1)` disjoint Fredkin gates.
+Treat each branch's $s$ data wires and one token as a block of width $s+1$.
+At routing level $j$, prefix bit $j$ controls $2^j(s+1)$ disjoint Fredkin gates.
 One original prefix control is available, so clean copies at that level number
-`2^j(s+1)-1`. Hence
+$2^j(s+1)-1$. Hence
 
 ```math
 \text{copy wires}=(B-1)(s+1)-t,
@@ -219,10 +219,10 @@ Classification: **explicitly constructed, counted, and operator-tested**.
 
 The routed tail uses:
 
-- `(B-1)s` additional data wires;
-- `B` token wires;
-- `(B-1)(s+1)-t` control-copy wires;
-- `B` branch flags when `s>1`, reusing cleared copy wires.
+- $(B-1)s$ additional data wires;
+- $B$ token wires;
+- $(B-1)(s+1)-t$ control-copy wires;
+- $B$ branch flags when `s>1`, reusing cleared copy wires.
 
 The tail peak is the data and tokens plus the larger of copies or flags. The
 conditioned prefix and routed tail execute sequentially. Both fit inside
@@ -231,40 +231,40 @@ conditioned prefix and routed tail execute sequentially. Both fit inside
 2B(s+1).
 ```
 
-Route and unroute have `O(n)` depth and `O(B(s+1))` size. One controlled
-subtree has size `O(2^s)` and depth `O(s^2+2^s/s)`; all branches run in
+Route and unroute have $O(n)$ depth and $O(B(s+1))$ size. One controlled
+subtree has size $O(2^s)$ and depth $O(s^2+\frac{2^s}{s})$; all branches run in
 parallel.
 
-For `m>=4n`, the largest cut satisfying
+For $m\geq4n$, the largest cut satisfying
 
 ```math
 2\,2^t(n-t+1)\leq m
 ```
 
-obeys `2^s/s=O(N/(n+m))`. For `1<=m<4n`, the direct flagged schedule's
-`O(n^2)` term is absorbed. Therefore all positive budgets attain the target
+obeys $\frac{2^s}{s}=O(\frac{N}{n+m})$. For $1\leqm<4n$, the direct flagged schedule's
+$O(n^2)$ term is absorbed. Therefore all positive budgets attain the target
 frontier.
 
 Classification: **proved, with explicit schedule-to-ledger regression tests**.
 
 ## 9. Lower bounds
 
-The first frame column covers an open `(N-1)`-dimensional real-state family.
+The first frame column covers an open $(N-1)$-dimensional real-state family.
 Parameter counting gives `Omega(N)` size and `Omega(N/(n+m))` depth. Backward
-light cones of the `n` system outputs give `Omega(n)` depth. At `m=0`, the
-parameter bound `Omega(N/n)` already dominates `n`.
+light cones of the $n$ system outputs give `Omega(n)` depth. At $m=0$, the
+parameter bound `Omega(N/n)` already dominates $n$.
 
 Classification: **proved**.
 
 ## 10. Phase-dressed complex magnitude frame
 
-The phase diagonal is one total-width-`n` UCG with blocks
+The phase diagonal is one total-width-$n$ UCG with blocks
 
 ```math
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}}).
 ```
 
-It has size `O(N)` and depth `O(n+N/(n+m))`, and reuses the real-frame work
+It has size $O(N)$ and depth $O(n+\frac{N}{n+m})$, and reuses the real-frame work
 pool sequentially. The result concerns the complex **magnitude** frame. The
 leaf-phase derivatives remain a separate direct stream.
 
@@ -292,9 +292,9 @@ T_{\mathrm{grad}}^{\mathrm{matched}}
 =S_{\nabla}(D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}).
 ```
 
-Because `D_frame` matches the general QSP order, the inverse frame adds only a
+Because $D_{\mathrm{frame}}$ matches the general QSP order, the inverse frame adds only a
 constant per-execution factor. At fixed comparable accuracy and confidence, the
-overhead is `O(log n)=O(log log M)`. This excludes output materialization and
+overhead is $O(\log n)=O(\log \log M)$. This excludes output materialization and
 instance-specific scalar shortcuts.
 
 Classification: **proved under the stated access and task conventions**.

@@ -12,7 +12,7 @@ Let
 N=2^n.
 ```
 
-For every integer `m>=0`, the repository supports the exact logical-circuit
+For every integer $m\geq0$, the repository supports the exact logical-circuit
 theorem
 
 ```math
@@ -51,7 +51,7 @@ zero.
 | $1\leq m<4n$ | direct suffix-flagged UCG layers | one reusable clean predicate flag and all-workspace UCG synthesis |
 | larger $m$ | conditioned prefix plus coherently routed subtree frames | exact tree cut, clean binary–one-hot decoder, explicit CNOT/Fredkin router, and maximal feasible cut |
 
-The phase diagonal is one exact `n`-qubit UCG and reuses the same workspace pool
+The phase diagonal is one exact $n$-qubit UCG and reuses the same workspace pool
 sequentially.
 
 ## Circuit model
@@ -60,7 +60,7 @@ The theorem is stated in the exact all-to-all logical model with:
 
 - arbitrary one-qubit gates;
 - CNOTs;
-- clean ancillary qubits initialized and returned in `|0>`.
+- clean ancillary qubits initialized and returned in $\lvert 0\rangle$.
 
 The active external compiler framework and optimal state-preparation benchmark
 is P. Yuan and S. Zhang, *Quantum* **7**, 956 (2023).  The proof uses Theorem 2
@@ -128,8 +128,8 @@ For unrestricted angles,
 g_{j,j}=a_j^2,
 ```
 
-where `a_j` is the oriented incoming amplitude.  On the canonical Hopf domains,
-`a_j>=0` and equals the principal metric square root.  At zero metric weight,
+where $a_j$ is the oriented incoming amplitude.  On the canonical Hopf domains,
+$a_j\geq0$ and equals the principal metric square root.  At zero metric weight,
 the raw differential vanishes while the complete parameter tuple selects a unit
 orthogonal marker-frame continuation.
 
@@ -146,7 +146,7 @@ magnitude stream uses
 O(\log n)=O(\log\log M)
 ```
 
-independent executions for `M=Theta(N)` coordinates.
+independent executions for $M=\Theta(N)$ coordinates.
 
 The runtime ratio is a matched-program statement: scalar and gradient programs
 use the same general state family and controlled observable, and the gradient
@@ -162,7 +162,7 @@ routing.
 
 The strict-zero contribution is the Hopf-specific use of one original suffix
 data qubit as a restored predicate carrier, reducing one addressed depth to two
-total-width-`d+2` UCGs and linear predicate toggles.  The positive-workspace
+total-width-$d+2$ UCGs and linear predicate toggles.  The positive-workspace
 contribution combines the exact Hopf tree cut with a clean decoder and explicit
 coherent router.  Together they yield the optimal complete-frame frontier for
 every clean-workspace budget.

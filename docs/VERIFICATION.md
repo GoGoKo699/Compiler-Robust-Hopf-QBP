@@ -47,8 +47,8 @@ The frame suite checks:
 - real-frame orthogonality;
 - phase-dressed complex magnitude-frame unitarity;
 - the breadth-first marker convention;
-- `g_(j,j)=a_j^2` for unrestricted angles;
-- `a_j=sqrt(g_(j,j))` on the canonical domains;
+- $g_{j,j}=a_j^2$ for unrestricted angles;
+- $a_j=\sqrt{g_{j,j}}$ on the canonical domains;
 - tolerance-aware regularity at floating-point chart boundaries;
 - zero raw derivative and a unit chart-selected marker continuation at a
   singular coordinate.
@@ -76,14 +76,14 @@ Files:
 
 The strict-zero suite checks:
 
-1. `C^2=R_y(theta)` and `XCX=C^(-1)`;
-2. all four `(h,b)` sectors;
+1. $C^2=R_y(\theta)$ and $XCX=C^{-1}$;
+2. all four $(h,b)$ sectors;
 3. exact restoration of the borrowed logical suffix bit;
 4. absence of hidden workspace;
-5. every nonfinal addressed depth through `n=8`;
-6. complete real frames through `n=8`;
+5. every nonfinal addressed depth through $n=8$;
+6. complete real frames through $n=8$;
 7. inverse frames and phase-dressed complex magnitude frames;
-8. the endpoints `n=1`, `d=0`, `d=n-2`, and the final depth.
+8. the endpoints $n=1$, $d=0$, $d=n-2$, and the final depth.
 
 The resource audit checks, using exact arithmetic,
 
@@ -92,7 +92,7 @@ The resource audit checks, using exact arithmetic,
 \leq6\frac{2^n}{n}
 ```
 
-and the absorption of the polynomial predicate terms into `O(2^n/n)`.
+and the absorption of the polynomial predicate terms into $O(\frac{2^n}{n})$.
 
 Files:
 
@@ -106,7 +106,7 @@ Files:
 The decoder is tested as a complete reversible permutation, not only on its
 intended clean input.  The suite verifies:
 
-- `|x>|0>` maps to `|0>|e_x>|0>` and returns under the inverse;
+- $\lvert x\rangle\lvert 0\rangle$ maps to $\lvert 0\rangle\lvert e_x\rangle\lvert 0\rangle$ and returns under the inverse;
 - arbitrary computational-basis contents return after forward and inverse;
 - every declared layer has disjoint wire support;
 - the exact workspace formula
@@ -170,7 +170,7 @@ cover:
 - the direct-to-routed transition;
 - maximal feasible cuts over broad `n,m` grids;
 - copy-pool reuse as branch flags;
-- the `s=1` routed endpoint;
+- the $s=1$ routed endpoint;
 - arbitrarily large workspace;
 - matching real-state parameter and light-cone lower bounds.
 
