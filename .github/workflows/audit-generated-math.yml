@@ -1,0 +1,104 @@
+name: audit generated mathematics
+
+on:
+  push:
+    branches:
+      - inline-math-rendering-clean-2026-09
+    paths:
+      - .github/workflows/audit-generated-math.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: inline-math-rendering-clean-2026-09
+
+      - name: Extract and lint inline mathematics
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          roots = [Path('.'), Path('docs'), Path('manuscript'), Path('compiler_robust_hopf')]
+          files = sorted({path for root in roots for path in root.glob('*.md') if path.is_file()})
+          inline_math = re.compile(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)')
+          inline_code = re.compile(r'`([^`\n]+)`')
+          plain_math_word = re.compile(r'(?<!\\)\b(?:pi|theta|lambda|psi|phi|epsilon|delta|Theta|Omega|sqrt)\b')
+          bad_subscript = re.compile(r'_[A-Za-z]{2,}')
+
+          spans = []
+          suspicious = []
+          remaining_code = []
+          for path in files:
+              in_fence = False
+              for line_number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+                  if line.lstrip().startswith('```'):
+                      in_fence = not in_fence
+                      continue
+                  if in_fence:
+                      continue
+                  for match in inline_math.finditer(line):
+                      span = match.group(1)
+                      spans.append({'file': str(path), 'line': line_number, 'math': span})
+                      reasons = []
+                      if '\\\\' in span:
+                          reasons.append('double-backslash')
+                      if plain_math_word.search(span):
+                          reasons.append('plain-math-word')
+                      if bad_subscript.search(span):
+                          reasons.append('unbraced-word-subscript')
+                      if '**' in span:
+                          reasons.append('python-exponent')
+                      if '>=' in span or '<=' in span:
+                          reasons.append('ascii-inequality')
+                      if span.count('{') != span.count('}'):
+                          reasons.append('unbalanced-braces')
+                      if reasons:
+                          suspicious.append((str(path), line_number, span, ','.join(reasons)))
+
+                  stripped = line.strip()
+                  if stripped.startswith('|') and stripped.endswith('|'):
+                      continue
+                  for match in inline_code.finditer(line):
+                      remaining_code.append((str(path), line_number, match.group(1)))
+
+          Path('/tmp/inline-math.json').write_text(json.dumps(spans), encoding='utf-8')
+          print(f'INLINE_MATH_SPANS={len(spans)}')
+          print('SUSPICIOUS_INLINE_MATH_BEGIN')
+          for path, line, span, reason in suspicious:
+              print(f'{path}:{line}: ${span}$ [{reason}]')
+          print('SUSPICIOUS_INLINE_MATH_END')
+          print(f'SUSPICIOUS_INLINE_MATH_COUNT={len(suspicious)}')
+          print('REMAINING_CODE_SPANS_BEGIN')
+          for path, line, span in remaining_code:
+              print(f'{path}:{line}: `{span}`')
+          print('REMAINING_CODE_SPANS_END')
+          print(f'REMAINING_CODE_SPANS_COUNT={len(remaining_code)}')
+          PY
+
+      - name: Parse inline mathematics with KaTeX
+        run: |
+          npm install --no-save katex@0.16.11
+          node - <<'JS'
+          const fs = require('fs');
+          const katex = require('katex');
+          const spans = JSON.parse(fs.readFileSync('/tmp/inline-math.json', 'utf8'));
+          let failures = 0;
+          for (const item of spans) {
+            try {
+              katex.renderToString(item.math, {throwOnError: true, strict: 'error'});
+            } catch (error) {
+              failures += 1;
+              console.log(`${item.file}:${item.line}: $${item.math}$ :: ${error.message}`);
+            }
+          }
+          console.log(`KATEX_FAILURES=${failures}`);
+          if (failures > 0) process.exit(1);
+          JS
