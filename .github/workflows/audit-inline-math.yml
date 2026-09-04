@@ -1,0 +1,46 @@
+name: audit inline mathematics
+
+on:
+  push:
+    branches:
+      - inline-math-rendering-final-2026-09
+    paths:
+      - .github/workflows/audit-inline-math.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: inline-math-rendering-final-2026-09
+
+      - name: List prose code spans by file and line
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          inline = re.compile(r'`([^`\n]+)`')
+          roots = [Path('.'), Path('docs'), Path('manuscript'), Path('compiler_robust_hopf'), Path('tests'), Path('scripts'), Path('assets'), Path('provenance')]
+          files = sorted({path for root in roots for path in root.glob('*.md') if path.is_file()})
+
+          count = 0
+          for path in files:
+              in_fence = False
+              for line_number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+                  if line.lstrip().startswith('```'):
+                      in_fence = not in_fence
+                      continue
+                  stripped = line.strip()
+                  if in_fence or (stripped.startswith('|') and stripped.endswith('|')):
+                      continue
+                  for span in inline.findall(line):
+                      print(f'{path}:{line_number}: `{span}`')
+                      count += 1
+          print(f'TOTAL_PROSE_CODE_SPANS={count}')
+          PY
