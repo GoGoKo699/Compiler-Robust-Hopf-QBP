@@ -68,8 +68,8 @@ The review uses:
 - Lemma 6: a total-width-$q$ UCG using $w$ clean work qubits has size
   $O(2^q)$ and depth $O(q+\frac{2^q}{q+w})$;
 - Lemma 9: coherent CNOT-tree copying and exact uncopying;
-- Theorem 2: exact state preparation has size `Theta(2**n)` and depth
-  `Theta(n+2**n/(n+m))` for every ancillary budget.
+- Theorem 2: exact state preparation has size $\Theta(2^n)$ and depth
+  $\Theta\!\left(n+\frac{2^n}{n+m}\right)$ for every ancillary budget.
 
 The published article corresponds to `arXiv:2202.11302v2`. The imported
 statements were also checked in v3 and retain the forms used here.
@@ -119,7 +119,7 @@ Let $N=2^n$. At nonfinal tree depth $d$, split a computational-basis label as
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R,
 ```
 
-where $p$ is the upper prefix, $x$ the Hopf target, and `br` the lower suffix.
+where $p$ is the upper prefix, $x$ the Hopf target, and $br$ the lower suffix.
 The required complete layer is
 
 ```math
@@ -262,7 +262,7 @@ R_t^{(n)}
 =\bigoplus_{r=0}^{B-1}W_s^{(r)}.
 ```
 
-A local subtree node `(ell,u)` in branch $r$ uses the global breadth-first angle
+A local subtree node $(\ell,u)$ in branch $r$ uses the global breadth-first angle
 at index
 
 ```math
@@ -315,7 +315,7 @@ applied least-significant-prefix-bit first, so an arbitrary state
 is routed coherently to the branch selected by $r$, even when prefix and suffix
 are entangled.
 
-After routing, all copies are zero. When `s>1`, the construction needs one local
+After routing, all copies are zero. When $s>1$, the construction needs one local
 suffix flag per branch. The cleared copy pool is large enough because
 
 ```math
@@ -391,7 +391,7 @@ requires
 m\geq2\,2^{n-1}(1+1)=2^{n+1}=2N,
 ```
 
-so $\frac{N}{n+m}=O(1)$ and the target depth is `Theta(n)`. The routed schedule again
+so $\frac{N}{n+m}=O(1)$ and the target depth is $\Theta(n)$. The routed schedule again
 matches it.
 
 Hence for all large-workspace endpoints,
@@ -418,7 +418,7 @@ of dimension $2^n-1$.
   locations, giving $D=\Omega(\frac{2^n}{n+m})$.
 - The union of the backward light cones of the $n$ system outputs gives the
   independent $D=\Omega(n)$ term.
-- At $m=0$, `Omega(2**n/n)` already dominates the linear term asymptotically.
+- At $m=0$, $\Omega(2^n/n)$ already dominates the linear term asymptotically.
 
 Thus the real-frame upper and lower bounds match.
 
@@ -432,7 +432,7 @@ D_{\mathrm{ph}}
 \mathrm{diag}\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right).
 ```
 
-This is one total-width-$n$ UCG with arbitrary `U(2)` blocks. Lemma 6 gives size
+This is one total-width-$n$ UCG with arbitrary $\mathrm{U}(2)$ blocks. Lemma 6 gives size
 $O(2^n)$ and depth $O(n+\frac{2^n}{n+m})$ for every $m\geq0$. Because the real frame
 and phase UCG each return the pool clean, they reuse one workspace sequentially.
 The real subfamily supplies the lower bounds.

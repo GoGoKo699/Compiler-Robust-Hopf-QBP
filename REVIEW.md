@@ -308,7 +308,7 @@ a_j\geq0,
 a_j=\sqrt{g_{j,j}}.
 ```
 
-If `g_(j,j)>0`, $\lvert e_j\rangle$ is the normalized coordinate derivative direction.  If
+If $g_{j,j}>0$, $\lvert e_j\rangle$ is the normalized coordinate derivative direction.  If
 $g_{j,j}=0$, the raw derivative vanishes; the marker column remains the
 chart-selected orthogonal continuation fixed by the complete parameter tuple.
 The compiler target remains a unitary for every parameter tuple.
@@ -476,11 +476,11 @@ For fixed $p$ and $r$, the four invariant sectors are:
 | 1 | 1 | $X,X$ | $I$ | 1 |
 
 The active sector is precisely the sector in which the **original** complete
-suffix `br` is zero.  Every other sector receives identity.  The borrowed bit
+suffix $br$ is zero.  Every other sector receives identity.  The borrowed bit
 is toggled either zero or four times and returns to its original value.  No
 sector-dependent phase appears.
 
-Because the `p,r` sectors form an orthogonal direct sum, this proves complete
+Because the $(p,r)$ sectors form an orthogonal direct sum, this proves complete
 operator equality on arbitrary superpositions, including states in which $b$
 is entangled with the other system qubits.
 
@@ -571,7 +571,7 @@ At every nonfinal depth:
 3. uncompute the flag.
 
 The flag is reused between depths.  The UCG has total width $d+2$ and may use
-the remaining `m-1` clean qubits.  The final depth has no suffix predicate, so
+the remaining $m-1$ clean qubits.  The final depth has no suffix predicate, so
 all $m$ clean qubits are available.
 
 The UCG sizes sum geometrically to $O(N)$.  The predicate computations contribute
@@ -660,7 +660,7 @@ R_t^{(n)}
 }
 ```
 
-A local subtree node `(ell,u)` in branch $r$ uses global breadth-first node
+A local subtree node $(\ell,u)$ in branch $r$ uses global breadth-first node
 
 ```math
 2^{t+\ell}+r2^\ell+u.
@@ -820,7 +820,7 @@ s^2=O\left(n+\frac{2^s}{s}\right).
 ```
 
 If $s=1$, every subtree frame has constant depth.  Feasibility of $t=n-1$
-requires $m\geq2N$, so $\frac{N}{n+m}=O(1)$ and the target depth is `Theta(n)`; the
+requires $m\geq2N$, so $\frac{N}{n+m}=O(1)$ and the target depth is $\Theta(n)$; the
 prefix and route–unroute stages already have that order.
 
 Hence the routed schedule satisfies
@@ -876,13 +876,13 @@ D_{\mathbb R}(n,m)
 
 For positive workspace, the union of the backward light cones of the $n$ system
 outputs contains at most $O(n\,2^D)$ parameterized locations.  Covering an
-`N-1` dimensional output family requires
+$N-1$ dimensional output family requires
 
 ```math
 D=\Omega(n).
 ```
 
-At $m=0$, the parameter bound `Omega(N/n)` already dominates the linear term
+At $m=0$, the parameter bound $\Omega(N/n)$ already dominates the linear term
 asymptotically.  Combining the bounds gives
 
 ```math

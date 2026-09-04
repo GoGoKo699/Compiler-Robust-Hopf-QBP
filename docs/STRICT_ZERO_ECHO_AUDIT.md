@@ -64,7 +64,7 @@ C=R_y(\theta_p/2),
 J=X.
 ```
 
-Let $T_h$ map $b$ to `b xor h`. The chronological sequence is
+Let $T_h$ map $b$ to $b\oplus h$. The chronological sequence is
 
 ```text
 controlled_b(J)
@@ -129,7 +129,7 @@ The circuit uses only the original system wires:
 - $d$ prefix wires;
 - one target wire;
 - one borrowed suffix data wire;
-- `n-d-2` remaining suffix wires.
+- $n-d-2$ remaining suffix wires.
 
 The borrowed wire is not assumed clean, idle, separable, or classical. Its
 restoration follows from the complete sector table.
@@ -201,7 +201,7 @@ S(W_{\mathbb R})
 ```
 
 The real-state family has dimension $2^n-1$, so parameter counting gives the
-matching `Omega(2^n)` lower bound.
+matching $\Omega(2^n)$ lower bound.
 
 **Audit classification:** upper and lower bounds verified.
 

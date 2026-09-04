@@ -239,7 +239,7 @@ and let $P_d$ project onto the active interface reached by $A_d$.
 
 ### Definition 4: active-interface-safe suffix
 
-A compiled suffix `B_tilde_d` is active-interface safe when
+A compiled suffix $\widetilde B_d$ is active-interface safe when
 
 ```math
 \widetilde B_dJ_mP_d

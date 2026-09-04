@@ -14,7 +14,7 @@ The searched construction is the following Hopf-specific reduction:
 > At addressed tree depth $d$, borrow one original lower-suffix data qubit as a
 > restored predicate carrier, use four predicate toggles and a half-angle echo,
 > aggregate every prefix-dependent rotation into two total-width-$d+2$ UCGs,
-> and obtain `Theta(2**n)` size and `Theta(n+2**n/n)` depth for the complete
+> and obtain $\Theta(2^n)$ size and $\Theta(n+2^n/n)$ depth for the complete
 > strict-zero Hopf differential frame.
 
 The search separates novelty of this aggregate construction from novelty of its
@@ -231,8 +231,8 @@ published or preprint construction with all of the following features at once:
 3. the unwanted unknown-bit branch is cancelled by a half-angle/Pauli echo;
 4. all $2^d$ prefix-dependent rotations are aggregated into two total-width-
    $d+2$ UCGs;
-5. summing the Hopf tree gives an exact complete-frame `Theta(2**n)` size and
-   `Theta(n+2**n/n)` depth result.
+5. summing the Hopf tree gives an exact complete-frame $\Theta(2^n)$ size and
+   $\Theta(n+2^n/n)$ depth result.
 
 This is a **negative result of a bounded search**, not a proof of novelty or
 priority. Equivalent circuits may appear under different terminology, and

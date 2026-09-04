@@ -39,10 +39,10 @@ where:
 - $p$ is the $d$-bit Hopf prefix;
 - $x$ is the addressed rotation target;
 - $b$ is the suffix bit immediately below the target;
-- $r$ contains the remaining `n-d-2` suffix bits.
+- $r$ contains the remaining $n-d-2$ suffix bits.
 
 The desired complete layer applies the prefix-selected rotation only when the
-original lower suffix `br` is all zero:
+original lower suffix $br$ is all zero:
 
 ```math
 L_d
@@ -232,8 +232,8 @@ S_{\mathbb R}(n,0)=O(N),
 D_{\mathbb R}(n,0)=O(n+N/n).
 ```
 
-The real state family has dimension `N-1`. Parameter counting gives
-`Omega(N)` size and, on exactly $n$ wires, `Omega(N/n)` depth. These lower
+The real state family has dimension $N-1$. Parameter counting gives
+$\Omega(N)$ size and, on exactly $n$ wires, $\Omega(N/n)$ depth. These lower
 bounds match the construction.
 
 ## 7. Endpoint cases

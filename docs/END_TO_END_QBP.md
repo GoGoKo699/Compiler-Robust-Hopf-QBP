@@ -209,7 +209,7 @@ T_{\mathrm{mag}}
 ```
 
 At fixed raw-coordinate accuracy, $S=O(\log n)$, so dense materialization costs
-$O(N \log n)$.  The output itself has `N-1` entries.
+$O(N \log n)$.  The output itself has $N-1$ entries.
 
 The phase stream accumulates directly into signed leaf bins in
 
@@ -221,13 +221,13 @@ time and $O(N)$ output storage.
 
 ## 8. Classical compiler preprocessing
 
-The Hopf tree has `N-1` magnitude angles.
+The Hopf tree has $N-1$ magnitude angles.
 
 - Half-angle tables for the strict-zero schedule are generated in $O(N)$ work.
 - A routed cut partitions the angles into one prefix list and $2^t$ subtree
   lists in $O(N)$ work.
 - The phase UCG pairs $N$ leaf phases in $O(N)$ work and storage.
-- The explicit decoder and router schedules are generated from `n,t` and the
+- The explicit decoder and router schedules are generated from $(n,t)$ and the
   chosen register layout.
 
 The logical depth theorem counts the resulting quantum circuit, not the host

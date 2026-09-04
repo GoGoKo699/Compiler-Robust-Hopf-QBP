@@ -125,7 +125,7 @@ restricted-UCG work. This absence is not a proof of novelty.
 
 ## 6. Multi-controlled rotations
 
-There is substantial literature on ancilla-free multi-controlled `SU(2)` gates
+There is substantial literature on ancilla-free multi-controlled $\mathrm{SU}(2)$ gates
 and multi-controlled-NOT gates. Such results can implement one conditioned
 rotation efficiently in the number of controls, but applying them independently
 for all $2^d$ prefix values may introduce an extra factor in size or depth.
@@ -141,8 +141,8 @@ The strongest currently defensible statement is:
 > restored predicate carrier. A four-toggle half-angle echo reduces all
 > prefix-dependent rotations at depth $d$ to two total-width-$d+2$ UCGs and
 > linear-size predicate toggles. Summing the tree depths yields an exact
-> ancilla-free complete-frame compiler with `Theta(2**n)` size and
-> `Theta(n+2**n/n)` depth.
+> ancilla-free complete-frame compiler with $\Theta(2^n)$ size and
+> $\Theta(n+2^n/n)$ depth.
 
 The following statements should not be used:
 

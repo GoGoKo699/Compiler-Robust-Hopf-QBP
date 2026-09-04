@@ -69,7 +69,7 @@ is not specified only by the state column.
 
 ## 2. Tree and marker convention
 
-The `N-1` magnitude coordinates are indexed by the internal nodes of a complete
+The $N-1$ magnitude coordinates are indexed by the internal nodes of a complete
 binary tree.  Nodes are numbered breadth first, beginning at one.  If node $j$
 has depth $d$ and position $r$, then
 
@@ -371,7 +371,7 @@ W_{\mathbb C,\mathrm{mag}}
 }
 ```
 
-It contains the complex state and the `N-1` phase-dressed magnitude-frame
+It contains the complex state and the $N-1$ phase-dressed magnitude-frame
 directions.  The $N$ leaf-phase differentials are localized in the
 computational basis and use a separate signed one-hot measurement record.  They
 are not additional columns of this $N$-dimensional unitary.

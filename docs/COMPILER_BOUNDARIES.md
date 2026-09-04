@@ -94,7 +94,7 @@ The state is
 =\frac{|00\rangle+|01\rangle+|10\rangle+|11\rangle}{2}.
 ```
 
-In computational-column order `0,1,2,3`, the canonical real Hopf frame is
+In computational-column order $0,1,2,3$, the canonical real Hopf frame is
 
 ```math
 W=
@@ -224,7 +224,7 @@ At depth $d$, write the designated preparation as
 U=B_dA_d,
 ```
 
-where $A_d$ contains depths `0,...,d` and $B_d$ contains the later depths. Let
+where $A_d$ contains depths $0,\ldots,d$ and $B_d$ contains the later depths. Let
 
 ```math
 |\alpha_d\rangle=A_d|0^n\rangle,
@@ -263,11 +263,11 @@ It preserves the active-interface sectors:
 ```
 
 The physical score is the corresponding ancilla-system correlation, with the
-repository convention `-2 Y_ancilla tensor K_(d,r)`.
+repository convention $-2Y_{\mathrm{ancilla}}\otimes K_{d,r}$.
 
 ## 4. Active-interface substitution theorem
 
-Let `B_tilde_d` be a unitary compiler acting on system and clean workspace.
+Let $\widetilde B_d$ be a unitary compiler acting on system and clean workspace.
 Assume that, for one phase $\chi$ independent of the active-interface input,
 
 ```math
@@ -275,7 +275,7 @@ Assume that, for one phase $\chi$ independent of the active-interface input,
 =e^{i\chi}JB_dP_d.
 ```
 
-Use `B_tilde_d` consistently in the forward suffix and
+Use $\widetilde B_d$ consistently in the forward suffix and
 $\widetilde B_d^{\dagger}$ after the controlled observable.
 
 > **Checkpoint active-interface substitution.** Under the condition above,
@@ -396,7 +396,7 @@ Choose
 O=-Z\otimes I.
 ```
 
-The exact root derivative is `2`. Under the designated inverse suffix, the two
+The exact root derivative is $2$. Under the designated inverse suffix, the two
 checkpoint branches before Y-basis readout are the prefix state and its root
 coordinate direction. The nonzero measured outcomes are
 
@@ -405,7 +405,7 @@ correct B:      (ancilla,target,suffix) = (0,1,0), (1,0,0), each 1/2;
 compiled C_bad: (ancilla,target,suffix) = (0,0,0), (1,1,0), each 1/2.
 ```
 
-The checkpoint decoder therefore returns `2` with $B$, but `-2` with
+The checkpoint decoder therefore returns $2$ with $B$, but $-2$ with
 $C_{\mathrm{bad}}$.
 
 > **Checkpoint state-column equality is insufficient.** A recompiled suffix may

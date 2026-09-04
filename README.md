@@ -83,7 +83,7 @@ all-zero predicate.  Three schedules exploit this structure.
 | $1\leq m<4n$ | direct flagged UCG | one reusable clean flag stores the suffix-zero predicate |
 | larger $m$ | routed parallel subframes | a tree cut turns the tail into a direct sum; the suffix is routed coherently and the subtree frames run in parallel |
 
-The threshold `4n` is a convenient uniform proof threshold, not an optimized
+The threshold $4n$ is a convenient uniform proof threshold, not an optimized
 finite-size crossover.
 
 <p align="center">

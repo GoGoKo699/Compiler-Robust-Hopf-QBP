@@ -199,7 +199,7 @@ $O(N)$ size and $O(n+\frac{N}{n+m})$ depth.
 
 ## 5. Matching lower bounds
 
-The first frame column covers an open real-state family of dimension `N-1`.
+The first frame column covers an open real-state family of dimension $N-1$.
 Parameter capacity gives
 
 ```math
@@ -212,7 +212,7 @@ D_{\mathbb R}(n,m)
 ```
 
 The backward light cones of the $n$ system outputs give the independent
-`Omega(n)` term.  At $m=0$, `Omega(N/n)` already dominates $n$.
+$\Omega(n)$ term.  At $m=0$, $\Omega(N/n)$ already dominates $n$.
 
 Therefore, for every $m\geq0$,
 

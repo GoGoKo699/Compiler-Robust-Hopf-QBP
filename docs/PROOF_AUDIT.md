@@ -62,7 +62,7 @@ g_{j,j}=a_j^2,
 ```
 
 where $a_j$ is the oriented incoming amplitude. The principal square root is
-`|a_j|`. On the canonical Hopf domains, $a_j\geq0$ and therefore
+$\lvert a_j\rvert$. On the canonical Hopf domains, $a_j\geq0$ and therefore
 $a_j=\sqrt{g_{j,j}}$.
 
 At $g_{j,j}=0$, the raw differential vanishes. The unit vector occupying the
@@ -135,7 +135,7 @@ S(L_d)=O(2^d+n-d),
 D(L_d)=O\left(n+\frac{2^d}{d+2}\right),
 ```
 
-and summation gives `Theta(N)` size and `Theta(n+N/n)` depth at $m=0$.
+and summation gives $\Theta(N)$ size and $\Theta(n+N/n)$ depth at $m=0$.
 
 Classification: **proved relative to Lemmas 5–6 and tested as complete
 operators**.
@@ -160,8 +160,8 @@ Classification: **proved and matrix-tested**.
 
 ## 6. Binary–one-hot decoder
 
-For $B=2^t$, the explicit decoder uses $B$ one-hot leaves, `B-1` internal
-indicators, and `B-1-t` shared scratch wires:
+For $B=2^t$, the explicit decoder uses $B$ one-hot leaves, $B-1$ internal
+indicators, and $B-1-t$ shared scratch wires:
 
 ```math
 3B-2-t
@@ -222,7 +222,7 @@ The routed tail uses:
 - $(B-1)s$ additional data wires;
 - $B$ token wires;
 - $(B-1)(s+1)-t$ control-copy wires;
-- $B$ branch flags when `s>1`, reusing cleared copy wires.
+- $B$ branch flags when $s>1$, reusing cleared copy wires.
 
 The tail peak is the data and tokens plus the larger of copies or flags. The
 conditioned prefix and routed tail execute sequentially. Both fit inside
@@ -250,9 +250,9 @@ Classification: **proved, with explicit schedule-to-ledger regression tests**.
 ## 9. Lower bounds
 
 The first frame column covers an open $(N-1)$-dimensional real-state family.
-Parameter counting gives `Omega(N)` size and `Omega(N/(n+m))` depth. Backward
-light cones of the $n$ system outputs give `Omega(n)` depth. At $m=0$, the
-parameter bound `Omega(N/n)` already dominates $n$.
+Parameter counting gives $\Omega(N)$ size and $\Omega\!\left(\frac{N}{n+m}\right)$ depth. Backward
+light cones of the $n$ system outputs give $\Omega(n)$ depth. At $m=0$, the
+parameter bound $\Omega(N/n)$ already dominates $n$.
 
 Classification: **proved**.
 

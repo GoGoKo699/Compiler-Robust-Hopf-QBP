@@ -139,7 +139,7 @@ Assume $m=0$ and fix a nonfinal depth $d<n-1$.  Write the system register as
 ```
 
 where $p$ contains the $d$ prefix bits, $x$ is the Hopf target, $b$ is the first
-lower-suffix bit, and $r$ contains the remaining `n-d-2` suffix bits.
+lower-suffix bit, and $r$ contains the remaining $n-d-2$ suffix bits.
 
 Set
 
@@ -188,8 +188,8 @@ For fixed $p$ and $r$, the four invariant sectors are:
 | 1 | 1 | $X,X$ | $I$ | 1 |
 
 The active sector is exactly the sector in which the original complete suffix
-`br` is zero.  Every other sector receives identity.  The borrowed bit is
-restored and no sector-dependent phase appears.  Orthogonality of the `p,r`
+$br$ is zero.  Every other sector receives identity.  The borrowed bit is
+restored and no sector-dependent phase appears.  Orthogonality of the $(p,r)$
 sectors gives the complete operator identity on arbitrary superpositions and
 entangled inputs.  ∎
 
@@ -267,7 +267,7 @@ D_{\mathrm{direct}}(n,m)
 
 #### Proof
 
-The nonfinal depth-$d$ UCG has total width $d+2$ and may use `m-1` additional
+The nonfinal depth-$d$ UCG has total width $d+2$ and may use $m-1$ additional
 clean qubits.  The final depth has no predicate flag and may use all $m$ clean
 qubits.  Yuan–Zhang Lemma 6 gives a geometric $O(2^n)$ total size and the
 displayed UCG depth term.  The compute–uncompute predicates contribute
@@ -325,7 +325,7 @@ R_t^{(n)}
 =\bigoplus_{r=0}^{B-1}W_s^{(r)}.
 ```
 
-A local node `(ell,u)` in branch $r$ uses global breadth-first node
+A local node $(\ell,u)$ in branch $r$ uses global breadth-first node
 
 ```math
 2^{t+\ell}+r2^\ell+u.
@@ -489,7 +489,7 @@ s^2=O\left(n+\frac{2^s}{s}\right).
 
 If $s=1$, each subtree frame has constant depth.  Feasibility of $t=n-1$
 requires $m\geq\,2^{n+1}=2N$, so $\frac{N}{n+m}=O(1)$ and the target depth is
-`Theta(n)`, matching the prefix and route–unroute stages.
+$\Theta(n)$, matching the prefix and route–unroute stages.
 
 Therefore
 
@@ -505,7 +505,7 @@ D_{\mathrm{routed}}(n,m)
 ## 9. Matching lower bounds
 
 Applying the frame to $\lvert 0^n\rangle$ covers an open family of real normalized states
-of dimension `N-1`.
+of dimension $N-1$.
 
 ### Size
 
@@ -531,13 +531,13 @@ D_{\mathbb R}(n,m)
 
 For positive workspace, the union of the backward light cones of the $n$ system
 outputs contains at most $O(n\,2^D)$ continuously parameterized locations.
-Covering an `N-1` dimensional output family requires
+Covering an $N-1$ dimensional output family requires
 
 ```math
 D=\Omega(n).
 ```
 
-At $m=0$, the parameter bound `Omega(N/n)` already dominates $n$
+At $m=0$, the parameter bound $\Omega(N/n)$ already dominates $n$
 asymptotically.  Therefore
 
 ```math

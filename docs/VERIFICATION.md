@@ -168,7 +168,7 @@ cover:
 - strict zero workspace;
 - the one-clean-flag endpoint;
 - the direct-to-routed transition;
-- maximal feasible cuts over broad `n,m` grids;
+- maximal feasible cuts over broad $(n,m)$ grids;
 - copy-pool reuse as branch flags;
 - the $s=1$ routed endpoint;
 - arbitrarily large workspace;

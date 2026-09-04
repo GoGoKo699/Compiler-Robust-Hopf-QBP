@@ -106,8 +106,8 @@ The preferred relational wording is:
    gradient while preserving the state.
 4. **Borrowed-suffix echo.** One addressed nonfinal layer is implemented at
    strict zero workspace.
-5. **Strict-zero optimality.** The complete real frame has `Theta(N)` size and
-   `Theta(n+N/n)` depth.
+5. **Strict-zero optimality.** The complete real frame has $\Theta(N)$ size and
+   $\Theta(n+N/n)$ depth.
 6. **Conditioned-prefix identity.** The first $t$ depths are a smaller frame
    conditioned on the external zero suffix.
 7. **Tail direct sum.** The remaining depths split into $2^t$ subtree frames.
