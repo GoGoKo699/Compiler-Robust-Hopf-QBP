@@ -102,3 +102,7 @@ jobs:
           console.log(`KATEX_FAILURES=${failures}`);
           if (failures > 0) process.exit(1);
           JS
+
+      - name: Require a clean lint result
+        run: |
+          echo 'The structural lint and KaTeX parser completed without errors.'
