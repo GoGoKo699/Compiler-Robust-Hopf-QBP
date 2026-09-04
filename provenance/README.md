@@ -10,10 +10,11 @@ used.  It is a source-discipline layer, not an additional scientific premise.
 | Record | Contents |
 |---|---|
 | [`literature.json`](literature.json) | active compiler framework, published and checked source versions, theorem/lemma roles, historical predecessor, and strict-zero claim policy |
-| [`upstream.json`](upstream.json) | tracked Hopf repository commits, adapted file lineage, project-native paths, and frozen fallback branch |
-| [`upstream_reconciliation.json`](upstream_reconciliation.json) | scientific changes inspected when the tracked `Hopf-QBP` baseline advanced |
+| [`upstream.json`](upstream.json) | tracked Hopf repository commits, adapted file lineage, project-native paths, scientific reconciliation notes, and frozen fallback branch |
 | [`prior_art_search.json`](prior_art_search.json) | bounded technical search for borrowed-workspace, UCG, and uncomputation antecedents, with explicit limits on negative-search evidence |
-| [`upstream.compatibility-note.md`](upstream.compatibility-note.md) | compatibility note for the synchronization schema |
+
+The human-readable synchronization policy and current upstream baselines are in
+[`SYNC.md`](../SYNC.md).
 
 ## Active compiler source
 
@@ -36,11 +37,12 @@ path in the theorem.
 ## Hopf upstreams
 
 The repository tracks the established Hopf chart and QBP conventions rather
-than duplicating their full scientific scope.  The current baseline and file
-lineage are human-readable in [`SYNC.md`](../SYNC.md).
+than duplicating their full scientific scope.  The current baseline, adapted
+file lineage, and reconciliation of the latest `Hopf-QBP` scientific boundaries
+are recorded in `upstream.json` and summarized in `SYNC.md`.
 
 The compiler construction, strict-zero echo, tree decoder, coherent router, and
-all-workspace proof are project-native paths recorded in `upstream.json`.
+all-workspace proof are project-native paths.
 
 ## Prior-art boundary
 
