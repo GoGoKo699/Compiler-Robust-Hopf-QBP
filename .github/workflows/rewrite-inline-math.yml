@@ -5,7 +5,6 @@ on:
     branches:
       - inline-math-rendering-clean-2026-09
     paths:
-      - scripts/rewrite_inline_math.py
       - .github/workflows/rewrite-inline-math.yml
 
 permissions:
@@ -22,58 +21,147 @@ jobs:
           ref: inline-math-rendering-clean-2026-09
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
-        with:
-          python-version: '3.13'
-
-      - name: Prevent duplicate conversion inside ket labels
+      - name: Apply the remaining prose-math replacements
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          path = Path('scripts/rewrite_inline_math.py')
-          text = path.read_text(encoding='utf-8')
-          old = '''def replace_kets(text: str) -> str:
-              def ket(match: re.Match[str]) -> str:
-                  label = convert_atoms(match.group(1))
-                  return rf"\\lvert {label}\\rangle"
+          replacements = {
+              'README.md': {
+                  '4n': r'$4n$',
+              },
+              'REVIEW.md': {
+                  'g_(j,j)>0': r'$g_{j,j}>0$',
+                  'br': r'$br$',
+                  'p,r': r'$(p,r)$',
+                  'm-1': r'$m-1$',
+                  '(ell,u)': r'$(\ell,u)$',
+                  'Theta(n)': r'$\Theta(n)$',
+                  'N-1': r'$N-1$',
+                  'Omega(N/n)': r'$\Omega(N/n)$',
+              },
+              'docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md': {
+                  'Theta(2**n)': r'$\Theta(2^n)$',
+                  'Theta(n+2**n/(n+m))': r'$\Theta\!\left(n+\frac{2^n}{n+m}\right)$',
+                  'br': r'$br$',
+                  '(ell,u)': r'$(\ell,u)$',
+                  's>1': r'$s>1$',
+                  'Theta(n)': r'$\Theta(n)$',
+                  'Omega(2**n/n)': r'$\Omega(2^n/n)$',
+                  'U(2)': r'$\mathrm{U}(2)$',
+              },
+              'docs/COMPILER_BOUNDARIES.md': {
+                  '0,1,2,3': r'$0,1,2,3$',
+                  '0,...,d': r'$0,\ldots,d$',
+                  '-2 Y_ancilla tensor K_(d,r)': r'$-2Y_{\mathrm{ancilla}}\otimes K_{d,r}$',
+                  'B_tilde_d': r'$\widetilde B_d$',
+                  '2': r'$2$',
+                  '-2': r'$-2$',
+              },
+              'docs/COMPILER_THEOREM.md': {
+                  'n-d-2': r'$n-d-2$',
+                  'br': r'$br$',
+                  'p,r': r'$(p,r)$',
+                  'm-1': r'$m-1$',
+                  '(ell,u)': r'$(\ell,u)$',
+                  'Theta(n)': r'$\Theta(n)$',
+                  'N-1': r'$N-1$',
+                  'Omega(N/n)': r'$\Omega(N/n)$',
+              },
+              'docs/END_TO_END_QBP.md': {
+                  'N-1': r'$N-1$',
+                  'n,t': r'$(n,t)$',
+              },
+              'docs/FRAME_SAFE_COMPILATION.md': {
+                  'B_tilde_d': r'$\widetilde B_d$',
+              },
+              'docs/HOPF_INTERFACE.md': {
+                  'N-1': r'$N-1$',
+              },
+              'docs/PRIOR_ART_SEARCH_2026_09.md': {
+                  'Theta(2**n)': r'$\Theta(2^n)$',
+                  'Theta(n+2**n/n)': r'$\Theta(n+2^n/n)$',
+              },
+              'docs/PROOF_AUDIT.md': {
+                  '|a_j|': r'$\lvert a_j\rvert$',
+                  'Theta(N)': r'$\Theta(N)$',
+                  'Theta(n+N/n)': r'$\Theta(n+N/n)$',
+                  'B-1': r'$B-1$',
+                  'B-1-t': r'$B-1-t$',
+                  's>1': r'$s>1$',
+                  'Omega(N)': r'$\Omega(N)$',
+                  'Omega(N/(n+m))': r'$\Omega\!\left(\frac{N}{n+m}\right)$',
+                  'Omega(n)': r'$\Omega(n)$',
+                  'Omega(N/n)': r'$\Omega(N/n)$',
+              },
+              'docs/RELATED_WORK.md': {
+                  'SU(2)': r'$\mathrm{SU}(2)$',
+              },
+              'docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md': {
+                  'n-d-2': r'$n-d-2$',
+                  'br': r'$br$',
+                  'N-1': r'$N-1$',
+                  'Omega(N)': r'$\Omega(N)$',
+                  'Omega(N/n)': r'$\Omega(N/n)$',
+              },
+              'docs/STRICT_ZERO_ECHO_AUDIT.md': {
+                  'b xor h': r'$b\oplus h$',
+                  'n-d-2': r'$n-d-2$',
+                  'Omega(2^n)': r'$\Omega(2^n)$',
+              },
+              'docs/STRICT_ZERO_PRIOR_ART.md': {
+                  'SU(2)': r'$\mathrm{SU}(2)$',
+                  'Theta(2**n)': r'$\Theta(2^n)$',
+                  'Theta(n+2**n/n)': r'$\Theta(n+2^n/n)$',
+              },
+              'docs/THEOREM_OVERVIEW.md': {
+                  'N-1': r'$N-1$',
+                  'Omega(n)': r'$\Omega(n)$',
+                  'Omega(N/n)': r'$\Omega(N/n)$',
+              },
+              'docs/UNIFIED_YUAN_ZHANG_COMPILER.md': {
+                  '4n': r'$4n$',
+              },
+              'docs/VERIFICATION.md': {
+                  'n,m': r'$(n,m)$',
+              },
+              'manuscript/README.md': {
+                  'Theta(N)': r'$\Theta(N)$',
+                  'Theta(n+N/n)': r'$\Theta(n+N/n)$',
+              },
+          }
 
-              return re.sub(r"\\|([^|>]+)>", ket, text)
-          '''
-          new = '''def replace_kets(text: str) -> str:
-              def ket(match: re.Match[str]) -> str:
-                  return rf"\\lvert {match.group(1)}\\rangle"
-
-              return re.sub(r"\\|([^|>]+)>", ket, text)
-          '''
-          if old not in text:
-              raise SystemExit('Expected ket conversion block was not found.')
-          path.write_text(text.replace(old, new), encoding='utf-8')
-          PY
-
-      - name: Rewrite mathematical code spans
-        run: python scripts/rewrite_inline_math.py
-
-      - name: List remaining prose code spans
-        run: |
-          python - <<'PY'
-          import re
-          from pathlib import Path
-          from scripts.rewrite_inline_math import SCIENTIFIC_MARKDOWN, is_table_line
-
-          inline = re.compile(r'`([^`\n]+)`')
-          for relative in SCIENTIFIC_MARKDOWN:
-              path = Path(relative)
+          def replace_outside_fences_and_tables(path: Path, mapping: dict[str, str]) -> bool:
+              original = path.read_text(encoding='utf-8')
+              output: list[str] = []
               in_fence = False
-              for line_number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+              for line in original.splitlines(keepends=True):
                   if line.lstrip().startswith('```'):
                       in_fence = not in_fence
+                      output.append(line)
                       continue
-                  if in_fence or is_table_line(line):
+                  stripped = line.strip()
+                  if in_fence or (stripped.startswith('|') and stripped.endswith('|')):
+                      output.append(line)
                       continue
-                  for span in inline.findall(line):
-                      print(f'{relative}:{line_number}: `{span}`')
+                  for source, target in mapping.items():
+                      line = line.replace(f'`{source}`', target)
+                  output.append(line)
+              updated = ''.join(output)
+              if updated == original:
+                  return False
+              path.write_text(updated, encoding='utf-8')
+              return True
+
+          changed = []
+          for relative, mapping in replacements.items():
+              path = Path(relative)
+              if replace_outside_fences_and_tables(path, mapping):
+                  changed.append(relative)
+
+          print(f'Updated {len(changed)} files.')
+          for relative in changed:
+              print(relative)
           PY
 
       - name: Check the generated patch
@@ -81,12 +169,12 @@ jobs:
 
       - name: Commit the generated prose patch
         run: |
-          if git diff --quiet; then
-            echo 'No rewrite was needed.'
+          if git diff --quiet -- README.md REVIEW.md docs manuscript/README.md; then
+            echo 'No prose rewrite was needed.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add README.md REVIEW.md docs compiler_robust_hopf/README.md manuscript/README.md
-          git commit -m 'Render mathematical symbols in scientific prose'
+          git add README.md REVIEW.md docs manuscript/README.md
+          git commit -m 'Finish inline mathematical rendering in scientific prose'
           git push origin HEAD:inline-math-rendering-clean-2026-09
