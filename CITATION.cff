@@ -1,9 +1,9 @@
 cff-version: 1.2.0
-message: "Cite this repository when using the compiler constructions or validation code."
+message: "Cite this repository when using the prescribed-frame compiler, all-workspace resource theorem, or validation code."
 title: "Optimal Compilation of Hopf Differential Frames"
 type: software
 version: 0.4.0-alpha
-date-released: 2026-09-03
+date-released: 2026-09-04
 authors:
   - family-names: Lin
     given-names: Ruge
@@ -14,6 +14,7 @@ keywords:
   - quantum backpropagation
   - Hopf coordinates
   - differential frames
+  - prescribed unitary completion
   - quantum state preparation
   - circuit depth
   - ancillary qubits
