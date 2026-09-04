@@ -1,0 +1,36 @@
+name: inline-math-normalize-v3
+
+on:
+  push:
+    branches:
+      - inline-math-rendering-2026-09-v2
+    paths:
+      - scripts/normalize_inline_math_v3.py
+      - .github/workflows/inline-math-normalize-v3.yml
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: inline-math-rendering-2026-09-v2
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Normalize and audit inline mathematical notation
+        run: python scripts/normalize_inline_math_v3.py
+      - name: Commit normalized prose and audit report
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- '*.md' provenance/inline_math_normalization.json
+          if git diff --cached --quiet; then
+            echo 'No Markdown changes were required.'
+          else
+            git commit -m 'Polish mathematical notation throughout prose'
+            git push origin HEAD:inline-math-rendering-2026-09-v2
+          fi
