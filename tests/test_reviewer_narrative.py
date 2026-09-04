@@ -25,6 +25,11 @@ PRIMARY_PAGES = (
     "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
     "docs/STRICT_ZERO_ECHO_AUDIT.md",
     "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
+    "compiler_robust_hopf/README.md",
+    "tests/README.md",
+    "scripts/README.md",
+    "assets/README.md",
+    "provenance/README.md",
     "manuscript/README.md",
 )
 
@@ -235,6 +240,14 @@ class ReviewerNarrativeTests(unittest.TestCase):
         self.assertIn("Pass I: orient the synthesis question", documentation_index)
         self.assertIn("Pass II: inspect the proof by component", documentation_index)
         self.assertIn("Pass III: inspect evidence and provenance", documentation_index)
+        for target in (
+            "../compiler_robust_hopf/README.md",
+            "../tests/README.md",
+            "../scripts/README.md",
+            "../assets/README.md",
+            "../provenance/README.md",
+        ):
+            self.assertIn(target, documentation_index)
 
         verification = (ROOT / "docs" / "VERIFICATION.md").read_text(
             encoding="utf-8"
