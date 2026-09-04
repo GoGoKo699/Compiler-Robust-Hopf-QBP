@@ -112,6 +112,16 @@ class LiteraturePolicyTests(unittest.TestCase):
             "docs/CLAIM_SUPPORT.md",
             "manuscript/README.md",
         )
+        source_bearing_docs = (
+            "README.md",
+            "docs/COMPILER_THEOREM.md",
+            "docs/SOURCE_MAP.md",
+            "docs/RELATED_WORK.md",
+            "docs/RESEARCH_STATUS.md",
+            "docs/CLAIM_SUPPORT.md",
+            "docs/PROOF_AUDIT.md",
+            "manuscript/README.md",
+        )
         theorem_bearing_docs = (
             "README.md",
             "REVIEW.md",
@@ -135,11 +145,17 @@ class LiteraturePolicyTests(unittest.TestCase):
             "complex_workspace_ledger.py",
             "optimality_ledger.py",
         )
+
         for relative in active_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
-            self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
             for retired in retired_names:
                 self.assertNotIn(retired, text, msg=f"{retired} in {relative}")
+
+        # The compiler source should be cited precisely in source-bearing pages,
+        # but need not be repeated in every step of the linear narrative.
+        for relative in source_bearing_docs:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
 
         for relative in theorem_bearing_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
@@ -168,6 +184,7 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("router.py", primary)
         self.assertIn("matched", normalized_primary)
         self.assertIn("raw coordinate", normalized_primary)
+        self.assertIn("prescribed", normalized_primary)
 
         related = (ROOT / "docs" / "RELATED_WORK.md").read_text(
             encoding="utf-8"
@@ -178,6 +195,7 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("Yuan", related)
         self.assertIn("Barenco", related)
         self.assertIn("Khattar", related)
+        self.assertIn("can be adapted", normalized_related.lower())
 
         prior_art = (ROOT / "docs" / "STRICT_ZERO_PRIOR_ART.md").read_text(
             encoding="utf-8"
