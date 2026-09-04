@@ -1,19 +1,21 @@
 # From frame compilation to quantum backpropagation
 
-[← Compiler theorem](COMPILER_THEOREM.md) · [Read the complete narrative](../REVIEW.md) · [Next: verification →](VERIFICATION.md)
+[← Compiler theorem](COMPILER_THEOREM.md) · [Complete narrative](../REVIEW.md) · [Verification →](VERIFICATION.md)
 
-The compiler theorem can be audited independently of quantum backpropagation.
-This page states the downstream consequence precisely: once the real Hopf frame
-and the phase-dressed complex magnitude frame are available at the optimal
-state-preparation frontier, the global Hopf gradient protocol retains its
-shared-record scaling without an additional asymptotic compilation-depth
-factor.
+The compiler theorem is independent of the gradient protocol.  Its algorithmic
+consequence follows from one exact interface: the global magnitude circuit
+applies the inverse of the prescribed Hopf frame.  A frame-safe compiler
+therefore preserves the complete measurement record, not only the prepared
+state.
 
-The statement is about a matched pair of exact logical programs. It keeps
-independent executions, per-execution depth, classical output materialization,
-and controlled-observable access separate.
+This page keeps four resources separate:
 
-## 1. Coordinate differentials and the inverse frame
+1. independent quantum executions;
+2. logical depth of one execution;
+3. classical decoding and output materialization;
+4. controlled access to the observable.
+
+## 1. Coordinate response in the frame basis
 
 Let
 
@@ -22,7 +24,7 @@ E_O(\boldsymbol\theta)
 =\langle\psi(\boldsymbol\theta)|O|\psi(\boldsymbol\theta)\rangle,
 ```
 
-where `O` is Hermitian. For a real magnitude coordinate,
+where `O` is Hermitian.  For a real magnitude coordinate,
 
 ```math
 \partial_{\theta_j}E_O
@@ -30,23 +32,16 @@ where `O` is Hermitian. For a real magnitude coordinate,
 \langle\partial_{\theta_j}\psi|O|\psi\rangle.
 ```
 
-For unrestricted angles, write the Hopf differential as
+Using
 
 ```math
 \partial_{\theta_j}|\psi\rangle
 =a_j|e_j\rangle,
 \qquad
-g_{j,j}=a_j^2,
+W|\lambda(j)\rangle=|e_j\rangle,
 ```
 
-where `a_j` is the oriented incoming amplitude. On the canonical Hopf domains,
-`a_j>=0` and therefore `a_j=sqrt(g_(j,j))`. The marker identity is
-
-```math
-W|\lambda(j)\rangle=|e_j\rangle.
-```
-
-Hence
+we obtain
 
 ```math
 \boxed{
@@ -56,20 +51,20 @@ Hence
 }
 ```
 
-On the canonical chart this is the familiar formula with `sqrt(g_(j,j))`.
-When `g_(j,j)=0`, the raw differential and raw coordinate derivative vanish.
-The unit marker column remains a frame continuation, but no division by the
-zero metric weight is needed for the raw estimator.
+For unrestricted angles, `a_j` is the oriented incoming amplitude and
+`g_(j,j)=a_j^2`.  On the canonical Hopf domains, `a_j>=0` and
+`a_j=sqrt(g_(j,j))`.  If `g_(j,j)=0`, the raw coordinate derivative is zero;
+no inverse metric weight is needed for the raw estimator.
 
 For the complex chart, the inverse-frame stream uses
 
 ```math
-W_{\mathbb C,\mathrm{mag}}
-=D_{\mathrm{ph}}W_{\mathbb R}
+W_{\mathbb C,\mathrm{mag}}^{\dagger}
+=W_{\mathbb R}^{\dagger}D_{\mathrm{ph}}^{\dagger}
 ```
 
-and resolves only the magnitude directions. Leaf-phase derivatives are handled
-by a separate direct signed one-hot record.
+and resolves the magnitude coordinates.  The leaf-phase coordinates use a
+separate direct signed one-hot stream.
 
 ## 2. Controlled-observable interface
 
@@ -81,7 +76,7 @@ O=O^{\dagger},
 O^2=I,
 ```
 
-and exact phase-calibrated controlled access
+with phase-calibrated controlled access
 
 ```math
 \mathrm{ctrl}(O)
@@ -89,61 +84,66 @@ and exact phase-calibrated controlled access
 +|1\rangle\!\langle1|\otimes O.
 ```
 
-The controlled-branch phase must be known or calibrated. An unknown relative
-phase rotates the measured quadrature and changes the fixed decoder. A real
-linear combination of reflections can be treated termwise, with its coefficient
-one-norm recorded separately.
+An unknown relative phase between the two control branches rotates the measured
+quadrature and changes the decoder.  A real linear combination of reflections
+may be treated term by term, with the coefficient one-norm charged separately.
 
-One global magnitude execution prepares coherent reference and response
-branches, applies the controlled observable, applies the inverse frame, and
-measures the branch ancilla and system in the X basis. The reference branch
-satisfies
+One magnitude execution prepares coherent reference and response branches,
+applies the controlled observable, applies the inverse frame, and measures the
+branch ancilla and system in the X basis.  Before measurement, the two system
+branches contain
 
 ```math
-W^{\dagger}|\psi\rangle=|0^n\rangle,
+W^{\dagger}|\psi\rangle=|0^n\rangle
 ```
 
-while the response branch contains
+and
 
 ```math
 W^{\dagger}O|\psi\rangle.
 ```
 
-> **What should be checked here?** The observable assumption, controlled-branch
-> phase, and requested accuracy notion are part of the algorithmic statement.
-> The compiler theorem does not remove these access assumptions.
+The second vector contains all magnitude-coordinate responses in the marker
+basis.
 
-## 3. One outcome contributes to every magnitude coordinate
+## 3. One outcome gives one record for every magnitude coordinate
 
-Let `(b,y)` be the branch-ancilla outcome and the `n`-bit system outcome in the
-X basis. On the canonical chart define
+Let `(b,y)` denote the branch-ancilla outcome and the `n`-bit system outcome in
+the X basis.  Define
 
 ```math
 Z_j
-=2\sqrt{g_{j,j}}
-(-1)^{b+\lambda(j)\cdot y}.
+=2a_j(-1)^{b+\lambda(j)\cdot y}.
 ```
 
-For unrestricted algebraic coordinates, replace the principal square root by
-the oriented incoming amplitude `a_j`. Then
+Then
 
 ```math
 \mathbb E[Z_j]
 =\partial_{\theta_j}E_O.
 ```
 
-The same measured pair `(b,y)` determines the parity for every marker
-`lambda(j)`, so one physical outcome is reused across the complete magnitude
-block.
+On the canonical chart, replace `a_j` by `sqrt(g_(j,j))`.  The same observed
+pair `(b,y)` determines the parity for every marker `lambda(j)`, so one quantum
+outcome contributes a full magnitude-gradient record.
 
-A practical decoder accumulates the signed histogram
+For `S` outcomes, two classical routes are useful.
+
+### Record-wise decoding
+
+Evaluate every requested marker parity for every outcome.
+
+### Signed-histogram decoding
+
+Accumulate
 
 ```math
 h(y)=\sum_{t:y_t=y}(-1)^{b_t}
 ```
 
-and applies one fast Walsh–Hadamard transform. For `S` recorded outcomes, the
-best of the record-wise and histogram routes has complexity
+and apply one fast Walsh–Hadamard transform.
+
+Taking the better route gives
 
 ```math
 \boxed{
@@ -151,91 +151,70 @@ O\left(S+N\min\{S,n\}\right)
 }
 ```
 
-with `O(N)` storage when the dense transform is used. This classical cost is
-separate from the number of quantum executions.
+time, with `O(N)` storage for the dense transform.  This is a classical output
+cost; it is not an additional quantum execution count.
 
-For the complex chart, the magnitude stream uses
-
-```math
-W_{\mathbb C,\mathrm{mag}}^{\dagger}
-=W_{\mathbb R}^{\dagger}D_{\mathrm{ph}}^{\dagger}.
-```
-
-The leaf-phase stream instead contributes a signed one-hot vector at the
-observed leaf and uses no inverse differential frame.
+For the complex phase stream, each observed leaf contributes a signed one-hot
+record directly.  No inverse magnitude frame is used in that stream.
 
 ### Executable counterpart
 
-- [Output-sensitive magnitude and phase decoders](../compiler_robust_hopf/decoders.py)
-- [Decoder parity and empirical-distribution tests](../tests/test_decoders.py)
-- [Complex magnitude and phase-gradient identities](../compiler_robust_hopf/complex_analysis.py)
+- [Magnitude and phase decoders](../compiler_robust_hopf/decoders.py)
+- [Decoder tests](../tests/test_decoders.py)
+- [Complex coordinate identities](../compiler_robust_hopf/complex_analysis.py)
 
-## 4. Frame-safe substitution theorem
+## 4. Frame-safe substitution
 
-Let `J` append the clean compiler workspace:
+Let
 
 ```math
 J|\varphi\rangle
 =|\varphi\rangle|0^m\rangle.
 ```
 
-A compiled frame `W_tilde` is frame-safe when
+Suppose the compiled frame satisfies
 
 ```math
-\boxed{
 \widetilde WJ=JW.
-}
 ```
 
-This equality holds for every system input, not only `|0^n>`.
-
-Because `W_tilde` is unitary and maps the clean-workspace subspace onto itself,
-that subspace is reducing. Therefore
+Since `W_tilde` is unitary and maps the clean subspace onto itself,
 
 ```math
 \widetilde W^{\dagger}J=JW^{\dagger}.
 ```
 
-Replacing `W` and `W^dagger` by a frame-safe implementation leaves both
-coherent branches of the global protocol unchanged after the clean workspace is
-ignored. The replacement preserves:
+Replacing `W` and `W^dagger` by the compiled circuit therefore preserves:
 
-- the complete measurement distribution;
-- every decoded raw-coordinate mean;
-- the almost-sure record-norm bounds;
+- both coherent branches;
+- the complete output distribution;
+- every raw-coordinate mean;
+- the almost-sure record-norm bound;
 - the concentration argument;
-- the output-sensitive classical decoder.
+- either classical decoding route.
 
-This is why operator-level frame safety matters. State-column equality preserves
-only the forward reference state and need not preserve the response resolution
-performed by the inverse frame.
+This implication is exact and compiler independent.  The all-workspace theorem
+supplies one family of implementations satisfying its premise.
 
-<p align="center">
-  <img src="../assets/state-vs-frame.svg" width="900" alt="The global QBP protocol needs the complete differential frame, not only a state-preparation column." />
-</p>
+By contrast, equality only on `|0^n>` preserves the reference state but leaves
+the response resolution unconstrained.  The two-qubit example in the
+[complete narrative](../REVIEW.md#12-a-complete-two-qubit-obstruction) shows the
+resulting gradient corruption explicitly.
 
-### Executable counterpart
+## 5. Statistical target
 
-- [Frame-safe and checkpoint-interface contracts](FRAME_SAFE_COMPILATION.md)
-- [State-column and checkpoint counterexamples](COMPILER_BOUNDARIES.md)
-- [Exact compiler-boundary implementation](../compiler_robust_hopf/compiler_boundaries.py)
-- [Boundary tests](../tests/test_compiler_boundaries.py)
-
-## 5. Statistical target and conditioning boundary
-
-The primary finite-shot statement inherited from `Hopf-QBP` is simultaneous
-absolute accuracy of the **raw Hopf-coordinate gradient**:
+The primary finite-shot statement is simultaneous absolute accuracy of the
+**raw Hopf-coordinate gradient**:
 
 ```math
 \|\widehat{\nabla E_O}-\nabla E_O\|_{\infty}
 \leq\varepsilon_{\infty}
 ```
 
-with prescribed failure probability.
+with failure probability at most `delta`.
 
-Each magnitude-depth vector record has deterministic Euclidean norm two. A
-fixed-norm concentration bound therefore gives a sufficient global magnitude
-count
+Each depth record has deterministic Euclidean norm two.  A fixed-norm vector
+concentration bound gives the sufficient magnitude execution count
 
 ```math
 S_{\nabla,\infty}
@@ -250,41 +229,36 @@ At fixed `epsilon_infinity` and `delta`,
 S_{\nabla,\infty}=O(\log n).
 ```
 
-For `M=Theta(N)` Hopf coordinates and `n=Theta(log M)`, this becomes
+For `M=Theta(N)` Hopf coordinates and `n=Theta(log M)`, this is
 
 ```math
 O(\log\log M).
 ```
 
-This statement does **not** automatically imply the same execution count for:
+This is not the execution complexity of every possible gradient task.
+Different guarantees include:
 
-- complete raw-gradient `l_2` accuracy;
-- relative or directional accuracy near a small gradient;
-- normalized-frame coefficients obtained by dividing by `sqrt(g_(j,j))`;
-- natural-gradient coordinates obtained by dividing by `g_(j,j)`.
+| Requested output | Additional sensitivity |
+|---|---|
+| complete raw-gradient `l_2` accuracy | concatenated record norm grows as `sqrt(n)` |
+| relative or directional accuracy | depends on the gradient norm |
+| normalized-frame coefficients | division by `sqrt(g_(j,j))` conditions small metric weights |
+| natural-gradient coordinates | division by `g_(j,j)` is still more sensitive |
 
-For example, concatenating all `n` magnitude-depth records gives norm
-`2sqrt(n)`, so fixed complete-vector `l_2` accuracy has an `O(n)` rather than
-`O(log n)` leading execution dependence. Small metric weights suppress raw
-coordinate records but condition inverse-metric outputs. At `g_(j,j)=0`, the
-raw record is exactly zero.
-
-These are output-task distinctions, not failures of the raw-coordinate
-protocol.
+At a singular coordinate, the raw coordinate record is exactly zero.  The
+compiler theorem concerns the frame operator and does not remove conditioning
+from a subsequently rescaled output task.
 
 ## 6. Matched scalar and gradient programs
 
-The displayed runtime ratio is defined for a matched pair of logical programs.
-Let:
+The depth comparison is made between matched logical programs.  Let
 
-- `D_prep(n,m)` be the depth of the chosen forward preparation;
+- `D_prep(n,m)` be the depth of the chosen general-family forward preparation;
 - `D_O` be the depth charged for the same controlled observable in both
   programs;
 - `D_frame(n,m)` be the depth of one frame-safe inverse frame;
-- `S_E` be the scalar execution count for its declared scalar accuracy and
-  confidence;
-- `S_grad` be the gradient execution count for its declared raw-coordinate
-  accuracy and confidence.
+- `S_E` and `S_grad` be the execution counts for the stated scalar and raw
+  coordinatewise accuracy targets.
 
 Define
 
@@ -300,7 +274,8 @@ D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}
 \right).
 ```
 
-For the general arbitrary-state family in the Yuan–Zhang model,
+For the general arbitrary-state family in the all-workspace state-preparation
+model,
 
 ```math
 D_{\mathrm{prep}}(n,m)
@@ -311,21 +286,12 @@ and the compiler theorem gives
 
 ```math
 D_{\mathrm{frame}}(n,m)
-=\Theta\left(n+\frac{N}{n+m}\right)
+=\Theta\left(n+\frac{N}{n+m}\right).
 ```
 
-for every `m>=0`. Therefore adding the inverse frame changes per-execution
-depth by at most a constant asymptotic factor, provided the same controlled-`O`
-call is charged in both programs.
-
-At fixed comparable scalar and raw-coordinate absolute accuracy and confidence,
-`S_E` is constant-order in `n` while
-
-```math
-S_{\nabla}=O(\log n).
-```
-
-Thus
+The inverse frame therefore changes the per-execution logical depth by only a
+constant asymptotic factor.  At fixed comparable scalar and raw-coordinate
+absolute accuracy and confidence,
 
 ```math
 \boxed{
@@ -336,67 +302,60 @@ Thus
 }
 ```
 
-This is a worst-case/general-family logical-depth comparison. It is not a claim
-against an instance-specialized scalar circuit for an unusually easy state. It
-also excludes classical materialization of the `M`-entry output from the ratio.
+The statement uses the same state family, preparation convention, controlled
+observable, and accuracy convention on both sides.  It does not compare against
+an instance-specialized scalar shortcut, and it excludes classical
+materialization of the `M`-entry output.
 
-> **What should be checked here?** Keep independent executions,
-> per-execution depth, classical output size, and controlled-observable cost
-> separate. Verify that scalar and gradient programs use the same state family,
-> access model, and accuracy convention.
+## 7. Checkpoint protocols use a different interface
 
-## 7. Checkpoint methods have a different compiler contract
-
-A checkpoint method reverses only the suffix below a selected Hopf depth. It
+A checkpoint protocol reverses only a suffix below a selected Hopf depth.  It
 does not require the complete global frame, but it does require correctness on
 the complete active checkpoint interface.
 
-For a factorization
+For
 
 ```math
 U=B_dA_d,
 ```
 
-let `P_d` project onto the interface reached by `A_d`. A sufficient compiled
+let `P_d` project onto the interface reached by `A_d`.  A sufficient compiled
 suffix contract is
 
 ```math
 \widetilde B_dJP_d
-=e^{i\chi}JB_dP_d
+=e^{i\chi}JB_dP_d,
 ```
 
-for one phase `chi` independent of the interface input. This preserves the
-designated checkpoint-gradient means, although the complete output distribution
-may change.
+where `chi` is independent of the interface input.
 
-| Compiler promise | Scalar state | Checkpoint means | Global frame distribution |
+| Compiler promise | Scalar state | Checkpoint means | Global-frame distribution |
 |---|---:|---:|---:|
 | one prepared state column | sufficient | insufficient | insufficient |
 | complete active checkpoint interface | sufficient | sufficient | generally insufficient |
 | complete frame-safe action | sufficient | sufficient where applicable | sufficient |
 
-The all-workspace theorem concerns the complete global frame. It does not claim
-that an arbitrary checkpoint factorization may be recompiled without checking
-its active interface.
+The all-workspace theorem concerns the complete global frame.  It does not
+replace the separate active-interface analysis required by an arbitrary
+checkpoint factorization.
 
-## 8. Scope of the consequence
+## 8. Scope
 
-The compiler result strengthens the global Hopf-QBP resource statement in the
-exact logical model. It does not by itself establish:
+The compiler result establishes that exact compilation introduces no additional
+asymptotic logical-depth factor into the matched global Hopf-QBP program.  It
+does not by itself supply:
 
 - controlled access to a generic nonunitary observable;
-- routed-device or native-gate depth;
+- routed-device or hardware-native depth;
 - approximate Clifford+T complexity;
 - noise-dependent sampling guarantees;
 - optimizer convergence;
-- compiler invariance for arbitrary coordinate charts.
+- a compiler theorem for arbitrary coordinate charts.
 
-The global record, direct phase record, concentration proof, and checkpoint
-protocol are developed fully in `Hopf-QBP`. This repository isolates the
-compiler question and proves that the complete real frame and phase-dressed
-complex magnitude frame can meet the optimal state-preparation frontier without
-losing their backpropagation interface.
+The full global, phase, and checkpoint protocols are developed in `Hopf-QBP`.
+This repository isolates and resolves the prescribed-completion question on
+which their compiler robustness depends.
 
 ---
 
-[← Compiler theorem](COMPILER_THEOREM.md) · [Read the complete narrative](../REVIEW.md) · [Next: verification →](VERIFICATION.md)
+[← Compiler theorem](COMPILER_THEOREM.md) · [Complete narrative](../REVIEW.md) · [Verification →](VERIFICATION.md)
