@@ -270,8 +270,16 @@ def convert_atoms(text: str) -> str:
         text,
     )
 
-    text = re.sub(r"([A-Za-z}])2\^", r"\1\,2^", text)
-    text = re.sub(r"2\^([A-Za-z])([A-Za-z])\b", r"2^\1\,\2", text)
+    text = re.sub(
+        r"([A-Za-z}])2\^",
+        lambda match: f"{match.group(1)}\\,2^",
+        text,
+    )
+    text = re.sub(
+        r"2\^([A-Za-z])([A-Za-z])\b",
+        lambda match: f"2^{match.group(1)}\\,{match.group(2)}",
+        text,
+    )
 
     return text
 
@@ -282,7 +290,11 @@ def to_latex(span: str) -> str:
 
     # A vertical-bar pair without a ket delimiter denotes an absolute value or
     # bit-string length in the source notation.
-    text = re.sub(r"\|([^|]+)\|", r"\lvert \1\rvert", text)
+    text = re.sub(
+        r"\|([^|]+)\|",
+        lambda match: rf"\lvert {match.group(1)}\rvert",
+        text,
+    )
 
     text = text.replace(" xor ", r"\oplus ")
     text = re.sub(r"\s+", " ", text).strip()
