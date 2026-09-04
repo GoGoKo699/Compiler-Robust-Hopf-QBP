@@ -1,4 +1,4 @@
-"""Compiler-robust Hopf differential-frame research utilities."""
+"""Exact constructions and checks for prescribed Hopf differential frames."""
 
 from .compiler_boundaries import (
     CheckpointInterfaceSafeExample,

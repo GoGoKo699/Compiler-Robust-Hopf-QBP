@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Readable ten-step walkthrough of the repository's central identities.
+"""Readable ten-step walkthrough of the central operator and resource checks.
 
-This script is an orientation tool. It checks representative exact finite
-identities and integer resource conditions, but it does not replace the
-analytic proofs in REVIEW.md and docs/COMPILER_THEOREM.md.
+This script is an orientation tool for the prescribed-completion compiler.  It
+checks representative exact finite identities and integer resource conditions;
+the dimension-independent proofs are in REVIEW.md and
+``docs/COMPILER_THEOREM.md``.
 """
 from __future__ import annotations
 
@@ -111,7 +112,7 @@ def step_chart_domain_and_singularity() -> str:
         abs(float(np.linalg.norm(continuation)) - 1.0) <= TOL,
         "singular marker column is not a unit continuation",
     )
-    return "canonical a_j=sqrt(g_jj); singular derivative=0 with unit frame continuation"
+    return "canonical a_j=sqrt(g_jj); singular raw derivative=0 with a unit marker-frame continuation"
 
 
 def step_state_column_obstruction() -> str:
@@ -137,7 +138,7 @@ def step_state_column_obstruction() -> str:
         <= TOL,
         "state-equivalent completion did not produce the expected obstruction",
     )
-    return "same state column; decoded gradient (2,0,0) -> (0,sqrt(2),0)"
+    return "same prepared column; decoded gradient (2,0,0) -> (0,sqrt(2),0)"
 
 
 def step_four_sector_echo() -> str:
@@ -233,8 +234,8 @@ def step_resource_inequalities() -> str:
 def main() -> int:
     checks: tuple[tuple[str, Callable[[], str]], ...] = (
         ("canonical two-qubit frame", step_frame_identity),
-        ("chart domain and singular continuation", step_chart_domain_and_singularity),
-        ("state-column equality is insufficient", step_state_column_obstruction),
+        ("chart domain and singular coordinate", step_chart_domain_and_singularity),
+        ("one prepared column is insufficient", step_state_column_obstruction),
         ("strict-zero four-sector identity", step_four_sector_echo),
         ("borrowed suffix bit is restored", step_borrowed_layer),
         ("explicit coherent routed tail", step_explicit_router),
@@ -244,8 +245,8 @@ def main() -> int:
         ("resource inequalities", step_resource_inequalities),
     )
 
-    print("Optimal Hopf-frame compiler: reviewer walkthrough")
-    print("=" * 54)
+    print("Prescribed Hopf-frame compiler: technical walkthrough")
+    print("=" * 58)
     failures = 0
     for index, (name, check) in enumerate(checks, start=1):
         try:
@@ -258,7 +259,7 @@ def main() -> int:
             print(f"[{index}] {name:<43} PASS")
             print(f"    {detail}")
 
-    print("-" * 54)
+    print("-" * 58)
     if failures:
         print(f"Result: FAIL ({failures} check(s) failed)")
         return 1

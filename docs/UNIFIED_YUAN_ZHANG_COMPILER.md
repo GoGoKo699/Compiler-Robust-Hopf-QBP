@@ -1,51 +1,34 @@
-# Unified all-workspace compiler for Hopf differential frames
+# Compiler architecture at a glance
 
-## Status
+[← Theorem overview](THEOREM_OVERVIEW.md) · [Complete narrative](../REVIEW.md) · [Formal proof →](COMPILER_THEOREM.md)
 
-This document summarizes the active compiler architecture. The complete proof is
-in [COMPILER_THEOREM.md](COMPILER_THEOREM.md). The architecture uses one
-external compiler framework—Yuan and Zhang, *Quantum* **7**, 956 (2023)—and
-three Hopf-specific schedules covering every clean-workspace budget `m>=0`.
+This page shows how one exact state-preparation toolkit is adapted to a
+prescribed Hopf completion.  The three workspace regimes are internal schedules
+of one compiler.
 
-The published Yuan–Zhang article corresponds to arXiv v2. Theorem 2 and Lemmas
-5, 6, and 9 were also checked in v3 and retain the statements used here.
-
-## 1. Result
-
-Let `N=2^n`. The real Hopf differential frame satisfies
+Let
 
 ```math
-S_{\mathbb R}(n,m)=\Theta(N),
+N=2^n.
+```
+
+For every clean-workspace budget `m>=0`,
+
+```math
+S_{\mathbb R}(n,m)
+=S_{\mathbb C,\mathrm{mag}}(n,m)
+=\Theta(N),
 ```
 
 ```math
 D_{\mathbb R}(n,m)
-=\Theta\left(n+\frac{N}{n+m}\right)
+=D_{\mathbb C,\mathrm{mag}}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right).
 ```
 
-for every `m>=0`. The phase-dressed complex magnitude frame
+## 1. The local synthesis target
 
-```math
-W_{\mathbb C,\mathrm{mag}}
-=D_{\mathrm{ph}}W_{\mathbb R}
-```
-
-has the same frontier. Complex leaf-phase derivatives use a separate direct
-record.
-
-| Workspace | Schedule |
-|---:|---|
-| `m=0` | borrowed-suffix half-angle echo |
-| `1<=m<4n` | direct flagged UCGs |
-| larger `m` | binary–one-hot prefix decoder plus coherent routed parallel subframes |
-
-These are internal schedules of one Hopf-frame compiler, not a choice between
-two state-preparation papers.
-
-## 2. Local operator target
-
-At tree depth `d`, with prefix `p`, target `x`, and lower suffix `z` of length
-`s=n-d-1`, the compiler must implement
+At tree depth `d`, the Hopf frame applies
 
 ```math
 L_d^{(n)}
@@ -55,41 +38,44 @@ L_d^{(n)}
 \otimes
 \bigl(R_y(\theta_{d,p})-I\bigr)
 \otimes
-|0^s\rangle\!\langle0^s|.
+|0^{n-d-1}\rangle\!\langle0^{n-d-1}|.
 ```
 
-The complete frame is the ordered product of these addressed layers. The target
-is a complete operator on arbitrary inputs, not only a state-preparation map.
+The prefix chooses the rotation angle, the next bit is the target, and the
+complete lower suffix supplies one shared all-zero predicate.  The equality is
+required on every input column.
 
-For unrestricted angles, the coordinate differential is
+## 2. Compiler toolkit
 
-```math
-\partial_{\theta_j}|\psi\rangle
-=a_j|e_j\rangle,
-\qquad
-g_{j,j}=a_j^2.
-```
+The active exact compiler framework is P. Yuan and S. Zhang, *Quantum* **7**,
+956 (2023).  The proof uses:
 
-On the canonical Hopf domains, `a_j>=0` and `a_j=sqrt(g_(j,j))`. At a singular
-coordinate the raw derivative vanishes while the unit marker column remains a
-canonical frame continuation.
-
-## 3. Imported Yuan–Zhang primitives
-
-| Result | Role |
+| Imported result | Use in the Hopf compiler |
 |---|---|
-| Theorem 2 | optimal QSP benchmark for every ancillary budget |
-| Lemma 5 | exact ancilla-free multi-controlled X |
-| Lemma 6 | exact all-workspace UCG synthesis |
-| Lemma 9 | coherent CNOT-tree copy–use–uncopy |
+| optimal QSP theorem | target size–depth frontier |
+| ancilla-free multi-controlled X | suffix predicates and toggles |
+| all-workspace UCG synthesis | prefix-selected rotations, subtree frames, and phase diagonal |
+| coherent CNOT copy–uncopy | decoder and router fanout |
 
-The earlier Sun et al. paper is retained as the historical predecessor. The
-active proof uses the Yuan–Zhang framework throughout.
+The complete-operator structure above determines how these primitives are
+assembled.  The earlier state-preparation paper remains the historical
+predecessor and original source of selected ingredients.
+
+## 3. Schedule map
+
+| Workspace | Schedule | Width or parallelism gained |
+|---:|---|---|
+| `m=0` | borrowed-suffix echo | each nonfinal depth uses two UCGs of total width `d+2` |
+| `1<=m<4n` | direct clean flag | one shared suffix predicate reduces the UCG to prefix plus flag |
+| `m>=4n` | tree cut and coherent routing | `2^t` disjoint subtree frames run in parallel |
+
+The threshold `4n` is selected for a uniform asymptotic proof rather than as a
+finite-size tuning rule.
 
 ## 4. Strict zero workspace
 
-At a nonfinal depth, split the lower suffix into one original system bit `b` and
-remaining string `r`. Let
+For one nonfinal depth, split the lower suffix into original bit `b` and
+remaining string `r`.  Set
 
 ```math
 h(r)=[r=0],
@@ -97,22 +83,32 @@ h(r)=[r=0],
 C_p=R_y(\theta_{d,p}/2).
 ```
 
-Four toggles of `b` conditioned on `h(r)`, interleaved with two
-borrowed-bit-controlled half-angle UCGs and two target CNOT echoes, yield
+The chronological sequence
+
+```text
+controlled_b(X)
+T_h
+controlled_b(C_p)
+T_h
+controlled_b(X)
+T_h
+controlled_b(C_p)
+T_h
+```
+
+uses
 
 ```math
 C_p^2=R_y(\theta_{d,p}),
 \qquad
-XC_pX=C_p^{-1},
-\qquad
-C_pXC_pX=I.
+XC_pX=C_p^{-1}.
 ```
 
-The desired original-zero-suffix sector receives the full rotation, every other
-sector receives identity, and the borrowed logical bit is restored. Each
-half-angle UCG has total width `d+2`.
+The original complete-zero-suffix sector receives the full rotation.  The other
+three sectors receive identity, and the original suffix bit is restored.
 
-The resulting layer resources are
+Each half-angle UCG has total width `d+2`; the predicate toggles are
+ancilla-free multi-controlled X gates.  Therefore
 
 ```math
 S(L_d)=O(2^d+n-d),
@@ -122,15 +118,14 @@ S(L_d)=O(2^d+n-d),
 D(L_d)=O\left(n+\frac{2^d}{d+2}\right),
 ```
 
-and summation gives `Theta(N)` size and `Theta(n+N/n)` depth at `m=0`.
+which sums to the optimal strict-zero frontier.
 
-## 5. Direct positive-workspace schedule
+## 5. Direct positive workspace
 
-For `m>=1`, compute the lower-suffix-zero predicate into one reusable clean
-flag, apply a prefix-plus-flag UCG, and uncompute the flag. The UCG receives only
-`m-1` additional work qubits at nonfinal depths.
+With one clean qubit, compute the complete lower-suffix-zero predicate into one
+reusable flag, apply one prefix-plus-flag UCG, and uncompute the flag.
 
-The schedule has
+The complete direct schedule has
 
 ```math
 S=O(N),
@@ -140,13 +135,20 @@ S=O(N),
 D=O\left(n^2+\frac{N}{n+m}\right).
 ```
 
-For `1<=m<4n`, the exponential term absorbs `n^2`, so this already matches the
-optimal frontier.
+For `1<=m<4n`, the `N/(n+m)` term absorbs `n^2`, so no routed construction is
+needed.
 
 ## 6. Tree cut and conditioned prefix
 
-For a cut after `t` depths, set `B=2^t` and `s=n-t`. The complete factorization
-is
+For larger workspace, cut after `t` depths and define
+
+```math
+B=2^t,
+\qquad
+s=n-t.
+```
+
+The exact operator factorization is
 
 ```math
 W_{\mathbb R}^{(n)}=R_t^{(n)}F_t^{(n)},
@@ -163,17 +165,14 @@ R_t^{(n)}
 =\bigoplus_{r=0}^{B-1}W_s^{(r)}.
 ```
 
-The prefix uses an explicit clean binary–one-hot decoder with workspace
-`3B-2-t`, depth `O(t)`, and size `O(B)`.
+A reversible binary–one-hot decoder realizes the conditioned prefix using
+`3B-2-t` clean qubits, `O(t)` decoder depth, and `O(B)` size.
 
-## 7. Explicit coherent router
+## 7. Coherent routed tail
 
-The router treats each branch's `s` data wires and one activation token as a
-block of width `s+1`. At routing level `j`, prefix bit `j` controls
-`2^j(s+1)` disjoint Fredkin gates. One original control is available, so the
-clean-copy count at that level is `2^j(s+1)-1`.
-
-The exact totals are
+Treat each branch's `s` data wires and activation token as a block of width
+`s+1`.  At routing level `j`, prefix bit `j` controls `2^j(s+1)` disjoint
+Fredkin gates.  The exact counts are
 
 ```math
 \text{copy wires}=(B-1)(s+1)-t,
@@ -183,85 +182,62 @@ The exact totals are
 \text{forward Fredkins}=(B-1)(s+1).
 ```
 
-Balanced CNOT trees copy all prefix bits coherently. Fredkin levels are applied
-least-significant-prefix-bit first, sending the suffix-and-token block to the
-prefix-selected branch. Copies are then uncomputed.
+Balanced CNOT trees create the controls.  The Fredkin tree moves the
+suffix-token block coherently to the branch selected by the prefix.  The copies
+are then uncomputed and their cleared wires reused as local branch flags.
 
-The cleared copy pool is reused as one local suffix flag per branch. All
-token-controlled subtree frames run on disjoint registers in parallel. Their
-flags are cleared, prefix copies are recomputed, the Fredkin tree is reversed,
-copies are cleared, and the root token is reset.
-
-The exact schedule and sparse complex-state simulator are in
-[`../compiler_robust_hopf/router.py`](../compiler_robust_hopf/router.py). Tests
-in [`../tests/test_router.py`](../tests/test_router.py) verify basis routing,
-arbitrary prefix–suffix-entangled inputs, equality to the ideal tail direct sum,
-complete routed-cut equality, and zero workspace leakage.
-
-The complete prefix and routed tail fit in the envelope
+All subtree frames act on disjoint branch registers in parallel.  Every flag is
+cleared; the copies are recreated; the route is reversed; copies and tokens are
+reset.  The prefix and tail fit within
 
 ```math
-2B(s+1).
+2B(s+1)
 ```
 
-## 8. Routed resources
+clean ancillary qubits.
 
-One token-controlled `s`-qubit subtree frame has
+For the largest feasible cut, the subtree term obeys
 
 ```math
-S_{\mathrm{csub}}(s)=O(2^s),
+\frac{2^s}{s}
+=O\left(\frac{N}{n+m}\right),
 ```
 
-```math
-D_{\mathrm{csub}}(s)
-=O\left(s^2+\frac{2^s}{s}\right).
-```
+including the separate `s=1` endpoint.  The routed schedule therefore reaches
+the target frontier.
 
-All `B` branches run in parallel. Their total size is `B O(2^s)=O(N)`, while
-their depth is the depth of one branch. Route and unroute have `O(n)` depth and
-`O(B(s+1))=O(N)` size.
+## 8. Complex magnitude frame
 
-For `m>=4n`, choose the largest `t` satisfying
-
-```math
-2\,2^t(n-t+1)\leq m.
-```
-
-Maximality implies `2^s/s=O(N/(n+m))`, so the routed schedule has
-
-```math
-S=O(N),
-\qquad
-D=O\left(n+\frac{N}{n+m}\right).
-```
-
-## 9. Matching lower bounds
-
-The first frame column covers the `N-1` dimensional real sphere. Parameter
-counting gives `Omega(N)` size and `Omega(N/(n+m))` depth. Backward light cones
-of the `n` system outputs give the independent `Omega(n)` depth term. Therefore
-the upper bounds are optimal for every `m>=0`.
-
-## 10. Complex magnitude frame
-
-Writing a leaf label as `x=zb`,
+The leaf-phase diagonal is one total-width-`n` UCG:
 
 ```math
 D_{\mathrm{ph}}
-=\sum_z|z\rangle\!\langle z|\otimes
-\mathrm{diag}\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right)
+=\sum_z|z\rangle\!\langle z|
+\otimes
+\begin{pmatrix}
+e^{i\phi_{z0}}&0\\
+0&e^{i\phi_{z1}}
+\end{pmatrix}.
 ```
 
-is one total-width-`n` UCG. It returns the same workspace pool clean and is
-composed sequentially with the real frame. This proves the phase-dressed complex
-magnitude-frame frontier. Leaf-phase derivatives remain a direct QBP stream.
+It is composed sequentially with `W_R` and reuses the same clean workspace.
+The direct leaf-phase record remains a separate QBP stream.
 
-## 11. Evidence boundary
+## 9. Implementation map
 
-- strict-zero and frame identities: complete dense logical operators;
-- binary–one-hot decoder: explicit reversible layers;
-- coherent router: explicit CNOT/Fredkin layers and sparse-state simulation;
-- UCG and multi-controlled-X elementary circuits: imported Yuan–Zhang theorems;
-- asymptotic resources: exact term ledgers and analytic sums.
+| Component | File |
+|---|---|
+| addressed layers and frames | [`frames.py`](../compiler_robust_hopf/frames.py) |
+| strict-zero echo | [`strict_zero_echo.py`](../compiler_robust_hopf/strict_zero_echo.py) |
+| binary–one-hot decoder | [`tree_decoder.py`](../compiler_robust_hopf/tree_decoder.py) |
+| coherent router | [`router.py`](../compiler_robust_hopf/router.py) |
+| workspace dispatch and resource rows | [`unified_compiler.py`](../compiler_robust_hopf/unified_compiler.py) |
+| integer and rational inequalities | [`resource_bounds.py`](../compiler_robust_hopf/resource_bounds.py), [`strict_zero_audit.py`](../compiler_robust_hopf/strict_zero_audit.py) |
 
-Finite tests support but do not replace the dimension-independent proof.
+The [verification map](VERIFICATION.md) states which components are represented
+as complete logical operators, explicit reversible layers, imported elementary
+synthesis, or finite regression checks.
+
+---
+
+[← Theorem overview](THEOREM_OVERVIEW.md) · [Complete narrative](../REVIEW.md) · [Formal proof →](COMPILER_THEOREM.md)

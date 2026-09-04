@@ -112,12 +112,20 @@ class LiteraturePolicyTests(unittest.TestCase):
             "docs/CLAIM_SUPPORT.md",
             "manuscript/README.md",
         )
-        theorem_bearing_docs = (
+        source_bearing_docs = (
+            "README.md",
+            "docs/COMPILER_THEOREM.md",
+            "docs/SOURCE_MAP.md",
+            "docs/RELATED_WORK.md",
+            "docs/RESEARCH_STATUS.md",
+            "docs/CLAIM_SUPPORT.md",
+            "docs/PROOF_AUDIT.md",
+            "manuscript/README.md",
+        )
+        all_workspace_statement_docs = (
             "README.md",
             "REVIEW.md",
-            "docs/HOPF_INTERFACE.md",
             "docs/COMPILER_THEOREM.md",
-            "docs/QBP_CONSEQUENCE.md",
             "docs/THEOREM_OVERVIEW.md",
             "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
             "docs/END_TO_END_QBP.md",
@@ -135,18 +143,27 @@ class LiteraturePolicyTests(unittest.TestCase):
             "complex_workspace_ledger.py",
             "optimality_ledger.py",
         )
+
         for relative in active_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
-            self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
             for retired in retired_names:
                 self.assertNotIn(retired, text, msg=f"{retired} in {relative}")
 
-        for relative in theorem_bearing_docs:
+        # The compiler source is cited precisely on source-bearing pages, but
+        # it need not be repeated in every step of the linear narrative.
+        for relative in source_bearing_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
-            compact = "".join(text.split())
+            self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
+
+        # Only pages that actually state the all-workspace theorem are required
+        # to carry its explicit m>=0 scope.  Interface and verification pages
+        # may remain focused on their local task.
+        for relative in all_workspace_statement_docs:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            compact_text = "".join(text.split())
             self.assertIn(
                 "m>=0",
-                compact,
+                compact_text,
                 msg=f"missing all-workspace theorem scope in {relative}",
             )
 
@@ -168,6 +185,7 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("router.py", primary)
         self.assertIn("matched", normalized_primary)
         self.assertIn("raw coordinate", normalized_primary)
+        self.assertIn("prescribed", normalized_primary)
 
         related = (ROOT / "docs" / "RELATED_WORK.md").read_text(
             encoding="utf-8"
@@ -178,6 +196,7 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("Yuan", related)
         self.assertIn("Barenco", related)
         self.assertIn("Khattar", related)
+        self.assertIn("can be adapted", normalized_related.lower())
 
         prior_art = (ROOT / "docs" / "STRICT_ZERO_PRIOR_ART.md").read_text(
             encoding="utf-8"
