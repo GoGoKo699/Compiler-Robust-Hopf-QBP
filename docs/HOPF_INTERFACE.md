@@ -7,7 +7,8 @@ coordinate inverse, optimization architecture, and gradient protocols remain in
 the two Hopf papers and repositories.
 
 For the synthesis result, the Hopf chart may be treated as a compact generator
-of one structured unitary completion.
+of one structured unitary completion. The compiler theorem covers every clean-
+workspace budget `m>=0`.
 
 ## 1. Translation from state-preparation language
 
