@@ -251,7 +251,7 @@ T_{\mathrm{grad}}^{\mathrm{matched}}
 \left(D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}\right).
 ```
 
-The all-workspace QSP theorem gives
+The all-workspace state-preparation theorem of P. Yuan and S. Zhang gives
 
 ```math
 D_{\mathrm{prep}}(n,m)
