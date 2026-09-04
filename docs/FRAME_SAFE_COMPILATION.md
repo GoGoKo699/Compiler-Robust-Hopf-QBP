@@ -1,268 +1,280 @@
 # Frame-safe compilation
 
-## 1. Why state preparation is not enough
+[← Hopf interface](HOPF_INTERFACE.md) · [Complete narrative](../REVIEW.md) · [Compiler boundaries →](COMPILER_BOUNDARIES.md)
+
+This page isolates the operator contract connecting the compiler theorem to the
+inverse-frame gradient circuit.
+
+## 1. Three different promises
+
+A state-preparation circuit fixes one initialized input:
+
+```math
+U_{\mathrm{prep}}|0^n\rangle=|\psi\rangle.
+```
+
+The Hopf differential frame fixes additional columns:
+
+```math
+W|0^n\rangle=|\psi\rangle,
+\qquad
+W|\lambda(j)\rangle=|e_j\rangle.
+```
+
+A checkpoint protocol lies between these two extremes: it needs a compiled
+suffix to agree on the complete interface actually reached by the retained
+prefix circuit.
+
+| Promise | Prescribed input space |
+|---|---|
+| state-column equality | one initialized vector |
+| checkpoint active-interface equality | one factorization-dependent subspace |
+| frame safety | the complete system space with clean workspace |
+
+The three promises support different reverse protocols and should not be
+interchanged.
+
+## 2. State-column equality leaves a free completion
+
+Suppose
+
+```math
+V|0^n\rangle=W|0^n\rangle=|\psi\rangle.
+```
+
+Then one may write
+
+```math
+V=WQ,
+\qquad
+Q|0^n\rangle=|0^n\rangle,
+```
+
+with no corresponding restriction on `Q` over the orthogonal complement.  The
+response resolved by the inverse becomes
+
+```math
+V^{\dagger}O|\psi\rangle
+=Q^{\dagger}W^{\dagger}O|\psi\rangle.
+```
+
+Thus the free completion can mix the marker amplitudes read by the gradient
+decoder.  The exact two-qubit construction in
+[`COMPILER_BOUNDARIES.md`](COMPILER_BOUNDARIES.md) exhibits this effect without
+an asymptotic argument.
+
+## 3. Complete clean-input contract
 
 Let
 
 ```math
-W_{\boldsymbol\theta}|0\rangle
-=|\psi(\boldsymbol\theta)\rangle
+J_m|\varphi\rangle
+=|\varphi\rangle|0^m\rangle
 ```
 
-be the canonical Hopf differential frame. Its designated nonzero columns contain
-the normalized coordinate tangents:
+append `m` clean workspace qubits.
+
+### Definition 1: frame-safe implementation
+
+A unitary `W_tilde` is frame-safe for `W` when
 
 ```math
-W_{\boldsymbol\theta}|\lambda(j)\rangle
-=|e_j(\boldsymbol\theta)\rangle.
+\boxed{
+\widetilde WJ_m=J_mW.
+}
 ```
 
-A generic state-preparation compiler only promises
+Equivalently, for every system state,
 
 ```math
-V_{\boldsymbol\theta}|0\rangle
-=|\psi(\boldsymbol\theta)\rangle.
+\widetilde W
+\bigl(|\varphi\rangle|0^m\rangle\bigr)
+=(W|\varphi\rangle)|0^m\rangle.
 ```
 
-Since the first columns agree, one may write
+The contract does not prescribe the action when the compiler workspace begins
+outside `|0^m>`.
+
+### Lemma 2: inverse frame safety
+
+If `W_tilde` is unitary and frame-safe, then
 
 ```math
-V_{\boldsymbol\theta}=W_{\boldsymbol\theta}Q_{\boldsymbol\theta},
-\qquad
-Q_{\boldsymbol\theta}|0\rangle=|0\rangle.
+\boxed{
+\widetilde W^{\dagger}J_m
+=J_mW^{\dagger}.
+}
 ```
 
-There is no corresponding restriction on `Q_theta` over the orthogonal
-complement of `|0>`. After the observable branch,
+#### Proof
+
+Let
 
 ```math
-V_{\boldsymbol\theta}^{\dagger}O|\psi\rangle
-=
-Q_{\boldsymbol\theta}^{\dagger}
-W_{\boldsymbol\theta}^{\dagger}O|\psi\rangle.
+P_0=J_mJ_m^{\dagger}
+=I\otimes|0^m\rangle\!\langle0^m|.
 ```
 
-The uncontrolled factor can mix all tangent-marker amplitudes. Therefore
-initialized-state-column equality does not license replacing
-`W_theta^dagger` by `V_theta^dagger`.
+The relation `W_tilde J_m=J_m W` maps the range of `P_0` unitarily onto itself.
+Because `W_tilde` is unitary, that subspace is reducing.  Hence both
+`W_tilde` and `W_tilde^dagger` preserve it, and the restriction of the adjoint is
+the adjoint of the restriction.  ∎
 
-This obstruction is realized explicitly, with exact distributions and decoded
-gradients, in [`COMPILER_BOUNDARIES.md`](COMPILER_BOUNDARIES.md).
+This argument is stronger than taking the adjoint of a first-column equality.
 
-## 2. Clean frame contract
+## 4. Substitution in the global gradient circuit
 
-A compiled frame with `w` workspace qubits is **frame-safe** when
+### Theorem 3: global frame-safe substitution
+
+Replace a logical frame `W` or inverse frame `W^dagger` by a frame-safe compiled
+implementation or its adjoint.  Initialize its work register in `|0^m>` and do
+not couple unrelated operations to that register while the compiled block is
+active.  Then the output on all original protocol registers is unchanged, and
+the compiler workspace returns to `|0^m>`.
+
+Consequently, compilation preserves:
+
+- the complete measurement distribution;
+- every decoded raw-coordinate mean;
+- the almost-sure record-norm bounds;
+- the finite-shot concentration statement;
+- the classical decoding routes.
+
+#### Proof
+
+The forward statement is Definition 1, including when the system is entangled
+with untouched registers.  The inverse statement is Lemma 2.  Applying these
+identities to each frame block leaves the complete protocol state unchanged up
+to a tensor factor `|0^m>`.  ∎
+
+## 5. Sequential reuse of one workspace pool
+
+Suppose `U_tilde` and `V_tilde` frame-safely implement `U` and `V` using at most
+`a` and `b` clean qubits.  Embed them in one pool of
 
 ```math
-\widetilde W_{\boldsymbol\theta}
-\bigl(|\varphi\rangle|0^w\rangle\bigr)
-=
-\bigl(W_{\boldsymbol\theta}|\varphi\rangle\bigr)|0^w\rangle
+m=\max\{a,b\}
 ```
 
-for every system state `|varphi>`. If
-
-```math
-P_0=I\otimes|0^w\rangle\!\langle0^w|,
-```
-
-this is equivalently
-
-```math
-\widetilde W_{\boldsymbol\theta}P_0
-=(W_{\boldsymbol\theta}\otimes I)P_0.
-```
-
-The right-hand side maps the range of `P_0` unitarily onto the same subspace.
-Because `W_tilde` is unitary, the equality implies that the clean workspace
-subspace is reducing, not merely invariant:
-
-```math
-\widetilde W_{\boldsymbol\theta}P_0
-=P_0\widetilde W_{\boldsymbol\theta},
-\qquad
-\widetilde W_{\boldsymbol\theta}^{\dagger}P_0
-=P_0\widetilde W_{\boldsymbol\theta}^{\dagger}.
-```
-
-In particular, the inverse obeys
-
-```math
-\widetilde W_{\boldsymbol\theta}^{\dagger}P_0
-=(W_{\boldsymbol\theta}^{\dagger}\otimes I)P_0.
-```
-
-Thus the forward and inverse compiled frames both return the workspace to zero
-for every system input. The contract need not specify the compiler's action when
-the workspace starts in an arbitrary nonzero state.
-
-## 3. Global frame-safe substitution
-
-> **Theorem (frame-safe substitution).** Replace `W_theta` or
-> `W_theta^dagger` in the global Hopf protocol by a frame-safe compiled
-> implementation or its inverse. Initialize its workspace in `|0^w>` and apply
-> no unrelated operation to that workspace while the compiled block is active.
-> Then the joint output is the original protocol output tensored with `|0^w>`.
-> Consequently, the complete distribution on the original measured registers,
-> decoded gradient mean, record norm, and finite-shot concentration premises are
-> unchanged.
-
-For a forward occurrence, the defining clean-frame identity gives the claim on
-every system input, including inputs entangled with untouched external
-registers. For an inverse occurrence, Section 2 gives the corresponding inverse
-identity. Every original protocol register is therefore unchanged and the
-workspace factors as `|0^w>`.
-
-## 4. Clean sequential composition
-
-Suppose clean compilers `U_tilde` and `V_tilde` implement system unitaries `U`
-and `V` using at most `a` and `b` workspace qubits. Embed both in a common pool
-of
-
-```math
-w=\max\{a,b\}
-```
-
-clean qubits, leaving unused wires untouched. Because the first block returns
-the pool to zero, the second begins with a clean input. Therefore
+qubits.  Since the first block returns the pool clean,
 
 ```math
 \widetilde V\widetilde U
-\bigl(|\varphi\rangle|0^w\rangle\bigr)
-=
-(VU|\varphi\rangle)|0^w\rangle.
+\bigl(|\varphi\rangle|0^m\rangle\bigr)
+=(VU|\varphi\rangle)|0^m\rangle.
 ```
 
-Workspace costs take a maximum rather than a sum, while circuit sizes and depths
-add for a sequential schedule. The inverse clean composition is obtained by
-reversing the two blocks and taking their adjoints.
+Workspace therefore takes a maximum across sequential blocks, while size and
+depth add.  This is the register-level reason that `W_R` and `D_ph` reuse one
+pool in
 
-This is the register-level reason that the clean real Hopf frame and the clean
-diagonal phase layer can share one ancillary pool in the separated complex
-construction.
+```math
+W_{\mathbb C,\mathrm{mag}}
+=D_{\mathrm{ph}}W_{\mathbb R}.
+```
 
-## 5. What full frame-safe compilation may change
+## 6. What a frame-safe compiler may change
 
-Frame-safe compilation may change:
+The compiler may change:
 
-- elementary physical rotation angles;
-- gate ordering;
-- ancillary workspace;
-- circuit size and depth constants;
-- parameter preprocessing;
-- device routing after logical synthesis.
+- elementary angles and their classical preprocessing;
+- gate ordering and intermediate encodings;
+- the number and layout of clean work qubits;
+- size and depth constants;
+- a later hardware-routing realization.
 
 It may not change:
 
-- the complete system action on clean workspace input;
-- the tangent-marker columns;
-- the relative phase convention used by the interference protocol;
-- the declared observable-access interface.
+- the complete logical system action on clean workspace input;
+- the designated marker columns;
+- the relative phase convention used by the interference circuit;
+- the declared controlled-observable interface.
 
-One Hopf coordinate need not remain one physical gate angle. The Möttönen-style
-compiler in the established `Hopf-QBP` repository already provides an example:
-compiler-generated multiplexor angles replace the coordinate angles while the
-complete frame action remains intact.
+One Hopf coordinate need not remain one physical gate angle.  The Möttönen-style
+compiler already demonstrates this: compiler-generated multiplexor angles
+replace the coordinate angles while the complete frame is preserved.
 
-## 6. Resource inheritance criterion
+## 7. Resource inheritance
 
-Logical correctness does not by itself imply backpropagation scaling. Let
+Logical equivalence alone does not establish backpropagation scaling.  Let
 
 ```math
 C_{\mathrm{prep}}(n,m)
 ```
 
-be the matched scalar state-preparation cost and
+be the matched state-preparation cost and
 
 ```math
 C_{\mathrm{frame}}(n,m)
 ```
 
-be the clean frame cost in the same circuit model. A compiler-robust result
-needs a bound of the form
+the frame-safe cost in the same model.  The compiler result must compare size,
+depth, and workspace separately.
+
+The all-workspace theorem proves the sharp relations
 
 ```math
-C_{\mathrm{frame}}(n,m)
-\leq
-\rho(n,m)C_{\mathrm{prep}}(n,m),
+S_{\mathrm{frame}}(n,m)=\Theta(S_{\mathrm{prep}}(n,m))
 ```
 
-where `rho` remains within the permitted backpropagation overhead. Size, depth,
-and workspace must be compared separately. End-to-end accounting must also
-report executions, controlled-observable cost, classical decoding, and output
-size.
+and
 
-## 7. Checkpoint active-interface contract
+```math
+D_{\mathrm{frame}}(n,m)=\Theta(D_{\mathrm{prep}}(n,m))
+```
 
-Checkpoint methods require a different, factorization-specific contract. Write
-one preparation as
+for the general state family.  Executions, controlled-observable depth,
+classical decoding, and output materialization remain separate end-to-end
+resources.
+
+## 8. Checkpoint active-interface contract
+
+Write one preparation as
 
 ```math
 U=B_dA_d,
 ```
 
-and let `P_d` project onto the zero-lower-suffix subspace present after `A_d`.
-A compiled suffix `B_tilde_d` is **active-interface safe** when, for a single
-phase `chi` independent of the interface input,
+and let `P_d` project onto the active interface reached by `A_d`.
+
+### Definition 4: active-interface-safe suffix
+
+A compiled suffix `B_tilde_d` is active-interface safe when
 
 ```math
-\widetilde B_dJP_d
-=
-e^{i\chi}JB_dP_d.
+\widetilde B_dJ_mP_d
+=e^{i\chi}J_mB_dP_d,
 ```
 
-This is weaker than full-unitary equality because no action is prescribed on
-the orthogonal input sector. It is stronger than preserving only the one prefix
-state `A_d|0>`.
+where `chi` is independent of the interface input.
 
-> **Theorem (checkpoint active-interface substitution).** Use an
-> active-interface-safe suffix consistently in the forward and reverse
-> checkpoint circuit. Then every designated checkpoint gradient estimator at
-> depth `d` has exactly the same expectation as under the original suffix for
-> every allowed controlled observable. The complete measurement distribution
-> need not be preserved.
+This is weaker than complete frame safety because no action is prescribed on
+the orthogonal input sector.  It is stronger than preserving only the single
+state `A_d|0^n>`.
 
-The proof uses two facts: the reference branch lies in `P_d`, and every
-checkpoint score operator preserves `P_d`. Hence its ancilla-off-diagonal
-correlation sees only the active clean component of the observed branch. The
-adjoint of the interface identity makes that component exactly equal to the
-original `P_d B_d^dagger O|psi>` component. Details and explicit examples are
-in [`COMPILER_BOUNDARIES.md`](COMPILER_BOUNDARIES.md).
+### Theorem 5: checkpoint substitution
 
-## 8. Strict hierarchy of promises
+Use an active-interface-safe suffix consistently in the forward and reverse
+checkpoint circuit.  Then every designated checkpoint estimator at depth `d`
+has the same expectation as under the original suffix for every allowed
+controlled observable.  The complete output distribution need not be the same.
 
-The compiler promises form a strict hierarchy:
+The reference branch lies in `P_d`, and the checkpoint score operators preserve
+`P_d`.  The adjoint of the interface identity therefore preserves exactly the
+component entering the estimator mean.  The complete proof and separating
+examples are given in [`COMPILER_BOUNDARIES.md`](COMPILER_BOUNDARIES.md).
 
-| Promise | Sufficient for scalar state | Sufficient for checkpoint means | Sufficient for global distribution |
+## 9. Strict hierarchy
+
+| Promise | Scalar state | Checkpoint means | Global-frame distribution |
 |---|---:|---:|---:|
-| One prepared state column | yes | no | no |
-| Complete checkpoint active interface | yes | yes | no |
-| Complete frame-safe operator | yes | yes when it contains the relevant suffix interface | yes |
+| one state column | sufficient | insufficient | insufficient |
+| complete active checkpoint interface | sufficient | sufficient | generally insufficient |
+| complete frame-safe action | sufficient | sufficient where applicable | sufficient |
 
-The exact two-qubit constructions in `COMPILER_BOUNDARIES.md` establish both
-failed converses:
+This hierarchy identifies the contract before any resource comparison is made.
+The all-workspace theorem addresses the strongest row.
 
-- a SWAP of two marker columns preserves the prepared Hopf state but moves the
-  global response to the wrong coordinate;
-- a checkpoint suffix can preserve its prepared state while flipping a decoded
-  derivative from `2` to `-2`;
-- a compiler equal on the full checkpoint interface can still change the full
-  output distribution by total-variation distance `1/4` while preserving the
-  decoded checkpoint mean.
+---
 
-## 9. Chart-native versus compiler-native ingredients
-
-| Ingredient | Mathematical source |
-|---|---|
-| State and coordinate tangents | Hopf chart |
-| Orthogonality and diagonal pullback metric | Hopf chart |
-| Marker assignment | Chosen coherent frame completion |
-| Shared Walsh record | Frame plus measurement design |
-| Clean physical implementation | Compiler |
-| Ancilla--depth tradeoff | Compiler theorem |
-| Checkpoint interfaces | Particular circuit factorization |
-
-The global method is chart-native but requires an efficient complete frame
-implementation. The checkpoint method can tolerate arbitrary behavior outside
-its active interface, but its valid interface is determined by a chosen circuit
-factorization rather than by the final state chart alone.
+[← Hopf interface](HOPF_INTERFACE.md) · [Complete narrative](../REVIEW.md) · [Compiler boundaries →](COMPILER_BOUNDARIES.md)
