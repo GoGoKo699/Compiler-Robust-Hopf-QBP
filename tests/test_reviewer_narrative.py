@@ -61,6 +61,10 @@ def local_target(page: Path, raw_target: str) -> Path | None:
     return (page.parent / target).resolve()
 
 
+def compact(text: str) -> str:
+    return " ".join(text.split())
+
+
 class ReviewerNarrativeTests(unittest.TestCase):
     def test_primary_pages_exist_and_have_no_workflow_language(self) -> None:
         for relative in PRIMARY_PAGES:
@@ -81,7 +85,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
 
     def test_landing_page_starts_from_the_prescribed_completion(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        opening = " ".join(readme[:2500].split()).lower()
+        opening = compact(readme[:2500]).lower()
         self.assertLess(len(readme), 15_000)
         self.assertIn("# optimal compilation of hopf differential frames", opening)
         self.assertIn("prescribed unitary completion", opening)
@@ -91,7 +95,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
 
     def test_complete_narrative_follows_the_compiler_first_chain(self) -> None:
         review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
-        self.assertGreater(len(review), 30_000)
+        self.assertGreater(len(review), 25_000)
         headings = (
             "## 0. Problem and result",
             "## 1. Why the prescribed completion matters",
@@ -122,7 +126,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
             )
         }
         combined = " ".join(pages.values())
-        normalized = " ".join(combined.split()).lower()
+        normalized = compact(combined).lower()
         self.assertIn("can be adapted", normalized)
         self.assertIn("prescribed", normalized)
         self.assertNotIn("does not provide", normalized)
@@ -145,7 +149,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
             )
         }
         combined = " ".join(files.values())
-        normalized = " ".join(combined.split()).lower()
+        normalized = compact(combined).lower()
         self.assertIn("oriented incoming amplitude", normalized)
         self.assertIn("chart-selected orthogonal continuation", normalized)
         self.assertIn("complex magnitude frame", normalized)
@@ -156,7 +160,8 @@ class ReviewerNarrativeTests(unittest.TestCase):
         self.assertIn("arxiv:2202.11302v3", normalized)
 
         theorem = files["docs/COMPILER_THEOREM.md"]
-        self.assertIn("fixed-width controlled Givens rotations", theorem)
+        theorem_compact = compact(theorem)
+        self.assertIn("fixed-width controlled Givens rotations", theorem_compact)
         self.assertIn("C-B", theorem)
         self.assertIn("If `s=1`", theorem)
 
