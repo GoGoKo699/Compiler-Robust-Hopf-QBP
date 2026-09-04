@@ -1,20 +1,21 @@
-# Internal proof audit of the all-workspace compiler
+# Internal proof audit: optimal all-workspace Hopf-frame compilation
 
-## Status
+[← Complete compiler theorem](COMPILER_THEOREM.md) · [Verification](VERIFICATION.md) · [Clean-room reconstruction →](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md)
 
-This is the consolidated internal audit of the exact Hopf-frame compiler. It is
-not external peer review.
+## Status and audit question
+
+This document records an internal proof audit of the complete compiler theorem.
+It is not external peer review.
 
 The audit question is:
 
-> Does the all-workspace theorem follow from the Hopf operator identities, the
-> explicit constructions in this repository, and the exact Yuan–Zhang circuit
-> primitives, without hidden workspace, unsupported executable claims, or a
-> weakening of complete frame safety to state-column equality?
+> Does the structured Hopf-frame completion attain the optimal arbitrary-state-
+> preparation frontier using only the declared clean workspace, while preserving
+> every logical marker column and returning all work registers exactly to zero?
 
-**Internal verdict after the peer-review revision:** no remaining operator,
-workspace, size, depth, endpoint, inverse, chart-domain, router, or complex-
-magnitude obstruction was found. The supported theorem is
+No blocking operator, workspace, size, depth, endpoint, inverse, chart-domain,
+router, or complex-magnitude problem was found. Under the exact circuit model
+and the imported Yuan–Zhang primitives, the audited theorem is
 
 ```math
 S_{\mathbb R}(n,m)
@@ -30,69 +31,99 @@ D_{\mathbb R}(n,m)
 
 for every integer `m>=0`.
 
-## 1. Source and version discipline
+## 1. Source and circuit-model discipline
 
-The active circuit source is Yuan and Zhang, *Quantum* **7**, 956 (2023):
+The active external framework is P. Yuan and S. Zhang, *Quantum* **7**, 956
+(2023):
 
-- Theorem 2: optimal QSP frontier;
-- Lemma 5: exact ancilla-free multi-controlled X;
+- Theorem 2: optimal QSP size–depth frontier;
+- Lemma 5: exact ancilla-free multi-controlled `X`;
 - Lemma 6: exact all-workspace UCG synthesis;
-- Lemma 9: coherent CNOT-tree copy–uncopy;
-- Theorem 1: generic controlled-state-preparation comparison.
+- Lemma 9: coherent CNOT copy–use–uncopy.
 
-The published article is arXiv v2. The imported statements were checked in v3
-and retain the forms used here. Sun et al. remain the historical predecessor;
-no active schedule selects their earlier regime theorem as a separate compiler.
+The published article corresponds to `arXiv:2202.11302v2`. The imported
+statements were checked in v3 and retain the forms used here. The earlier
+state-preparation paper remains the historical predecessor and original-source
+reference for selected primitives. The active proof does not switch between the
+two papers according to workspace budget.
 
-The current `Hopf-QBP/main` baseline
-`faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582` was reconciled explicitly. Raw-
-coordinate accuracy, metric conditioning, direct phase-stream, and matched cost
-boundaries have been ported into the present narrative.
+The exact logical model consists of arbitrary one-qubit gates and CNOTs with
+all-to-all connectivity. Toffoli, Fredkin, controlled one-qubit gates, and
+fixed-width controlled Givens rotations are constant-width readable primitives
+with exact constant-size, constant-depth decompositions in that model.
 
-Classification: **verified and recorded**.
+**Audit classification:** source versions and model assumptions recorded.
 
-## 2. Geometric target and singular coordinates
+## 2. Structured operator target
 
-For unrestricted angles, the exact differential is
+The real Hopf frame satisfies
 
 ```math
-\partial_{\theta_j}|\psi\rangle=a_j|e_j\rangle,
+W_{\mathbb R}|0^n\rangle=|\psi\rangle,
+```
+
+```math
+W_{\mathbb R}|\lambda(j)\rangle=|e_j\rangle.
+```
+
+For unrestricted magnitude angles,
+
+```math
+\partial_{\theta_j}|\psi\rangle
+=a_j|e_j\rangle,
 \qquad
 g_{j,j}=a_j^2,
 ```
 
-where `a_j` is the oriented incoming amplitude. The principal square root is
-`|a_j|`. On the canonical Hopf domains, `a_j>=0` and therefore
-`a_j=sqrt(g_(j,j))`.
+where `a_j` is the oriented incoming amplitude. On the canonical Hopf domains,
+`a_j>=0` and equals the principal metric square root. At `g_(j,j)=0`, the raw
+differential vanishes while the marker column remains a chart-selected
+orthogonal frame direction determined by the complete parameter tuple.
 
-At `g_(j,j)=0`, the raw differential vanishes. The unit vector occupying the
-marker column remains a canonical orthogonal frame continuation but is not the
-normalization of a nonzero derivative. The implementation and tests now encode
-this distinction explicitly.
-
-Classification: **proved and tested**.
-
-## 3. Frame-safe logical target
-
-The compiler must satisfy
+At tree depth `d`, the complete addressed layer is
 
 ```math
-\widetilde W
-\bigl(|\varphi\rangle|0^m\rangle\bigr)
-=(W|\varphi\rangle)|0^m\rangle
+L_d
+=I+
+\sum_p|p\rangle\!\langle p|
+\otimes\bigl(R_y(\theta_{d,p})-I\bigr)
+\otimes|0^{n-d-1}\rangle\!\langle0^{n-d-1}|.
 ```
 
-for every system input. Unitarity makes the clean subspace reducing and gives
-the exact inverse action. State-column equality alone is insufficient: the
-closed two-qubit example preserves the state while moving the response between
-marker columns and corrupting the decoded gradient.
+The full frame is the ordered product of these layers.
 
-Classification: **proved and enforced by counterexample**.
+**Audit classification:** geometric and operator conventions cross-checked by
+independent recursive and addressed constructions.
 
-## 4. Strict-zero borrowed-suffix echo
+## 3. Frame-safe compiler contract
 
-For a nonfinal depth, fix prefix `p`, split the suffix into original bit `b` and
-remaining string `r`, and set
+Let `J` append the clean workspace. The required contract is
+
+```math
+\widetilde WJ=JW
+```
+
+on every system input. Since the clean subspace is mapped unitarily onto itself,
+it is reducing, and
+
+```math
+\widetilde W^{\dagger}J=JW^{\dagger}.
+```
+
+The complete global Hopf record is therefore preserved.
+
+The two-qubit obstruction gives a strict separation from first-column equality:
+two exact preparation completions share the state column but place the objective
+response on different marker columns, changing the decoded gradient from
+`(2,0,0)` to `(0,sqrt(2),0)`.
+
+**Audit classification:** complete operator contract proved and enforced by an
+exact counterexample.
+
+## 4. Schedule Z: strict zero workspace
+
+At a nonfinal depth, split the suffix into original logical bit `b` and
+remaining string `r`, and define
 
 ```math
 h=[r=0],
@@ -119,12 +150,12 @@ JCJ=C^{-1},
 CJCJ=I.
 ```
 
-The four `(h,b)` sectors give the addressed rotation only on the original
-complete-zero-suffix sector. The borrowed bit is restored and no relative phase
-is introduced. Orthogonality of the sectors proves equality on arbitrary
-superpositions and entanglement.
+The four `(h,b)` sectors apply the addressed rotation only when the original
+complete suffix is zero. The logical bit is restored, and no relative phase is
+introduced. Orthogonality of the sectors proves complete operator equality on
+arbitrary entangled inputs.
 
-The two UCGs have total width `d+2`; the predicate toggles use no ancillary wire.
+The two UCGs have total width `d+2`. The predicate toggles use no ancillary wire.
 Thus
 
 ```math
@@ -132,131 +163,219 @@ S(L_d)=O(2^d+n-d),
 ```
 
 ```math
-D(L_d)=O\left(n+\frac{2^d}{d+2}\right),
+D(L_d)=O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-and summation gives `Theta(N)` size and `Theta(n+N/n)` depth at `m=0`.
+Summing the layers and applying the real-state parameter lower bound gives
 
-Classification: **proved relative to Lemmas 5–6 and tested as complete
-operators**.
+```math
+S_{\mathbb R}(n,0)=\Theta(2^n),
+```
 
-## 5. Tree-cut identities
+```math
+D_{\mathbb R}(n,0)
+=\Theta\left(n+\frac{2^n}{n}\right).
+```
 
-For a cut after `t` depths, with `B=2^t` and `s=n-t`,
+**Audit classification:** proved relative to Lemmas 5–6 and tested as complete
+operators.
+
+## 5. Schedule P1: small positive workspace
+
+For `m>=1`, each nonfinal depth may compute the full suffix-zero predicate into
+one clean flag, apply one prefix-and-flag UCG, and uncompute the flag. The same
+flag is reused between depths.
+
+The direct schedule has
+
+```math
+S_{\mathrm{direct}}=O(2^n),
+```
+
+```math
+D_{\mathrm{direct}}
+=O\left(n^2+\frac{2^n}{n+m}\right).
+```
+
+When `1<=m<4n`, `n+m<5n`, and `n^3=O(2^n)`. The polynomial term is therefore
+absorbed by `2^n/(n+m)`.
+
+**Audit classification:** workspace endpoint and uniform absorption verified.
+
+## 6. Tree-cut identities
+
+For a cut after `t` depths, let
+
+```math
+B=2^t,
+\qquad
+s=n-t.
+```
+
+Then
+
+```math
+W_{\mathbb R}^{(n)}=R_t^{(n)}F_t^{(n)},
+```
 
 ```math
 F_t^{(n)}
-=W_t\otimes|0^s\rangle\!\langle0^s|
-+I\otimes(I-|0^s\rangle\!\langle0^s|),
+=W_{\mathbb R}^{(t)}\otimes|0^s\rangle\!\langle0^s|
++I\otimes\left(I-|0^s\rangle\!\langle0^s|\right),
 ```
 
 ```math
-R_t^{(n)}=\bigoplus_r W_s^{(r)}.
+R_t^{(n)}
+=\bigoplus_{r=0}^{B-1}W_s^{(r)}.
 ```
 
-The subtree angle map is exact and the products reconstruct the complete frame.
+A local subtree node `(ell,u)` in branch `r` uses global breadth-first node
 
-Classification: **proved and matrix-tested**.
+```math
+2^{t+\ell}+r2^\ell+u.
+```
 
-## 6. Binary–one-hot decoder
+These are complete operator identities. No state-column restriction enters.
 
-For `B=2^t`, the explicit decoder uses `B` one-hot leaves, `B-1` internal
-indicators, and `B-1-t` shared scratch wires:
+**Audit classification:** algebraically proved and matrix-tested for every small
+cut.
+
+## 7. Conditioned-prefix decoder
+
+The explicit reversible decoder implements
+
+```math
+D_t|x\rangle|0\rangle
+=|0^t\rangle|e_x\rangle|0\rangle
+```
+
+using
 
 ```math
 3B-2-t
 ```
 
-clean workspace qubits in total. Its X/CNOT/Toffoli layers are disjoint, have
-depth `11t-4=O(t)`, and implement
+clean qubits. Its X/CNOT/Toffoli schedule has disjoint layers, depth `11t-4`,
+and size `O(B)`. On the one-hot code, the Hopf Givens pairs at one depth are
+disjoint.
 
-```math
-D_t|x\rangle|0\rangle
-=|0^t\rangle|e_x\rangle|0\rangle.
-```
+Computing and fanning out the external suffix-zero predicate, applying the
+fixed-width controlled Givens layers, and reversing all work gives the
+conditioned prefix in depth `O(n)` and size `O(B+s)`.
 
-The one-hot Givens network equals the complete `t`-qubit Hopf frame on the code.
+**Audit classification:** explicit reversible construction and encoded operator
+action tested.
 
-Classification: **explicitly constructed and tested**.
+## 8. Explicit coherent router
 
-## 7. Explicit coherent router
-
-The earlier evidence gap—resource formulas without an operator-tested
-route–operate–unroute implementation—has been closed.
-
-Treat each branch's `s` data wires and one token as a block of width `s+1`.
-At routing level `j`, prefix bit `j` controls `2^j(s+1)` disjoint Fredkin gates.
-One original prefix control is available, so clean copies at that level number
-`2^j(s+1)-1`. Hence
-
-```math
-\text{copy wires}=(B-1)(s+1)-t,
-```
-
-```math
-\text{forward Fredkins}=(B-1)(s+1).
-```
-
-Balanced CNOT trees copy all prefix bits. Fredkin levels are applied least-
-significant-prefix-bit first. The resulting unitary coherently moves the suffix
-and root token to the prefix-selected branch on arbitrary, possibly entangled,
-inputs.
-
-Copies are uncomputed before branch operations and reused as local suffix flags.
-Token-controlled subtree frames act on disjoint branch registers in parallel.
-Every flag is cleared; copies are recomputed; the Fredkin tree is reversed;
-copies and the root token are reset.
-
-The implementation in `router.py` supplies the exact layers and a sparse
-complex-state simulator. Tests verify basis routing, arbitrary
-prefix–suffix-entangled inputs, equality to the ideal tail direct sum, equality
-of the complete routed cut to the Hopf frame, and zero leakage from every work
-register.
-
-Classification: **explicitly constructed, counted, and operator-tested**.
-
-## 8. Positive-workspace resource envelope
-
-The routed tail uses:
+The routed tail allocates:
 
 - `(B-1)s` additional data wires;
-- `B` token wires;
-- `(B-1)(s+1)-t` control-copy wires;
-- `B` branch flags when `s>1`, reusing cleared copy wires.
+- `B` activation-token wires;
+- `C=(B-1)(s+1)-t` copied routing controls.
 
-The tail peak is the data and tokens plus the larger of copies or flags. The
-conditioned prefix and routed tail execute sequentially. Both fit inside
+Treat each branch's data and token as a block of width `s+1`. At routing level
+`j`, prefix bit `j` controls `2^j(s+1)` disjoint Fredkin gates. One original
+prefix wire is available, leaving `2^j(s+1)-1` required copies. Summation yields
+`C`, while the number of forward Fredkin gates is
+
+```math
+(B-1)(s+1).
+```
+
+Balanced CNOT trees create and erase the prefix copies. Processing prefix bits
+from least to most significant routes an arbitrary state
+
+```math
+\sum_r c_r|r\rangle_P|\xi_r\rangle_S
+```
+
+coherently into the branch selected by `r`, including prefix–suffix-entangled
+inputs.
+
+After routing, all copies are zero. When `s>1`, the cleared copy pool contains
+all `B` branch flags because
+
+```math
+C-B=(B-1)s-t-1\geq0
+```
+
+for `B=2^t`, `t>=1`, and `s>=2`. The token-controlled subtree frames act on
+disjoint branch registers and run in parallel. Every flag is cleared, the prefix
+copies are recreated, the Fredkin tree is reversed, the copies are erased, and
+the root token is reset.
+
+The explicit schedule and sparse-state simulator verify equality to the ideal
+tail direct sum and zero leakage from data, token, copy, and flag registers.
+
+**Audit classification:** explicitly constructed, counted, and operator-tested.
+
+## 9. Workspace envelope and maximal cut
+
+The tail peak is
+
+```math
+(B-1)s+B+
+\max\left\{(B-1)(s+1)-t,\,B\right\}.
+```
+
+The conditioned prefix and tail run sequentially. Both fit inside
 
 ```math
 2B(s+1).
 ```
 
-Route and unroute have `O(n)` depth and `O(B(s+1))` size. One controlled
-subtree has size `O(2^s)` and depth `O(s^2+2^s/s)`; all branches run in
-parallel.
-
-For `m>=4n`, the largest cut satisfying
+For `m>=4n`, choose the largest `t` satisfying
 
 ```math
-2\,2^t(n-t+1)\leq m
+2\,2^t(n-t+1)\leq m.
 ```
 
-obeys `2^s/s=O(N/(n+m))`. For `1<=m<4n`, the direct flagged schedule's
-`O(n^2)` term is absorbed. Therefore all positive budgets attain the target
-frontier.
+If `s=n-t>1`, failure of the next cut gives
 
-Classification: **proved, with explicit schedule-to-ledger regression tests**.
+```math
+m<4\,2^t s,
+```
 
-## 9. Lower bounds
+and therefore
 
-The first frame column covers an open `(N-1)`-dimensional real-state family.
-Parameter counting gives `Omega(N)` size and `Omega(N/(n+m))` depth. Backward
-light cones of the `n` system outputs give `Omega(n)` depth. At `m=0`, the
-parameter bound `Omega(N/n)` already dominates `n`.
+```math
+\frac{2^s}{s}
+=O\left(\frac{2^n}{n+m}\right).
+```
 
-Classification: **proved**.
+The subtree polynomial term obeys
 
-## 10. Phase-dressed complex magnitude frame
+```math
+s^2=O\left(n+\frac{2^s}{s}\right).
+```
+
+If `s=1`, every subtree frame has constant depth. Feasibility requires
+`m>=2^{n+1}=2N`, so `2^n/(n+m)=O(1)` and the target depth is `Theta(n)`.
+
+**Audit classification:** peak-workspace and endpoint inequalities checked by
+integer ledgers.
+
+## 10. Matching lower bounds
+
+The first frame column covers an open real-state family of dimension `2^n-1`.
+Parameter counting gives
+
+```math
+S=\Omega(2^n),
+```
+
+```math
+D=\Omega\left(\frac{2^n}{n+m}\right).
+```
+
+The union of backward light cones of the `n` system outputs yields the independent
+`Omega(n)` depth term. At `m=0`, the parameter bound `Omega(2^n/n)` already
+dominates `n` asymptotically.
+
+**Audit classification:** lower bounds rederived independently of the compiler.
+
+## 11. Phase-dressed complex magnitude frame
 
 The phase diagonal is one total-width-`n` UCG with blocks
 
@@ -264,23 +383,21 @@ The phase diagonal is one total-width-`n` UCG with blocks
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}}).
 ```
 
-It has size `O(N)` and depth `O(n+N/(n+m))`, and reuses the real-frame work
-pool sequentially. The result concerns the complex **magnitude** frame. The
-leaf-phase derivatives remain a separate direct stream.
+It has `O(2^n)` size and `O(n+2^n/(n+m))` depth. The real frame and phase UCG
+return their workspaces clean and reuse one pool sequentially. The result applies
+to the phase-dressed complex magnitude frame; leaf-phase derivatives remain a
+separate direct stream.
 
-Classification: **proved relative to Lemma 6 and tested**.
+**Audit classification:** proved relative to Lemma 6 and tested as a complete
+operator.
 
-## 11. Matched QBP consequence
+## 12. Matched QBP consequence
 
-The primary finite-shot target is simultaneous absolute raw-coordinate accuracy.
-The fixed-norm magnitude records require
+Frame-safe inverse action preserves the complete global magnitude-record
+distribution. The primary finite-shot target is simultaneous absolute accuracy
+of the raw Hopf-coordinate gradient.
 
-```math
-O\left((1+\log(n/\delta))/\varepsilon_\infty^2\right)
-```
-
-executions. The scalar and gradient time comparison is defined for matched
-programs using the same preparation family and controlled observable:
+The scalar and gradient logical costs are compared as
 
 ```math
 T_{\mathrm{scalar}}^{\mathrm{matched}}
@@ -292,40 +409,45 @@ T_{\mathrm{grad}}^{\mathrm{matched}}
 =S_{\nabla}(D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}).
 ```
 
-Because `D_frame` matches the general QSP order, the inverse frame adds only a
-constant per-execution factor. At fixed comparable accuracy and confidence, the
-overhead is `O(log n)=O(log log M)`. This excludes output materialization and
-instance-specific scalar shortcuts.
+Since `D_frame` matches the general QSP order, the inverse frame adds only a
+constant per-execution factor. At fixed comparable scalar and raw-coordinate
+accuracy and confidence, the shared-record execution overhead is
+`O(log n)=O(log log M)`.
 
-Classification: **proved under the stated access and task conventions**.
+The statement excludes classical output materialization and instance-specific
+scalar shortcuts.
 
-## 12. Evidence-level boundary
+**Audit classification:** valid under the declared access and task conventions.
 
-The repository now distinguishes:
+## 13. Evidence-level boundary
+
+The repository distinguishes:
 
 - complete dense logical operators for frames and strict-zero identities;
 - explicit reversible layers for the decoder and router;
 - exact logical block action for controlled subtree UCGs;
-- imported elementary UCG/MCT synthesis;
-- exact integer/rational resource ledgers.
+- imported elementary UCG and multi-controlled-`X` synthesis;
+- integer and exact-rational resource ledgers.
 
-Toffoli, Fredkin, and controlled one-qubit gates have constant-size exact
-decompositions in the declared elementary model. Finite validation supports but
-does not replace the analytic theorem.
+Finite validation supports but does not replace the analytic theorem.
 
-## 13. Audit conclusion
+## 14. Audit conclusion
 
-The revised construction is internally coherent:
+The all-workspace construction is internally coherent:
 
 ```text
 strict-zero borrowed-suffix echo
-+ direct positive-workspace flagged UCGs
-+ self-contained one-hot decoder
++ direct positive-workspace suffix flag
++ clean binary–one-hot decoder
 + explicit coherent route–parallel-subframes–unroute
-+ Yuan–Zhang UCG/MCT/copy primitives
-+ one-UCG phase dressing.
++ one-UCG phase dressing
++ matching state-preparation lower bounds.
 ```
 
-Independent human proof and prior-art review remain the next scientific gate.
-Hardware routing, approximate fault-tolerant synthesis, noise, and
-application-specific controlled-observable costs remain outside the theorem.
+Independent technical and prior-art assessment remains the next scientific
+step. Hardware routing, approximate fault-tolerant synthesis, noise, and
+application-specific controlled-observable cost remain outside the theorem.
+
+---
+
+[← Complete compiler theorem](COMPILER_THEOREM.md) · [Verification](VERIFICATION.md) · [Clean-room reconstruction →](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md)

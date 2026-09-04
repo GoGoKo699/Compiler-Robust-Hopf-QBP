@@ -1,15 +1,23 @@
-# Internal audit of the strict-zero borrowed-suffix echo
+# Internal audit: strict-zero borrowed-suffix echo
 
-[← Focused construction](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) · [Verification overview](VERIFICATION.md) · [Complete narrative](../REVIEW.md)
+[← Focused construction](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) · [Complete compiler theorem](COMPILER_THEOREM.md) · [Verification](VERIFICATION.md)
 
-## Status and verdict
+## Status and question
 
-This document records a line-by-line internal reconstruction of the strict-zero
-compiler. It is not independent external review.
+This document records an internal reconstruction of the strict-zero schedule. It
+is not external peer review.
+
+The audit asks whether the `m=0` circuit:
+
+1. implements the complete addressed Hopf layer on every logical input;
+2. restores the borrowed logical suffix bit exactly;
+3. uses no hidden ancillary wire;
+4. has the stated UCG width and predicate cost;
+5. sums to the state-preparation-optimal strict-zero frontier.
 
 No operator, workspace, size, depth, endpoint, inverse, or complex-magnitude
-obstruction was found. Relative to the exact no-ancilla multi-controlled-X and
-UCG statements imported from Yuan and Zhang, the construction supports
+obstruction was found. Relative to the exact no-ancilla multi-controlled-`X` and
+UCG statements imported from P. Yuan and S. Zhang, the construction supports
 
 ```math
 S_{\mathbb R}(n,0)
@@ -24,22 +32,18 @@ D_{\mathbb R}(n,0)
 ```
 
 The complex leaf-phase derivatives remain a separate direct measurement stream.
-The audit also narrows the contribution claim: the abstract echo has close
-precedents, while the Hopf-specific two-UCG aggregation and complete-frame
-resource consequence are the project-specific statements.
+The audit distinguishes the Hopf-specific two-UCG reduction from its familiar
+component ideas.
 
-The published Yuan–Zhang article is arXiv v2. Lemmas 5 and 6 were also checked
-in arXiv v3 and retain the forms used below.
+## 1. Operator target
 
-## 1. Exact operator target
-
-At a nonfinal depth `d<n-1`, split the register as
+At a nonfinal depth `d<n-1`, split the system register as
 
 ```math
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R.
 ```
 
-The desired addressed layer is
+The required layer is
 
 ```math
 L_d
@@ -49,8 +53,10 @@ L_d
 \otimes|0^{n-d-1}\rangle\!\langle0^{n-d-1}|.
 ```
 
-The audit treats this as a complete operator equality. No initialized-state or
-first-column restriction is used.
+This is a complete operator specification. Correctness only on the preparation
+input is not sufficient.
+
+**Audit classification:** target fixed independently of the proposed circuit.
 
 ## 2. Sector reconstruction
 
@@ -87,7 +93,7 @@ JCJ=C^{-1},
 CJCJ=I.
 ```
 
-| `h` | original `b` | chronological target word | final target operator | final `b` |
+| `h` | original `b` | chronological target word | resulting matrix | final `b` |
 |---:|---:|---|---|---:|
 | 0 | 0 | none | `I` | 0 |
 | 0 | 1 | `J,C,J,C` | `CJCJ=I` | 1 |
@@ -95,58 +101,60 @@ CJCJ=I.
 | 1 | 1 | `J,J` | `I` | 1 |
 
 The desired rotation appears only when the original complete suffix is zero.
-All other sectors receive identity. The borrowed bit is restored and no
-sector-dependent phase is produced. Since `p` and `r` label orthogonal
-invariant sectors, this proves equality on arbitrary superpositions and
-entangled inputs.
+Every other sector receives identity. The borrowed bit returns to its original
+value and no sector-dependent phase remains.
+
+The labels `p` and `r` define orthogonal invariant sectors. The calculation
+therefore proves equality on arbitrary superpositions and on states in which
+`b` is entangled with the rest of the system.
 
 **Audit classification:** algebraically proved.
 
-## 3. Chronological versus matrix order
+## 3. Chronological and matrix order
 
-The unwanted sector has chronological target word
+The unwanted sector receives the chronological target word
 
 ```text
 J, C, J, C.
 ```
 
-For column vectors, the matrix is
+For column vectors, the corresponding matrix is
 
 ```math
 CJCJ=C(JCJ)=CC^{-1}=I.
 ```
 
-The implementation composes chronological gates by left multiplication, so its
-matrix order agrees with the proof. Both the abstract sector test and the full
-layer matrix test enforce this convention.
+The implementation composes chronological gates by left multiplication. Both
+the sector helper and the complete layer matrix therefore use the same order as
+the proof.
 
-**Audit classification:** checked independently in algebra and implementation.
+**Audit classification:** checked independently in algebra and code.
 
-## 4. Restoration and hidden-workspace audit
+## 4. Restoration and hidden workspace
 
-The circuit uses only the original system wires:
+The circuit uses only:
 
 - `d` prefix wires;
 - one target wire;
 - one borrowed suffix data wire;
 - `n-d-2` remaining suffix wires.
 
-The borrowed wire is not assumed clean, idle, separable, or classical. Its
+The borrowed wire is not assumed clean, idle, classical, or separable. Its
 restoration follows from the complete sector table.
 
-The predicate toggle is a negative-control multi-controlled X whose target is
-the borrowed system wire. Parallel X wrappers convert all-zero controls to
-all-one controls. Yuan–Zhang Lemma 5 supplies the exact zero-ancilla
+The predicate toggle is a negative-control multi-controlled `X` whose target is
+the borrowed system wire. Parallel `X` wrappers convert the all-zero controls to
+all-one controls. Yuan–Zhang Lemma 5 supplies an exact zero-ancilla
 decomposition.
 
-The half-angle UCG acts only on the prefix, borrowed wire, and target. The
-remaining suffix wires are idle during the UCG and are not compiler workspace.
+The half-angle UCG acts only on the prefix, borrowed bit, and target. The
+remaining suffix bits are idle during that UCG and are not compiler workspace.
 
 **Audit classification:** no hidden clean or dirty ancillary wire found.
 
 ## 5. Exact UCG width
 
-For each prefix `p`, the borrowed-bit UCG blocks are
+For each prefix `p`, the UCG blocks are
 
 ```math
 U_{p,0}=I,
@@ -154,38 +162,37 @@ U_{p,0}=I,
 U_{p,1}=R_y(\theta_p/2).
 ```
 
-There are `d+1` controls—`d` prefix bits and the borrowed bit—and one target.
-The total UCG width in the Yuan–Zhang convention is
+There are `d+1` controls, namely the `d` prefix bits and the borrowed bit, plus
+one target. The exact total width is
 
 ```math
 \boxed{q=d+2.}
 ```
 
-This count is used consistently in the implementation, resource rows, and
-asymptotic proof.
+This convention matches Yuan–Zhang Lemma 6 and is used consistently in the
+implementation and resource rows.
 
-**Audit classification:** exact participant count verified.
+**Audit classification:** participant count verified.
 
 ## 6. Endpoint audit
 
 - `n=1`: no borrowed-suffix layer exists; the frame is one one-qubit rotation.
-- `d=0`: the half-angle UCG is a two-qubit controlled rotation.
+- `d=0`: the half-angle UCG has total width two.
 - `d=n-2`: the remaining suffix is empty, so `h=1` and `T_h=X_b`.
-- `d=n-1`: no lower suffix exists; the final depth is one ordinary `n`-qubit
-  UCG and does not use the echo.
+- `d=n-1`: the final depth has no suffix and uses one ordinary `n`-qubit UCG.
 
 **Audit classification:** all endpoints explicit in code and tests.
 
 ## 7. Size audit
 
 Two width-`d+2` UCGs contribute `O(2^d)` size. Four predicate toggles contribute
-`O(n-d)` size. Two target echoes contribute constants. Hence
+`O(n-d)`, and the target echoes contribute constants. Hence
 
 ```math
 S(L_d)=O(2^d+n-d).
 ```
 
-The complete real frame satisfies
+Summing gives
 
 ```math
 \begin{aligned}
@@ -200,8 +207,8 @@ S(W_{\mathbb R})
 \end{aligned}
 ```
 
-The real-state family has dimension `2^n-1`, so parameter counting gives the
-matching `Omega(2^n)` lower bound.
+The real-state family has dimension `2^n-1`, yielding the matching
+`Omega(2^n)` parameter-count lower bound.
 
 **Audit classification:** upper and lower bounds verified.
 
@@ -221,7 +228,7 @@ D(L_d)
 =O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-The UCG exponential terms satisfy
+The exact-rational audit checks the uniform bound
 
 ```math
 \sum_{q=2}^{n}\frac{2^q}{q}
@@ -240,26 +247,20 @@ Thus
 D(W_{\mathbb R})=O(n+2^n/n).
 ```
 
-At zero workspace, a depth-`D` circuit on exactly `n` wires contains only
-`O(nD)` continuously parameterized one-qubit locations. Covering the
-`2^n-1` dimensional real-state family requires
+On exactly `n` wires, a depth-`D` circuit contains only `O(nD)` continuously
+parameterized one-qubit locations. Covering the `2^n-1` dimensional real-state
+family requires
 
 ```math
-D=\Omega(2^n/n),
+D=\Omega(2^n/n).
 ```
-
-which supplies the matching lower bound.
-
-The regression suite checks the uniform inequalities with exact rational or
-integer arithmetic over broad finite ranges. The proof is the preceding
-dimension-independent argument.
 
 **Audit classification:** matching asymptotic depth verified.
 
-## 9. Inverse and complex-magnitude audit
+## 9. Inverse and complex magnitude frame
 
-The circuit is unitary and exact, so reversing and adjointing its gates gives
-`W_R^dagger` with the same resources.
+Reversing the exact circuit and adjointing each gate gives `W_R^dagger` with the
+same resources.
 
 The phase layer
 
@@ -269,7 +270,7 @@ D_{\mathrm{ph}}
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}})
 ```
 
-is one exact `n`-qubit UCG. At zero workspace it has `O(2^n)` size and
+is one total-width-`n` UCG. At zero workspace it has `O(2^n)` size and
 `O(n+2^n/n)` depth. Therefore
 
 ```math
@@ -277,40 +278,40 @@ W_{\mathbb C,\mathrm{mag}}
 =D_{\mathrm{ph}}W_{\mathbb R}
 ```
 
-inherits the same strict-zero frontier. This is the phase-dressed magnitude
-frame; the direct leaf-phase derivatives are not additional columns of it.
+inherits the same strict-zero frontier.
+
+The direct leaf-phase derivatives are not additional columns of this frame.
 
 **Audit classification:** no additional complex-magnitude obstruction found.
 
-## 10. Prior-art boundary
+## 10. Contribution boundary
 
-The audit identifies close antecedents for the component ideas:
+The component ideas have established precedents:
 
-- square-root and conjugation constructions for controlled unitaries;
+- controlled-unitary roots and conjugation;
 - multiplexed rotations and UCGs;
 - borrowed or conditionally clean logical qubits;
 - toggle-detection cancellation;
 - ancilla-free multi-controlled gates.
 
-The repository does not claim these ingredients as inventions. The claim-safe
-Hopf-specific statement is the two-UCG reduction of one addressed depth using a
-restored original suffix bit, together with the optimal complete-frame
-strict-zero frontier.
+The Hopf-specific statement is the reduction of one addressed depth to two
+width-`d+2` UCGs using a restored original suffix bit, together with the optimal
+complete-frame strict-zero resource consequence.
 
 See [Related work](RELATED_WORK.md) and
-[the broader technical search record](PRIOR_ART_SEARCH_2026_09.md).
+[the strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md).
 
 ## 11. Audit conclusion
 
-The internal reconstruction found no mathematical reason to exclude `m=0`
-from the all-workspace theorem. The strict-zero result is consistent with the
-complete operator contract, uses no hidden wire, covers every endpoint, and
-matches the real-state lower bound.
+The internal reconstruction found no mathematical reason to exclude `m=0` from
+the all-workspace theorem. The construction satisfies the complete operator
+contract, uses no hidden wire, covers all endpoints, restores the borrowed
+logical bit, and matches the state-preparation lower bounds.
 
-The result remains under independent technical review. Executable checks are
-supporting evidence, and the prior-art classification remains subject to a
-broader specialist assessment.
+Independent technical and prior-art assessment remains the final scientific
+check. Executable tests are supporting evidence, not the basis of the
+size-independent proof.
 
 ---
 
-[← Focused construction](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) · [Verification overview](VERIFICATION.md) · [Complete narrative](../REVIEW.md)
+[← Focused construction](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) · [Complete compiler theorem](COMPILER_THEOREM.md) · [Verification](VERIFICATION.md)

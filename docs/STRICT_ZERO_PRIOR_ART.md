@@ -1,196 +1,207 @@
-# Prior-art boundary for the strict-zero borrowed-suffix echo
+# Prior-art boundary for the strict-zero Hopf layer
 
-## Purpose
+[← Strict-zero construction](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) · [Related work](RELATED_WORK.md) · [Expanded source search →](PRIOR_ART_SEARCH_2026_09.md)
 
-This note records the current technical prior-art assessment for the exact
-`m=0` Hopf-frame compiler. It is deliberately conservative. It does not claim
-that the abstract echo is a newly invented universal identity. This note is not
-a legal novelty opinion.
+This page separates the project-specific strict-zero result from the familiar
+circuit ideas used to obtain it. It is a technical prior-art analysis, not a
+legal novelty opinion.
 
-## 1. The project construction
+## 1. Construction being classified
 
-At nonfinal Hopf depth `d`, the desired layer applies a prefix-selected
-`R_y(theta_p)` exactly when the complete lower suffix is zero. One original
-suffix data qubit `b` is borrowed, while `r` denotes the remaining suffix and
+At a nonfinal Hopf depth `d`, split the logical register as
 
 ```math
-h(r)=[r=0].
+|p\rangle|x\rangle|b\rangle|r\rangle,
 ```
 
-Set
+where `p` is the `d`-bit prefix, `x` the target, `b` one original suffix bit,
+and `r` the remaining suffix.
+
+Let
 
 ```math
+h(r)=[r=0],
+\qquad
 C_p=R_y(\theta_p/2).
 ```
 
-The chronological sequence
+A four-toggle echo uses `b` as a restored in-place predicate carrier. The active
+original-zero-suffix branch receives `C_p^2=R_y(theta_p)`, while the unwanted
+original value of `b` receives the cancelling word `C_pXC_pX=I`.
 
-```text
-controlled_b(X)
-T_h
-controlled_b(C_p)
-T_h
-controlled_b(X)
-T_h
-controlled_b(C_p)
-T_h
-```
-
-uses `T_h` to toggle `b` iff `h(r)=1`. It relies on
+Aggregating all prefix values into two total-width-`d+2` UCGs gives
 
 ```math
-C_p^2=R_y(\theta_p),
+S(L_d)=O(2^d+n-d),
+```
+
+```math
+D(L_d)=O\left(n+\frac{2^d}{d+2}\right),
+```
+
+and hence the optimal strict-zero complete-frame frontier after summing the
+Hopf tree.
+
+The classification question is whether this complete Hopf-specific feature
+bundle appears in earlier work, not whether its individual ingredients have
+precedents.
+
+## 2. Established ingredients
+
+### Controlled-unitary roots and conjugation
+
+Exact controlled-unitary constructions have long used roots of target
+unitaries together with Pauli conjugation. Barenco and coauthors are the natural
+reference for this lineage.
+
+The identities
+
+```math
+C^2=U,
 \qquad
-X C_p X=C_p^{-1}.
+JCJ=C^{-1}
 ```
 
-The unwanted original-`b=1` sector receives a cancelling word, the desired
-original-full-suffix-zero sector receives `R_y(theta_p)`, and `b` is restored.
-All prefix-dependent half-angle rotations are aggregated into two UCGs of total
-width `d+2`.
+are therefore not treated as new.
 
-## 2. Controlled-unitary square roots
+### Multiplexed rotations and UCGs
 
-Barenco et al., "Elementary gates for quantum computation" (1995), use square
-roots of unitaries together with controlled-NOT and conjugation identities in
-multi-controlled-unitary decompositions. The broad algebraic pattern
+Möttönen and coauthors introduced the uniformly controlled rotation form used in
+state preparation. Bergholm and coauthors developed general uniformly
+controlled one-qubit gates.
 
-```math
-V^2=U
-```
+The present circuit uses those UCG primitives. It does not claim a new
+multiplexor synthesis theorem.
 
-combined with conjugation to reverse `V` is therefore established circuit
-technology rather than a new theme introduced here.
+### Borrowed and conditionally clean logical qubits
 
-Claudon et al., "Polylogarithmic-depth controlled-NOT gates without ancilla
-qubits" (2024), also discuss controlled-unitary reductions using roots of the
-target unitary and distinguish borrowed from zeroed ancillary qubits.
+Borrowing a qubit in an unknown state, using it coherently, and restoring it has
+an established history. Recent work by Claudon and coauthors and by Khattar and
+Gidney gives particularly close context for borrowed and conditionally clean
+workspace.
 
-**Implication for claims:** do not call the square-root/conjugation mechanism
-itself new.
+The present suffix bit is logical data rather than an allocated ancilla. Its
+restoration requirement is still part of this broader lineage.
 
-## 3. Borrowed and dirty ancillas
+### Toggle-detection cancellation
 
-Borrowed qubits are unknown-state wires temporarily modified and restored by
-the end of a circuit. Claudon et al. use borrowed ancillas in exact
-multi-controlled-NOT constructions.
+Toggle-detection methods replace a clean control with an unknown-state bit by
+applying and unapplying a predicate so that unwanted branches cancel. That
+pattern is also established.
 
-Khattar and Gidney, "Rise of conditionally clean ancillae for efficient quantum
-circuit constructions" (2025), describe laddered toggle detection: a
-self-inverse controlled operation can be repeated so that an unknown dirty-
-control branch cancels while the desired branch survives. They also develop
-conditionally clean system qubits as temporary workspace.
+The Hopf target rotation is generally not self-inverse, so a half-angle root and
+Pauli conjugation are used to create the required cancellation. This is a
+specialization of familiar ingredients rather than a claim to have invented
+toggle detection.
 
-**Difference here:**
+### Ancilla-free multi-controlled rotations
 
-- the borrowed wire is part of the logical suffix predicate;
-- the desired operation is a generic angle-dependent rotation and is not
-  self-inverse;
-- the circuit must distinguish the borrowed bit's original value;
-- half-angle factorization and Pauli conjugation produce cancellation without
-  assuming the borrowed bit is clean.
+Efficient exact multi-controlled `SU(2)` gates without ancillas are also known.
+Such constructions could implement one prefix-conditioned rotation at a time.
+The present size–depth result instead depends on aggregating all `2^d` prefix
+values into two UCGs and paying the long suffix predicate only a constant number
+of times per depth.
 
-**Implication for claims:** the use of a restored unknown system wire is related
-to borrowed/dirty-ancilla techniques and should be cited accordingly.
+### Restricted and sparse UCGs
 
-## 4. Uniformly controlled rotations
+Recent restricted-UCG work studies repeated blocks and partial control
+participation. The addressed Hopf layer belongs to the same broad structural
+setting.
 
-Möttönen et al. and Bergholm et al. established the standard uniformly
-controlled-rotation and one-qubit multiplexor constructions. Yuan and Zhang
-later give the all-ancilla exact UCG size--depth theorem used in the present
-resource proof.
+A direct full-width Möttönen transform of the logical zero-suffix table is
+generically dense in the physical angle domain. The borrowed-suffix factorization
+avoids that transform by reducing the physical UCG width to `d+2`.
 
-The older `Hopf-QBP` robustness compiler uses one clean flag to compress the
-lower-suffix-zero predicate and then applies one prefix-and-flag UCG. The new
-strict-zero construction removes that clean flag by borrowing one suffix data
-qubit and replacing the one flagged UCG by two half-angle UCGs plus an echo.
+## 3. State-preparation compiler line
 
-**Implication for claims:** the UCG primitive is imported; the project claim is
-about how the Hopf layer is reduced to a constant number of smaller UCGs.
+The all-workspace framework of P. Yuan and S. Zhang supplies:
 
-## 5. Sparse and restricted UCGs
+- exact ancilla-free multi-controlled `X`;
+- the UCG size–depth tradeoff;
+- coherent copy–use–uncopy;
+- the optimal QSP comparison frontier.
 
-Xu et al., "A Unified Framework for Optimizing Uniformly Controlled Structures
-in Quantum Circuits" (2025), introduce restricted UCG models and analyze
-control-support sparsity. Other multiplexer-optimization work exploits repeated
-or identity blocks.
+The earlier state-preparation paper remains the historical predecessor and
+original-source reference for selected primitives. The two papers are treated
+as one coherent compiler line.
 
-The addressed Hopf layer has a sparse logical block table, but its all-zero
-suffix condition becomes generically dense under the standard Möttönen
-Walsh/Gray-code angle transform. The strict-zero echo avoids this transform by
-factoring the condition through one borrowed suffix bit.
+The present proof adapts those primitives after the complete Hopf layer is
+exposed. It does not infer complete-frame correctness from first-column state
+preparation.
 
-The current search did not locate the same two-UCG borrowed-suffix reduction in
-restricted-UCG work. This absence is not a proof of novelty.
+## 4. Feature comparison
 
-## 6. Multi-controlled rotations
+| Feature | Established in prior work? | Role here |
+|---|---:|---|
+| roots of target unitaries | yes | split `R_y(theta_p)` into two half-angle factors |
+| Pauli conjugation to invert a root | yes | make the unwanted branch cancel |
+| borrowed or conditionally clean logical qubits | yes | allow one suffix bit to carry the predicate temporarily |
+| toggle-detection cancellation | yes | erase the effect of the unknown original bit |
+| uniformly controlled one-qubit gates | yes | aggregate every prefix-dependent half-angle rotation |
+| ancilla-free multi-controlled `X` | yes | implement the remaining all-zero suffix toggle |
+| Hopf addressed zero-suffix layer | project-specific target | fixes the complete state-and-marker frame |
+| two width-`d+2` UCGs for all prefix values | project-specific reduction | keeps cost at `O(2^d)` rather than full width |
+| optimal strict-zero complete-frame theorem | project-specific consequence | gives `Theta(2^n)` size and `Theta(n+2^n/n)` depth |
 
-There is substantial literature on ancilla-free multi-controlled `SU(2)` gates
-and multi-controlled-NOT gates. Such results can implement one conditioned
-rotation efficiently in the number of controls, but applying them independently
-for all `2**d` prefix values may introduce an extra factor in size or depth.
+## 5. Claim-safe contribution
 
-The Hopf compiler instead aggregates all prefix values into two total-width-
-`d+2` UCGs, preserving the geometric `O(2**d)` contribution of one tree depth.
+A precise positive statement is:
 
-## 7. Claim-safe novelty statement
+> For one addressed Hopf depth, an original suffix data qubit can serve as a
+> restored in-place predicate carrier. A four-toggle half-angle echo reduces all
+> prefix-dependent rotations to two total-width-`d+2` UCGs and linear predicate
+> toggles. Summing the addressed layers yields an exact ancilla-free complete-
+> frame compiler at the optimal state-preparation frontier.
 
-The strongest currently defensible statement is:
+This wording identifies:
 
-> For the addressed Hopf frame, one original suffix data qubit can serve as a
-> restored predicate carrier. A four-toggle half-angle echo reduces all
-> prefix-dependent rotations at depth `d` to two total-width-`d+2` UCGs and
-> linear-size predicate toggles. Summing the tree depths yields an exact
-> ancilla-free complete-frame compiler with `Theta(2**n)` size and
-> `Theta(n+2**n/n)` depth.
+- the operator being compiled;
+- the local reduction;
+- the aggregate resource consequence;
+- the complete-frame rather than state-column contract.
 
-The following statements should not be used:
+## 6. Claims that should not be used
 
-- “We invent borrowed ancillas.”
-- “We invent toggle detection.”
-- “We give the first square-root controlled-unitary echo.”
-- “No prior circuit uses this identity.”
-- “The generic echo is novel.”
+The following claims should not be used:
 
-## 8. Search record
+- first use of borrowed or dirty qubits;
+- first use of conditionally clean ancillas;
+- first toggle-detection construction;
+- first controlled-unitary square-root echo;
+- first UCG or multiplexed rotation synthesis;
+- first ancilla-free multi-controlled `SU(2)` circuit;
+- proof that no equivalent circuit exists in earlier literature;
+- legal determination of novelty or priority.
 
-The current search covers:
+The mathematical theorem does not depend on any of those broader claims.
 
-- controlled-unitary decompositions and roots of unitaries;
-- Möttönen/Bergholm multiplexors;
-- exact and approximate multi-controlled gates;
-- borrowed and dirty ancillas;
-- conditionally clean ancillas and toggle detection;
-- restricted and sparse UCGs.
+## 7. Bounded search result
 
-Primary references currently retained are:
+The expanded search record did not locate the same complete feature bundle:
 
-1. A. Barenco et al., *Physical Review A* **52**, 3457--3467 (1995),
-   [arXiv:quant-ph/9503016](https://arxiv.org/abs/quant-ph/9503016).
-2. M. Möttönen et al., *Quantum Information and Computation* **5**, 467--473
-   (2005), [arXiv:quant-ph/0407010](https://arxiv.org/abs/quant-ph/0407010).
-3. V. Bergholm et al., *Physical Review A* **71**, 052330 (2005),
-   [arXiv:quant-ph/0410066](https://arxiv.org/abs/quant-ph/0410066).
-4. P. Yuan and S. Zhang, *Quantum* **7**, 956 (2023),
-   [doi:10.22331/q-2023-03-20-956](https://doi.org/10.22331/q-2023-03-20-956).
-5. B. Claudon et al., *Nature Communications* **15**, 5886 (2024),
-   [doi:10.1038/s41467-024-50065-x](https://doi.org/10.1038/s41467-024-50065-x).
-6. T. Khattar and C. Gidney, *Quantum* **9**, 1752 (2025),
-   [doi:10.22331/q-2025-05-21-1752](https://doi.org/10.22331/q-2025-05-21-1752).
-7. C. Xu et al., arXiv:2512.08675,
-   [arXiv:2512.08675](https://arxiv.org/abs/2512.08675).
+1. one original suffix data bit whose original value belongs to the predicate;
+2. half-angle/Pauli cancellation of the unwanted branch;
+3. two UCGs aggregating every prefix value at one Hopf depth;
+4. exact restoration on the complete Hilbert space;
+5. the resulting optimal strict-zero complete-frame frontier.
 
-## 9. Remaining prior-art gate
+That is a negative result of a bounded technical search, not proof of novelty.
+Equivalent constructions may use different terminology or appear in theses,
+patents, software, or unpublished notes.
 
-Before manuscript submission:
+The detailed record is in
+[Expanded prior-art search](PRIOR_ART_SEARCH_2026_09.md) and
+[`provenance/prior_art_search.json`](../provenance/prior_art_search.json).
 
-1. search references cited by Barenco, Claudon, Khattar--Gidney, and restricted-
-   UCG papers;
-2. search controlled multiplexors with borrowed targets or dirty controls;
-3. search reversible predicate-carrier and quantum Shannon decomposition
-   literature;
-4. compare exact circuit diagrams, not only abstracts and asymptotic statements;
-5. ask an independent circuit-synthesis specialist to review the novelty wording.
+## 8. Assessment boundary
 
-Until then, repository and manuscript language should describe the strict-zero
-result as a Hopf-specific construction with familiar ingredients.
+The appropriate final assessment is narrow:
+
+- the component techniques are established;
+- the Hopf-specific aggregation and resource theorem are the project-specific
+  contribution under review;
+- broader novelty or priority remains open to independent specialist checking.
+
+---
+
+[← Strict-zero construction](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) · [Related work](RELATED_WORK.md) · [Expanded source search →](PRIOR_ART_SEARCH_2026_09.md)
