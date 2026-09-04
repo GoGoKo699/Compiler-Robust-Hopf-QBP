@@ -122,12 +122,10 @@ class LiteraturePolicyTests(unittest.TestCase):
             "docs/PROOF_AUDIT.md",
             "manuscript/README.md",
         )
-        theorem_bearing_docs = (
+        all_workspace_statement_docs = (
             "README.md",
             "REVIEW.md",
-            "docs/HOPF_INTERFACE.md",
             "docs/COMPILER_THEOREM.md",
-            "docs/QBP_CONSEQUENCE.md",
             "docs/THEOREM_OVERVIEW.md",
             "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
             "docs/END_TO_END_QBP.md",
@@ -151,18 +149,21 @@ class LiteraturePolicyTests(unittest.TestCase):
             for retired in retired_names:
                 self.assertNotIn(retired, text, msg=f"{retired} in {relative}")
 
-        # The compiler source should be cited precisely in source-bearing pages,
-        # but need not be repeated in every step of the linear narrative.
+        # The compiler source is cited precisely on source-bearing pages, but
+        # it need not be repeated in every step of the linear narrative.
         for relative in source_bearing_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
             self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
 
-        for relative in theorem_bearing_docs:
+        # Only pages that actually state the all-workspace theorem are required
+        # to carry its explicit m>=0 scope.  Interface and verification pages
+        # may remain focused on their local task.
+        for relative in all_workspace_statement_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
-            compact = "".join(text.split())
+            compact_text = "".join(text.split())
             self.assertIn(
                 "m>=0",
-                compact,
+                compact_text,
                 msg=f"missing all-workspace theorem scope in {relative}",
             )
 
