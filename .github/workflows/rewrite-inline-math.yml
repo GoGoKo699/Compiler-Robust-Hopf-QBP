@@ -55,6 +55,27 @@ jobs:
       - name: Rewrite mathematical code spans
         run: python scripts/rewrite_inline_math.py
 
+      - name: List remaining prose code spans
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          from scripts.rewrite_inline_math import SCIENTIFIC_MARKDOWN, is_table_line
+
+          inline = re.compile(r'`([^`\n]+)`')
+          for relative in SCIENTIFIC_MARKDOWN:
+              path = Path(relative)
+              in_fence = False
+              for line_number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+                  if line.lstrip().startswith('```'):
+                      in_fence = not in_fence
+                      continue
+                  if in_fence or is_table_line(line):
+                      continue
+                  for span in inline.findall(line):
+                      print(f'{relative}:{line_number}: `{span}`')
+          PY
+
       - name: Check the generated patch
         run: git diff --check
 
