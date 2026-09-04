@@ -237,13 +237,13 @@ language's synthesis wall time.
 
 | Resource | Magnitude stream | Direct phase stream |
 |---|---:|---:|
-| primary executions at fixed raw `l_infinity` accuracy/confidence | `O(log n)` | no larger asymptotically |
-| forward preparation depth | `Theta(n+N/(n+m))` | same |
-| reverse magnitude-frame depth | `Theta(n+N/(n+m))` | none |
-| clean compiler workspace | at most `m` | same pool |
+| primary executions at fixed raw $\ell_\infty$ accuracy/confidence | $O(\log n)$ | no larger asymptotically |
+| forward preparation depth | $\Theta\!\left(n+\frac{N}{n+m}\right)$ | same |
+| reverse magnitude-frame depth | $\Theta\!\left(n+\frac{N}{n+m}\right)$ | none |
+| clean compiler workspace | at most $m$ | same pool |
 | additional protocol ancilla | one | one |
-| classical decoding | `O(S+N min{S,n})` | `O(S+N)` |
-| materialized output length | `N-1` | `N`, with one gauge redundancy |
+| classical decoding | $O\!\left(S+N\min\{S,n\}\right)$ | $O(S+N)$ |
+| materialized output length | $N-1$ | $N$, with one gauge redundancy |
 
 ## 10. Boundary of the accounting
 
