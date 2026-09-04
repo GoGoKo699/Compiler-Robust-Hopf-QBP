@@ -1,75 +1,72 @@
-# Documentation guide
+# Documentation map
 
-[← Repository landing page](../README.md) · [Start the complete narrative](../REVIEW.md)
+[← Repository landing page](../README.md) · [Complete technical narrative](../REVIEW.md)
 
-The repository is intended to be read in a linear order. The files below are
-grouped by purpose so that the mathematical proof, executable evidence, and
-internal audit records do not compete for attention.
+The documentation is arranged in three passes.  The first pass states the
+problem and result.  The second contains the proof.  The third exposes the
+implementation, evidence, and provenance.
 
-## Main reading route
+## Pass I: orient the synthesis question
 
-| Order | Page | Purpose |
-|---:|---|---|
-| 1 | [Complete narrative](../REVIEW.md) | the entire argument from the synthesis problem to the matched QBP consequence |
-| 2 | [Minimal Hopf interface](HOPF_INTERFACE.md) | canonical domains, oriented incoming amplitudes, singular coordinates, marker columns, and addressed layers |
-| 3 | [Complete compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and explicitly routed all-workspace constructions with matching lower bounds |
-| 4 | [QBP consequence](QBP_CONSEQUENCE.md) | frame-safe substitution, statistical task boundaries, and the matched logical-depth statement |
-| 5 | [Verification and evidence](VERIFICATION.md) | implementation levels, exact operator checks, resource ledgers, and evidence boundaries |
-| 6 | [Source map](SOURCE_MAP.md) | fact-level dependencies on the two Hopf papers and the published/checked Yuan–Zhang versions |
-| 7 | [Related work](RELATED_WORK.md) | compiler lineage and the narrow contribution boundary |
-
-The [technical reading guide](INDEPENDENT_REVIEW_GUIDE.md) gives a shorter
-orientation for a first visit.
-
-## Focused construction pages
-
-| Page | Focus |
+| Page | Purpose |
 |---|---|
-| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | the complete clean-input operator contract and its adjoint consequence |
-| [Compiler boundaries](COMPILER_BOUNDARIES.md) | exact global and checkpoint counterexamples and the active-interface theorem |
-| [Strict-zero borrowed-suffix echo](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) | the complete `m=0` circuit and four-sector proof |
-| [Theorem overview](THEOREM_OVERVIEW.md) | compact theorem chain for reference |
-| [Unified compiler architecture](UNIFIED_YUAN_ZHANG_COMPILER.md) | the three schedules, explicit router, and source-policy summary |
-| [End-to-end QBP accounting](END_TO_END_QBP.md) | execution, decoder, workspace, accuracy, and access-model accounting |
+| [Landing page](../README.md) | one prepared column versus a prescribed unitary completion; theorem and schedule map |
+| [Technical reading map](INDEPENDENT_REVIEW_GUIDE.md) | a compact route through the proof and executable checks |
+| [Complete narrative](../REVIEW.md) | the full argument in one continuous reading |
 
-## Evidence and internal review
+## Pass II: inspect the proof by component
 
-| Page | Role |
+| Page | Purpose |
 |---|---|
-| [Claim support map](CLAIM_SUPPORT.md) | claim-by-claim proof, code, test, and scope boundary |
-| [Research status](RESEARCH_STATUS.md) | concise scientific status and peer-review revision record |
-| [Consolidated proof audit](PROOF_AUDIT.md) | internal reconstruction of the complete compiler proof, including the explicit router |
-| [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | focused internal audit of the borrowed-suffix circuit |
-| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | proof rederived from the operator target and imported primitives |
+| [Hopf interface](HOPF_INTERFACE.md) | the four geometric facts consumed by synthesis, plus the addressed-layer operator |
+| [Compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and routed schedules with matching lower bounds |
+| [QBP consequence](QBP_CONSEQUENCE.md) | exact frame-safe substitution, shared records, and the matched-program cost statement |
+| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | clean-subspace operator contract and adjoint consequence |
+| [Compiler boundaries](COMPILER_BOUNDARIES.md) | state-column and checkpoint-interface counterexamples |
+| [Strict-zero echo](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) | focused four-sector construction and zero-workspace resource proof |
 
-Internal audits remain visible because they record corrections and likely
-failure points. They are evidence about the checking process, not a substitute
-for independent technical judgment.
+The [theorem overview](THEOREM_OVERVIEW.md),
+[unified architecture summary](UNIFIED_YUAN_ZHANG_COMPILER.md), and
+[end-to-end accounting](END_TO_END_QBP.md) provide shorter reference views of
+the same result.
 
-## Literature support
+## Pass III: inspect evidence and provenance
 
-| Page | Role |
+| Page | Purpose |
 |---|---|
-| [Related work](RELATED_WORK.md) | readable comparison organized by mathematical role |
-| [Strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md) | focused technical comparison around the borrowed-suffix echo |
-| [Detailed search record](PRIOR_ART_SEARCH_2026_09.md) | search scope and source-by-source notes kept outside the main proof |
+| [Proof and executable correspondence](VERIFICATION.md) | what is represented locally, what is imported, and what every test checks |
+| [Source and dependency map](SOURCE_MAP.md) | exact state-preparation, Hopf, and QBP premises with local consumers |
+| [Related work](RELATED_WORK.md) | mathematical lineage and the narrow contribution boundary |
+| [Claim support map](CLAIM_SUPPORT.md) | claim-by-claim proof, implementation, test, and scope ledger |
 
-Machine-readable source versions, upstream reconciliation, and literature
-provenance are stored in [`../provenance/`](../provenance/).
+The internal reconstructions remain visible:
+
+| Record | Distinct role |
+|---|---|
+| [Consolidated proof audit](PROOF_AUDIT.md) | complete operator and resource reconstruction |
+| [Strict-zero audit](STRICT_ZERO_ECHO_AUDIT.md) | order, phase, borrowed-bit restoration, endpoints, and sums |
+| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem re-derived from the target operator and imported compiler results |
+
+Detailed search and provenance records are kept separately from the proof:
+
+- [strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md);
+- [technical search record](PRIOR_ART_SEARCH_2026_09.md);
+- [`provenance/`](../provenance/) machine-readable source records;
+- [`SYNC.md`](../SYNC.md) upstream synchronization policy.
 
 ## Executable route
 
-A compact orientation run is
-
 ```bash
 python scripts/reviewer_walkthrough.py
+python validate.py
+python scripts/unified_resource_ledger.py --n 12
+python scripts/strict_zero_echo_ledger.py --n 12
 ```
 
-The complete suite additionally checks the explicit CNOT/Fredkin router on
-arbitrary complex prefix–suffix-entangled inputs and verifies complete workspace
-cleanup. Reproduction commands are collected in
-[Verification and evidence](VERIFICATION.md).
+The short walkthrough is an orientation.  The complete suite additionally
+tests the explicit coherent router on arbitrary complex prefix–suffix-entangled
+inputs and verifies exact workspace cleanup.
 
 ---
 
-[← Repository landing page](../README.md) · [Start the complete narrative →](../REVIEW.md)
+[← Repository landing page](../README.md) · [Complete technical narrative →](../REVIEW.md)
