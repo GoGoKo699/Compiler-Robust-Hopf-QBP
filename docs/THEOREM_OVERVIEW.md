@@ -12,7 +12,7 @@ Let
 N=2^n
 ```
 
-and let `m>=0` be the number of clean ancillary qubits.  The exact logical
+and let $m\geq 0$ be the number of clean ancillary qubits.  The exact logical
 model uses arbitrary one-qubit gates and CNOTs with all-to-all connectivity.
 
 ## 1. A prescribed completion
@@ -34,11 +34,11 @@ For unrestricted magnitude angles,
 g_{j,j}=a_j^2.
 ```
 
-On the canonical Hopf domains, `a_j>=0` and equals the principal metric square
+On the canonical Hopf domains, $a_j\geq 0$ and equals the principal metric square
 root.  At zero metric weight, the raw differential vanishes while the complete
 parameter tuple still selects a unit orthogonal marker-frame continuation.
 
-The global gradient circuit applies `W_R^dagger`.  A compiler must therefore
+The global gradient circuit applies $W_{\mathbb R}^{\dagger}$.  A compiler must therefore
 preserve the complete clean-input action,
 
 ```math
@@ -52,13 +52,13 @@ gives
 \widetilde W^{\dagger}J=JW^{\dagger}.
 ```
 
-An exact two-qubit example preserves `W|0^n>` while moving two marker columns
+An exact two-qubit example preserves $W\lvert 0^n\rangle$ while moving two marker columns
 and changing the decoded gradient.
 
 ## 2. Addressed Hopf layers
 
-At depth `d`, split a basis label into prefix `p`, target `x`, and lower suffix
-`z`, where `|z|=n-d-1`.  The complete layer is
+At depth $d$, split a basis label into prefix $p$, target $x$, and lower suffix
+$z$, where $\lvert z\rvert=n-d-1$.  The complete layer is
 
 ```math
 L_d^{(n)}
@@ -83,8 +83,8 @@ all-zero predicate.  This structure is the input to every compiler schedule.
 
 ## 3. Strict zero workspace
 
-For `d<n-1`, split the suffix into one original bit `b` and the remaining
-string `r`.  Put
+For $d<n-1$, split the suffix into one original bit $b$ and the remaining
+string $r$.  Put
 
 ```math
 h(r)=[r=0],
@@ -92,7 +92,7 @@ h(r)=[r=0],
 C_p=R_y(\theta_{d,p}/2).
 ```
 
-Four predicate toggles of `b`, two controlled half-angle UCGs, and two target
+Four predicate toggles of $b$, two controlled half-angle UCGs, and two target
 CNOT echoes use
 
 ```math
@@ -102,8 +102,8 @@ XC_pX=C_p^{-1}.
 ```
 
 The original complete-zero-suffix sector receives the desired rotation.  The
-other three sectors receive identity, and `b` is restored exactly.  Each
-half-angle UCG has total width `d+2`, so
+other three sectors receive identity, and $b$ is restored exactly.  Each
+half-angle UCG has total width $d+2$, so
 
 ```math
 S(L_d)=O(2^d+n-d),
@@ -134,10 +134,10 @@ For
 1\leq m<4n,
 ```
 
-the resulting `O(n^2)` sequential predicate term is absorbed by
-`N/(n+m)`, giving the target frontier directly.
+the resulting $O\!\left(n^2\right)$ sequential predicate term is absorbed by
+$\frac{N}{n+m}$, giving the target frontier directly.
 
-For larger workspace, cut the tree after `t` depths and set
+For larger workspace, cut the tree after $t$ depths and set
 
 ```math
 B=2^t,
@@ -163,7 +163,7 @@ R_t^{(n)}
 ```
 
 A clean binary–one-hot decoder implements the conditioned prefix with
-`3B-2-t` work qubits, `O(t)` decoder depth, and `O(B)` size.
+$3B-2-t$ work qubits, $O\!\left(t\right)$ decoder depth, and $O\!\left(B\right)$ size.
 
 An explicit CNOT/Fredkin router moves the original suffix and one activation
 token to the prefix-selected branch.  Its exact principal counts are
@@ -187,19 +187,19 @@ The prefix and tail both fit within
 
 clean ancillary qubits.
 
-Choosing the largest feasible cut for `m>=4n` yields
+Choosing the largest feasible cut for $m\geq 4n$ yields
 
 ```math
 \frac{2^s}{s}
 =O\left(\frac{N}{n+m}\right),
 ```
 
-including the separate `s=1` endpoint.  Hence the routed schedule also has
-`O(N)` size and `O(n+N/(n+m))` depth.
+including the separate $s=1$ endpoint.  Hence the routed schedule also has
+$O\!\left(N\right)$ size and $O(n+\frac{N}{n+m})$ depth.
 
 ## 5. Matching lower bounds
 
-The first frame column covers an open real-state family of dimension `N-1`.
+The first frame column covers an open real-state family of dimension $N-1$.
 Parameter capacity gives
 
 ```math
@@ -211,10 +211,10 @@ D_{\mathbb R}(n,m)
 =\Omega\left(\frac{N}{n+m}\right).
 ```
 
-The backward light cones of the `n` system outputs give the independent
-`Omega(n)` term.  At `m=0`, `Omega(N/n)` already dominates `n`.
+The backward light cones of the $n$ system outputs give the independent
+$\Omega\!\left(n\right)$ term.  At $m=0$, $\Omega\!\left(\frac{N}{n}\right)$ already dominates $n$.
 
-Therefore, for every `m>=0`,
+Therefore, for every $m\geq 0$,
 
 ```math
 \boxed{
@@ -239,7 +239,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}
 ```
 
-is one exact total-width-`n` UCG.  It reuses the real-frame work pool
+is one exact total-width-$n$ UCG.  It reuses the real-frame work pool
 sequentially.  Thus
 
 ```math
@@ -264,7 +264,7 @@ magnitude stream uses
 O(\log n)=O(\log\log M)
 ```
 
-independent executions for `M=Theta(N)` coordinates.
+independent executions for $M=\Theta\!\left(N\right)$ coordinates.
 
 The scalar and gradient costs are compared as matched general-family programs
 with the same forward preparation and controlled observable.  Because the

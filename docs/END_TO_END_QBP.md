@@ -20,11 +20,11 @@ N=2^n,
 M=\Theta(N),
 ```
 
-where `M` is the number of Hopf coordinates.
+where $M$ is the number of Hopf coordinates.
 
 ## 1. Compiled frame
 
-For every clean-workspace budget `m>=0`,
+For every clean-workspace budget $m\geq 0$,
 
 ```math
 S_{\mathrm{frame}}(n,m)=\Theta(N),
@@ -37,7 +37,7 @@ D_{\mathrm{frame}}(n,m)
 
 The real compiler uses:
 
-- the borrowed-suffix echo at `m=0`;
+- the borrowed-suffix echo at $m=0$;
 - the direct clean-flag schedule for small positive workspace;
 - the tree cut, binary–one-hot decoder, and coherent router for larger
   workspace.
@@ -61,11 +61,11 @@ E_O(\boldsymbol\theta)
 g_{j,j}=a_j^2.
 ```
 
-On the canonical domains, `a_j>=0` and equals the principal metric square root.
+On the canonical domains, $a_j\geq 0$ and equals the principal metric square root.
 At zero metric weight, the raw coordinate derivative is zero.
 
 The global magnitude circuit prepares reference and objective-response branches,
-applies the inverse frame, and measures one branch bit and one `n`-bit system
+applies the inverse frame, and measures one branch bit and one $n$-bit system
 string.  The same outcome contributes a parity record to every magnitude
 coordinate.
 
@@ -81,7 +81,7 @@ The primary finite-shot target is
 \leq\varepsilon_{\infty}
 ```
 
-with failure probability at most `delta`.
+with failure probability at most $\delta$.
 
 The magnitude records have fixed Euclidean norm at each tree depth.  The
 sufficient execution count is
@@ -124,17 +124,17 @@ zero-sum gauge subspace.
 
 The complete complex coordinate output combines:
 
-1. the inverse-frame magnitude stream using `W_(C,mag)`;
+1. the inverse-frame magnitude stream using $W_{\mathbb C,\mathrm{mag}}$;
 2. the direct leaf-phase stream.
 
 ## 5. Matched logical time
 
 Let
 
-- `D_prep(n,m)` be the depth of the general-family forward preparation;
-- `D_O` be the depth charged for the same controlled observable;
-- `D_frame(n,m)` be the depth of one frame-safe inverse frame;
-- `S_E` and `S_grad` be the execution counts for the declared scalar and raw
+- $D_{\mathrm{prep}}(n,m)$ be the depth of the general-family forward preparation;
+- $D_O$ be the depth charged for the same controlled observable;
+- $D_{\mathrm{frame}}(n,m)$ be the depth of one frame-safe inverse frame;
+- $S_E$ and $S_{\nabla}$ be the execution counts for the declared scalar and raw
   coordinatewise targets.
 
 Define
@@ -173,12 +173,12 @@ At fixed comparable scalar and raw-coordinate accuracy and confidence,
 
 The comparison uses the same state family and controlled observable.  It does
 not compare against an instance-specialized scalar shortcut and does not include
-classical materialization of the `M`-entry gradient.
+classical materialization of the $M$-entry gradient.
 
 ## 6. Quantum workspace
 
-The frame compiler uses at most `m` clean qubits and returns them to zero.  The
-real frame and phase UCG reuse the same pool sequentially.  At `m=0`, both are
+The frame compiler uses at most $m$ clean qubits and returns them to zero.  The
+real frame and phase UCG reuse the same pool sequentially.  At $m=0$, both are
 ancilla free.
 
 The interference protocol adds one branch ancilla beyond the matched scalar
@@ -187,7 +187,7 @@ not ancillary workspace.
 
 ## 7. Classical magnitude decoding
 
-For `S` measured pairs `(b_s,y_s)`, direct record-wise decoding costs
+For $S$ measured pairs $(b_s,y_s)$, direct record-wise decoding costs
 
 ```math
 O(SN).
@@ -208,8 +208,8 @@ T_{\mathrm{mag}}
 }
 ```
 
-At fixed raw-coordinate accuracy, `S=O(log n)`, so dense materialization costs
-`O(N log n)`.  The output itself has `N-1` entries.
+At fixed raw-coordinate accuracy, $S=O\!\left(log n\right)$, so dense materialization costs
+$O\!\left(N log n\right)$.  The output itself has $N-1$ entries.
 
 The phase stream accumulates directly into signed leaf bins in
 
@@ -217,17 +217,17 @@ The phase stream accumulates directly into signed leaf bins in
 O(S+N)
 ```
 
-time and `O(N)` output storage.
+time and $O\!\left(N\right)$ output storage.
 
 ## 8. Classical compiler preprocessing
 
-The Hopf tree has `N-1` magnitude angles.
+The Hopf tree has $N-1$ magnitude angles.
 
-- Half-angle tables for the strict-zero schedule are generated in `O(N)` work.
-- A routed cut partitions the angles into one prefix list and `2^t` subtree
-  lists in `O(N)` work.
-- The phase UCG pairs `N` leaf phases in `O(N)` work and storage.
-- The explicit decoder and router schedules are generated from `n,t` and the
+- Half-angle tables for the strict-zero schedule are generated in $O\!\left(N\right)$ work.
+- A routed cut partitions the angles into one prefix list and $2^t$ subtree
+  lists in $O\!\left(N\right)$ work.
+- The phase UCG pairs $N$ leaf phases in $O\!\left(N\right)$ work and storage.
+- The explicit decoder and router schedules are generated from $n,t$ and the
   chosen register layout.
 
 The logical depth theorem counts the resulting quantum circuit, not the host

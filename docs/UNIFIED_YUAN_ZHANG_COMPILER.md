@@ -12,7 +12,7 @@ Let
 N=2^n.
 ```
 
-For every clean-workspace budget `m>=0`,
+For every clean-workspace budget $m\geq 0$,
 
 ```math
 S_{\mathbb R}(n,m)
@@ -28,7 +28,7 @@ D_{\mathbb R}(n,m)
 
 ## 1. The local synthesis target
 
-At tree depth `d`, the Hopf frame applies
+At tree depth $d$, the Hopf frame applies
 
 ```math
 L_d^{(n)}
@@ -69,13 +69,13 @@ predecessor and original source of selected ingredients.
 | $1\leq m<4n$ | direct clean flag | one shared suffix predicate reduces the UCG to prefix plus flag |
 | $m\geq4n$ | tree cut and coherent routing | $2^t$ disjoint subtree frames run in parallel |
 
-The threshold `4n` is selected for a uniform asymptotic proof rather than as a
+The threshold $4n$ is selected for a uniform asymptotic proof rather than as a
 finite-size tuning rule.
 
 ## 4. Strict zero workspace
 
-For one nonfinal depth, split the lower suffix into original bit `b` and
-remaining string `r`.  Set
+For one nonfinal depth, split the lower suffix into original bit $b$ and
+remaining string $r$.  Set
 
 ```math
 h(r)=[r=0],
@@ -107,7 +107,7 @@ XC_pX=C_p^{-1}.
 The original complete-zero-suffix sector receives the full rotation.  The other
 three sectors receive identity, and the original suffix bit is restored.
 
-Each half-angle UCG has total width `d+2`; the predicate toggles are
+Each half-angle UCG has total width $d+2$; the predicate toggles are
 ancilla-free multi-controlled X gates.  Therefore
 
 ```math
@@ -135,12 +135,12 @@ S=O(N),
 D=O\left(n^2+\frac{N}{n+m}\right).
 ```
 
-For `1<=m<4n`, the `N/(n+m)` term absorbs `n^2`, so no routed construction is
+For $1\leq m<4n$, the $\frac{N}{n+m}$ term absorbs $n^2$, so no routed construction is
 needed.
 
 ## 6. Tree cut and conditioned prefix
 
-For larger workspace, cut after `t` depths and define
+For larger workspace, cut after $t$ depths and define
 
 ```math
 B=2^t,
@@ -166,12 +166,12 @@ R_t^{(n)}
 ```
 
 A reversible binary–one-hot decoder realizes the conditioned prefix using
-`3B-2-t` clean qubits, `O(t)` decoder depth, and `O(B)` size.
+$3B-2-t$ clean qubits, $O\!\left(t\right)$ decoder depth, and $O\!\left(B\right)$ size.
 
 ## 7. Coherent routed tail
 
-Treat each branch's `s` data wires and activation token as a block of width
-`s+1`.  At routing level `j`, prefix bit `j` controls `2^j(s+1)` disjoint
+Treat each branch's $s$ data wires and activation token as a block of width
+$s+1$.  At routing level $j$, prefix bit $j$ controls $2^j(s+1)$ disjoint
 Fredkin gates.  The exact counts are
 
 ```math
@@ -203,12 +203,12 @@ For the largest feasible cut, the subtree term obeys
 =O\left(\frac{N}{n+m}\right),
 ```
 
-including the separate `s=1` endpoint.  The routed schedule therefore reaches
+including the separate $s=1$ endpoint.  The routed schedule therefore reaches
 the target frontier.
 
 ## 8. Complex magnitude frame
 
-The leaf-phase diagonal is one total-width-`n` UCG:
+The leaf-phase diagonal is one total-width-$n$ UCG:
 
 ```math
 D_{\mathrm{ph}}
@@ -220,7 +220,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-It is composed sequentially with `W_R` and reuses the same clean workspace.
+It is composed sequentially with $W_{\mathbb R}$ and reuses the same clean workspace.
 The direct leaf-phase record remains a separate QBP stream.
 
 ## 9. Implementation map

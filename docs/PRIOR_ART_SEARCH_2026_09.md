@@ -11,10 +11,10 @@ match is not evidence that none exists.
 
 The searched construction is the following Hopf-specific reduction:
 
-> At addressed tree depth `d`, borrow one original lower-suffix data qubit as a
+> At addressed tree depth $d$, borrow one original lower-suffix data qubit as a
 > restored predicate carrier, use four predicate toggles and a half-angle echo,
-> aggregate every prefix-dependent rotation into two total-width-`d+2` UCGs,
-> and obtain `Theta(2**n)` size and `Theta(n+2**n/n)` depth for the complete
+> aggregate every prefix-dependent rotation into two total-width-$d+2$ UCGs,
+> and obtain $\Theta\!\left(2^n\right)$ size and $\Theta\!\left(n+\frac{2^n}{n}\right)$ depth for the complete
 > strict-zero Hopf differential frame.
 
 The search separates novelty of this aggregate construction from novelty of its
@@ -49,7 +49,7 @@ Review A* **52**, 3457--3467 (1995),
 **Overlap.** The paper establishes the use of roots of a target unitary,
 controlled-NOT gates, and conjugation identities in exact controlled-unitary
 decompositions. It is the appropriate lineage for the algebraic pattern
-`C**2=U` together with an involution that maps `C` to `C**(-1)`.
+$C^2=U$ together with an involution that maps $C$ to $C^{-1}$.
 
 **Difference.** It does not present the Hopf addressed-layer problem, the
 zero-suffix predicate, or the two-UCG aggregation across all prefix values.
@@ -157,7 +157,7 @@ gates without ancillary qubits and is directly relevant to individual
 conditioned rotations.
 
 **Difference.** Applying one multi-controlled rotation separately for each of
-the `2**d` prefixes would not by itself provide the reviewed aggregate depth
+the $2^d$ prefixes would not by itself provide the reviewed aggregate depth
 bound. The Hopf construction collects all prefix values into two UCGs and pays
 the long suffix predicate only a constant number of times per tree depth.
 
@@ -229,10 +229,10 @@ published or preprint construction with all of the following features at once:
 1. the borrowed wire is one of the original logical suffix bits;
 2. the desired operation depends on that wire's original value;
 3. the unwanted unknown-bit branch is cancelled by a half-angle/Pauli echo;
-4. all `2**d` prefix-dependent rotations are aggregated into two total-width-
-   `d+2` UCGs;
-5. summing the Hopf tree gives an exact complete-frame `Theta(2**n)` size and
-   `Theta(n+2**n/n)` depth result.
+4. all $2^d$ prefix-dependent rotations are aggregated into two total-width-
+   $d+2$ UCGs;
+5. summing the Hopf tree gives an exact complete-frame $\Theta\!\left(2^n\right)$ size and
+   $\Theta\!\left(n+\frac{2^n}{n}\right)$ depth result.
 
 This is a **negative result of a bounded search**, not a proof of novelty or
 priority. Equivalent circuits may appear under different terminology, and
@@ -244,8 +244,8 @@ The manuscript may claim the following, subject to independent review:
 
 > For the addressed Hopf differential frame, an original suffix data qubit can
 > be used as a restored in-place predicate carrier. A four-toggle half-angle
-> echo reduces all prefix-dependent rotations at depth `d` to two total-width-
-> `d+2` UCGs and linear-size predicate toggles. This yields an exact
+> echo reduces all prefix-dependent rotations at depth $d$ to two total-width-
+> $d+2$ UCGs and linear-size predicate toggles. This yields an exact
 > ancilla-free complete-frame compiler attaining the state-preparation-optimal
 > size--depth frontier.
 
@@ -268,7 +268,7 @@ Before submission, an independent circuit-synthesis specialist should:
 3. search theses, patents, and software implementations for equivalent in-place
    predicate carriers;
 4. compare the reviewed circuit up to gate reversal, control inversion,
-   relabeling, and replacement of `X` by another anticommuting involution;
+   relabeling, and replacement of $X$ by another anticommuting involution;
 5. approve or narrow the Hopf-specific novelty statement.
 
 Until then, the repository should describe the construction as an internally

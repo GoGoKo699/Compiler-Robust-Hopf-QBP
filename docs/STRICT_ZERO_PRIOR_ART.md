@@ -3,15 +3,15 @@
 ## Purpose
 
 This note records the current technical prior-art assessment for the exact
-`m=0` Hopf-frame compiler. It is deliberately conservative. It does not claim
+$m=0$ Hopf-frame compiler. It is deliberately conservative. It does not claim
 that the abstract echo is a newly invented universal identity. This note is not
 a legal novelty opinion.
 
 ## 1. The project construction
 
-At nonfinal Hopf depth `d`, the desired layer applies a prefix-selected
-`R_y(theta_p)` exactly when the complete lower suffix is zero. One original
-suffix data qubit `b` is borrowed, while `r` denotes the remaining suffix and
+At nonfinal Hopf depth $d$, the desired layer applies a prefix-selected
+$R_y(\theta_p)$ exactly when the complete lower suffix is zero. One original
+suffix data qubit $b$ is borrowed, while $r$ denotes the remaining suffix and
 
 ```math
 h(r)=[r=0].
@@ -36,7 +36,7 @@ controlled_b(C_p)
 T_h
 ```
 
-uses `T_h` to toggle `b` iff `h(r)=1`. It relies on
+uses $T_h$ to toggle $b$ iff $h(r)=1$. It relies on
 
 ```math
 C_p^2=R_y(\theta_p),
@@ -44,10 +44,10 @@ C_p^2=R_y(\theta_p),
 X C_p X=C_p^{-1}.
 ```
 
-The unwanted original-`b=1` sector receives a cancelling word, the desired
-original-full-suffix-zero sector receives `R_y(theta_p)`, and `b` is restored.
+The unwanted original-$b=1$ sector receives a cancelling word, the desired
+original-full-suffix-zero sector receives $R_y(\theta_p)$, and $b$ is restored.
 All prefix-dependent half-angle rotations are aggregated into two UCGs of total
-width `d+2`.
+width $d+2$.
 
 ## 2. Controlled-unitary square roots
 
@@ -59,7 +59,7 @@ multi-controlled-unitary decompositions. The broad algebraic pattern
 V^2=U
 ```
 
-combined with conjugation to reverse `V` is therefore established circuit
+combined with conjugation to reverse $V$ is therefore established circuit
 technology rather than a new theme introduced here.
 
 Claudon et al., "Polylogarithmic-depth controlled-NOT gates without ancilla
@@ -128,10 +128,10 @@ restricted-UCG work. This absence is not a proof of novelty.
 There is substantial literature on ancilla-free multi-controlled `SU(2)` gates
 and multi-controlled-NOT gates. Such results can implement one conditioned
 rotation efficiently in the number of controls, but applying them independently
-for all `2**d` prefix values may introduce an extra factor in size or depth.
+for all $2^d$ prefix values may introduce an extra factor in size or depth.
 
 The Hopf compiler instead aggregates all prefix values into two total-width-
-`d+2` UCGs, preserving the geometric `O(2**d)` contribution of one tree depth.
+$d+2$ UCGs, preserving the geometric $O\!\left(2^d\right)$ contribution of one tree depth.
 
 ## 7. Claim-safe novelty statement
 
@@ -139,10 +139,10 @@ The strongest currently defensible statement is:
 
 > For the addressed Hopf frame, one original suffix data qubit can serve as a
 > restored predicate carrier. A four-toggle half-angle echo reduces all
-> prefix-dependent rotations at depth `d` to two total-width-`d+2` UCGs and
+> prefix-dependent rotations at depth $d$ to two total-width-$d+2$ UCGs and
 > linear-size predicate toggles. Summing the tree depths yields an exact
-> ancilla-free complete-frame compiler with `Theta(2**n)` size and
-> `Theta(n+2**n/n)` depth.
+> ancilla-free complete-frame compiler with $\Theta\!\left(2^n\right)$ size and
+> $\Theta\!\left(n+\frac{2^n}{n}\right)$ depth.
 
 The following statements should not be used:
 

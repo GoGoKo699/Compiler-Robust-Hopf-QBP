@@ -63,7 +63,7 @@ contained in `Hopf-QBP`.
 
 ## 3. Inherited QBP interface
 
-The tracked `Hopf-QBP/main` baseline is
+The tracked $Hopf-QBP/main$ baseline is
 
 ```text
 faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582

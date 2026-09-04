@@ -8,8 +8,8 @@ provenance for the chart and QBP interfaces it reuses.
 
 | Material | Authoritative repository |
 |---|---|
-| Published-chart conventions, established gradient protocols, direct-angle ledger, Möttönen robustness, and statistical task boundaries | `GoGoKo699/Hopf-QBP` |
-| Frame-safe compilation, strict-zero echo, routed all-workspace compiler, output-sensitive decoding, and the new compiler theorem | `GoGoKo699/Compiler-Robust-Hopf-QBP` |
+| Published-chart conventions, established gradient protocols, direct-angle ledger, Möttönen robustness, and statistical task boundaries | $GoGoKo699/Hopf-QBP$ |
+| Frame-safe compilation, strict-zero echo, routed all-workspace compiler, output-sensitive decoding, and the new compiler theorem | $GoGoKo699/Compiler-Robust-Hopf-QBP$ |
 
 A correction to a shared mathematical foundation must be reviewed in both
 repositories. New compiler results are not copied back into `Hopf-QBP` unless
@@ -19,10 +19,10 @@ they become necessary to interpret or correct an established claim there.
 
 The provenance record tracks:
 
-- `GoGoKo699/Hopf-QBP/main` at
+- $GoGoKo699/Hopf-QBP/main$ at
   `faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582`;
 - the historical research seed
-  `GoGoKo699/Hopf-QBP/ancilla-depth-robustness-2026` at
+  $GoGoKo699/Hopf-QBP/ancilla-depth-robustness-2026$ at
   `9cc564f493caff62b847fc362df522a68c6e83bf`.
 
 The compiler repository was originally seeded from earlier commits. Exact file
@@ -31,7 +31,7 @@ head does not pretend that old files were recopied from the newer commit.
 
 ## Reconciliation completed on 2026-09-03
 
-The ten commits between the former tracked `Hopf-QBP/main` baseline
+The ten commits between the former tracked $Hopf-QBP/main$ baseline
 
 ```text
 9957815767ef3649275960fd5e860fb91725ff26
@@ -91,5 +91,5 @@ The audit never modifies either repository automatically.
 The branch `ancilla-depth-robustness-2026` was refactored rather than copied
 byte for byte. Package names, documentation, proofs, and tests were replaced as
 the compiler theorem developed. The frozen branch
-`near-optimal-audited-2026-09` preserves the earlier cumulative proof package
+$near-optimal-audited-2026-09$ preserves the earlier cumulative proof package
 for provenance but is not an active compiler path.

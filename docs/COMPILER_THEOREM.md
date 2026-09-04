@@ -14,13 +14,13 @@ Let
 N=2^n
 ```
 
-and let `m>=0` be the number of clean ancillary qubits.  The circuit model is:
+and let $m\geq 0$ be the number of clean ancillary qubits.  The circuit model is:
 
 - arbitrary one-qubit gates;
 - CNOTs;
 - all-to-all logical connectivity;
 - exact unitary implementation;
-- clean ancillary qubits initialized in `|0>` and returned exactly to `|0>`.
+- clean ancillary qubits initialized in $\lvert 0\rangle$ and returned exactly to $\lvert 0\rangle$.
 
 Toffoli, Fredkin, controlled one-qubit gates, and the fixed-width controlled
 Givens rotations used as readable primitives have exact constant-size,
@@ -55,8 +55,8 @@ J_m|\varphi\rangle
 
 ### Definition: frame-safe implementation
 
-A unitary `W_tilde` on the system and `m` clean work qubits is frame-safe for
-`W` when
+A unitary $\widetilde W$ on the system and $m$ clean work qubits is frame-safe for
+$W$ when
 
 ```math
 \widetilde WJ_m=J_mW.
@@ -69,7 +69,7 @@ This complete clean-input equality implies
 =J_mW^{\dagger}
 ```
 
-because the clean subspace is reducing for `W_tilde`.
+because the clean subspace is reducing for $\widetilde W$.
 
 The real Hopf frame is
 
@@ -78,7 +78,7 @@ W_{\mathbb R}^{(n)}
 =L_{n-1}^{(n)}\cdots L_0^{(n)},
 ```
 
-where, at depth `d`,
+where, at depth $d$,
 
 ```math
 L_d^{(n)}
@@ -102,8 +102,8 @@ W_{\mathbb C,\mathrm{mag}}
 
 ### Main theorem: optimal exact Hopf-frame compilation
 
-For every integer `n>=1` and `m>=0`, the real Hopf differential frame has an
-exact frame-safe implementation using at most `m` clean ancillary qubits with
+For every integer $n\geq 1$ and $m\geq 0$, the real Hopf differential frame has an
+exact frame-safe implementation using at most $m$ clean ancillary qubits with
 
 ```math
 S_{\mathbb R}(n,m)=\Theta(2^n)
@@ -132,14 +132,14 @@ bounds in Section 9.
 
 ## 4. Strict zero workspace
 
-Assume `m=0` and fix a nonfinal depth `d<n-1`.  Write the system register as
+Assume $m=0$ and fix a nonfinal depth $d<n-1$.  Write the system register as
 
 ```math
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R,
 ```
 
-where `p` contains the `d` prefix bits, `x` is the Hopf target, `b` is the first
-lower-suffix bit, and `r` contains the remaining `n-d-2` suffix bits.
+where $p$ contains the $d$ prefix bits, $x$ is the Hopf target, $b$ is the first
+lower-suffix bit, and $r$ contains the remaining $n-d-2$ suffix bits.
 
 Set
 
@@ -149,7 +149,7 @@ h(r)=[r=0],
 C_p=R_y(\theta_{d,p}/2),
 ```
 
-and let `T_h` toggle `b` when `h(r)=1`.
+and let $T_h$ toggle $b$ when $h(r)=1$.
 
 ### Lemma Z: borrowed-suffix echo
 
@@ -166,7 +166,7 @@ controlled_b(C_p)
 T_h
 ```
 
-implements `L_d^(n)` exactly and restores every system qubit.
+implements $L_d^{n}$ exactly and restores every system qubit.
 
 #### Proof
 
@@ -178,7 +178,7 @@ C_p^2=R_y(\theta_{d,p}),
 XC_pX=C_p^{-1}.
 ```
 
-For fixed `p` and `r`, the four invariant sectors are:
+For fixed $p$ and $r$, the four invariant sectors are:
 
 | $h(r)$ | original $b$ | chronological target word | net action | final $b$ |
 |---:|---:|---|---|---:|
@@ -189,15 +189,15 @@ For fixed `p` and `r`, the four invariant sectors are:
 
 The active sector is exactly the sector in which the original complete suffix
 `br` is zero.  Every other sector receives identity.  The borrowed bit is
-restored and no sector-dependent phase appears.  Orthogonality of the `p,r`
+restored and no sector-dependent phase appears.  Orthogonality of the $p,r$
 sectors gives the complete operator identity on arbitrary superpositions and
 entangled inputs.  ∎
 
 ### Proposition Z: strict-zero resources
 
-Each controlled `C_p` is one UCG with:
+Each controlled $C_p$ is one UCG with:
 
-- `d` prefix controls;
+- $d$ prefix controls;
 - the borrowed bit as one additional control;
 - one target.
 
@@ -207,8 +207,8 @@ Its total width is
 q=d+2.
 ```
 
-The remaining suffix bits participate only in `T_h`.  Yuan–Zhang Lemma 5
-implements `T_h` without an ancillary qubit.  Therefore
+The remaining suffix bits participate only in $T_h$.  Yuan–Zhang Lemma 5
+implements $T_h$ without an ancillary qubit.  Therefore
 
 ```math
 S(L_d)=O(2^d+n-d),
@@ -219,7 +219,7 @@ D(L_d)
 =O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-The final depth has no suffix and is one total-width-`n` UCG.  Consequently,
+The final depth has no suffix and is one total-width-$n$ UCG.  Consequently,
 
 ```math
 S(W_{\mathbb R})
@@ -234,19 +234,19 @@ Furthermore,
 =O(2^n/n)
 ```
 
-and `n^2=O(2^n/n)`, so
+and $n^2=O\!\left(\frac{2^n}{n}\right)$, so
 
 ```math
 D(W_{\mathbb R})
 =O\left(n+\frac{2^n}{n}\right).
 ```
 
-For `n=1`, only the final one-qubit rotation remains.  For `d=n-2`, `r` is
-empty and `T_h=X_b`; Lemma Z is unchanged.
+For $n=1$, only the final one-qubit rotation remains.  For $d=n-2$, $r$ is
+empty and $T_h=X_b$; Lemma Z is unchanged.
 
 ## 5. Small positive workspace
 
-Assume `m>=1`.  At each nonfinal depth, compute the complete lower-suffix-zero
+Assume $m\geq 1$.  At each nonfinal depth, compute the complete lower-suffix-zero
 predicate into one reusable clean flag, apply one UCG selected by the prefix and
 flag, and uncompute the flag.
 
@@ -267,11 +267,11 @@ D_{\mathrm{direct}}(n,m)
 
 #### Proof
 
-The nonfinal depth-`d` UCG has total width `d+2` and may use `m-1` additional
-clean qubits.  The final depth has no predicate flag and may use all `m` clean
-qubits.  Yuan–Zhang Lemma 6 gives a geometric `O(2^n)` total size and the
+The nonfinal depth-$d$ UCG has total width $d+2$ and may use $m-1$ additional
+clean qubits.  The final depth has no predicate flag and may use all $m$ clean
+qubits.  Yuan–Zhang Lemma 6 gives a geometric $O\!\left(2^n\right)$ total size and the
 displayed UCG depth term.  The compute–uncompute predicates contribute
-`O(n^2)` total size and depth.  ∎
+$O\!\left(n^2\right)$ total size and depth.  ∎
 
 If
 
@@ -279,7 +279,7 @@ If
 1\leq m<4n,
 ```
 
-then `n+m<5n`.  Since `n^3=O(2^n)`,
+then $n+m<5n$.  Since $n^3=O\!\left(2^n\right)$,
 
 ```math
 n^2=O\left(\frac{2^n}{n+m}\right),
@@ -289,7 +289,7 @@ so Proposition D already attains the target depth throughout this regime.
 
 ## 6. Exact tree cut
 
-For a cut after the first `t` depths, define
+For a cut after the first $t$ depths, define
 
 ```math
 B=2^t,
@@ -315,7 +315,7 @@ F_t^{(n)}
 #### Proof
 
 Every layer above the cut contains the complete external suffix in its
-zero-suffix predicate.  On the sector `|0^s>`, these layers form the `t`-qubit
+zero-suffix predicate.  On the sector $\lvert 0^s\rangle$, these layers form the $t$-qubit
 Hopf frame.  On the orthogonal complement, every layer is identity.  ∎
 
 ### Lemma T2: tail direct sum
@@ -325,7 +325,7 @@ R_t^{(n)}
 =\bigoplus_{r=0}^{B-1}W_s^{(r)}.
 ```
 
-A local node `(ell,u)` in branch `r` uses global breadth-first node
+A local node $(\ell,u)$ in branch $r$ uses global breadth-first node
 
 ```math
 2^{t+\ell}+r2^\ell+u.
@@ -333,7 +333,7 @@ A local node `(ell,u)` in branch `r` uses global breadth-first node
 
 #### Proof
 
-Every layer below the cut preserves the `t`-bit prefix.  Each fixed-prefix
+Every layer below the cut preserves the $t$-bit prefix.  Each fixed-prefix
 subspace is invariant, and the restricted action is exactly the Hopf frame of
 that subtree with the displayed angle map.  ∎
 
@@ -341,7 +341,7 @@ that subtree with the displayed angle map.  ∎
 
 ### Lemma P: clean binary–one-hot decoder
 
-For `B=2^t`, there is an explicit reversible X/CNOT/Toffoli circuit satisfying
+For $B=2^t$, there is an explicit reversible X/CNOT/Toffoli circuit satisfying
 
 ```math
 D_t|x\rangle|0\cdots0\rangle
@@ -354,7 +354,7 @@ It uses
 3B-2-t
 ```
 
-clean ancillary qubits, has depth `11t-4=O(t)`, and has size `O(B)`.
+clean ancillary qubits, has depth $11t-4=O\!\left(t\right)$, and has size $O\!\left(B\right)$.
 
 #### Register count
 
@@ -372,7 +372,7 @@ exact inverse.
 
 On the one-hot code, the Givens pairs at each Hopf depth are disjoint.  Computing
 and copying the external suffix-zero predicate, applying the fixed-width
-controlled Givens rotations, and reversing the decoder implements `F_t^(n)` in
+controlled Givens rotations, and reversing the decoder implements $F_t^{n}$ in
 
 ```math
 S(F_t)=O(B+s),
@@ -384,7 +384,7 @@ D(F_t)=O(n).
 
 ### Lemma R: explicit coherent router
 
-There is an exact route–operate–unroute circuit for `R_t^(n)` using:
+There is an exact route–operate–unroute circuit for $R_t^{n}$ using:
 
 ```math
 (B-1)s
@@ -404,10 +404,10 @@ C=(B-1)(s+1)-t
 
 copied routing controls.
 
-Treat each branch's `s` data qubits and one token as a block of width `s+1`.
-At routing level `j`, prefix bit `j` controls `2^j(s+1)` disjoint Fredkin gates.
-One original prefix wire is available, so `2^j(s+1)-1` clean copies are needed.
-Summing over `j=0,...,t-1` gives `C`.  The forward Fredkin count is
+Treat each branch's $s$ data qubits and one token as a block of width $s+1$.
+At routing level $j$, prefix bit $j$ controls $2^j(s+1)$ disjoint Fredkin gates.
+One original prefix wire is available, so $2^j(s+1)-1$ clean copies are needed.
+Summing over `j=0,...,t-1` gives $C$.  The forward Fredkin count is
 
 ```math
 F=(B-1)(s+1).
@@ -418,7 +418,7 @@ bits from least to most significant sends the suffix-token block coherently to
 the branch selected by the prefix, including on prefix–suffix-entangled inputs.
 
 After routing, the copies are uncomputed.  Their cleared wires are reused as
-one local suffix flag per branch.  For `s>=2`, this is possible because
+one local suffix flag per branch.  For $s\geq 2$, this is possible because
 
 ```math
 \begin{aligned}
@@ -448,25 +448,25 @@ The prefix and tail execute sequentially and both fit within
 
 clean ancillary qubits.
 
-Route and unroute have `O(n)` depth and `O(B(s+1))` size.  Each controlled
-subtree frame has `O(2^s)` size and
+Route and unroute have $O\!\left(n\right)$ depth and $O(B(s+1))$ size.  Each controlled
+subtree frame has $O\!\left(2^s\right)$ size and
 
 ```math
 O\left(s^2+\frac{2^s}{s}\right)
 ```
 
-depth.  Parallel execution multiplies the size by `B` but not the depth.  Since
-`B2^s=2^n`, the routed tail has `O(2^n)` total size.
+depth.  Parallel execution multiplies the size by $B$ but not the depth.  Since
+$B\,2^s=2^n$, the routed tail has $O\!\left(2^n\right)$ total size.
 
 ### Proposition R: maximal-cut depth
 
-Assume `m>=4n`.  Choose the largest `t` satisfying
+Assume $m\geq 4n$.  Choose the largest $t$ satisfying
 
 ```math
 2\,2^t(n-t+1)\leq m.
 ```
 
-If `s=n-t>1`, failure of the next cut gives
+If $s=n-t>1$, failure of the next cut gives
 
 ```math
 m<4\,2^t s,
@@ -487,9 +487,9 @@ Also,
 s^2=O\left(n+\frac{2^s}{s}\right).
 ```
 
-If `s=1`, each subtree frame has constant depth.  Feasibility of `t=n-1`
-requires `m>=2^{n+1}=2N`, so `N/(n+m)=O(1)` and the target depth is
-`Theta(n)`, matching the prefix and route–unroute stages.
+If $s=1$, each subtree frame has constant depth.  Feasibility of $t=n-1$
+requires $m\geq 2^{n+1}=2N$, so $\frac{N}{n+m}=O\!\left(1\right)$ and the target depth is
+$\Theta\!\left(n\right)$, matching the prefix and route–unroute stages.
 
 Therefore
 
@@ -504,12 +504,12 @@ D_{\mathrm{routed}}(n,m)
 
 ## 9. Matching lower bounds
 
-Applying the frame to `|0^n>` covers an open family of real normalized states
-of dimension `N-1`.
+Applying the frame to $\lvert 0^n\rangle$ covers an open family of real normalized states
+of dimension $N-1$.
 
 ### Size
 
-A fixed topology with `G` arbitrary one-qubit gates has only `O(G)` continuous
+A fixed topology with $G$ arbitrary one-qubit gates has only $O\!\left(G\right)$ continuous
 real parameters.  A countable union of lower-dimensional families cannot cover
 an open subset of the real-state manifold.  Hence
 
@@ -519,7 +519,7 @@ S_{\mathbb R}(n,m)=\Omega(N).
 
 ### Workspace-dependent depth
 
-A depth-`D` circuit on `n+m` wires contains at most `O(D(n+m))` parameterized
+A depth-$D$ circuit on $n+m$ wires contains at most $O(D(n+m))$ parameterized
 one-qubit locations, so
 
 ```math
@@ -529,15 +529,15 @@ D_{\mathbb R}(n,m)
 
 ### Linear depth
 
-For positive workspace, the union of the backward light cones of the `n` system
-outputs contains at most `O(n2^D)` continuously parameterized locations.
-Covering an `N-1` dimensional output family requires
+For positive workspace, the union of the backward light cones of the $n$ system
+outputs contains at most $O\!\left(n2^D\right)$ continuously parameterized locations.
+Covering an $N-1$ dimensional output family requires
 
 ```math
 D=\Omega(n).
 ```
 
-At `m=0`, the parameter bound `Omega(N/n)` already dominates `n`
+At $m=0$, the parameter bound $\Omega\!\left(\frac{N}{n}\right)$ already dominates $n$
 asymptotically.  Therefore
 
 ```math
@@ -545,14 +545,14 @@ D_{\mathbb R}(n,m)
 =\Omega\left(n+\frac{N}{n+m}\right)
 ```
 
-for every `m>=0`.
+for every $m\geq 0$.
 
 Proposition Z, Proposition D, and Proposition R match these lower bounds and
 prove the real part of the main theorem.
 
 ## 10. Phase-dressed complex magnitude frame
 
-Write a computational label as `x=zb`, with the final bit as target.  The leaf
+Write a computational label as $x=zb$, with the final bit as target.  The leaf
 phase layer is
 
 ```math
@@ -565,7 +565,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-This is one total-width-`n` UCG with arbitrary one-qubit unitary blocks.
+This is one total-width-$n$ UCG with arbitrary one-qubit unitary blocks.
 Yuan–Zhang Lemma 6 gives
 
 ```math
@@ -577,12 +577,12 @@ D(D_{\mathrm{ph}})
 =O\left(n+\frac{N}{n+m}\right).
 ```
 
-Both `W_R` and `D_ph` return the workspace clean, so they reuse one pool
+Both $W_{\mathbb R}$ and $D_{\mathrm{ph}}$ return the workspace clean, so they reuse one pool
 sequentially.  The real subfamily supplies the matching lower bounds.  This
 proves the complex-magnitude part of the main theorem.
 
 The leaf-phase derivatives remain a separate direct measurement stream and are
-not additional columns of `W_(C,mag)`.
+not additional columns of $W_{\mathbb C,\mathrm{mag}}$.
 
 ## 11. Exact support
 

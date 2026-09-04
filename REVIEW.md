@@ -6,7 +6,7 @@
 
 ## 0. Problem and result
 
-Exact quantum state preparation with `m` clean ancillary qubits asks for
+Exact quantum state preparation with $m$ clean ancillary qubits asks for
 
 ```math
 |0^n\rangle|0^m\rangle
@@ -26,7 +26,7 @@ W_{\mathbb R}|0^n\rangle=|\psi\rangle,
 W_{\mathbb R}|\lambda(j)\rangle=|e_j\rangle,
 ```
 
-where the nonzero computational markers `lambda(j)` label the coordinate-frame
+where the nonzero computational markers $\lambda(j)$ label the coordinate-frame
 directions.  Its compiled realization must therefore satisfy
 
 ```math
@@ -35,7 +35,7 @@ directions.  Its compiled realization must therefore satisfy
 =(W|\varphi\rangle)|0^m\rangle
 ```
 
-for every system input `|varphi>`.
+for every system input $\lvert \varphi\rangle$.
 
 The question is whether this stronger map can retain the optimal all-workspace
 state-preparation frontier.
@@ -49,7 +49,7 @@ N=2^n.
 ```
 
 In the exact all-to-all logical model with arbitrary one-qubit gates and CNOTs,
-for every integer `m>=0`,
+for every integer $m\geq 0$,
 
 ```math
 \boxed{
@@ -108,7 +108,7 @@ J|\varphi\rangle
 =|\varphi\rangle|0^m\rangle
 ```
 
-append the clean compiler workspace.  A unitary `W_tilde` is **frame-safe** when
+append the clean compiler workspace.  A unitary $\widetilde W$ is **frame-safe** when
 
 ```math
 \boxed{
@@ -123,7 +123,7 @@ identity
 \widetilde W^{\dagger}J=JW^{\dagger}.
 ```
 
-Indeed, `W_tilde` maps the clean subspace onto itself.  That subspace is
+Indeed, $\widetilde W$ maps the clean subspace onto itself.  That subspace is
 therefore reducing, so the adjoint acts there as the adjoint of the logical
 frame.
 
@@ -133,7 +133,7 @@ unchanged after compilation.
 
 > **Proof checkpoint.** A first-column equality gives no adjoint identity on
 > the marker columns.  The reducing-subspace argument starts from the complete
-> relation `W_tilde J = J W`.
+> relation $\widetilde W J = J W$.
 
 ### 1.2 A complete two-qubit obstruction
 
@@ -191,7 +191,7 @@ W_{\mathbb R}
 \end{pmatrix}.
 ```
 
-Let `Q` swap `|01>` and `|10>` while fixing `|00>` and `|11>`, and define
+Let $Q$ swap $\lvert 01\rangle$ and $\lvert 10\rangle$ while fixing $\lvert 00\rangle$ and $\lvert 11\rangle$, and define
 
 ```math
 V=W_{\mathbb R}Q.
@@ -203,7 +203,7 @@ Then
 V|00\rangle=W_{\mathbb R}|00\rangle=|\psi\rangle,
 ```
 
-so `V` is an exact state-preparation completion for the same state.  It is not
+so $V$ is an exact state-preparation completion for the same state.  It is not
 the same differential frame because two marker columns are exchanged.
 
 For
@@ -260,7 +260,7 @@ Only a small part of the Hopf geometry enters the synthesis theorem.
 ### 2.1 Tree coordinates and marker columns
 
 The real chart assigns one magnitude angle to every internal node of a complete
-binary tree with `N=2^n` leaves.  If node `j` has depth `d` and position `r`,
+binary tree with $N=2^n$ leaves.  If node $j$ has depth $d$ and position $r$,
 
 ```math
 j=2^d+r,
@@ -274,12 +274,12 @@ and its computational marker is
 \lambda(j)=(2r+1)2^{n-d-1}.
 ```
 
-The marker bit string is the `d`-bit node prefix, followed by a one at the node
+The marker bit string is the $d$-bit node prefix, followed by a one at the node
 target, followed by zeros below it.
 
 ### 2.2 Differential weight and chart domain
 
-Let `a_j(theta)` be the oriented amplitude entering node `j`, namely the product
+Let $a_j(\theta)$ be the oriented amplitude entering node $j$, namely the product
 of the sine or cosine factors selected along the path from the root.  For
 unrestricted real angles,
 
@@ -292,15 +292,15 @@ g_{j,j}=a_j^2.
 }
 ```
 
-The principal square root is `sqrt(g_(j,j))=|a_j|`.
+The principal square root is $\sqrt{g_{j,j}}=\lvert a_j\rvert$.
 
 The canonical domains are:
 
-- real depths `0,...,n-2`: `[0,pi/2]`;
-- final real depth: `[0,2pi)`;
-- every complex magnitude angle: `[0,pi/2]`.
+- real depths `0,...,n-2`: $[0,\pi/2]$;
+- final real depth: $[0,2\pi)$;
+- every complex magnitude angle: $[0,\pi/2]$.
 
-Only ancestor angles enter `a_j`, so on these domains
+Only ancestor angles enter $a_j$, so on these domains
 
 ```math
 a_j\geq0,
@@ -308,21 +308,21 @@ a_j\geq0,
 a_j=\sqrt{g_{j,j}}.
 ```
 
-If `g_(j,j)>0`, `|e_j>` is the normalized coordinate derivative direction.  If
-`g_(j,j)=0`, the raw derivative vanishes; the marker column remains the
+If $g_{j,j}>0$, $\lvert e_j\rangle$ is the normalized coordinate derivative direction.  If
+$g_{j,j}=0$, the raw derivative vanishes; the marker column remains the
 chart-selected orthogonal continuation fixed by the complete parameter tuple.
 The compiler target remains a unitary for every parameter tuple.
 
 ### 2.3 Addressed depth layers
 
-At tree depth `d`, write a basis label as
+At tree depth $d$, write a basis label as
 
 ```math
 |p\rangle_P|x\rangle_T|z\rangle_Z,
 ```
 
-where `p` is the `d`-bit prefix, `x` is the target qubit, and the lower suffix
-`z` has length
+where $p$ is the $d$-bit prefix, $x$ is the target qubit, and the lower suffix
+$z$ has length
 
 ```math
 s=n-d-1.
@@ -361,7 +361,7 @@ W_{\mathbb R}^{(n)}
 =L_{n-1}^{(n)}\cdots L_1^{(n)}L_0^{(n)},
 ```
 
-with `L_0` acting first.
+with $L_0$ acting first.
 
 From a compiler viewpoint, each depth has exactly three ingredients:
 
@@ -373,8 +373,8 @@ The suffix predicate is what preserves all frame columns established at earlier
 depths.  It is also the only obstruction to compiling the depth as an ordinary
 small multiplexor.
 
-> **Proof checkpoint.** The formula for `L_d` is an equality on the complete
-> Hilbert space.  Replacing it by its action on `|0^n>` would recover state
+> **Proof checkpoint.** The formula for $L_d$ is an equality on the complete
+> Hilbert space.  Replacing it by its action on $\lvert 0^n\rangle$ would recover state
 > preparation but lose the frame contract.
 
 ### Executable counterpart
@@ -389,8 +389,8 @@ small multiplexor.
 ## 3. Exact compiler toolkit
 
 The declared circuit model consists of arbitrary one-qubit gates and CNOTs with
-all-to-all logical connectivity.  Clean ancillary qubits start in `|0>` and are
-returned exactly to `|0>`.
+all-to-all logical connectivity.  Clean ancillary qubits start in $\lvert 0\rangle$ and are
+returned exactly to $\lvert 0\rangle$.
 
 The proof imports four results from the all-workspace state-preparation
 framework.
@@ -420,13 +420,13 @@ UCG language.  Exact theorem numbers and source versions are collected in the
 
 ## 4. Strict zero workspace
 
-At `m=0`, the ordinary clean suffix flag is unavailable.  One original suffix
+At $m=0$, the ordinary clean suffix flag is unavailable.  One original suffix
 qubit can carry the predicate temporarily.
 
 ### 4.1 Borrowed-suffix decomposition
 
-For a nonfinal depth `d<n-1`, split the suffix into one original system bit `b`
-and the remaining string `r`:
+For a nonfinal depth $d<n-1$, split the suffix into one original system bit $b$
+and the remaining string $r$:
 
 ```math
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R.
@@ -440,7 +440,7 @@ h(r)=[r=0],
 C_p=R_y(\theta_{d,p}/2).
 ```
 
-Let `T_h` toggle `b` exactly when `h(r)=1`.  Apply the following gates in
+Let $T_h$ toggle $b$ exactly when $h(r)=1$.  Apply the following gates in
 chronological order:
 
 ```text
@@ -466,7 +466,7 @@ C_p^2=R_y(\theta_{d,p}),
 XC_pX=C_p^{-1}.
 ```
 
-For fixed `p` and `r`, the four invariant sectors are:
+For fixed $p$ and $r$, the four invariant sectors are:
 
 | $h(r)$ | original $b$ | chronological target word | resulting matrix | final $b$ |
 |---:|---:|---|---|---:|
@@ -480,18 +480,18 @@ suffix `br` is zero.  Every other sector receives identity.  The borrowed bit
 is toggled either zero or four times and returns to its original value.  No
 sector-dependent phase appears.
 
-Because the `p,r` sectors form an orthogonal direct sum, this proves complete
-operator equality on arbitrary superpositions, including states in which `b`
+Because the $p,r$ sectors form an orthogonal direct sum, this proves complete
+operator equality on arbitrary superpositions, including states in which $b$
 is entangled with the other system qubits.
 
 ### 4.2 Resource count
 
-`T_h` is an all-zero-controlled X on the borrowed system bit.  Negative-control
-wrappers and the ancilla-free MCT lemma give `O(n-d)` size and depth.
+$T_h$ is an all-zero-controlled X on the borrowed system bit.  Negative-control
+wrappers and the ancilla-free MCT lemma give $O\!\left(n-d\right)$ size and depth.
 
-Each controlled `C_p` is one UCG on:
+Each controlled $C_p$ is one UCG on:
 
-- `d` prefix controls;
+- $d$ prefix controls;
 - the borrowed bit as one additional control;
 - the target.
 
@@ -523,7 +523,7 @@ S(L_d)=O(2^d+n-d),
 D(L_d)=O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-The final depth has no suffix and is one ordinary total-width-`n` UCG.  Hence
+The final depth has no suffix and is one ordinary total-width-$n$ UCG.  Hence
 
 ```math
 S(W_{\mathbb R})
@@ -538,15 +538,15 @@ Also,
 =O(N/n),
 ```
 
-and `n^2=O(N/n)`.  Thus
+and $n^2=O\!\left(\frac{N}{n}\right)$.  Thus
 
 ```math
 D(W_{\mathbb R})
 =O\left(n+\frac{N}{n}\right).
 ```
 
-The endpoint `n=1` contains only the final one-qubit rotation.  At `d=n-2`, the
-remaining suffix is empty and `T_h=X_b`; the same sector table applies.
+The endpoint $n=1$ contains only the final one-qubit rotation.  At $d=n-2$, the
+remaining suffix is empty and $T_h=X_b$; the same sector table applies.
 
 > **Proof checkpoint.** The borrowed qubit is logical data, not a dirty
 > ancillary wire.  Correctness must include its original value, possible
@@ -563,19 +563,19 @@ remaining suffix is empty and `T_h=X_b`; the same sector table applies.
 
 ## 5. Small positive workspace
 
-For `m>=1`, one clean flag can store the complete lower-suffix-zero predicate.
+For $m\geq 1$, one clean flag can store the complete lower-suffix-zero predicate.
 At every nonfinal depth:
 
-1. compute `[z=0]` into the flag;
+1. compute $[z=0]$ into the flag;
 2. apply one prefix-and-flag UCG;
 3. uncompute the flag.
 
-The flag is reused between depths.  The UCG has total width `d+2` and may use
-the remaining `m-1` clean qubits.  The final depth has no suffix predicate, so
-all `m` clean qubits are available.
+The flag is reused between depths.  The UCG has total width $d+2$ and may use
+the remaining $m-1$ clean qubits.  The final depth has no suffix predicate, so
+all $m$ clean qubits are available.
 
-The UCG sizes sum geometrically to `O(N)`.  The predicate computations contribute
-`O(n^2)` total size and depth.  The depth is
+The UCG sizes sum geometrically to $O\!\left(N\right)$.  The predicate computations contribute
+$O\!\left(n^2\right)$ total size and depth.  The depth is
 
 ```math
 D_{\mathrm{direct}}(n,m)
@@ -588,7 +588,7 @@ When
 1\leq m<4n,
 ```
 
-we have `n+m<5n`.  Since `n^3=O(2^n)`,
+we have $n+m<5n$.  Since $n^3=O\!\left(2^n\right)$,
 
 ```math
 n^2=O\left(\frac{N}{n+m}\right),
@@ -613,7 +613,7 @@ smaller multiplexor.
 
 ## 6. Larger workspace: cut, route, and parallelize
 
-For larger `m`, the tree is cut after the first `t` depths.  Put
+For larger $m$, the tree is cut after the first $t$ depths.  Put
 
 ```math
 B=2^t,
@@ -628,7 +628,7 @@ W_{\mathbb R}^{(n)}
 =R_t^{(n)}F_t^{(n)},
 ```
 
-where `F_t` contains the first `t` depths and `R_t` the remaining tail.
+where $F_t$ contains the first $t$ depths and $R_t$ the remaining tail.
 
 <p align="center">
   <img src="assets/tree-cut-routing.svg" width="1040" alt="The upper Hopf prefix is followed by coherent routing into parallel subtree frames and inverse routing." />
@@ -636,7 +636,7 @@ where `F_t` contains the first `t` depths and `R_t` the remaining tail.
 
 ### 6.1 Two exact operator identities
 
-The prefix is a `t`-qubit frame conditioned on the external suffix being zero:
+The prefix is a $t$-qubit frame conditioned on the external suffix being zero:
 
 ```math
 \boxed{
@@ -647,10 +647,10 @@ F_t^{(n)}
 ```
 
 Every layer above the cut contains the complete external suffix in its
-zero-suffix predicate.  Therefore it is the ordinary prefix frame on `|0^s>`
+zero-suffix predicate.  Therefore it is the ordinary prefix frame on $\lvert 0^s\rangle$
 and identity on the orthogonal complement.
 
-Every layer below the cut preserves the `t`-bit prefix.  The tail is therefore
+Every layer below the cut preserves the $t$-bit prefix.  The tail is therefore
 block diagonal:
 
 ```math
@@ -660,7 +660,7 @@ R_t^{(n)}
 }
 ```
 
-A local subtree node `(ell,u)` in branch `r` uses global breadth-first node
+A local subtree node $(\ell,u)$ in branch $r$ uses global breadth-first node
 
 ```math
 2^{t+\ell}+r2^\ell+u.
@@ -677,7 +677,7 @@ D_t|x\rangle|0\cdots0\rangle
 =|0^t\rangle|e_x\rangle|0\cdots0\rangle.
 ```
 
-For `B=2^t`, the decoder uses:
+For $B=2^t$, the decoder uses:
 
 | Register | Qubits |
 |---|---:|
@@ -687,7 +687,7 @@ For `B=2^t`, the decoder uses:
 | **total** | $3B-2-t$ |
 
 The explicit X/CNOT/Toffoli layers have disjoint support within each declared
-layer, depth `11t-4=O(t)`, and size `O(B)`.  On the one-excitation code, the
+layer, depth $11t-4=O\!\left(t\right)$, and size $O\!\left(B\right)$.  On the one-excitation code, the
 Givens pairs at one Hopf depth are disjoint.  The external suffix-zero predicate
 is computed, copied to the live fixed-width controlled Givens rotations, used,
 and uncomputed.
@@ -702,8 +702,8 @@ D(F_t)=O(n).
 
 ### 6.3 Coherent branch router
 
-Branch zero reuses the original `s` suffix wires.  The other branches use
-`(B-1)s` clean data wires.  A one-hot activation-token register of size `B`
+Branch zero reuses the original $s$ suffix wires.  The other branches use
+$(B-1)s$ clean data wires.  A one-hot activation-token register of size $B$
 marks the active branch.
 
 Treat each branch's data and token as a block of width
@@ -712,14 +712,14 @@ Treat each branch's data and token as a block of width
 w=s+1.
 ```
 
-At routing level `j`, prefix bit `j` controls
+At routing level $j$, prefix bit $j$ controls
 
 ```math
 2^jw
 ```
 
 disjoint Fredkin gates.  One original prefix wire is already available, so the
-number of clean copies needed at that level is `2^jw-1`.  Summing over
+number of clean copies needed at that level is $2^jw-1$.  Summing over
 `j=0,...,t-1` gives
 
 ```math
@@ -744,12 +744,12 @@ and arbitrary branch-dependent suffix states,
 \sum_r c_r|r\rangle_P|\xi_r\rangle_X
 ```
 
-is routed coherently so that each `|xi_r>` occupies branch `r` together with
+is routed coherently so that each $\lvert \xi_r\rangle$ occupies branch $r$ together with
 its activation token.  The statement remains valid when prefix and suffix are
 entangled because the router is a coherently controlled permutation.
 
 The prefix copies are then uncomputed.  Their cleared wires are reused as local
-suffix flags for the controlled subtree frames.  When `s>=2`, the pool is large
+suffix flags for the controlled subtree frames.  When $s\geq 2$, the pool is large
 enough because
 
 ```math
@@ -761,7 +761,7 @@ C-B
 \end{aligned}
 ```
 
-All `B` subtree frames act on disjoint data, token, and flag registers and run
+All $B$ subtree frames act on disjoint data, token, and flag registers and run
 in parallel.  Every flag is uncomputed.  The prefix copies are recreated, the
 Fredkin tree is reversed, the copies are erased, and the root token is reset.
 
@@ -780,25 +780,25 @@ The conditioned prefix and routed tail execute sequentially, and both fit inside
 
 clean ancillary qubits.
 
-Route and unroute have `O(n)` depth and `O(B(s+1))` size.  One controlled
-subtree frame has `O(2^s)` size and
+Route and unroute have $O\!\left(n\right)$ depth and $O(B(s+1))$ size.  One controlled
+subtree frame has $O\!\left(2^s\right)$ size and
 
 ```math
 O\left(s^2+\frac{2^s}{s}\right)
 ```
 
-depth.  Parallel execution over the disjoint branches multiplies size by `B`
-but not depth.  Since `B2^s=N`, the total size remains `O(N)`.
+depth.  Parallel execution over the disjoint branches multiplies size by $B$
+but not depth.  Since $B\,2^s=N$, the total size remains $O\!\left(N\right)$.
 
 ### 6.4 Maximal feasible cut
 
-For `m>=4n`, choose the largest `t` such that
+For $m\geq 4n$, choose the largest $t$ such that
 
 ```math
 2\,2^t(n-t+1)\leq m.
 ```
 
-If `s=n-t>1`, failure of the next cut gives
+If $s=n-t>1$, failure of the next cut gives
 
 ```math
 m<4\,2^t s.
@@ -819,8 +819,8 @@ Also,
 s^2=O\left(n+\frac{2^s}{s}\right).
 ```
 
-If `s=1`, every subtree frame has constant depth.  Feasibility of `t=n-1`
-requires `m>=2N`, so `N/(n+m)=O(1)` and the target depth is `Theta(n)`; the
+If $s=1$, every subtree frame has constant depth.  Feasibility of $t=n-1$
+requires $m\geq 2N$, so $\frac{N}{n+m}=O\!\left(1\right)$ and the target depth is $\Theta\!\left(n\right)$; the
 prefix and route–unroute stages already have that order.
 
 Hence the routed schedule satisfies
@@ -858,15 +858,15 @@ dimension
 N-1.
 ```
 
-A fixed circuit topology with `G` arbitrary one-qubit gates contains only
-`O(G)` continuous real parameters.  A countable union of lower-dimensional
+A fixed circuit topology with $G$ arbitrary one-qubit gates contains only
+$O\!\left(G\right)$ continuous real parameters.  A countable union of lower-dimensional
 families cannot cover an open subset of the real-state manifold.  Therefore
 
 ```math
 S_{\mathbb R}(n,m)=\Omega(N).
 ```
 
-A depth-`D` circuit on `n+m` wires has at most `O(D(n+m))` parameterized
+A depth-$D$ circuit on $n+m$ wires has at most $O(D(n+m))$ parameterized
 one-qubit locations, giving
 
 ```math
@@ -874,15 +874,15 @@ D_{\mathbb R}(n,m)
 =\Omega\left(\frac{N}{n+m}\right).
 ```
 
-For positive workspace, the union of the backward light cones of the `n` system
-outputs contains at most `O(n2^D)` parameterized locations.  Covering an
-`N-1` dimensional output family requires
+For positive workspace, the union of the backward light cones of the $n$ system
+outputs contains at most $O\!\left(n2^D\right)$ parameterized locations.  Covering an
+$N-1$ dimensional output family requires
 
 ```math
 D=\Omega(n).
 ```
 
-At `m=0`, the parameter bound `Omega(N/n)` already dominates the linear term
+At $m=0$, the parameter bound $\Omega\!\left(\frac{N}{n}\right)$ already dominates the linear term
 asymptotically.  Combining the bounds gives
 
 ```math
@@ -893,7 +893,7 @@ D_{\mathbb R}(n,m)
 ```
 
 The three upper-bound schedules therefore match the real-state lower bounds for
-every `m>=0`.
+every $m\geq 0$.
 
 ---
 
@@ -907,7 +907,7 @@ D_{\mathrm{ph}}
 e^{i\phi_\ell}|\ell\rangle\!\langle\ell|.
 ```
 
-Writing a basis label as `x=zb`, with the final qubit as target,
+Writing a basis label as $x=zb$, with the final qubit as target,
 
 ```math
 D_{\mathrm{ph}}
@@ -920,14 +920,14 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-This is one exact total-width-`n` UCG with arbitrary one-qubit unitary blocks.
-It has `O(N)` size and
+This is one exact total-width-$n$ UCG with arbitrary one-qubit unitary blocks.
+It has $O\!\left(N\right)$ size and
 
 ```math
 O\left(n+\frac{N}{n+m}\right)
 ```
 
-depth for every `m>=0`.
+depth for every $m\geq 0$.
 
 Both the real frame and the phase UCG return the workspace clean, so they reuse
 one pool sequentially.  The real subfamily supplies the matching lower bounds.
@@ -944,7 +944,7 @@ D_{\mathbb C,\mathrm{mag}}(n,m)
 
 The complex leaf-phase derivatives are localized in the computational basis and
 use a separate signed one-hot record.  The theorem does not attempt to place all
-`2N-1` real complex-chart directions into one `N`-column unitary.
+$2N-1$ real complex-chart directions into one $N$-column unitary.
 
 ### Executable counterpart
 
@@ -988,8 +988,8 @@ S_{\nabla}
 \right)
 ```
 
-independent magnitude executions for failure probability `delta` and raw
-coordinatewise error `epsilon_infinity`.
+independent magnitude executions for failure probability $\delta$ and raw
+coordinatewise error $\varepsilon_\infty$.
 
 Complete-vector, relative, directional, normalized-frame, and natural-gradient
 targets are different tasks.  Their costs may depend on output dimension,
@@ -1030,9 +1030,9 @@ confidence,
 =O(\log\log M),
 ```
 
-where `M=Theta(N)` is the coordinate count.
+where $M=\Theta\!\left(N\right)$ is the coordinate count.
 
-This ratio excludes classical materialization of an `M`-entry output and does
+This ratio excludes classical materialization of an $M$-entry output and does
 not compare against an instance-specialized scalar shortcut.
 
 ### Executable counterpart
@@ -1081,14 +1081,14 @@ fact, imported compiler theorem, local construction, and test.
 ## 11. Scope and contribution boundary
 
 The construction is specific to the addressed Hopf differential frame.  It does
-not assert that an arbitrary prescribed `N`-column unitary family can be
+not assert that an arbitrary prescribed $N$-column unitary family can be
 compiled at state-preparation cost.
 
 The strict-zero echo combines established ingredients: uniformly controlled
 gates, controlled-unitary roots, Pauli conjugation, borrowed or conditionally
 clean logical qubits, toggle cancellation, and ancilla-free multi-controlled
 gates.  The project-specific statement is the reduction of one addressed Hopf
-depth to two total-width-`d+2` UCGs plus linear predicate toggles, and the
+depth to two total-width-$d+2$ UCGs plus linear predicate toggles, and the
 resulting optimal complete-frame theorem.
 
 The routed schedule uses familiar fanout, Fredkin routing, and uncomputation.

@@ -72,8 +72,8 @@ formal proof.
 
 ## The theorem
 
-Let `N=2^n`.  In the exact all-to-all logical model with arbitrary one-qubit
-gates and CNOTs, for every `m>=0`,
+Let $N=2^n$.  In the exact all-to-all logical model with arbitrary one-qubit
+gates and CNOTs, for every $m\geq 0$,
 
 ```math
 S_{\mathbb R}(n,m)
@@ -108,17 +108,17 @@ Formal source versions and theorem numbers are listed in the
 
 The proof is most efficiently assessed at the following interfaces:
 
-1. `W_tilde J = J W` is a complete clean-input equality and implies the adjoint
+1. $\widetilde W J = J W$ is a complete clean-input equality and implies the adjoint
    relation on the same subspace.
 2. The strict-zero echo restores the original suffix qubit on all four sectors
    without a relative phase.
-3. Each half-angle UCG has total width `d+2` and no hidden work wire.
+3. Each half-angle UCG has total width $d+2$ and no hidden work wire.
 4. The binary–one-hot decoder clears the binary address and returns every
    temporary register clean.
 5. The CNOT/Fredkin router is coherent on prefix–suffix-entangled inputs.
 6. Cleared copy wires are reused as branch flags only after exact uncomputation.
 7. The workspace bound is a simultaneous peak over live registers.
-8. The maximal-cut argument includes the `s=1` endpoint.
+8. The maximal-cut argument includes the $s=1$ endpoint.
 9. Parameter capacity and output light cones match the upper-bound depth.
 10. The complex magnitude frame and direct phase stream are kept distinct.
 11. The runtime ratio compares matched general-family programs with the same

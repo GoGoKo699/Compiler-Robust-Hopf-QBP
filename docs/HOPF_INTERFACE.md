@@ -8,13 +8,13 @@ protocol remain in the two earlier Hopf repositories.
 
 ## 1. Four facts consumed by the synthesis proof
 
-Fix `n` system qubits and write
+Fix $n$ system qubits and write
 
 ```math
 N=2^n.
 ```
 
-The real Hopf construction supplies a unitary `W_R(theta)` with the following
+The real Hopf construction supplies a unitary $W_{\mathbb R}(\theta)$ with the following
 properties.
 
 ### State column
@@ -28,8 +28,8 @@ W_{\mathbb R}|0^n\rangle
 
 ### Marker columns
 
-For every internal tree node `j`, a nonzero computational marker `lambda(j)` is
-assigned to a unit frame direction `|e_j>`:
+For every internal tree node $j$, a nonzero computational marker $\lambda(j)$ is
+assigned to a unit frame direction $\lvert e_j\rangle$:
 
 ```math
 \boxed{
@@ -40,7 +40,7 @@ W_{\mathbb R}|\lambda(j)\rangle
 
 ### Coordinate differential
 
-Let `a_j(theta)` be the oriented amplitude entering node `j`.  Then
+Let $a_j(\theta)$ be the oriented amplitude entering node $j$.  Then
 
 ```math
 \boxed{
@@ -53,7 +53,7 @@ g_{j,j}=a_j^2.
 
 ### Addressed-layer product
 
-The frame is a product of `n` complete-operator layers:
+The frame is a product of $n$ complete-operator layers:
 
 ```math
 \boxed{
@@ -62,16 +62,16 @@ W_{\mathbb R}^{(n)}
 }
 ```
 
-with `L_0` acting first.
+with $L_0$ acting first.
 
 These four statements define the synthesis target.  In particular, the target
 is not specified only by the state column.
 
 ## 2. Tree and marker convention
 
-The `N-1` magnitude coordinates are indexed by the internal nodes of a complete
-binary tree.  Nodes are numbered breadth first, beginning at one.  If node `j`
-has depth `d` and position `r`, then
+The $N-1$ magnitude coordinates are indexed by the internal nodes of a complete
+binary tree.  Nodes are numbered breadth first, beginning at one.  If node $j$
+has depth $d$ and position $r$, then
 
 ```math
 j=2^d+r,
@@ -89,7 +89,7 @@ Its marker is
 
 The corresponding bit string consists of:
 
-1. the `d`-bit prefix locating the node;
+1. the $d$-bit prefix locating the node;
 2. a one at the node's target position;
 3. zeros in every lower position.
 
@@ -139,15 +139,15 @@ Differentiating the local split produces the unit complement
 ```
 
 The derivative of the complete state carries the amplitude that has already
-reached node `j`.  This amplitude is the product of the ancestor sine and cosine
-factors selected by the path to `j`:
+reached node $j$.  This amplitude is the product of the ancestor sine and cosine
+factors selected by the path to $j$:
 
 ```math
 \partial_{\theta_j}|\psi\rangle
 =a_j|e_j\rangle.
 ```
 
-For unrestricted real angles, `a_j` may be negative.  The metric entry and its
+For unrestricted real angles, $a_j$ may be negative.  The metric entry and its
 principal square root are
 
 ```math
@@ -179,7 +179,7 @@ For the complex chart, every magnitude angle uses
 and the leaf phases carry the complex arguments.
 
 Only ancestor angles enter an internal node's incoming amplitude.  The final
-real depth therefore does not affect the sign of any `a_j`.  On both canonical
+real depth therefore does not affect the sign of any $a_j$.  On both canonical
 magnitude domains,
 
 ```math
@@ -203,7 +203,7 @@ then
 ```
 
 There is no derivative-normalized tangent at that parameter value.  The unit
-vector in marker column `lambda(j)` remains the chart-selected orthogonal
+vector in marker column $\lambda(j)$ remains the chart-selected orthogonal
 continuation determined by the complete parameter tuple.  The compiler target
 is therefore still a well-defined unitary, while the corresponding raw
 coordinate derivative has zero weight.
@@ -211,7 +211,7 @@ coordinate derivative has zero weight.
 The public implementation keeps these notions separate:
 
 - `incoming_amplitude`: the oriented value valid for unrestricted angles;
-- `metric`: `incoming_amplitude**2`;
+- `metric`: $incoming_amplitude^2$;
 - `sqrt_metric`: the principal nonnegative square root;
 - `regular_coordinate_mask(atol=...)`: a tolerance-aware numerical regularity
   classification;
@@ -219,7 +219,7 @@ The public implementation keeps these notions separate:
 
 ## 4. Complete addressed depth operator
 
-At depth `d`, split a computational-basis label as
+At depth $d$, split a computational-basis label as
 
 ```math
 |p\rangle_P|x\rangle_T|z\rangle_Z,
@@ -227,9 +227,9 @@ At depth `d`, split a computational-basis label as
 
 where:
 
-- `p` is the `d`-bit prefix;
-- `x` is the next qubit and is the rotation target;
-- `z` is the lower suffix of length
+- $p$ is the $d$-bit prefix;
+- $x$ is the next qubit and is the rotation target;
+- $z$ is the lower suffix of length
   ```math
   s=n-d-1.
   ```
@@ -268,7 +268,7 @@ The zero-suffix projector is essential.  It prevents a deeper tree rotation
 from changing frame columns established by earlier depths.  It is also the
 structural feature exploited by all three compiler schedules.
 
-> **Proof checkpoint.** `L_d` is a full operator, not a rule restricted to the
+> **Proof checkpoint.** $L_d$ is a full operator, not a rule restricted to the
 > preparation path.  Every proposed compiler must preserve its identity action
 > on all nonzero-suffix sectors.
 
@@ -371,12 +371,12 @@ W_{\mathbb C,\mathrm{mag}}
 }
 ```
 
-It contains the complex state and the `N-1` phase-dressed magnitude-frame
-directions.  The `N` leaf-phase differentials are localized in the
+It contains the complex state and the $N-1$ phase-dressed magnitude-frame
+directions.  The $N$ leaf-phase differentials are localized in the
 computational basis and use a separate signed one-hot measurement record.  They
-are not additional columns of this `N`-dimensional unitary.
+are not additional columns of this $N$-dimensional unitary.
 
-Writing a basis label as `x=zb`, with the final bit as target,
+Writing a basis label as $x=zb$, with the final bit as target,
 
 ```math
 D_{\mathrm{ph}}
@@ -389,7 +389,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-The phase dressing is therefore one exact `n`-qubit UCG.  Once the real frame
+The phase dressing is therefore one exact $n$-qubit UCG.  Once the real frame
 is compiled, the complex magnitude theorem is a short sequential-composition
 corollary.
 
