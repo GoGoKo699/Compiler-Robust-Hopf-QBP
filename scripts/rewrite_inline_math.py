@@ -2,7 +2,7 @@
 """Replace ASCII pseudo-mathematics in prose code spans by inline LaTeX.
 
 The rewrite is deliberately limited to the scientific Markdown pages listed
-below.  Fenced code blocks, Markdown tables, filenames, repository names,
+below. Fenced code blocks, Markdown tables, filenames, repository names,
 software identifiers, and public API identifiers remain in code font.
 """
 
@@ -44,6 +44,9 @@ SCIENTIFIC_MARKDOWN = (
 INLINE_CODE = re.compile(r"`([^`\n]+)`")
 SINGLE_MATH_SYMBOL = re.compile(
     r"^(?:[A-Za-z]|[A-Za-z]_[A-Za-z0-9]+|[A-Z]_[A-Za-z0-9(),]+)$"
+)
+SYMBOL_TUPLE = re.compile(
+    r"^\([A-Za-z](?:_[A-Za-z0-9]+)?(?:,[A-Za-z](?:_[A-Za-z0-9]+)?)+\)$"
 )
 MATH_WORD = re.compile(
     r"(?:Theta|Omega|sqrt|partial|lambda|theta|phi|psi|alpha|beta|chi|xi|"
@@ -141,6 +144,8 @@ SPECIAL_SYMBOLS = {
     "Q_bad": r"Q_{\mathrm{bad}}",
     "Q_perp": r"Q_{\perp}",
     "epsilon_infinity": r"\varepsilon_{\infty}",
+    "l_infinity": r"\ell_{\infty}",
+    "l_2": r"\ell_2",
 }
 
 
@@ -177,7 +182,7 @@ def is_code_identifier(span: str) -> bool:
 def looks_mathematical(span: str) -> bool:
     if is_code_identifier(span):
         return False
-    if SINGLE_MATH_SYMBOL.fullmatch(span):
+    if SINGLE_MATH_SYMBOL.fullmatch(span) or SYMBOL_TUPLE.fullmatch(span):
         return True
     if MATH_WORD.search(span) or MATH_EXPRESSION.search(span):
         return True
@@ -186,6 +191,11 @@ def looks_mathematical(span: str) -> bool:
     ):
         return True
     return False
+
+
+def regex_literal_sub(pattern: str, replacement: str, text: str) -> str:
+    """Use a callable so LaTeX backslashes are never parsed as re templates."""
+    return re.sub(pattern, lambda _match: replacement, text)
 
 
 def replace_kets(text: str) -> str:
@@ -203,9 +213,14 @@ def convert_atoms(text: str) -> str:
     text = text.replace("**", "^")
     text = re.sub(r"\^\(([^()]*)\)", r"^{\1}", text)
     text = re.sub(r"_\(([^()]*)\)", r"_{\1}", text)
+    text = text.replace("^dagger", r"^{\dagger}")
 
     for source, target in GREEK.items():
-        text = re.sub(rf"(?<![A-Za-z]){source}(?![A-Za-z])", target, text)
+        pattern = rf"(?<![A-Za-z]){re.escape(source)}(?![A-Za-z])"
+        text = regex_literal_sub(pattern, target, text)
+
+    text = regex_literal_sub(r"(?<![A-Za-z])partial(?=_)", r"\partial", text)
+    text = regex_literal_sub(r"(?<![A-Za-z])nabla(?![A-Za-z])", r"\nabla", text)
 
     text = text.replace("_infinity", r"_{\infty}")
     text = text.replace("_matched", r"_{\mathrm{matched}}")
@@ -216,30 +231,47 @@ def convert_atoms(text: str) -> str:
     text = text.replace("_ph", r"_{\mathrm{ph}}")
     text = text.replace("_mag", r"_{\mathrm{mag}}")
 
-    text = re.sub(r"sqrt\(([^()]*)\)", r"\sqrt{\1}", text)
-    text = re.sub(r"(?<![A-Za-z])Theta\(", r"\Theta(", text)
-    text = re.sub(r"(?<![A-Za-z])Omega\(", r"\Omega(", text)
-    text = re.sub(r"(?<![A-Za-z])log(?=[ (])", r"\log", text)
-    text = re.sub(r"(?<![A-Za-z])min(?=[{(])", r"\min", text)
-    text = re.sub(r"(?<![A-Za-z])diag(?=[{(])", r"\mathrm{diag}", text)
+    text = re.sub(
+        r"sqrt\(([^()]*)\)",
+        lambda match: rf"\sqrt{{{match.group(1)}}}",
+        text,
+    )
+    text = regex_literal_sub(r"(?<![A-Za-z])Theta\(", r"\Theta(", text)
+    text = regex_literal_sub(r"(?<![A-Za-z])Omega\(", r"\Omega(", text)
+    text = regex_literal_sub(r"(?<![A-Za-z])log(?=[ (])", r"\log", text)
+    text = regex_literal_sub(r"(?<![A-Za-z])min(?=[{(])", r"\min", text)
+    text = regex_literal_sub(r"(?<![A-Za-z])max(?=[{(])", r"\max", text)
+    text = regex_literal_sub(r"(?<![A-Za-z])diag(?=[{(])", r"\mathrm{diag}", text)
 
     text = text.replace(">=", r"\geq")
     text = text.replace("<=", r"\leq")
     text = text.replace("...", r"\ldots")
+    text = text.replace(" tensor ", r"\otimes ")
 
-    text = re.sub(r"(?<![A-Za-z])([A-Za-z0-9{}^]+)/(\([^()]+\))", r"\frac{\1}{\2}", text)
-    text = re.sub(r"(?<![A-Za-z])([A-Za-z0-9{}^]+)/([A-Za-z0-9{}^]+)", r"\frac{\1}{\2}", text)
-    text = text.replace(r"{(n+m)}", "{n+m}")
-    text = text.replace(r"{(q+w)}", "{q+w}")
+    text = re.sub(
+        r"(?<![A-Za-z])([A-Za-z0-9{}^]+)/(\([^()]+\))",
+        lambda match: rf"\frac{{{match.group(1)}}}{{{match.group(2)[1:-1]}}}",
+        text,
+    )
+    text = re.sub(
+        r"(?<![A-Za-z])([A-Za-z0-9{}^]+)/([A-Za-z0-9{}^]+)",
+        lambda match: rf"\frac{{{match.group(1)}}}{{{match.group(2)}}}",
+        text,
+    )
 
-    text = re.sub(r"(?<![A-Za-z])1/2(?![0-9])", r"\tfrac12", text)
-    text = re.sub(r"(?<![A-Za-z])1/4(?![0-9])", r"\tfrac14", text)
+    text = re.sub(
+        r"(?<![A-Za-z])1/2(?![0-9])",
+        lambda _match: r"\tfrac12",
+        text,
+    )
+    text = re.sub(
+        r"(?<![A-Za-z])1/4(?![0-9])",
+        lambda _match: r"\tfrac14",
+        text,
+    )
 
     text = re.sub(r"([A-Za-z}])2\^", r"\1\,2^", text)
     text = re.sub(r"2\^([A-Za-z])([A-Za-z])\b", r"2^\1\,\2", text)
-
-    text = text.replace("[0,\\frac{\\pi}{2}]", r"[0,\pi/2]")
-    text = text.replace("[0,2\\pi)", r"[0,2\pi)")
 
     return text
 
