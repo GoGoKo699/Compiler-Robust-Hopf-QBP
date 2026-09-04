@@ -101,20 +101,20 @@ readout possible.
 
 | Symbol | Meaning |
 |---|---|
-| `n` | number of system qubits |
-| `N=2^n` | Hilbert-space dimension |
-| `m` | clean ancillary qubits supplied to the compiler |
-| `j` | breadth-first internal-node index |
-| `d` | depth of node `j` |
-| `r` or `p` | position or prefix at depth `d` |
-| `theta_(d,p)` | magnitude angle at that node |
-| `a_j` | oriented incoming amplitude |
-| `g_(j,j)=a_j^2` | diagonal metric weight |
-| `|e_j>` | unit marker-frame direction |
-| `lambda(j)` | computational marker assigned to `|e_j>` |
-| `W_R` | real Hopf differential frame |
-| `D_ph` | diagonal leaf-phase layer |
-| `W_(C,mag)=D_ph W_R` | phase-dressed complex magnitude frame |
+| $n$ | number of system qubits |
+| $N=2^n$ | Hilbert-space dimension |
+| $m$ | clean ancillary qubits supplied to the compiler |
+| $j$ | breadth-first internal-node index |
+| $d$ | depth of node $j$ |
+| $r$ or $p$ | position or prefix at depth $d$ |
+| $\theta_{d,p}$ | magnitude angle at that node |
+| $a_j$ | oriented incoming amplitude |
+| $g_{j,j}=a_j^2$ | diagonal metric weight |
+| $\lvert e_j\rangle$ | unit marker-frame direction |
+| $\lambda(j)$ | computational marker assigned to $\lvert e_j\rangle$ |
+| $W_{\mathbb R}$ | real Hopf differential frame |
+| $D_{\mathrm{ph}}$ | diagonal leaf-phase layer |
+| $W_{\mathbb C,\mathrm{mag}}=D_{\mathrm{ph}}W_{\mathbb R}$ | phase-dressed complex magnitude frame |
 
 Basis labels are ordered from the most significant tree decision to the least
 significant one.  The implementation uses the corresponding nonnegative integer
