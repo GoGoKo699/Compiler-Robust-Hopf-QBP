@@ -1,0 +1,46 @@
+name: rewrite inline mathematics
+
+on:
+  push:
+    branches:
+      - inline-math-rendering-2026-09
+    paths:
+      - scripts/rewrite_inline_math.py
+      - .github/workflows/rewrite-inline-math.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rewrite:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: inline-math-rendering-2026-09
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+
+      - name: Rewrite mathematical code spans
+        run: python scripts/rewrite_inline_math.py
+
+      - name: Check the generated patch
+        run: git diff --check
+
+      - name: Commit the generated prose patch
+        run: |
+          if git diff --quiet; then
+            echo 'No rewrite was needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md REVIEW.md docs compiler_robust_hopf/README.md manuscript/README.md
+          git commit -m 'Render mathematical symbols in scientific prose'
+          git push origin HEAD:inline-math-rendering-2026-09
