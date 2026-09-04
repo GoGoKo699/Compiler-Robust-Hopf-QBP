@@ -26,7 +26,7 @@ implementation, evidence, and provenance.
 | [Strict-zero echo](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) | focused four-sector construction and zero-workspace resource proof |
 
 The [theorem overview](THEOREM_OVERVIEW.md),
-[unified architecture summary](UNIFIED_YUAN_ZHANG_COMPILER.md), and
+[compiler architecture summary](UNIFIED_YUAN_ZHANG_COMPILER.md), and
 [end-to-end accounting](END_TO_END_QBP.md) provide shorter reference views of
 the same result.
 
@@ -51,8 +51,21 @@ Detailed search and provenance records are kept separately from the proof:
 
 - [strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md);
 - [technical search record](PRIOR_ART_SEARCH_2026_09.md);
-- [`provenance/`](../provenance/) machine-readable source records;
+- [provenance directory map](../provenance/README.md);
 - [`SYNC.md`](../SYNC.md) upstream synchronization policy.
+
+## Browse the repository by purpose
+
+Every principal directory contains its own short map.
+
+| Directory | Contents |
+|---|---|
+| [implementation](../compiler_robust_hopf/README.md) | modules arranged in proof order, public entry points, and interpretation of resource rows |
+| [tests](../tests/README.md) | validation groups organized by operator and theorem interface |
+| [scripts](../scripts/README.md) | walkthrough, ledgers, and synchronization commands |
+| [diagrams](../assets/README.md) | the five reviewer-facing SVGs and the exact statements they illustrate |
+| [provenance](../provenance/README.md) | compiler versions, Hopf upstreams, and prior-art claim boundaries |
+| [manuscript workspace](../manuscript/README.md) | paper question chain, theorem hierarchy, and scope discipline |
 
 ## Executable route
 
