@@ -1,22 +1,30 @@
-# End-to-end Hopf-QBP accounting
+# Resource accounting after frame compilation
 
-This page combines the chart-level gradient records with the unified
-all-workspace Hopf-frame compiler. It keeps quantum executions, per-execution
-logical depth, workspace, classical decoding, output length, and requested
-accuracy separate.
+[← Compiler theorem](COMPILER_THEOREM.md) · [QBP consequence](QBP_CONSEQUENCE.md) · [Verification →](VERIFICATION.md)
 
-## 1. Parameters and frame compiler
+This page collects the end-to-end resources after the prescribed Hopf frame has
+been compiled.  It keeps six quantities separate:
+
+1. size and depth of one compiled frame;
+2. clean compiler workspace;
+3. independent quantum executions;
+4. controlled-observable access;
+5. classical decoding;
+6. output length and requested accuracy.
 
 Let
 
 ```math
-N=2^n
+N=2^n,
+\qquad
+M=\Theta(N),
 ```
 
-and let `M=Theta(N)` denote the number of Hopf coordinates. The compiler has
-`m>=0` clean workspace qubits.
+where `M` is the number of Hopf coordinates.
 
-The exact real frame and phase-dressed complex magnitude frame satisfy
+## 1. Compiled frame
+
+For every clean-workspace budget `m>=0`,
 
 ```math
 S_{\mathrm{frame}}(n,m)=\Theta(N),
@@ -24,82 +32,80 @@ S_{\mathrm{frame}}(n,m)=\Theta(N),
 
 ```math
 D_{\mathrm{frame}}(n,m)
-=\Theta\left(n+\frac{N}{n+m}\right)
+=\Theta\left(n+\frac{N}{n+m}\right).
 ```
-
-for every ancillary budget. This matches the optimal arbitrary-state-
-preparation frontier in the Yuan–Zhang model.
 
 The real compiler uses:
 
 - the borrowed-suffix echo at `m=0`;
-- a direct flagged-UCG schedule for `1<=m<4n`;
-- a binary–one-hot decoder and explicit coherent router for larger `m`.
+- the direct clean-flag schedule for small positive workspace;
+- the tree cut, binary–one-hot decoder, and coherent router for larger
+  workspace.
 
-## 2. Global magnitude stream
+The phase-dressed complex magnitude frame adds one exact phase UCG and reuses
+the same work pool sequentially.
 
-For an expectation objective
+## 2. Magnitude-coordinate response
+
+For
 
 ```math
-E(\boldsymbol\theta)
+E_O(\boldsymbol\theta)
 =\langle\psi(\boldsymbol\theta)|O|\psi(\boldsymbol\theta)\rangle,
 ```
 
-the unrestricted-angle magnitude differential is
-
 ```math
-\partial_{\theta_j}E
+\partial_{\theta_j}E_O
 =2a_j\,\mathrm{Re}\langle e_j|O|\psi\rangle,
 \qquad
 g_{j,j}=a_j^2.
 ```
 
-On the canonical Hopf domains `a_j>=0`, so `a_j=sqrt(g_(j,j))`. At
-`g_(j,j)=0`, the raw differential vanishes while the unit marker column remains
-a frame continuation.
+On the canonical domains, `a_j>=0` and equals the principal metric square root.
+At zero metric weight, the raw coordinate derivative is zero.
 
-The global protocol prepares coherent reference and response branches, applies
-controlled `O`, applies the inverse frame, and measures the ancilla and system
-in the designated bases. One outcome contributes a signed Walsh record to every
-magnitude coordinate.
+The global magnitude circuit prepares reference and objective-response branches,
+applies the inverse frame, and measures one branch bit and one `n`-bit system
+string.  The same outcome contributes a parity record to every magnitude
+coordinate.
 
-Frame-safe compilation preserves the complete measurement distribution, so the
-record identity and concentration argument are independent of the elementary
-frame compiler and of `m`.
+Frame-safe compilation preserves the complete output distribution, so the
+record identity is independent of the selected workspace schedule.
 
-## 3. Statistical target
+## 3. Raw-coordinate execution count
 
-The primary finite-shot target is simultaneous absolute accuracy of the **raw
-Hopf-coordinate gradient**:
+The primary finite-shot target is
 
 ```math
-\|\widehat{\nabla E}-\nabla E\|_{\infty}
-\leq\varepsilon_{\infty}.
+\|\widehat{\nabla E_O}-\nabla E_O\|_{\infty}
+\leq\varepsilon_{\infty}
 ```
 
-At each magnitude depth, the weighted record has deterministic Euclidean norm
-two. There are `n` depth families. Fixed-norm concentration gives
+with failure probability at most `delta`.
+
+The magnitude records have fixed Euclidean norm at each tree depth.  The
+sufficient execution count is
 
 ```math
-S_{\mathrm{mag}}
+S_{\nabla,\infty}
 =O\left(
 \frac{1+\log(n/\delta)}{\varepsilon_{\infty}^2}
 \right).
 ```
 
-At fixed raw-coordinate accuracy and confidence,
+At fixed accuracy and confidence,
 
 ```math
-S_{\mathrm{mag}}=O(\log n)=O(\log\log M).
+S_{\nabla,\infty}
+=O(\log n)
+=O(\log\log M).
 ```
 
-This does not imply the same execution count for complete raw-gradient `l_2`
-accuracy, relative or directional accuracy, normalized-frame coefficients, or
-natural-gradient coordinates. Those tasks have different dimensional or
-metric conditioning. Small metric weights suppress raw records; division by
-`sqrt(g_(j,j))` or `g_(j,j)` may be ill-conditioned.
+This statement concerns the raw coordinate gradient.  Complete-vector,
+relative, normalized-frame, and natural-gradient tasks may carry additional
+dimension, norm, or metric-conditioning factors.
 
-## 4. Direct complex phase stream
+## 4. Direct phase stream
 
 For leaf phase `phi_l`,
 
@@ -108,95 +114,92 @@ For leaf phase `phi_l`,
 =i\psi_\ell|\ell\rangle.
 ```
 
-The direct phase protocol uses the complex forward state, controlled `O`, an
-ancilla-Y measurement, and a system computational-basis measurement. It does
-not apply an inverse differential frame.
+The phase circuit uses the complex forward state, the same controlled
+observable, an ancilla-Y measurement, and a computational-basis system
+measurement.  It does not apply the inverse magnitude frame.
 
-Each outcome contributes a signed one-hot vector of norm two. The phase
-gradient lies in the zero-sum gauge subspace, and a zero-amplitude leaf has zero
-phase differential without division by an amplitude.
+Each outcome contributes a signed one-hot record.  A zero-amplitude leaf has
+zero phase differential, and the complete phase gradient lies in the expected
+zero-sum gauge subspace.
 
-The complete complex coordinate gradient combines:
+The complete complex coordinate output combines:
 
-1. the inverse-frame **magnitude** stream using
-   `W_(C,mag)=D_ph W_R`;
+1. the inverse-frame magnitude stream using `W_(C,mag)`;
 2. the direct leaf-phase stream.
 
-## 5. Matched logical programs
+## 5. Matched logical time
 
-Let:
+Let
 
-- `D_prep(n,m)` be the depth of the chosen forward preparation;
-- `D_O` be the cost assigned to the same controlled observable in both
-  programs;
+- `D_prep(n,m)` be the depth of the general-family forward preparation;
+- `D_O` be the depth charged for the same controlled observable;
 - `D_frame(n,m)` be the depth of one frame-safe inverse frame;
-- `S_E` be the scalar execution count for its declared scalar accuracy and
-  confidence;
-- `S_grad` be the gradient execution count for its declared raw-coordinate
-  accuracy and confidence.
+- `S_E` and `S_grad` be the execution counts for the declared scalar and raw
+  coordinatewise targets.
 
 Define
 
 ```math
 T_{\mathrm{scalar}}^{\mathrm{matched}}
-=S_E\left(D_{\mathrm{prep}}+D_O\right),
+=S_E(D_{\mathrm{prep}}+D_O),
 ```
 
 ```math
 T_{\mathrm{grad}}^{\mathrm{matched}}
-=S_{\nabla}\left(
-D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}
-\right).
+=S_{\nabla}(D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}).
 ```
 
-For the general arbitrary-state family,
+The all-workspace state-preparation frontier and the frame theorem give
 
 ```math
 D_{\mathrm{prep}}(n,m)
-=\Theta\left(n+\frac{N}{n+m}\right),
+=D_{\mathrm{frame}}(n,m)
+=\Theta\left(n+\frac{N}{n+m}\right)
 ```
 
-and the compiler theorem gives the same order for `D_frame` for every `m>=0`.
-The inverse frame therefore changes per-execution logical depth by at most a
-constant asymptotic factor.
+at the level of asymptotic order.  The inverse frame therefore adds only a
+constant per-execution depth factor.
 
-At fixed comparable scalar and raw-coordinate absolute accuracy and confidence,
-`S_E` is constant-order in `n` while `S_grad=O(log n)`. Hence
+At fixed comparable scalar and raw-coordinate accuracy and confidence,
 
 ```math
 \boxed{
 \frac{T_{\mathrm{grad}}^{\mathrm{matched}}}
      {T_{\mathrm{scalar}}^{\mathrm{matched}}}
-=O(\log n)=O(\log\log M).
+=O(\log n)
+=O(\log\log M).
 }
 ```
 
-This is a matched general-family logical-depth statement. It is not a
-comparison with an instance-specialized scalar shortcut, and it excludes
-classical materialization of the `M`-entry output.
+The comparison uses the same state family and controlled observable.  It does
+not compare against an instance-specialized scalar shortcut and does not include
+classical materialization of the `M`-entry gradient.
 
 ## 6. Quantum workspace
 
-For `m>0`, the real-frame and complex phase blocks reuse the same `m` clean
-compiler qubits sequentially. For `m=0`, both the borrowed-suffix real frame and
-the phase UCG are ancilla-free.
+The frame compiler uses at most `m` clean qubits and returns them to zero.  The
+real frame and phase UCG reuse the same pool sequentially.  At `m=0`, both are
+ancilla free.
 
-The gradient protocol itself adds one interferometric ancilla. Thus its
-workspace difference from the matched scalar program is additive constant
-order. The borrowed suffix data qubit is never counted as ancillary workspace.
+The interference protocol adds one branch ancilla beyond the matched scalar
+program.  The borrowed suffix bit in the strict-zero compiler is logical data,
+not ancillary workspace.
 
-## 7. Magnitude decoding
+## 7. Classical magnitude decoding
 
-Let `S` outcomes be `(b_s,y_s)`. One outcome contributes the complete Walsh
-character
+For `S` measured pairs `(b_s,y_s)`, direct record-wise decoding costs
 
 ```math
-(-1)^{b_s}
-\left((-1)^{k\cdot y_s}\right)_{k=0}^{N-1}.
+O(SN).
 ```
 
-Direct record-wise accumulation costs `O(SN)`. A signed histogram followed by a
-fast Walsh–Hadamard transform costs `O(S+Nn)`. Selecting the better route gives
+A signed histogram followed by a fast Walsh–Hadamard transform costs
+
+```math
+O(S+Nn).
+```
+
+Choosing the better route gives
 
 ```math
 \boxed{
@@ -205,60 +208,58 @@ T_{\mathrm{mag}}
 }
 ```
 
-At fixed raw-coordinate accuracy, `S=O(log n)`, so the materialized magnitude
-decoder is `O(N log n)`. The output itself has `N-1` entries.
+At fixed raw-coordinate accuracy, `S=O(log n)`, so dense materialization costs
+`O(N log n)`.  The output itself has `N-1` entries.
 
-## 8. Phase decoding
-
-Phase outcomes accumulate directly into signed leaf bins. For `S` samples,
+The phase stream accumulates directly into signed leaf bins in
 
 ```math
-T_{\mathrm{phase}}=O(S+N)
+O(S+N)
 ```
 
-with `O(N)` output storage. Optional projection onto the known zero-sum gauge
-subspace is `O(N)`.
+time and `O(N)` output storage.
 
-## 9. Compiler parameter generation
+## 8. Classical compiler preprocessing
 
-The Hopf tree contains `N-1` magnitude angles.
+The Hopf tree has `N-1` magnitude angles.
 
-- At `m=0`, all half-angle prefix tables are generated in `O(N)` arithmetic.
-- In the routed schedule, one pass partitions angles into the prefix and
-  `2^t` local subtree lists in `O(N)` work.
+- Half-angle tables for the strict-zero schedule are generated in `O(N)` work.
+- A routed cut partitions the angles into one prefix list and `2^t` subtree
+  lists in `O(N)` work.
 - The phase UCG pairs `N` leaf phases in `O(N)` work and storage.
+- The explicit decoder and router schedules are generated from `n,t` and the
+  chosen register layout.
 
-The explicit router schedule is generated from the cut parameters. Elementary
-UCG decomposition follows the published Yuan–Zhang compiler. The quantum depth
-theorem counts the resulting logical circuit, not host-language synthesis wall
-time.
+The logical depth theorem counts the resulting quantum circuit, not the host
+language's synthesis wall time.
 
-## 10. Resource summary
-
-For every `m>=0`:
+## 9. Summary
 
 | Resource | Magnitude stream | Direct phase stream |
 |---|---:|---:|
-| Primary executions at fixed raw `l_infinity` accuracy/confidence | `O(log n)` | no larger asymptotically |
-| Forward preparation depth | `Theta(n+N/(n+m))` | same |
-| Reverse magnitude-frame depth | `Theta(n+N/(n+m))` | none |
-| Compiler workspace | at most `m` clean qubits | same pool; zero when `m=0` |
-| Additional protocol ancilla | one | one |
-| Classical decoding | `O(S+N min{S,n})` | `O(S+N)` |
-| Output length | `N-1` | `N` with one gauge redundancy |
+| primary executions at fixed raw `l_infinity` accuracy/confidence | `O(log n)` | no larger asymptotically |
+| forward preparation depth | `Theta(n+N/(n+m))` | same |
+| reverse magnitude-frame depth | `Theta(n+N/(n+m))` | none |
+| clean compiler workspace | at most `m` | same pool |
+| additional protocol ancilla | one | one |
+| classical decoding | `O(S+N min{S,n})` | `O(S+N)` |
+| materialized output length | `N-1` | `N`, with one gauge redundancy |
 
-## 11. Correctness and evidence boundary
+## 10. Boundary of the accounting
 
-The all-workspace resource statement applies only to frame-safe compilation. A
-state-equivalent preparation circuit is not automatically a valid inverse
-frame.
+The table above is an exact logical-circuit and raw-coordinate accounting.  It
+does not include:
 
-The strict-zero echo, binary–one-hot decoder, and coherent router have explicit
-logical constructions and finite exact tests. UCG and multi-controlled-X
-elementary synthesis are imported from Yuan–Zhang. The theorem remains subject
-to independent technical review.
+- synthesis of a generic nonunitary observable into a controlled reflection;
+- device-connectivity routing;
+- native-gate or approximate Clifford+T depth;
+- noise-dependent execution counts;
+- optimizer convergence;
+- the conditioning of outputs obtained by dividing by small metric weights.
 
-This accounting excludes application-independent controlled-`O` synthesis,
-hardware connectivity, approximate Clifford+T compilation, noise-dependent
-sample complexity, optimizer convergence, and generic coordinate charts beyond
-the Hopf structure.
+The [QBP consequence](QBP_CONSEQUENCE.md) gives the operator and statistical
+premises; the [verification map](VERIFICATION.md) gives the executable evidence.
+
+---
+
+[← Compiler theorem](COMPILER_THEOREM.md) · [QBP consequence](QBP_CONSEQUENCE.md) · [Verification →](VERIFICATION.md)
