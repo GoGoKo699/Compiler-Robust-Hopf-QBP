@@ -24,7 +24,7 @@ E_O(\boldsymbol\theta)
 =\langle\psi(\boldsymbol\theta)|O|\psi(\boldsymbol\theta)\rangle,
 ```
 
-where `O` is Hermitian.  For a real magnitude coordinate,
+where $O$ is Hermitian.  For a real magnitude coordinate,
 
 ```math
 \partial_{\theta_j}E_O
@@ -51,9 +51,9 @@ we obtain
 }
 ```
 
-For unrestricted angles, `a_j` is the oriented incoming amplitude and
-`g_(j,j)=a_j^2`.  On the canonical Hopf domains, `a_j>=0` and
-`a_j=sqrt(g_(j,j))`.  If `g_(j,j)=0`, the raw coordinate derivative is zero;
+For unrestricted angles, $a_j$ is the oriented incoming amplitude and
+$g_{j,j}=a_j^2$.  On the canonical Hopf domains, $a_j\geq0$ and
+$a_j=\sqrt{g_{j,j}}$.  If $g_{j,j}=0$, the raw coordinate derivative is zero;
 no inverse metric weight is needed for the raw estimator.
 
 For the complex chart, the inverse-frame stream uses
@@ -108,7 +108,7 @@ basis.
 
 ## 3. One outcome gives one record for every magnitude coordinate
 
-Let `(b,y)` denote the branch-ancilla outcome and the `n`-bit system outcome in
+Let $(b,y)$ denote the branch-ancilla outcome and the $n$-bit system outcome in
 the X basis.  Define
 
 ```math
@@ -123,11 +123,11 @@ Then
 =\partial_{\theta_j}E_O.
 ```
 
-On the canonical chart, replace `a_j` by `sqrt(g_(j,j))`.  The same observed
-pair `(b,y)` determines the parity for every marker `lambda(j)`, so one quantum
+On the canonical chart, replace $a_j$ by $\sqrt{g_{j,j}}$.  The same observed
+pair $(b,y)$ determines the parity for every marker $\lambda(j)$, so one quantum
 outcome contributes a full magnitude-gradient record.
 
-For `S` outcomes, two classical routes are useful.
+For $S$ outcomes, two classical routes are useful.
 
 ### Record-wise decoding
 
@@ -151,7 +151,7 @@ O\left(S+N\min\{S,n\}\right)
 }
 ```
 
-time, with `O(N)` storage for the dense transform.  This is a classical output
+time, with $O(N)$ storage for the dense transform.  This is a classical output
 cost; it is not an additional quantum execution count.
 
 For the complex phase stream, each observed leaf contributes a signed one-hot
@@ -178,13 +178,13 @@ Suppose the compiled frame satisfies
 \widetilde WJ=JW.
 ```
 
-Since `W_tilde` is unitary and maps the clean subspace onto itself,
+Since $\widetilde W$ is unitary and maps the clean subspace onto itself,
 
 ```math
 \widetilde W^{\dagger}J=JW^{\dagger}.
 ```
 
-Replacing `W` and `W^dagger` by the compiled circuit therefore preserves:
+Replacing $W$ and $W^{\dagger}$ by the compiled circuit therefore preserves:
 
 - both coherent branches;
 - the complete output distribution;
@@ -196,7 +196,7 @@ Replacing `W` and `W^dagger` by the compiled circuit therefore preserves:
 This implication is exact and compiler independent.  The all-workspace theorem
 supplies one family of implementations satisfying its premise.
 
-By contrast, equality only on `|0^n>` preserves the reference state but leaves
+By contrast, equality only on $\lvert 0^n\rangle$ preserves the reference state but leaves
 the response resolution unconstrained.  The two-qubit example in the
 [complete narrative](../REVIEW.md#12-a-complete-two-qubit-obstruction) shows the
 resulting gradient corruption explicitly.
@@ -211,7 +211,7 @@ The primary finite-shot statement is simultaneous absolute accuracy of the
 \leq\varepsilon_{\infty}
 ```
 
-with failure probability at most `delta`.
+with failure probability at most $\delta$.
 
 Each depth record has deterministic Euclidean norm two.  A fixed-norm vector
 concentration bound gives the sufficient magnitude execution count
@@ -223,13 +223,13 @@ S_{\nabla,\infty}
 \right).
 ```
 
-At fixed `epsilon_infinity` and `delta`,
+At fixed $\varepsilon_{\infty}$ and $\delta$,
 
 ```math
 S_{\nabla,\infty}=O(\log n).
 ```
 
-For `M=Theta(N)` Hopf coordinates and `n=Theta(log M)`, this is
+For $M=\Theta(N)$ Hopf coordinates and $n=\Theta(\log M)$, this is
 
 ```math
 O(\log\log M).
@@ -253,11 +253,11 @@ from a subsequently rescaled output task.
 
 The depth comparison is made between matched logical programs.  Let
 
-- `D_prep(n,m)` be the depth of the chosen general-family forward preparation;
-- `D_O` be the depth charged for the same controlled observable in both
+- $D_{\mathrm{prep}}(n,m)$ be the depth of the chosen general-family forward preparation;
+- $D_O$ be the depth charged for the same controlled observable in both
   programs;
-- `D_frame(n,m)` be the depth of one frame-safe inverse frame;
-- `S_E` and `S_grad` be the execution counts for the stated scalar and raw
+- $D_{\mathrm{frame}}(n,m)$ be the depth of one frame-safe inverse frame;
+- $S_E$ and $S_{\mathrm{grad}}$ be the execution counts for the stated scalar and raw
   coordinatewise accuracy targets.
 
 Define
@@ -305,7 +305,7 @@ absolute accuracy and confidence,
 The statement uses the same state family, preparation convention, controlled
 observable, and accuracy convention on both sides.  It does not compare against
 an instance-specialized scalar shortcut, and it excludes classical
-materialization of the `M`-entry output.
+materialization of the $M$-entry output.
 
 ## 7. Checkpoint protocols use a different interface
 
@@ -319,7 +319,7 @@ For
 U=B_dA_d,
 ```
 
-let `P_d` project onto the interface reached by `A_d`.  A sufficient compiled
+let $P_d$ project onto the interface reached by $A_d$.  A sufficient compiled
 suffix contract is
 
 ```math
@@ -327,7 +327,7 @@ suffix contract is
 =e^{i\chi}JB_dP_d,
 ```
 
-where `chi` is independent of the interface input.
+where $\chi$ is independent of the interface input.
 
 | Compiler promise | Scalar state | Checkpoint means | Global-frame distribution |
 |---|---:|---:|---:|
