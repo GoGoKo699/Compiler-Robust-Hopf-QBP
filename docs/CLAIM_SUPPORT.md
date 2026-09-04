@@ -1,124 +1,108 @@
 # Claim support map
 
-[← Verification](VERIFICATION.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)
+[← Documentation index](README.md) · [Complete compiler proof](COMPILER_THEOREM.md) · [Verification →](VERIFICATION.md)
 
-This page maps each material claim to its proof type, executable support, and
-scope boundary. It is an audit table after the main proof, not a substitute for
-the proof itself.
+This page connects each principal claim to its analytic argument, local
+implementation, executable support, and scope boundary. It is an audit map, not
+a substitute for the proof.
 
-## Evidence classes
+## 1. Structured unitary target
 
-| Class | Meaning |
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| the real Hopf frame contains the state and `N-1` prescribed marker directions | [Minimal Hopf interface](HOPF_INTERFACE.md) | [`frames.py`](../compiler_robust_hopf/frames.py) | [`test_frames.py`](../tests/test_frames.py) | frame directions at zero metric weight are chart-selected continuations, not normalized nonzero derivatives |
+| unrestricted differentials use the oriented weight `a_j`, with `g_(j,j)=a_j^2` | [Hopf interface, Section 3](HOPF_INTERFACE.md#3-differential-weights-and-coordinate-domains) | `RealTreeData.incoming_amplitude` | frame and complex-analysis tests | `a_j=sqrt(g_(j,j))` only on the canonical domains |
+| the complete frame is the product of addressed zero-suffix layers | [Hopf interface, Section 4](HOPF_INTERFACE.md#4-complete-addressed-layers) | independent recursive and addressed constructions in [`frames.py`](../compiler_robust_hopf/frames.py) | complete operator comparison | layer order and basis convention are fixed by the marker map |
+
+## 2. Compiler contract
+
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| complete frame safety implies exact inverse action | [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | clean-subspace contract used throughout the compiler | boundary tests | requires exact workspace return and unitarity |
+| one correct state column is insufficient | [Compiler boundaries, Section 1](COMPILER_BOUNDARIES.md#1-global-frame-the-first-column-obstruction) | [`compiler_boundaries.py`](../compiler_robust_hopf/compiler_boundaries.py) | two-qubit state, response, and decoder tests | does not say that a preparation compiler cannot be adapted; it says the promise must be strengthened |
+| checkpoint methods require their complete active interface | [Compiler boundaries, Sections 2–4](COMPILER_BOUNDARIES.md) | exact checkpoint fixtures | checkpoint boundary tests | active-interface equality may preserve the mean without preserving the complete distribution |
+
+## 3. Strict zero workspace
+
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| the borrowed-suffix echo equals one addressed layer on the complete Hilbert space | [Compiler theorem, Section 4](COMPILER_THEOREM.md#4-schedule-z-strict-zero-workspace) | [`strict_zero_echo.py`](../compiler_robust_hopf/strict_zero_echo.py) | four sectors and every nonfinal depth through `n=8` | borrowed bit is logical data and must be restored exactly |
+| no hidden ancillary wire is used | same four-sector and participant count | explicit permutations and block matrices | resource-width and endpoint tests | remaining suffix bits are controls, not work qubits |
+| strict-zero size is `Theta(N)` | layer sum plus real-state parameter lower bound | strict-zero resource row | exact size-sum tests | exact logical circuit model |
+| strict-zero depth is `Theta(n+N/n)` | UCG harmonic sum plus depth lower bound | strict-zero depth proxy | exact-rational inequality tests | imports Yuan–Zhang Lemmas 5–6 |
+
+## 4. Positive workspace
+
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| one reusable clean suffix flag attains the frontier for `1<=m<4n` | [Compiler theorem, Section 5](COMPILER_THEOREM.md#5-schedule-p1-small-positive-workspace) | direct resource rows in [`unified_compiler.py`](../compiler_robust_hopf/unified_compiler.py) | endpoint and absorption tests | threshold is proof-oriented, not a tuned finite crossover |
+| the conditioned prefix identity is exact | [Compiler theorem, Section 6.1](COMPILER_THEOREM.md#61-exact-tree-cut) | [`tree_structure.py`](../compiler_robust_hopf/tree_structure.py) | every cut through small `n` | complete-operator statement |
+| the tail is a direct sum of subtree frames | same | subtree angle map and ideal direct sum | complete cut tests | relies on prefix invariance of lower layers |
+| the binary–one-hot decoder has `3*2^t-2-t` workspace and `O(t)` depth | [Compiler theorem, Section 6.2](COMPILER_THEOREM.md#62-conditioned-prefix) | [`tree_decoder.py`](../compiler_robust_hopf/tree_decoder.py) | clean labels, arbitrary basis reversibility, layer disjointness, exact counts | Toffoli and fixed-width controlled Givens gates are constant-width readable primitives |
+| the router coherently implements route–operate–unroute | [Compiler theorem, Section 6.3](COMPILER_THEOREM.md#63-explicit-coherent-router) | [`router.py`](../compiler_robust_hopf/router.py) | arbitrary complex entangled inputs, direct-sum equality, complete cut equality | logical all-to-all model |
+| every routed work register returns to zero | same schedule | sparse-state simulator | token, copy, flag, and data leakage tests | cleanup is checked before the inverse route |
+| copy wires can be reused as branch flags | [Compiler theorem, Section 6.4](COMPILER_THEOREM.md#64-simultaneous-workspace-peak) | router layout | exact ledger tests | displayed inequality assumes `t>=1` and `s>=2`; `s=1` uses no suffix flag |
+| the largest feasible cut gives `N/(n+m)` | [Compiler theorem, Section 6.5](COMPILER_THEOREM.md#65-largest-feasible-cut) | `choose_routed_cut` | broad-grid integer checks | `s=1` treated separately |
+
+## 5. Optimality
+
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| size lower bound `Omega(N)` | real-state family dimension | diagnostic helper | safe parameter-count tests | general exact real-state family |
+| depth lower bound `Omega(N/(n+m))` | parameterized gate locations per layer | diagnostic helper | broad budget checks | arbitrary one-qubit parameters and fixed circuit topology families |
+| depth lower bound `Omega(n)` | backward light cones of the `n` system outputs | diagnostic helper | integer checks | logical two-qubit-gate model |
+| all-workspace real-frame frontier is tight | upper schedules plus lower bounds | unified resource row | broad-grid resource tests | exact all-to-all logical model |
+
+## 6. Phase-dressed complex magnitude frame
+
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| an arbitrary leaf-phase diagonal is one total-width-`n` UCG | [Compiler theorem, Section 8](COMPILER_THEOREM.md#8-phase-dressed-complex-magnitude-frame) | phase blocks in [`unified_compiler.py`](../compiler_robust_hopf/unified_compiler.py) | complete diagonal and inverse tests | arbitrary `U(2)` blocks are allowed by the imported UCG theorem |
+| the complex magnitude frame reuses the real-frame workspace | sequential clean composition | complex resource row | composition and workspace tests | leaf-phase derivatives remain a separate direct stream |
+| complex magnitude size and depth match the real frontier | one phase UCG plus the real theorem | complex resource row | broad-grid tests | theorem is not a single-frame claim for all `2N-1` complex coordinates |
+
+## 7. Quantum-backpropagation consequence
+
+| Claim | Analytic support | Implementation | Tests | Boundary |
+|---|---|---|---|---|
+| frame-safe compilation preserves the complete global magnitude distribution | [QBP consequence, Section 4](QBP_CONSEQUENCE.md#4-frame-safe-substitution) | compiled frame interface | boundary and decoder tests | assumes exact frame safety and clean return |
+| one outcome contributes to every magnitude coordinate | [QBP consequence, Section 3](QBP_CONSEQUENCE.md#3-one-outcome-contributes-to-every-magnitude-coordinate) | parity and FWHT decoders | decoder cross-checks | raw coordinate target |
+| raw coordinatewise accuracy uses `O((1+log(n/delta))/epsilon_infinity^2)` executions | [QBP consequence, Section 5](QBP_CONSEQUENCE.md#5-accuracy-target-and-conditioning-boundary) | record norm and decoder | empirical and algebraic record checks | not a complete-vector, relative, normalized-frame, or natural-gradient bound |
+| matched quantum-depth ratio is `O(log n)=O(log log M)` | [QBP consequence, Section 6](QBP_CONSEQUENCE.md#6-matched-scalar-and-gradient-programs) | state preparation, controlled observable, and compiled inverse frame | technical walkthrough | same general state family, access model, accuracy, and confidence; excludes output materialization |
+
+## 8. External circuit results
+
+The active imported source is P. Yuan and S. Zhang, *Quantum* **7**, 956
+(2023):
+
+| Imported statement | Use |
 |---|---|
-| **Algebraic proof** | dimension-independent identity proved in the documentation |
-| **Explicit construction** | complete register or logical-gate schedule supplied locally |
-| **Imported theorem** | exact circuit result used under the hypotheses of its source |
-| **Exact finite check** | independently built operators, records, or schedules compared numerically |
-| **Explicit counterexample** | closed-form instance disproving a stronger compiler claim |
-| **Exact term ledger** | integer or rational bookkeeping, not an asymptotic fit |
-| **Internal audit** | separate re-derivation within this project, not external review |
+| Theorem 2 | optimal all-workspace QSP benchmark |
+| Lemma 5 | exact ancilla-free multi-controlled `X` |
+| Lemma 6 | all-workspace UCG size–depth tradeoff |
+| Lemma 9 | coherent copy–use–uncopy |
 
-## 1. Hopf geometry and compiler contract
+The published article corresponds to arXiv v2. The imported statements were also
+checked in v3. The earlier state-preparation paper remains the historical
+predecessor and original-source citation for selected primitives.
 
-| Claim | Proof or source | Executable support | Boundary |
-|---|---|---|---|
-| The balanced real Hopf chart prepares every normalized real state | inherited from the first Hopf paper; restated in [Minimal Hopf interface](HOPF_INTERFACE.md) | [`frames.py`](../compiler_robust_hopf/frames.py), [`test_frames.py`](../tests/test_frames.py) | real state-vector sphere |
-| Unrestricted-angle differential is `partial_(theta_j)|psi>=a_j|e_j>` with `g_(j,j)=a_j^2` | recursive Hopf differential identity | `incoming_amplitude`, `metric`, and derivative tests | `a_j` is oriented and may be negative outside the canonical chart |
-| On the canonical domains `a_j=sqrt(g_(j,j))` | nonnegative ancestor sine/cosine factors | domain masks and canonical-domain tests | real final-depth angles may lie in `[0,2pi)` because they do not enter ancestor weights |
-| At `g_(j,j)=0`, the raw differential vanishes while the unit marker column remains a frame continuation | direct consequence of the differential identity | singular-coordinate test | continuation is not normalization of a nonzero derivative |
-| Computational markers place the state and all continuation vectors in one unitary frame | inherited from Hopf-QBP and restated here | [`conventions.py`](../compiler_robust_hopf/conventions.py), [`frames.py`](../compiler_robust_hopf/frames.py) | balanced Hopf chart |
-| A frame-safe implementation preserves the global QBP distribution | reducing-subspace proof in [`FRAME_SAFE_COMPILATION.md`](FRAME_SAFE_COMPILATION.md) | compiler-boundary tests | requires complete clean-input operator equality |
-| State-column equality alone is insufficient | explicit two-qubit counterexample | [`compiler_boundaries.py`](../compiler_robust_hopf/compiler_boundaries.py), tests | marker decoder held fixed |
+## 9. What is not claimed
 
-## 2. Strict zero workspace
+The repository does not claim:
 
-| Claim | Proof or source | Executable support | Boundary |
-|---|---|---|---|
-| The four-toggle half-angle echo equals one nonfinal addressed layer | complete four-sector proof in [Compiler theorem](COMPILER_THEOREM.md) | every nonfinal depth through `n=8` | exact Hopf `R_y` convention |
-| The original suffix qubit is restored exactly | same complete-operator proof | sector and full-matrix tests | borrowed qubit may be unknown and entangled |
-| No ancillary wire is used | explicit register audit | source implementation and resource rows | borrowed wire remains logical system data |
-| Each half-angle UCG has total width `d+2` | exact participant count | layer resource tests | `d` prefix controls, one borrowed control, one target |
-| Predicate toggles require no ancillary qubit | Yuan–Zhang Lemma 5 plus negative-control wrappers | strict-zero ledger | exact all-to-all standard-circuit model |
-| Strict-zero real frame has `Theta(N)` size and `Theta(n+N/n)` depth | upper-bound sums plus real-family parameter lower bound | exact-rational audit tests | constants not optimized |
+- a generic `O(N)` compiler for arbitrary `N`-dimensional unitaries;
+- a universal theorem for arbitrary coordinate frames;
+- hardware-native or connectivity-aware depth;
+- approximate Clifford+T complexity;
+- noise-dependent execution guarantees;
+- optimizer convergence;
+- a generic construction for controlled nonunitary observables;
+- novelty of UCGs, controlled-unitary square roots, borrowed qubits, or toggle
+  detection.
 
-## 3. Positive-workspace construction
-
-| Claim | Proof or source | Executable support | Boundary |
-|---|---|---|---|
-| First `t` depths equal a `t`-qubit frame conditioned on a zero external suffix | complete-operator proof | every cut through finite test range | balanced addressed frame |
-| Tail below a cut is a direct sum of subtree frames | exact angle map and invariant-subspace proof | every cut through finite test range | complete operator, not one column |
-| Binary–one-hot decoder maps `|x>|0>` to `|0>|e_x>|0>` | explicit X/CNOT/Toffoli construction | basis permutation, inverse, and layer-disjointness tests | clean decoder input |
-| Decoder workspace is `3*2^t-2-t`, depth `O(t)`, size `O(2^t)` | exact register and layer count | closed-form and explicit schedule checks | fixed-width gates have constant elementary cost |
-| Coherent router sends suffix and token to the prefix-selected branch | explicit CNOT-fanout/Fredkin construction | every basis input and arbitrary complex entangled inputs | all-to-all logical connectivity |
-| Prefix-copy count is `(2^t-1)(s+1)-t` and forward Fredkin count is `(2^t-1)(s+1)` | exact schedule count | explicit schedule versus resource-ledger tests | branch block width `s+1` |
-| Token-controlled subtree frames equal the ideal tail direct sum | route–operate–unroute proof | arbitrary complex-state and complete-cut tests | UCG/MCT elementary synthesis imported |
-| Copies, branch flags, tokens, and extra data return clean | inverse-route construction | zero-leakage and cleanup tests | clean workspace input |
-| Prefix and tail fit inside `2B(s+1)` clean workspace | simultaneous live-register ledger | explicit router ledger and broad-grid tests | `B=2^t`, `s=n-t` |
-| Maximal feasible cut gives optimal positive-workspace depth | algebraic cut inequality | exact integer diagnostics | asymptotic threshold, not finite crossover |
-
-## 4. All-workspace real and complex magnitude frames
-
-| Claim | Proof or source | Executable support | Boundary |
-|---|---|---|---|
-| Unified compiler selects strict-zero echo at `m=0` | explicit dispatch | unified/strict-zero ledger equality | top-level real frame |
-| Requested workspace is never exceeded | simultaneous peak ledger | broad grid of `n,m` values | clean ancillary model |
-| Real frame has `Theta(N)` size for every `m>=0` | three upper-bound schedules plus parameter lower bound | both ledgers | exact standard circuit |
-| Real frame has `Theta(n+N/(n+m))` depth for every `m>=0` | three schedules plus matching lower bounds | integer diagnostics | all-to-all logical depth |
-| Arbitrary leaf-phase diagonal is one exact `n`-qubit UCG | direct block identity | complete diagonal matrices | arbitrary `U(2)` blocks allowed |
-| Phase layer reuses real-frame workspace | sequential clean composition | complex resource rows | both blocks return workspace zero |
-| Phase-dressed complex magnitude frame has the same frontier | real theorem plus one phase UCG | magnitude-frame matrices and ledgers | leaf-phase derivatives use a separate direct stream |
-
-## 5. Quantum-backpropagation consequence
-
-| Claim | Proof or source | Executable support | Boundary |
-|---|---|---|---|
-| One global magnitude outcome contributes to every magnitude coordinate | inherited Hopf-QBP record identity | decoder parity/FWHT tests | phase-calibrated controlled Hermitian-unitary observable |
-| Fixed raw-coordinate `l_infinity` accuracy uses `O((1+log(n/delta))/epsilon^2)` magnitude executions | inherited fixed-norm concentration theorem | norm and decoder checks | absolute raw coordinate target |
-| Complete-vector, relative, frame, and natural-gradient targets differ | inherited task-boundary analysis from current Hopf-QBP | local [QBP consequence](QBP_CONSEQUENCE.md) | conditioning may depend on gradient norm or metric weights |
-| Best documented materialized decoder costs `O(S+N min{S,n})` | minimum of record-wise and signed-histogram/FWHT routes | direct/FWHT parity tests | output length is `Theta(N)` |
-| Frame-safe compilation adds no asymptotic per-execution depth factor | optimal frame compiler and substitution theorem | walkthrough and complete suite | matched general-family logical programs |
-| Matched fixed-accuracy overhead is `O(log n)=O(log log M)` | sample count and constant per-execution depth ratio | [QBP consequence](QBP_CONSEQUENCE.md) | same preparation, controlled observable, and accuracy convention; output materialization excluded |
-
-## 6. Source version and contribution boundaries
-
-The active compiler framework and QSP benchmark are Yuan and Zhang, *Quantum*
-**7**, 956 (2023). The published article is arXiv v2; Theorem 2 and Lemmas 5, 6,
-and 9 were checked in v3 and retain the statements used here. The earlier Sun
-et al. paper is the historical predecessor.
-
-The current `Hopf-QBP/main` baseline is
-`faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582`. Its statistical and output-task
-clarifications were reviewed and reflected locally; exact reconciliation is in
-[`SYNC.md`](../SYNC.md).
-
-The repository does not claim invention of UCGs, borrowed qubits, toggle
-detection, or square-root/conjugation identities. The narrow strict-zero
-contribution is the Hopf-specific reduction of one addressed depth to two
-width-`d+2` UCGs using a restored logical suffix qubit, together with the
-resulting optimal complete-frame theorem.
-
-## 7. Internal review records
-
-| Record | Purpose |
-|---|---|
-| [Consolidated proof audit](PROOF_AUDIT.md) | register, operator, and asymptotic reconstruction |
-| [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | order, phases, hidden workspace, endpoints, and sums |
-| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem rederived from the target operator and imported primitives |
-
-These records document internal checking. They do not replace independent
-technical review.
-
-## 8. Reproduction
-
-```bash
-python -m pip install -r requirements.txt
-python scripts/reviewer_walkthrough.py
-python validate.py
-python scripts/unified_resource_ledger.py --n 12
-python scripts/strict_zero_echo_ledger.py --n 12
-python scripts/check_upstream_sync.py --offline
-```
+The theorem is specific to the balanced Hopf differential frame and to the
+exact circuit model stated above.
 
 ---
 
-[← Verification](VERIFICATION.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)
+[← Documentation index](README.md) · [Complete compiler proof](COMPILER_THEOREM.md) · [Verification →](VERIFICATION.md)

@@ -70,6 +70,10 @@ def local_target(page: Path, raw_target: str) -> Path | None:
     return (page.parent / target).resolve()
 
 
+def normalized_text(text: str) -> str:
+    return " ".join(text.split())
+
+
 class ReaderNarrativeTests(unittest.TestCase):
     def test_primary_pages_are_process_free_and_impersonal(self) -> None:
         for relative in PRIMARY_PAGES + COMPATIBILITY_PAGES:
@@ -99,14 +103,15 @@ class ReaderNarrativeTests(unittest.TestCase):
 
     def test_landing_page_starts_from_the_synthesis_hierarchy(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        normalized = normalized_text(readme)
         self.assertLess(len(readme), 16_000)
         self.assertIn("# Optimal Compilation of Hopf Differential Frames", readme)
         self.assertIn("## Main theorem", readme)
         self.assertIn("## Where this problem sits", readme)
-        self.assertIn("Quantum state preparation", readme)
-        self.assertIn("Controlled state preparation", readme)
-        self.assertIn("General unitary synthesis", readme)
-        self.assertIn("structured complete unitary", readme)
+        self.assertIn("Quantum state preparation", normalized)
+        self.assertIn("Controlled state preparation", normalized)
+        self.assertIn("General unitary synthesis", normalized)
+        self.assertIn("structured complete unitary", normalized)
         self.assertIn("assets/problem-hierarchy.svg", readme)
         self.assertIn("assets/frontier-match.svg", readme)
         self.assertIn("assets/proof-map.svg", readme)
@@ -152,7 +157,7 @@ class ReaderNarrativeTests(unittest.TestCase):
             for relative in PRIMARY_PAGES
         }
         combined = " ".join(files.values())
-        normalized = " ".join(combined.split()).lower()
+        normalized = normalized_text(combined).lower()
         self.assertIn("oriented incoming amplitude", normalized)
         self.assertIn("chart-selected orthogonal continuation", normalized)
         self.assertIn("phase-dressed complex magnitude frame", normalized)

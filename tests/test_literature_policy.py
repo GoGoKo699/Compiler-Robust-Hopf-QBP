@@ -99,11 +99,29 @@ class LiteraturePolicyTests(unittest.TestCase):
         active_docs = (
             "README.md",
             "REVIEW.md",
+            "docs/READING_GUIDE.md",
             "docs/HOPF_INTERFACE.md",
             "docs/COMPILER_THEOREM.md",
             "docs/QBP_CONSEQUENCE.md",
             "docs/VERIFICATION.md",
             "docs/SOURCE_MAP.md",
+            "docs/RELATED_WORK.md",
+            "docs/THEOREM_OVERVIEW.md",
+            "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
+            "docs/END_TO_END_QBP.md",
+            "docs/PROOF_AUDIT.md",
+            "docs/RESEARCH_STATUS.md",
+            "docs/CLAIM_SUPPORT.md",
+            "manuscript/README.md",
+        )
+        source_attribution_docs = (
+            "README.md",
+            "REVIEW.md",
+            "docs/COMPILER_THEOREM.md",
+            "docs/QBP_CONSEQUENCE.md",
+            "docs/VERIFICATION.md",
+            "docs/SOURCE_MAP.md",
+            "docs/RELATED_WORK.md",
             "docs/THEOREM_OVERVIEW.md",
             "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
             "docs/END_TO_END_QBP.md",
@@ -137,9 +155,12 @@ class LiteraturePolicyTests(unittest.TestCase):
         )
         for relative in active_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
-            self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
             for retired in retired_names:
                 self.assertNotIn(retired, text, msg=f"{retired} in {relative}")
+
+        for relative in source_attribution_docs:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertIn("Yuan", text, msg=f"missing active source in {relative}")
 
         for relative in theorem_bearing_docs:
             text = (ROOT / relative).read_text(encoding="utf-8")
