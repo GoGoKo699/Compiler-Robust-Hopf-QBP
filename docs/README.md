@@ -1,75 +1,87 @@
-# Documentation guide
+# Documentation
 
-[← Repository landing page](../README.md) · [Start the complete narrative](../REVIEW.md)
+[← Repository landing page](../README.md) · [Complete technical note](../REVIEW.md) · [Short reading guide](READING_GUIDE.md)
 
-The repository is intended to be read in a linear order. The files below are
-grouped by purpose so that the mathematical proof, executable evidence, and
-internal audit records do not compete for attention.
+The documentation is organized by mathematical purpose rather than by
+repository history. The main route begins with the synthesis problem, introduces
+only the Hopf structure needed by the compiler, proves the all-workspace
+frontier, and then derives the quantum-backpropagation consequence.
 
-## Main reading route
+## Main route
 
 | Order | Page | Purpose |
 |---:|---|---|
-| 1 | [Complete narrative](../REVIEW.md) | the entire argument from the synthesis problem to the matched QBP consequence |
-| 2 | [Minimal Hopf interface](HOPF_INTERFACE.md) | canonical domains, oriented incoming amplitudes, singular coordinates, marker columns, and addressed layers |
-| 3 | [Complete compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and explicitly routed all-workspace constructions with matching lower bounds |
-| 4 | [QBP consequence](QBP_CONSEQUENCE.md) | frame-safe substitution, statistical task boundaries, and the matched logical-depth statement |
-| 5 | [Verification and evidence](VERIFICATION.md) | implementation levels, exact operator checks, resource ledgers, and evidence boundaries |
-| 6 | [Source map](SOURCE_MAP.md) | fact-level dependencies on the two Hopf papers and the published/checked Yuan–Zhang versions |
-| 7 | [Related work](RELATED_WORK.md) | compiler lineage and the narrow contribution boundary |
+| 1 | [Complete technical note](../REVIEW.md) | the full argument in one continuous reading |
+| 2 | [Minimal Hopf interface](HOPF_INTERFACE.md) | the structured unitary target, marker columns, coordinate weights, and addressed layers |
+| 3 | [Complete compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and routed constructions with matching lower bounds |
+| 4 | [Verification and evidence](VERIFICATION.md) | implementation levels, finite checks, resource ledgers, and audit boundaries |
+| 5 | [Source and dependency map](SOURCE_MAP.md) | exact theorem, version, repository, implementation, and test dependencies |
+| 6 | [Related work](RELATED_WORK.md) | state-preparation lineage, UCG structure, borrowed workspace, and contribution boundary |
+| 7 | [QBP consequence](QBP_CONSEQUENCE.md) | frame-safe substitution, shared records, accuracy targets, and matched logical depth |
 
-The [technical reading guide](INDEPENDENT_REVIEW_GUIDE.md) gives a shorter
-orientation for a first visit.
+The [reading guide](READING_GUIDE.md) gives shorter routes for orientation and
+focused checking.
 
-## Focused construction pages
+## Focused mathematical pages
 
-| Page | Focus |
+| Page | Question answered |
 |---|---|
-| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | the complete clean-input operator contract and its adjoint consequence |
-| [Compiler boundaries](COMPILER_BOUNDARIES.md) | exact global and checkpoint counterexamples and the active-interface theorem |
-| [Strict-zero borrowed-suffix echo](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) | the complete `m=0` circuit and four-sector proof |
-| [Theorem overview](THEOREM_OVERVIEW.md) | compact theorem chain for reference |
-| [Unified compiler architecture](UNIFIED_YUAN_ZHANG_COMPILER.md) | the three schedules, explicit router, and source-policy summary |
-| [End-to-end QBP accounting](END_TO_END_QBP.md) | execution, decoder, workspace, accuracy, and access-model accounting |
+| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | What operator equality is sufficient for substituting a compiled frame and its inverse? |
+| [Compiler boundaries](COMPILER_BOUNDARIES.md) | Why is one prepared state column insufficient, and what changes for checkpoint interfaces? |
+| [Strict-zero borrowed-suffix echo](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) | How is one addressed Hopf depth compiled without any additional wire? |
+| [Theorem overview](THEOREM_OVERVIEW.md) | What is the compact theorem and lemma hierarchy? |
+| [Unified compiler architecture](UNIFIED_YUAN_ZHANG_COMPILER.md) | How do the three workspace schedules fit into one compiler? |
+| [End-to-end QBP accounting](END_TO_END_QBP.md) | How are executions, per-execution depth, classical decoding, and access costs separated? |
 
-## Evidence and internal review
+## Evidence and independent reconstructions
 
-| Page | Role |
+| Page | Distinct role |
 |---|---|
-| [Claim support map](CLAIM_SUPPORT.md) | claim-by-claim proof, code, test, and scope boundary |
-| [Research status](RESEARCH_STATUS.md) | concise scientific status and peer-review revision record |
-| [Consolidated proof audit](PROOF_AUDIT.md) | internal reconstruction of the complete compiler proof, including the explicit router |
-| [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | focused internal audit of the borrowed-suffix circuit |
-| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | proof rederived from the operator target and imported primitives |
+| [Claim support map](CLAIM_SUPPORT.md) | claim-by-claim proof, implementation, test, and scope boundary |
+| [Research status](RESEARCH_STATUS.md) | concise current scientific state |
+| [Consolidated proof audit](PROOF_AUDIT.md) | register accounting and all-workspace upper and lower bounds rechecked together |
+| [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | independent reconstruction of the four-sector circuit and zero-workspace resources |
+| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem rederived from the operator target and imported primitives |
 
-Internal audits remain visible because they record corrections and likely
-failure points. They are evidence about the checking process, not a substitute
-for independent technical judgment.
+These records remain visible because they document which parts were rebuilt and
+which failure modes were examined. They are supporting evidence, not substitutes
+for the proof in [the compiler theorem](COMPILER_THEOREM.md).
 
-## Literature support
+## Literature and provenance
 
-| Page | Role |
+| Page or record | Role |
 |---|---|
 | [Related work](RELATED_WORK.md) | readable comparison organized by mathematical role |
-| [Strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md) | focused technical comparison around the borrowed-suffix echo |
-| [Detailed search record](PRIOR_ART_SEARCH_2026_09.md) | search scope and source-by-source notes kept outside the main proof |
+| [Strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md) | focused comparison around the in-place echo |
+| [Detailed search record](PRIOR_ART_SEARCH_2026_09.md) | bounded source-by-source search kept outside the proof route |
+| [`provenance/literature.json`](../provenance/literature.json) | machine-readable source versions and roles |
+| [`provenance/upstream.json`](../provenance/upstream.json) | exact Hopf-repository baselines and local lineage |
+| [`SYNC.md`](../SYNC.md) | human-readable source-of-truth policy |
 
-Machine-readable source versions, upstream reconciliation, and literature
-provenance are stored in [`../provenance/`](../provenance/).
+The two state-preparation papers are presented in the main narrative as one
+coherent compiler line. Formal citations and the source map retain complete
+authorship and exact theorem attribution.
 
 ## Executable route
 
-A compact orientation run is
+A compact orientation follows the proof order:
 
 ```bash
-python scripts/reviewer_walkthrough.py
+python scripts/technical_walkthrough.py
 ```
 
-The complete suite additionally checks the explicit CNOT/Fredkin router on
-arbitrary complex prefix–suffix-entangled inputs and verifies complete workspace
-cleanup. Reproduction commands are collected in
-[Verification and evidence](VERIFICATION.md).
+The complete deterministic checks are:
+
+```bash
+python validate.py
+python scripts/unified_resource_ledger.py --n 12
+python scripts/strict_zero_echo_ledger.py --n 12
+```
+
+The [verification page](VERIFICATION.md) states what is represented as a dense
+operator, an explicit reversible schedule, an imported elementary compiler, or
+an asymptotic ledger.
 
 ---
 
-[← Repository landing page](../README.md) · [Start the complete narrative →](../REVIEW.md)
+[← Repository landing page](../README.md) · [Complete technical note →](../REVIEW.md)

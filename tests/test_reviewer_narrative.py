@@ -14,21 +14,23 @@ PRIMARY_PAGES = (
     "README.md",
     "REVIEW.md",
     "docs/README.md",
+    "docs/READING_GUIDE.md",
     "docs/HOPF_INTERFACE.md",
     "docs/COMPILER_THEOREM.md",
     "docs/QBP_CONSEQUENCE.md",
     "docs/VERIFICATION.md",
     "docs/SOURCE_MAP.md",
     "docs/RELATED_WORK.md",
+)
+
+COMPATIBILITY_PAGES = (
     "docs/INDEPENDENT_REVIEW_GUIDE.md",
-    "docs/RESEARCH_STATUS.md",
-    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
-    "docs/STRICT_ZERO_ECHO_AUDIT.md",
-    "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
-    "manuscript/README.md",
 )
 
 DIAGRAMS = (
+    "assets/problem-hierarchy.svg",
+    "assets/frontier-match.svg",
+    "assets/proof-map.svg",
     "assets/state-vs-frame.svg",
     "assets/two-qubit-obstruction.svg",
     "assets/strict-zero-echo.svg",
@@ -44,6 +46,14 @@ PROCESS_PHRASES = (
     "all-workspace-unified-final",
     "reviewer-narrative-redesign",
     "peer-review-revision-2026-09",
+    "compiler-specialist-reader-route-2026-09",
+)
+
+PERSONALIZATION_PHRASES = (
+    "for yuan",
+    "tailored for",
+    "intended reviewer",
+    "single reviewer",
 )
 
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -60,16 +70,19 @@ def local_target(page: Path, raw_target: str) -> Path | None:
     return (page.parent / target).resolve()
 
 
-class ReviewerNarrativeTests(unittest.TestCase):
-    def test_primary_pages_exist_and_have_no_workflow_language(self) -> None:
-        for relative in PRIMARY_PAGES:
+class ReaderNarrativeTests(unittest.TestCase):
+    def test_primary_pages_are_process_free_and_impersonal(self) -> None:
+        for relative in PRIMARY_PAGES + COMPATIBILITY_PAGES:
             path = ROOT / relative
             self.assertTrue(path.is_file(), msg=relative)
             text = path.read_text(encoding="utf-8")
+            lower = text.lower()
             for phrase in PROCESS_PHRASES:
                 self.assertNotIn(phrase, text, msg=f"{phrase!r} in {relative}")
+            for phrase in PERSONALIZATION_PHRASES:
+                self.assertNotIn(phrase, lower, msg=f"{phrase!r} in {relative}")
 
-    def test_primary_pages_use_github_safe_math_commands(self) -> None:
+    def test_primary_pages_use_the_selected_writing_conventions(self) -> None:
         for relative in PRIMARY_PAGES:
             text = (ROOT / relative).read_text(encoding="utf-8")
             self.assertNotIn(
@@ -77,84 +90,102 @@ class ReviewerNarrativeTests(unittest.TestCase):
                 text,
                 msg=f"unsupported GitHub math command in {relative}",
             )
+            self.assertNotIn("—", text, msg=f"em dash in {relative}")
+            self.assertNotRegex(
+                text,
+                re.compile(r"\b[Yy]ou\b"),
+                msg=f"direct second-person address in {relative}",
+            )
 
-    def test_landing_page_is_short_and_review_is_substantial(self) -> None:
+    def test_landing_page_starts_from_the_synthesis_hierarchy(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
-        self.assertLess(len(readme), 15_000)
-        self.assertGreater(len(review), 30_000)
+        self.assertLess(len(readme), 16_000)
         self.assertIn("# Optimal Compilation of Hopf Differential Frames", readme)
-        self.assertIn("## Main result under technical review", readme)
-        self.assertIn("## 3. Two qubits", review)
-        self.assertIn("## 6. Strict zero workspace", review)
-        self.assertIn("## 8. Larger workspace", review)
-        self.assertIn("## 11. Quantum-backpropagation consequence", review)
+        self.assertIn("## Main theorem", readme)
+        self.assertIn("## Where this problem sits", readme)
+        self.assertIn("Quantum state preparation", readme)
+        self.assertIn("Controlled state preparation", readme)
+        self.assertIn("General unitary synthesis", readme)
+        self.assertIn("structured complete unitary", readme)
+        self.assertIn("assets/problem-hierarchy.svg", readme)
+        self.assertIn("assets/frontier-match.svg", readme)
+        self.assertIn("assets/proof-map.svg", readme)
 
-    def test_peer_review_corrections_are_visible_in_primary_route(self) -> None:
+    def test_complete_note_has_the_intended_question_chain(self) -> None:
+        review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
+        self.assertGreater(len(review), 30_000)
+        headings = (
+            "## 1. A structured unitary-completion problem",
+            "## 2. Minimal Hopf interface",
+            "## 3. Why one correct state column is insufficient",
+            "## 4. Exact circuit framework",
+            "## 5. One compiler with three schedules",
+            "## 6. Schedule Z: strict zero workspace",
+            "## 7. Schedule P1: small positive workspace",
+            "## 8. Schedule P2: larger workspace",
+            "## 9. Matching lower bounds",
+            "## 10. Phase-dressed complex magnitude frame",
+            "## 11. Consequence for Hopf quantum backpropagation",
+            "## 12. Verification and evidence levels",
+        )
+        positions = [review.index(heading) for heading in headings]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("### What has been established", review)
+        self.assertIn("### Executable counterpart", review)
+        self.assertIn("Technical checkpoint", review)
+
+    def test_state_preparation_line_is_presented_generously_and_precisely(self) -> None:
+        related = (ROOT / "docs" / "RELATED_WORK.md").read_text(encoding="utf-8")
+        source = (ROOT / "docs" / "SOURCE_MAP.md").read_text(encoding="utf-8")
+        combined = related + "\n" + source
+        self.assertIn("one coherent compiler line", combined)
+        self.assertIn("can be adapted", combined)
+        self.assertIn("historical predecessor", combined)
+        self.assertIn("P. Yuan and S. Zhang", combined)
+        self.assertIn("X. Sun, G. Tian, S. Yang, P. Yuan, and S. Zhang", combined)
+        self.assertNotIn("fails to provide", combined.lower())
+        self.assertNotIn("does not provide", combined.lower())
+
+    def test_scientific_corrections_remain_visible(self) -> None:
         files = {
             relative: (ROOT / relative).read_text(encoding="utf-8")
-            for relative in (
-                "README.md",
-                "REVIEW.md",
-                "docs/HOPF_INTERFACE.md",
-                "docs/COMPILER_THEOREM.md",
-                "docs/QBP_CONSEQUENCE.md",
-                "docs/VERIFICATION.md",
-                "docs/SOURCE_MAP.md",
-            )
+            for relative in PRIMARY_PAGES
         }
         combined = " ".join(files.values())
         normalized = " ".join(combined.split()).lower()
         self.assertIn("oriented incoming amplitude", normalized)
-        self.assertIn("singular", normalized)
-        self.assertIn("complex magnitude frame", normalized)
-        self.assertIn("matched", normalized)
+        self.assertIn("chart-selected orthogonal continuation", normalized)
+        self.assertIn("phase-dressed complex magnitude frame", normalized)
+        self.assertIn("matched scalar and gradient programs", normalized)
         self.assertIn("raw hopf-coordinate gradient", normalized)
         self.assertIn("router.py", combined)
         self.assertIn("arxiv:2202.11302v2", normalized)
         self.assertIn("arxiv:2202.11302v3", normalized)
 
-        verification = files["docs/VERIFICATION.md"]
-        self.assertIn("explicit CNOT-fanout and Fredkin layers", verification)
-        self.assertIn("arbitrary prefix–suffix-entangled inputs", verification)
-        self.assertIn("implementation levels", verification.lower())
+        theorem = files["docs/COMPILER_THEOREM.md"]
+        self.assertIn("fixed-width controlled Givens", theorem)
+        self.assertIn("C-B", theorem)
+        self.assertIn("If `s=1`", theorem)
+        self.assertIn("2^{n+1}=2N", theorem)
 
         qbp = files["docs/QBP_CONSEQUENCE.md"]
         self.assertIn("T_{\\mathrm{scalar}}^{\\mathrm{matched}}", qbp)
         self.assertIn("T_{\\mathrm{grad}}^{\\mathrm{matched}}", qbp)
 
-    def test_final_consistency_patch_is_present(self) -> None:
-        theorem = (ROOT / "docs" / "COMPILER_THEOREM.md").read_text(
+    def test_technical_walkthrough_is_the_visible_entry_point(self) -> None:
+        self.assertTrue((ROOT / "scripts" / "technical_walkthrough.py").is_file())
+        for relative in PRIMARY_PAGES:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertNotIn("scripts/reviewer_walkthrough.py", text)
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        verification = (ROOT / "docs" / "VERIFICATION.md").read_text(
             encoding="utf-8"
         )
-        theorem_compact = " ".join(theorem.split())
-        self.assertIn("fixed-width controlled Givens rotations", theorem_compact)
-        self.assertIn("C-B", theorem)
-        self.assertIn("If `s=1`", theorem)
-        self.assertIn("m\\geq2\\,2^{n-1}(1+1)=2^{n+1}=2N", theorem)
-
-        hopf = (ROOT / "docs" / "HOPF_INTERFACE.md").read_text(
-            encoding="utf-8"
-        )
-        hopf_compact = " ".join(hopf.split()).lower()
-        self.assertIn(
-            "chart-selected orthogonal continuation determined by the complete parameter tuple",
-            hopf_compact,
-        )
-        self.assertIn("regular_coordinate_mask(atol=...)", hopf)
-
-        clean_room = (
-            ROOT / "docs" / "CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("S_{\\mathbb C,\\mathrm{mag}}", clean_room)
-        self.assertIn("D_{\\mathbb C,\\mathrm{mag}}", clean_room)
-        self.assertIn("\\mathrm{diag}", clean_room)
-        self.assertIn("router.py", clean_room)
-        self.assertNotIn("S_{\\mathbb C}(n,m)", clean_room)
-        self.assertNotIn("D_{\\mathbb C}(n,m)", clean_room)
+        self.assertIn("scripts/technical_walkthrough.py", readme)
+        self.assertIn("scripts/technical_walkthrough.py", verification)
 
     def test_primary_local_links_resolve(self) -> None:
-        for relative in PRIMARY_PAGES:
+        for relative in PRIMARY_PAGES + COMPATIBILITY_PAGES:
             page = ROOT / relative
             text = page.read_text(encoding="utf-8")
             targets = MARKDOWN_LINK.findall(text) + HTML_IMAGE.findall(text)
@@ -178,10 +209,11 @@ class ReviewerNarrativeTests(unittest.TestCase):
             self.assertIsNotNone(root.find(f"{namespace}desc"), msg=relative)
             self.assertIn("viewBox", root.attrib, msg=relative)
 
-    def test_navigation_covers_the_complete_reader_route(self) -> None:
+    def test_navigation_covers_the_reader_route(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         for target in (
             "REVIEW.md",
+            "docs/READING_GUIDE.md",
             "docs/HOPF_INTERFACE.md",
             "docs/COMPILER_THEOREM.md",
             "docs/QBP_CONSEQUENCE.md",
@@ -194,15 +226,8 @@ class ReviewerNarrativeTests(unittest.TestCase):
         documentation_index = (ROOT / "docs" / "README.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("Main reading route", documentation_index)
-        self.assertIn("Evidence and internal review", documentation_index)
-
-        verification = (ROOT / "docs" / "VERIFICATION.md").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn("PROOF_AUDIT.md", verification)
-        self.assertIn("STRICT_ZERO_ECHO_AUDIT.md", verification)
-        self.assertIn("CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md", verification)
+        self.assertIn("## Main route", documentation_index)
+        self.assertIn("## Evidence and independent reconstructions", documentation_index)
 
     def test_router_and_source_versions_are_machine_checkable(self) -> None:
         self.assertTrue((ROOT / "compiler_robust_hopf" / "router.py").is_file())

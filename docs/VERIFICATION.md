@@ -1,63 +1,85 @@
 # Verification and evidence
 
-[← QBP consequence](QBP_CONSEQUENCE.md) · [Read the complete narrative](../REVIEW.md) · [Next: source map →](SOURCE_MAP.md)
+[← Compiler theorem](COMPILER_THEOREM.md) · [Complete technical note](../REVIEW.md) · [Next: source map →](SOURCE_MAP.md)
 
-The repository uses three complementary evidence layers:
+The repository uses three evidence layers:
 
 1. dimension-independent analytic proofs;
-2. exact finite-dimensional executable checks;
-3. internal proof reviews that reconstruct the argument and audit its resource
-   assumptions.
+2. explicit circuit schedules and exact finite-dimensional checks;
+3. independent internal reconstructions of the full argument.
 
-Finite matrix equality can expose an indexing, sign, order, phase, or workspace
-error, but cannot prove an asymptotic theorem. Conversely, a correct asymptotic
-argument does not guarantee that the reference implementation follows the same
-conventions. This page states exactly which objects are implemented and at what
-level.
+These layers answer different questions. A finite matrix comparison can expose
+an indexing, sign, ordering, phase, or cleanup error. It cannot prove an
+asymptotic theorem. Conversely, an asymptotic proof does not guarantee that the
+reference implementation follows the same conventions. The evidence map below
+keeps those roles separate.
 
-## 1. Implementation levels
+## 1. Compact technical walkthrough
 
-| Component | Local representation | What is tested | External ingredient |
+The fastest executable route follows the proof order:
+
+```bash
+python scripts/technical_walkthrough.py
+```
+
+It checks:
+
+1. recursive and addressed two-qubit frames agree;
+2. canonical metric weights and singular frame directions are interpreted
+   consistently;
+3. one correct state column does not guarantee valid marker decoding;
+4. the strict-zero four-sector echo is exact;
+5. the borrowed logical suffix bit is restored;
+6. the explicit router acts correctly on an entangled complex input;
+7. the arbitrary phase diagonal is one UCG;
+8. the correct schedule is selected at representative workspace budgets;
+9. the peak workspace respects the requested budget;
+10. the low-workspace and maximal-cut inequalities hold.
+
+The walkthrough is an orientation tool, not a proof certificate.
+
+## 2. Implementation levels
+
+| Component | Local representation | What is checked | Imported ingredient |
 |---|---|---|---|
-| Hopf state, frame, and addressed layers | dense NumPy matrices built by independent recursions | complete operator equality, orthogonality, marker columns, canonical-domain and singular-coordinate behavior | Hopf chart identities inherited from the earlier papers |
-| Strict-zero borrowed-suffix echo | dense logical gate matrices and exact reversible permutations | four sectors, complete addressed layers, complete frames, inverse, complex magnitude composition, zero hidden workspace | elementary UCG and multi-controlled-X resource bounds from Yuan–Zhang |
-| Binary–one-hot prefix decoder | explicit X/CNOT/Toffoli layers | basis action, arbitrary-basis reversibility, layer disjointness, exact clean return, one-hot Givens action | constant-size standard decompositions of Toffoli and controlled one-qubit gates |
-| Coherent branch router | explicit CNOT-fanout and Fredkin layers plus sparse complex-state simulation | basis routing, arbitrary prefix–suffix-entangled inputs, token location, copy cleanup, branch-flag cleanup, route–operate–unroute, complete routed cut | coherent-copy depth and elementary controlled-gate decompositions |
-| Controlled subtree frames | exact logical token/flag-controlled rotations in the router simulator | equality to the ideal tail direct sum and clean flag return | UCG and multi-controlled-X synthesis bounds from Yuan–Zhang |
-| Leaf-phase diagonal | exact block-diagonal UCG matrix | equality to the complete diagonal, inverse, common phase, complex magnitude-frame composition | UCG size–depth theorem from Yuan–Zhang |
-| Resource theorem | integer and exact-rational ledgers | workspace peaks, endpoint dispatch, geometric sums, cut inequalities, lower-bound diagnostics | published asymptotic primitive bounds |
-| QBP decoder | direct parity, signed histogram, and fast Walsh–Hadamard implementations | agreement of decoding routes, empirical means, fixed record norms | global and phase-record identities inherited from `Hopf-QBP` |
+| Hopf state, frame, and addressed layers | independent dense NumPy constructions | complete operator equality, orthogonality, markers, domains, and singular-coordinate behavior | Hopf chart identities |
+| Strict-zero echo | dense logical gate matrices and reversible permutations | four sectors, addressed layers, complete frames, inverse, complex composition, and hidden-workspace boundary | UCG and multi-controlled-`X` resource theorems |
+| Binary–one-hot decoder | explicit X/CNOT/Toffoli layers | clean basis action, arbitrary-basis reversibility, layer disjointness, gate counts, and exact return | constant-width elementary decompositions |
+| Coherent router | explicit CNOT fanout and Fredkin layers plus sparse complex-state simulation | basis routing, entangled inputs, token location, copy cleanup, branch-flag cleanup, route–operate–unroute, and complete routed cuts | coherent copy and constant-width controlled gates |
+| Controlled subtree frames | exact token/flag-controlled logical block action | equality to the ideal tail direct sum and clean flag return | UCG and multi-controlled-`X` synthesis bounds |
+| Leaf-phase layer | exact block-diagonal UCG matrix | complete diagonal, inverse, common phase, and complex magnitude-frame composition | UCG synthesis theorem |
+| Resource frontier | integer and exact-rational ledgers | workspace peaks, endpoints, geometric sums, cut inequalities, and lower-bound diagnostics | published primitive bounds |
+| QBP decoder | direct parity, signed histogram, and fast Walsh–Hadamard implementations | agreement of decoding routes, empirical means, and fixed record norms | inherited global and direct-phase record identities |
 
-The repository does not locally reproduce the complete elementary Yuan–Zhang
-UCG or multi-controlled-X compiler. It imports those exact synthesis theorems
-under their stated all-to-all arbitrary-one-qubit+CNOT model. Toffoli, Fredkin,
-and controlled one-qubit gates used in explicit reversible schedules have
-constant-size and constant-depth decompositions in that same model, so replacing
-them by elementary gates changes only constants.
+The repository does not regenerate the complete elementary Yuan–Zhang UCG or
+multi-controlled-`X` circuits. It imports those exact synthesis theorems in the
+arbitrary-one-qubit+CNOT model. Toffoli, Fredkin, controlled one-qubit, and
+fixed-width controlled Givens gates in the explicit schedules have exact
+constant-size, constant-depth decompositions in the same model.
 
-## 2. Analytic verification
+## 3. Analytic proof map
 
 | Statement | Dimension-independent basis |
 |---|---|
-| Hopf state and marker columns | recursive split-and-complement geometry |
-| Oriented differential identity | `partial_(theta_j)|psi> = a_j|e_j>`, with `g_(j,j)=a_j^2` |
-| Canonical geometric notation | canonical angle domains imply `a_j>=0` and `a_j=sqrt(g_(j,j))` |
-| Singular-coordinate boundary | `a_j=0` makes the raw differential vanish while the unit marker column remains a frame continuation |
-| Addressed depth operator | exact prefix-selected rotation on the zero-suffix sector |
-| State-column obstruction | explicit two-qubit unitary completion and observable |
-| Strict-zero echo | complete four-sector operator identity |
-| Borrowed-bit restoration | zero or four predicate toggles in each invariant sector |
-| Conditioned-prefix identity | direct decomposition into the zero-external-suffix sector and its orthogonal complement |
-| Tail direct sum | invariance of every fixed-prefix subspace |
-| Binary–one-hot decoder | explicit reversible tree construction |
-| Coherent router | copied-prefix Fredkin tree acting as a permutation on orthogonal prefix sectors |
-| Routed tail | route, token-controlled subtree frames, and inverse route equal the tail direct sum |
-| Workspace envelope | simultaneous live-register ledger and sequential reuse |
-| Upper bounds | UCG/MCT/copy primitives plus geometric sums |
-| Lower bounds | real-state parameter dimension and output light cones |
-| Complex magnitude corollary | one exact phase UCG composed with the real frame |
+| state and marker columns | recursive split-and-complement geometry |
+| differential identity | `partial_(theta_j)|psi> = a_j|e_j>` and `g_(j,j)=a_j^2` |
+| canonical positive weight | canonical angle domains imply `a_j>=0` |
+| singular-coordinate boundary | `a_j=0` gives a zero raw differential and a chart-selected frame direction |
+| addressed layer | prefix-selected rotation on exactly the zero-suffix sector |
+| state-column obstruction | explicit two-qubit completion and observable |
+| strict-zero echo | complete four-sector operator identity |
+| borrowed-bit restoration | zero or four predicate toggles in each invariant sector |
+| conditioned prefix | decomposition into zero external suffix and its complement |
+| tail direct sum | invariance of every fixed-prefix subspace |
+| binary–one-hot decoder | explicit reversible tree construction |
+| coherent router | copied-prefix Fredkin tree as a permutation on orthogonal prefix sectors |
+| routed tail | route, token-controlled subtree frames, and inverse route equal the direct sum |
+| workspace envelope | simultaneous live-register count and sequential reuse |
+| upper bounds | imported UCG/MCT/copy primitives plus geometric sums |
+| lower bounds | real-state parameter dimension and output light cones |
+| complex magnitude frame | one exact phase UCG composed with the real frame |
 | QBP invariance | reducing clean-workspace subspace and exact inverse action |
-| Matched runtime comparison | same preparation and controlled observable, plus one optimal-order inverse frame |
+| matched runtime comparison | same state family and controlled observable, plus one optimal-order inverse frame |
 
 The canonical proof route is:
 
@@ -65,20 +87,20 @@ The canonical proof route is:
 - [Complete compiler theorem](COMPILER_THEOREM.md)
 - [QBP consequence](QBP_CONSEQUENCE.md)
 
-## 3. Exact finite-dimensional checks
+## 4. Exact finite checks
 
-### 3.1 Frame geometry and coordinate domains
+### 4.1 Frame geometry
 
-The frame tests compare recursive and addressed-layer constructions and verify:
+The frame tests verify:
 
-- real-frame orthogonality;
-- phase-dressed complex magnitude-frame unitarity;
-- state and marker columns;
+- recursive and addressed-layer constructions agree;
+- the real frame is orthogonal;
+- the phase-dressed complex magnitude frame is unitary;
+- state and marker columns follow the declared convention;
 - `g_(j,j)=a_j^2` for unrestricted angles;
 - `a_j=sqrt(g_(j,j))` on the canonical domains;
-- a singular coordinate with zero raw derivative and a unit marker-column
-  continuation;
-- common-phase and zero-amplitude complex-chart behavior.
+- singular raw differentials vanish while the marker direction remains unit;
+- the public regular-coordinate mask is tolerance-aware.
 
 Files:
 
@@ -86,34 +108,34 @@ Files:
 - [Frame tests](../tests/test_frames.py)
 - [Complex geometry tests](../tests/test_complex_analysis.py)
 
-### 3.2 Compiler-contract boundaries
+### 4.2 Compiler-contract boundaries
 
 The two-qubit fixtures verify:
 
-- identical prepared state columns;
-- different complete frame actions;
-- exact response-marker movement;
-- gradient corruption
+- equal preparation columns;
+- unequal complete frames;
+- response movement between marker columns;
+- the gradient corruption
   ```math
   (2,0,0)\longmapsto(0,\sqrt2,0);
   ```
-- a checkpoint suffix that preserves one prepared state but flips a derivative;
-- an active-interface-safe suffix that preserves the checkpoint mean while
-  changing the complete output distribution.
+- a checkpoint suffix that preserves one state but changes a derivative;
+- an active-interface-safe suffix that preserves the decoded mean without
+  preserving the full output distribution.
 
 Files:
 
 - [Boundary constructions](../compiler_robust_hopf/compiler_boundaries.py)
 - [Boundary tests](../tests/test_compiler_boundaries.py)
 
-### 3.3 Strict-zero borrowed-suffix echo
+### 4.3 Strict-zero echo
 
 The strict-zero suite checks:
 
 - `C^2=R_y(theta)` and `XCX=C^(-1)`;
-- all four `(h,b)` sectors;
-- exact restoration of the borrowed logical qubit;
-- self-inverse predicate-toggle and target-echo permutations;
+- all four predicate/borrowed-bit sectors;
+- exact restoration of the logical borrowed bit;
+- self-inverse predicate and echo permutations;
 - every nonfinal addressed layer through `n=8`;
 - complete real frames through `n=8`;
 - inverse frames and phase-dressed complex magnitude frames;
@@ -126,60 +148,59 @@ Files:
 - [Exact-rational audit helpers](../compiler_robust_hopf/strict_zero_audit.py)
 - [Audit tests](../tests/test_strict_zero_audit.py)
 
-### 3.4 Binary–one-hot prefix decoder
+### 4.4 Binary–one-hot decoder
 
-The explicit decoder tests cover:
+The decoder tests cover:
 
 - clean binary labels mapped to one-hot labels and back;
 - reversibility on arbitrary computational-basis contents;
 - exact layer disjointness and gate counts;
-- the closed workspace formula `3*2^t-2-t`;
-- exact one-hot Givens action for the prefix Hopf frame.
+- the workspace formula `3*2^t-2-t`;
+- the one-hot Givens action for the complete prefix frame.
 
 Files:
 
 - [Decoder schedule](../compiler_robust_hopf/tree_decoder.py)
 - [Decoder tests](../tests/test_tree_decoder.py)
 
-### 3.5 Coherent route–operate–unroute
+### 4.5 Coherent route–operate–unroute
 
-The routed construction is now represented explicitly rather than only by an
-ideal direct-sum matrix. Tests cover:
+The routed tests cover:
 
-- the allocated branch-data, token, copy, and reusable-flag registers;
-- balanced prefix-bit fanout and exact uncopy;
+- the data, token, copy, and reusable-flag register layout;
+- balanced prefix fanout and exact uncopy;
 - disjoint Fredkin layers at every routing level;
-- every clean basis input routed to the prefix-selected branch;
+- every clean basis input routed to the selected branch;
 - route followed by inverse route on arbitrary complex inputs whose prefix and
   suffix are entangled;
-- token-controlled subtree-frame action on all branches;
-- exact branch-flag and copy-pool cleanup before inverse routing;
-- equality of the complete routed tail to
+- token-controlled subtree action on all branches;
+- branch-flag and copy-pool cleanup;
+- equality to
   ```math
   \bigoplus_r W_s^{(r)};
   ```
 - equality of the complete routed cut to the direct Hopf frame;
 - zero probability outside the clean-workspace subspace.
 
-The simulator loops over disjoint branches for convenience; the declared
-circuit schedule executes them in parallel because their data, token, and flag
+The simulator loops over disjoint branches for convenience. The declared
+circuit schedule runs them in parallel because their data, token, and flag
 registers are disjoint.
 
 Files:
 
-- [Explicit router and sparse-state simulator](../compiler_robust_hopf/router.py)
-- [Router operator tests](../tests/test_router.py)
+- [Router and sparse-state simulator](../compiler_robust_hopf/router.py)
+- [Router tests](../tests/test_router.py)
 - [Tree identities](../compiler_robust_hopf/tree_structure.py)
-- [All-workspace resource selection](../compiler_robust_hopf/unified_compiler.py)
+- [Resource selection](../compiler_robust_hopf/unified_compiler.py)
 
-### 3.6 Resource inequalities
+### 4.6 Resource inequalities
 
-The tests use integer or exact-rational arithmetic rather than numerical slope
-fitting. Checked statements include
+The resource tests use integer or exact-rational arithmetic rather than fitted
+slopes. They check, among other statements,
 
 ```math
 \sum_{q=2}^{n}\frac{2^q}{q}
-\leq 6\frac{2^n}{n},
+\leq6\frac{2^n}{n},
 ```
 
 ```math
@@ -187,19 +208,18 @@ n^2=O(2^n/n),
 ```
 
 ```math
-n^2
-=O\left(\frac{2^n}{n+m}\right)
-\quad (1\leq m<4n),
+n^2=O\left(\frac{2^n}{n+m}\right)
+\quad(1\leq m<4n),
 ```
 
-and, for the maximal routed cut,
+and the maximal-cut implication
 
 ```math
 \frac{2^s}{s}
 =O\left(\frac{2^n}{n+m}\right).
 ```
 
-The explicit router schedule is also cross-checked against the resource ledger:
+The router schedule is cross-checked against
 
 ```math
 \text{copy wires}=(2^t-1)(s+1)-t,
@@ -213,40 +233,38 @@ Files:
 
 - [General resource diagnostics](../compiler_robust_hopf/resource_bounds.py)
 - [Strict-zero exact sums](../compiler_robust_hopf/strict_zero_audit.py)
-- [Router schedule ledger](../compiler_robust_hopf/router.py)
+- [Router ledger](../compiler_robust_hopf/router.py)
 - [Resource tests](../tests/test_resource_bounds.py)
-- [Router resource tests](../tests/test_router.py)
+- [Unified compiler tests](../tests/test_unified_compiler.py)
 
-### 3.7 Gradient decoders
+### 4.7 Gradient decoders
 
 The decoder suite compares direct parity averages, dense Walsh transforms, and
-fast Walsh–Hadamard decoding. It also checks direct complex phase records and
-their deterministic norm-two property.
+fast Walsh–Hadamard decoding. It also checks the direct complex phase records
+and their deterministic norm-two property.
 
 Files:
 
 - [Decoders](../compiler_robust_hopf/decoders.py)
 - [Decoder tests](../tests/test_decoders.py)
 
-## 4. Internal proof reviews
+## 5. Independent internal reconstructions
 
-The detailed review records remain visible because they document what was
-re-derived, which assumptions were imported, and which corrections were made.
-They are evidence about the checking process, not substitutes for the proof.
+The internal records remain visible because they document what was rederived
+and which failure modes were considered.
 
-| Review record | Distinct role |
+| Record | Distinct role |
 |---|---|
-| [Consolidated proof audit](PROOF_AUDIT.md) | register accounting, all-workspace upper and lower bounds, complex magnitude composition |
+| [Consolidated proof audit](PROOF_AUDIT.md) | full register accounting, upper and lower bounds, and complex composition |
 | [Strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | chronological order, four sectors, endpoints, and hidden-workspace check |
-| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem re-derived from operator definitions rather than development chronology |
-| [Strict-zero prior-art analysis](STRICT_ZERO_PRIOR_ART.md) | familiar ingredients versus the narrow Hopf-specific claim |
-| [Expanded search record](PRIOR_ART_SEARCH_2026_09.md) | broader technical search and explicit limits of negative-search evidence |
+| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem rebuilt from the operator target and imported primitives |
+| [Strict-zero prior-art analysis](STRICT_ZERO_PRIOR_ART.md) | familiar ingredients versus the narrow Hopf-specific contribution |
+| [Expanded source search](PRIOR_ART_SEARCH_2026_09.md) | search scope and explicit limits of negative-search evidence |
 
-The peer-review revision additionally introduced an explicit router, canonical
-chart-domain tests, oriented incoming-amplitude notation, and a matched-program
-QBP cost definition in response to an adversarial repository-wide audit.
+These records support the checking process. The proof itself is in
+[the compiler theorem](COMPILER_THEOREM.md).
 
-## 5. Short walkthrough and complete reproduction
+## 6. Reproduction
 
 Use Python 3.11 or 3.13.
 
@@ -255,57 +273,35 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
-
-Run the readable orientation:
-
-```bash
-python scripts/reviewer_walkthrough.py
-```
-
-Run the complete deterministic suite:
-
-```bash
+python scripts/technical_walkthrough.py
 python validate.py
-```
-
-Print the all-workspace and strict-zero ledgers:
-
-```bash
 python scripts/unified_resource_ledger.py --n 12
 python scripts/strict_zero_echo_ledger.py --n 12
-```
-
-Check recorded upstream versions without network access:
-
-```bash
 python scripts/check_upstream_sync.py --offline
 ```
 
-The walkthrough is an orientation tool, not a proof certificate.
-
-## 6. Evidence limits
+## 7. Evidence limits
 
 The repository does not use finite experiments to establish asymptotic
 optimality. It also does not test:
 
-- routed-device connectivity;
-- a hardware-native gate set;
+- routed hardware connectivity;
+- hardware-native gate scheduling;
 - approximate Clifford+T synthesis;
 - noisy execution or readout mitigation;
 - application-specific controlled-observable implementations;
 - arbitrary non-Hopf differential frames.
 
-A technical review should distinguish:
+A complete assessment separates four questions:
 
-1. whether the Hopf operator identities are correct;
-2. whether the proposed logical circuits implement those operators within the
-   stated workspace;
-3. whether the imported synthesis bounds and resource sums imply the displayed
-   asymptotic frontier;
-4. whether the QBP consequence uses the same output task, state family, and
-   controlled-observable cost on both sides of its matched comparison.
+1. are the Hopf operator identities correct?
+2. do the logical schedules implement those operators and restore their
+   workspace?
+3. do the imported primitive bounds and resource sums imply the displayed
+   frontier?
+4. does the QBP consequence compare the same state family, output task, access
+   model, and accuracy convention on both sides?
 
 ---
 
-[← QBP consequence](QBP_CONSEQUENCE.md) · [Read the complete narrative](../REVIEW.md) · [Next: source map →](SOURCE_MAP.md)
+[← Compiler theorem](COMPILER_THEOREM.md) · [Complete technical note](../REVIEW.md) · [Next: source map →](SOURCE_MAP.md)

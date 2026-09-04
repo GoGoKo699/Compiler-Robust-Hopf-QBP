@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" role="img" aria-labelledby="title desc">
+  <title id="title">Proof architecture for optimal Hopf-frame compilation</title>
+  <desc id="desc">The diagram starts from the complete frame-safe operator contract, separates the three workspace schedules, reunites them in the all-workspace theorem, and then shows the phase-dressed complex magnitude corollary and quantum-backpropagation consequence.</desc>
+  <rect width="1200" height="540" fill="#f8fafc"/>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#8ca0b3" flood-opacity="0.20"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#68849b"/>
+    </marker>
+  </defs>
+
+  <text x="600" y="42" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#19324d">Proof architecture</text>
+  <text x="600" y="70" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#52677b">One operator target, three workspace schedules, one optimal frontier.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="365" y="94" width="470" height="82" rx="14" fill="#ffffff" stroke="#6f94ad" stroke-width="2.5"/>
+    <rect x="50" y="226" width="320" height="132" rx="14" fill="#edf6ff" stroke="#2d6f9f" stroke-width="2.5"/>
+    <rect x="440" y="226" width="320" height="132" rx="14" fill="#edf6ff" stroke="#2d6f9f" stroke-width="2.5"/>
+    <rect x="830" y="226" width="320" height="132" rx="14" fill="#edf6ff" stroke="#2d6f9f" stroke-width="2.5"/>
+    <rect x="330" y="411" width="540" height="82" rx="14" fill="#eaf7f2" stroke="#3b826b" stroke-width="2.5"/>
+  </g>
+
+  <text x="600" y="124" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#19324d">Complete frame-safe operator target</text>
+  <text x="600" y="151" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#52677b">Addressed prefix-selected rotations, active only on the all-zero lower suffix.</text>
+
+  <line x1="600" y1="176" x2="600" y2="198" stroke="#68849b" stroke-width="2.5"/>
+  <line x1="210" y1="198" x2="990" y2="198" stroke="#68849b" stroke-width="2.5"/>
+  <line x1="210" y1="198" x2="210" y2="222" stroke="#68849b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="600" y1="198" x2="600" y2="222" stroke="#68849b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="990" y1="198" x2="990" y2="222" stroke="#68849b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <text x="210" y="257" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#174f78">m = 0</text>
+  <text x="210" y="284" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#334e68">Borrowed-suffix half-angle echo</text>
+  <text x="210" y="310" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">Two width-(d+2) UCGs</text>
+  <text x="210" y="332" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">Exact restoration of logical data</text>
+
+  <text x="600" y="257" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#174f78">small positive m</text>
+  <text x="600" y="284" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#334e68">Direct flagged UCG schedule</text>
+  <text x="600" y="310" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">One reusable clean predicate bit</text>
+  <text x="600" y="332" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">Polynomial term absorbed</text>
+
+  <text x="990" y="257" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#174f78">larger m</text>
+  <text x="990" y="284" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#334e68">Conditioned prefix and routed tail</text>
+  <text x="990" y="310" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">Binary–one-hot decoder</text>
+  <text x="990" y="332" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">Parallel disjoint subtree frames</text>
+
+  <line x1="210" y1="358" x2="210" y2="384" stroke="#68849b" stroke-width="2.5"/>
+  <line x1="600" y1="358" x2="600" y2="384" stroke="#68849b" stroke-width="2.5"/>
+  <line x1="990" y1="358" x2="990" y2="384" stroke="#68849b" stroke-width="2.5"/>
+  <line x1="210" y1="384" x2="990" y2="384" stroke="#68849b" stroke-width="2.5"/>
+  <line x1="600" y1="384" x2="600" y2="407" stroke="#68849b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <text x="600" y="442" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#255f4e">Optimal all-workspace frame theorem</text>
+  <text x="600" y="469" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#334e68">S = Θ(2ⁿ),   D = Θ(n + 2ⁿ/(n+m))   for every m ≥ 0</text>
+
+  <line x1="470" y1="493" x2="390" y2="523" stroke="#68849b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="493" x2="810" y2="523" stroke="#68849b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="300" y="530" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#334e68">one-UCG complex phase dressing</text>
+  <text x="900" y="530" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#334e68">frame-safe Hopf QBP consequence</text>
+</svg>

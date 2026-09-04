@@ -31,8 +31,8 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Compile Python sources
         run: python -m compileall -q compiler_robust_hopf scripts tests validate.py
-      - name: Run reviewer walkthrough
-        run: python scripts/reviewer_walkthrough.py
+      - name: Run technical walkthrough
+        run: python scripts/technical_walkthrough.py
       - name: Run deterministic validation
         run: python validate.py
       - name: Exercise unified Yuan--Zhang resource ledger

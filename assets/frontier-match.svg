@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">Matching all-workspace depth frontiers</title>
+  <desc id="desc">A conceptual logarithmic plot shows the optimal arbitrary state-preparation depth and Hopf differential-frame depth on the same curve as clean ancillary workspace increases. The zero-workspace echo, direct flagged UCG, and routed parallel-subframe regimes are marked below the curve.</desc>
+  <rect width="1200" height="500" fill="#f8fafc"/>
+  <text x="600" y="42" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#19324d">The structured frame matches the QSP frontier</text>
+  <text x="600" y="70" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#52677b">Conceptual scale: D(n,m) = Θ(n + 2ⁿ/(n+m)) for every clean-workspace budget.</text>
+
+  <line x1="125" y1="390" x2="1085" y2="390" stroke="#5e7183" stroke-width="2"/>
+  <line x1="125" y1="390" x2="125" y2="105" stroke="#5e7183" stroke-width="2"/>
+  <polygon points="1085,390 1073,384 1073,396" fill="#5e7183"/>
+  <polygon points="125,105 119,117 131,117" fill="#5e7183"/>
+  <text x="1100" y="397" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#334e68">m</text>
+  <text x="104" y="99" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#334e68">depth</text>
+
+  <line x1="125" y1="340" x2="1085" y2="340" stroke="#d7e0e8" stroke-width="1" stroke-dasharray="5 7"/>
+  <line x1="125" y1="235" x2="1085" y2="235" stroke="#d7e0e8" stroke-width="1" stroke-dasharray="5 7"/>
+  <line x1="125" y1="135" x2="1085" y2="135" stroke="#d7e0e8" stroke-width="1" stroke-dasharray="5 7"/>
+  <text x="112" y="346" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#66798a">Θ(2ⁿ/n)</text>
+  <text x="112" y="241" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#66798a">intermediate</text>
+  <text x="112" y="141" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#66798a">Θ(n)</text>
+
+  <path d="M145 338 C245 332, 315 314, 392 285 C500 245, 585 197, 690 165 C810 128, 930 127, 1060 132" fill="none" stroke="#8fc3df" stroke-width="12" stroke-linecap="round" opacity="0.62"/>
+  <path d="M145 338 C245 332, 315 314, 392 285 C500 245, 585 197, 690 165 C810 128, 930 127, 1060 132" fill="none" stroke="#235b84" stroke-width="4" stroke-linecap="round"/>
+  <path d="M145 338 C245 332, 315 314, 392 285 C500 245, 585 197, 690 165 C810 128, 930 127, 1060 132" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="8 8" stroke-linecap="round"/>
+
+  <rect x="720" y="86" width="330" height="70" rx="10" fill="#ffffff" stroke="#a9bdcd"/>
+  <line x1="742" y1="108" x2="800" y2="108" stroke="#235b84" stroke-width="4"/>
+  <text x="815" y="113" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#19324d">Hopf differential frame</text>
+  <line x1="742" y1="135" x2="800" y2="135" stroke="#8fc3df" stroke-width="9" opacity="0.70"/>
+  <text x="815" y="140" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#19324d">optimal arbitrary QSP</text>
+  <text x="1015" y="114" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#52677b">same asymptotic curve</text>
+
+  <line x1="155" y1="345" x2="155" y2="390" stroke="#476d8a" stroke-width="2"/>
+  <line x1="445" y1="267" x2="445" y2="390" stroke="#476d8a" stroke-width="2" stroke-dasharray="5 5"/>
+  <line x1="760" y1="146" x2="760" y2="390" stroke="#476d8a" stroke-width="2" stroke-dasharray="5 5"/>
+  <text x="155" y="414" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#19324d">m = 0</text>
+  <text x="155" y="438" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">in-place suffix echo</text>
+
+  <text x="445" y="414" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#19324d">small positive m</text>
+  <text x="445" y="438" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">one reusable suffix flag</text>
+
+  <text x="820" y="414" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#19324d">larger m</text>
+  <text x="820" y="438" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#52677b">tree cut and routed subframes</text>
+
+  <text x="600" y="480" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#66798a">The drawing conveys the asymptotic regimes; it is not a finite-size performance plot.</text>
+</svg>

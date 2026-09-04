@@ -1,26 +1,26 @@
 # Related work and contribution boundary
 
-[← Source map](SOURCE_MAP.md) · [Read the complete narrative](../REVIEW.md) · [Back to the landing page →](../README.md)
+[← Source map](SOURCE_MAP.md) · [Complete technical note](../REVIEW.md) · [Back to the landing page →](../README.md)
 
-The compiler result sits at the meeting point of two lines of work:
+The theorem joins two lines of work:
 
-1. exact quantum state preparation and uniformly controlled gates;
-2. Hopf-coordinate geometry and quantum backpropagation.
+1. exact state preparation and uniformly controlled gates;
+2. Hopf-coordinate geometry and inverse-frame gradient records.
 
-A third line—borrowed, dirty, and conditionally clean workspace—helps explain
-the strict-zero circuit. The purpose of this page is to show how these ideas fit
-together without attributing familiar circuit ingredients to the present work.
+Borrowed and conditionally clean workspace provides a third, local connection
+for the zero-workspace construction.
 
 <p align="center">
-  <img src="../assets/literature-lineage.svg" width="940" alt="The state-preparation and Hopf-geometry lines meet in the optimal complete-frame compiler." />
+  <img src="../assets/literature-lineage.svg" width="980" alt="The state-preparation compiler line and the Hopf differential-frame line meet in the optimal structured unitary-completion theorem." />
 </p>
 
-## 1. Optimal state preparation and the active compiler framework
+## 1. State-preparation compiler line
 
-Yuan and Zhang give a unified exact construction for arbitrary controlled state
-preparation and determine the optimal size and depth of arbitrary state
-preparation for every clean-ancillary budget. In the notation of this
-repository,
+### Uniform all-workspace frontier
+
+Yuan and Zhang give a unified exact framework for controlled state preparation
+and determine the optimal arbitrary-QSP size and depth for every clean-ancillary
+budget:
 
 ```math
 S_{\mathrm{QSP}}(n,m)=\Theta(2^n),
@@ -31,174 +31,179 @@ D_{\mathrm{QSP}}(n,m)
 =\Theta\left(n+\frac{2^n}{n+m}\right).
 ```
 
-Their paper is the sole active external compiler framework and comparison
-benchmark here. The present proof uses their exact statements for:
-
-- ancilla-free multi-controlled X;
-- uniformly controlled one-qubit gates with arbitrary workspace;
-- coherent copy–use–uncopy by CNOT trees.
+Their paper is the active external compiler framework and comparison benchmark
+throughout this repository. The Hopf proof uses its exact multi-controlled-`X`,
+UCG, and coherent copy–uncopy primitives.
 
 The published *Quantum* article corresponds to `arXiv:2202.11302v2`. Theorem 2
-and Lemmas 5, 6, and 9 were also checked in `arXiv:2202.11302v3` and retain the
-statements and exact circuit-model conventions used here.
+and Lemmas 5, 6, and 9 were also checked in v3 and retain the statements and
+circuit-model conventions used here.
 
-These results can be adapted after the special structure of the Hopf
-differential frame is exposed. The adaptation is not direct: ordinary state
-preparation constrains one initialized column, while the Hopf global-gradient
-protocol applies the inverse of a complete unitary with designated marker
-columns.
+The earlier state-preparation paper of Sun, Tian, Yang, Yuan, and Zhang
+established the preceding ancilla–depth landscape and is retained as the
+historical predecessor and original-source reference for selected primitives.
+For the present theorem, the two papers form one coherent compiler line. The
+later result supplies the uniform all-workspace frontier, so there is no need to
+select a different published construction in different workspace regimes.
 
-The earlier paper of Sun, Tian, Yang, Yuan, and Zhang is the historical
-predecessor to this uniform frontier. It established the preceding broad
-ancilla–depth landscape and remains an important reference. It is cited briefly
-rather than treated as a second active compiler, because the later Yuan–Zhang
-theorem supplies the all-workspace benchmark used throughout this repository.
+### Relation to the Hopf problem
 
-## 2. Uniformly controlled gates and the Möttönen connection
+The state-preparation results and the Hopf theorem specify different operators.
+QSP fixes one initialized state column. The Hopf gradient protocol uses a
+particular unitary completion with prescribed marker columns.
 
-The state-preparation constructions of Möttönen and coauthors, and the general
-uniformly controlled one-qubit gates developed by Bergholm and coauthors,
-provide the multiplexor language underlying both the older optimized Hopf-QBP
-compiler and the present work.
+The external primitives can nevertheless be adapted once the complete Hopf
+frame is written as addressed zero-suffix layers and tree-cut direct sums. The
+adaptation is the local content of the three schedules in this repository.
 
-At one Hopf depth, the logical block table is sparse: only blocks whose lower
+This formulation keeps the relationship precise without treating the different
+operator task as a limitation of the state-preparation results.
+
+## 2. UCG and multiplexor structure
+
+Möttönen and coauthors introduced the uniformly controlled rotation form used in
+state preparation. Bergholm and coauthors developed the corresponding general
+uniformly controlled one-qubit gates. This language underlies both the earlier
+Möttönen-style Hopf-QBP compiler and the present theorem.
+
+At one Hopf depth, the logical block table is sparse: only the blocks whose lower
 suffix is zero contain a nontrivial rotation. A direct full-width Möttönen
-transformation does not automatically preserve that sparsity. The corresponding
-Walsh/Gray-code physical angles are generically repeated across all suffix
-frequencies, so compiling every depth as a full `n`-qubit multiplexor pays for a
-dense table.
+transform does not preserve that sparsity in its physical angle list. The
+Walsh/Gray-code coefficients are generically repeated across all suffix
+frequencies, so a full `n`-qubit multiplexor pays for a dense table at each
+depth.
 
-The strict-zero construction keeps the multiplexor narrow instead. It uses one
-original suffix data qubit as a restored predicate carrier and replaces one
-addressed layer by two total-width-`d+2` UCGs plus linear-size predicate
-toggles. The Möttönen/Bergholm line is therefore both a technical precursor and
-the natural language in which the reduction is stated.
+The present constructions keep the UCG width tied to the prefix rather than the
+complete suffix:
+
+- at zero workspace, one original suffix bit carries the predicate through an
+  echo, leaving two total-width-`d+2` UCGs;
+- with one clean bit, the suffix predicate is stored explicitly and one
+  total-width-`d+2` UCG is used;
+- with larger workspace, the tail is split into disjoint `s`-qubit subtree
+  UCGs that run in parallel.
+
+The Möttönen/Bergholm line is therefore both a technical precursor and the
+natural language for the Hopf-specific factorization.
 
 ## 3. Borrowed and conditionally clean workspace
 
-The strict-zero echo is close in spirit to several established techniques.
+The strict-zero circuit combines several familiar ingredients.
 
 Barenco and coauthors use roots of target unitaries and conjugation identities
-in exact controlled-unitary decompositions. Claudon and coauthors develop exact
-multi-controlled constructions using borrowed qubits and controlled roots.
-Khattar and Gidney formalize conditionally clean qubits and toggle-detection
-patterns that replace clean workspace by unknown-state logical qubits. Work by
-Zindorf and Bose gives efficient ancilla-free multi-controlled `SU(2)` gates.
+in controlled-unitary decompositions. Claudon and coauthors develop exact
+controlled constructions with borrowed qubits. Khattar and Gidney formalize
+conditionally clean qubits and toggle-detection patterns. Zindorf and Bose give
+efficient ancilla-free multi-controlled `SU(2)` constructions.
 
-The present Hopf layer combines these familiar ingredients in a specific way.
-Let
+For one addressed Hopf layer, put
 
 ```math
 C_p=R_y(\theta_p/2).
 ```
 
-The relations
+The identities
 
 ```math
 C_p^2=R_y(\theta_p),
 \qquad
-X C_p X=C_p^{-1}
+XC_pX=C_p^{-1}
 ```
 
-make the desired original-suffix-zero branch square to the full rotation while
-the unwanted original value of the borrowed suffix bit cancels. The borrowed
-qubit is not an extra dirty ancillary wire: it remains part of the logical
-input, the desired operation depends on its original value, and the complete
-operator proof restores it exactly.
+allow one original suffix data qubit to carry the all-zero predicate temporarily.
+The desired original-suffix-zero branch receives `C_p^2`, while the unwanted
+original value of the borrowed bit receives the cancelling word `C_pXC_pX`.
+The logical qubit is restored exactly on the complete Hilbert space.
 
-### Claim boundary beside the strict-zero result
+### Contribution boundary beside the construction
 
-The repository does **not** claim invention of:
+The repository does not claim invention of:
 
 - borrowed or dirty qubits;
 - conditionally clean ancillas;
 - toggle detection;
-- square-root controlled-unitary decompositions;
+- controlled-unitary square roots;
 - Pauli-conjugation echoes;
 - uniformly controlled gates.
 
-The narrow project-specific contribution is:
+The narrow Hopf-specific contribution is:
 
-> For an addressed Hopf depth, one original suffix data qubit serves as a
-> restored in-place predicate carrier, reducing all prefix-dependent rotations
-> to two total-width-`d+2` UCGs and linear predicate toggles. Summing these
+> One original suffix data qubit is used as a restored in-place predicate
+> carrier, reducing all prefix-dependent rotations at depth `d` to two
+> total-width-`d+2` UCGs and linear predicate toggles. Summing those addressed
 > layers gives the optimal strict-zero complete-frame frontier.
 
-This wording attributes the familiar ingredients while identifying the exact
-operator reduction and resource consequence established here.
+This statement identifies the operator reduction and resource consequence while
+crediting the familiar component ideas.
 
 ## 4. Restricted and sparse UCG synthesis
 
-Recent work on restricted or sparse uniformly controlled structures asks when a
-UCG can exploit limited participation of controls or repeated block patterns.
-That perspective is closely related to the addressed Hopf layer.
+Recent work on restricted or sparse UCG structures asks when repeated blocks or
+limited control participation can reduce synthesis cost. The addressed Hopf
+layer belongs to the same broad structural setting, but its long all-zero
+suffix predicate is generically dense under the ordinary Möttönen angle
+transform.
 
-The difficulty here is that the long all-zero suffix predicate is logically
-sparse but generically dense under the ordinary Möttönen angle transform. The
-borrowed-suffix echo avoids compiling that full table. It factors the predicate
-through a restored logical bit and then applies two smaller UCGs whose block
-count depends on the prefix width.
-
-The repository therefore cites restricted-UCG work as close structural context
-while making the Hopf-specific factorization explicit.
+The borrowed-suffix echo avoids that transform. It factors the logical
+predicate through one restored system bit and then applies two smaller UCGs.
+The restricted-UCG literature is therefore close context, while the exact
+Hopf-layer factorization remains explicit in the present proof.
 
 ## 5. Coherent routing and workspace parallelism
 
-The positive-workspace construction uses familiar reversible-circuit ideas:
-coherent CNOT fanout, controlled swaps, clean uncomputation, and parallel action
-on disjoint branch registers. Its project-specific content is the way these
-primitives implement the Hopf tail direct sum
+The positive-workspace construction uses standard reversible ingredients:
+coherent CNOT fanout, Fredkin routing, clean uncomputation, and parallel action
+on disjoint registers.
+
+The project-specific content is how those primitives realize the Hopf tail
+identity
 
 ```math
 R_t^{(n)}=\bigoplus_r W_s^{(r)}
 ```
 
-within the same workspace envelope used by the conditioned prefix.
+inside the same workspace envelope as the conditioned prefix.
 
-The repository now supplies the router as an explicit CNOT/Fredkin schedule.
-Prefix copies are uncomputed before branch operations and their clean wires are
-reused as local suffix-predicate flags. After the token-controlled subtree
-frames, every flag is cleared, copies are recomputed, the route is reversed,
-and all tokens and workspace are reset. Exact tests cover arbitrary complex
-inputs whose prefix and suffix are entangled.
+The explicit router:
 
-This routing layer is not attributed to the state-preparation theorem itself.
-Yuan–Zhang Lemma 9 supplies the coherent-copy primitive; the Hopf tree cut,
-register allocation, and route–operate–unroute composition are developed here.
+1. copies each prefix control with a balanced CNOT tree;
+2. routes the suffix and one activation token through disjoint Fredkin layers;
+3. erases the prefix copies;
+4. reuses the clean copy pool as local suffix flags;
+5. applies all token-controlled subtree frames in parallel;
+6. clears the flags, recreates the copies, reverses the route, and resets every
+   work register.
 
-## 6. Hopf coordinates and the differential frame
+Yuan–Zhang Lemma 9 supplies the coherent-copy primitive. The Hopf tree cut,
+register allocation, router, and live-workspace proof are developed here.
 
-The first Hopf paper develops the balanced binary coordinate chart for arbitrary
-real and complex pure states. It supplies:
+## 6. Hopf geometry and gradient records
 
-- the forward state map and explicit inverse coordinate map;
-- canonical real and complex angle domains;
-- a diagonal pullback metric;
-- normalized coordinate directions on regular coordinates;
-- exact tangent-state preparation;
-- the original indexed gradient interface.
+The first Hopf paper develops the balanced binary chart for arbitrary real and
+complex pure states. It supplies the forward map, explicit inverse, canonical
+domains, diagonal pullback metric, coordinate directions, and original
+optimization interface.
 
-For unrestricted algebraic angles, the precise differential relation is
+For unrestricted angles, the precise differential relation is
 
 ```math
 \partial_{\theta_j}|\psi\rangle
 =a_j|e_j\rangle,
 \qquad
-g_{j,j}=a_j^2,
+g_{j,j}=a_j^2.
 ```
 
-where `a_j` is the oriented incoming amplitude. On the canonical domains,
-`a_j>=0` and equals the principal metric square root. At a singular coordinate,
-the raw differential vanishes while the unit marker column remains a canonical
-orthogonal continuation.
+On the canonical domains, `a_j>=0` and equals the principal metric square root.
+At a singular coordinate, the raw differential vanishes while the unit marker
+column remains a chart-selected frame direction.
 
-The second Hopf paper turns these magnitude directions into an addressed frame
-and uses controlled-observable interference to recover shared gradient records.
-One global magnitude outcome contributes to every magnitude coordinate, while
-complex leaf phases use a separate direct one-hot record. A checkpoint method
-provides selected-depth locality.
+The second Hopf paper arranges the magnitude directions as an addressed unitary
+frame and applies its inverse to a shared objective response. One global
+magnitude outcome contributes to every magnitude coordinate. Complex leaf
+phases use a separate direct one-hot record, and a checkpoint method gives
+selected-depth locality.
 
-The compiler question begins only after those interfaces are fixed:
+The compiler question starts after these interfaces are fixed:
 
 ```math
 W_{\mathbb R}|0^n\rangle=|\psi\rangle,
@@ -206,62 +211,52 @@ W_{\mathbb R}|0^n\rangle=|\psi\rangle,
 W_{\mathbb R}|\lambda(j)\rangle=|e_j\rangle.
 ```
 
-The phase-dressed complex magnitude frame is
-
-```math
-W_{\mathbb C,\mathrm{mag}}
-=D_{\mathrm{ph}}W_{\mathbb R}.
-```
-
-The new synthesis result proves that these complete magnitude-frame operators—not
-only their prepared state columns—attain the optimal state-preparation
-size–depth frontier. The direct leaf-phase stream remains separate.
+The present theorem shows that these complete magnitude-frame operators, not
+only their first columns, attain the optimal state-preparation frontier.
 
 ## 7. Comparison by mathematical role
 
-| Work or line | Object compiled or analyzed | Resource or structural result used | Hopf-specific adaptation in this repository |
+| Work or line | Object compiled or analyzed | Result used | Adaptation in this repository |
 |---|---|---|---|
-| Möttönen et al.; Bergholm et al. | multiplexed rotations and general UCGs | exact block-diagonal one-qubit-gate language | addressed depths are factored into smaller UCGs rather than full-width sparse tables |
-| Sun et al. | exact state preparation and general unitary synthesis | historical broad ancilla–depth landscape | cited as the predecessor to the uniform frontier |
-| Yuan–Zhang | controlled state preparation, UCGs, MCTs, coherent copying | optimal QSP frontier for every `m`; active circuit primitives | the complete Hopf frame is decomposed so the primitives act without losing marker columns |
-| Barenco et al.; Claudon et al. | controlled unitaries, roots, borrowed-qubit constructions | square-root and conjugation lineage | one logical suffix bit carries and releases the zero-suffix predicate |
-| Khattar–Gidney | conditionally clean workspace and toggle detection | cancellation and safe restoration of unknown-state qubits | a non-self-inverse Hopf rotation is handled by a half-angle/Pauli echo |
-| Zindorf–Bose | ancilla-free multi-controlled `SU(2)` | context for individual conditioned rotations | all prefix values are aggregated into two UCGs |
-| restricted-UCG work | sparsity and limited control participation | structured multiplexor context | logical suffix sparsity is converted into smaller physical UCG width |
-| reversible routing primitives | CNOT fanout, Fredkin networks, uncomputation | coherent movement and disjoint branch parallelism | explicit tree router realizes the Hopf tail direct sum and reuses cleared copies as flags |
-| first Hopf paper | state chart, inverse, metric, canonical directions | differential geometry and coordinate interface | supplies the structured columns that must be preserved |
-| Hopf-QBP paper | magnitude, phase, and checkpoint records | inverse-frame backpropagation and statistical task boundaries | frame-safe compilation is separated from state-column equality and made optimal |
+| Möttönen et al.; Bergholm et al. | multiplexed rotations and UCGs | exact block-diagonal one-qubit-gate language | addressed depths are factored into narrow UCGs rather than full-width sparse tables |
+| Sun et al. | state preparation and general unitary synthesis | historical ancilla–depth landscape | predecessor and original-source attribution |
+| Yuan–Zhang | controlled state preparation, UCGs, MCTs, coherent copying | uniform optimal QSP frontier and active primitives | complete Hopf layers are exposed so the primitives preserve every marker column |
+| Barenco et al.; Claudon et al. | controlled roots and borrowed-qubit constructions | square-root, conjugation, and borrowed-wire lineage | one logical suffix bit carries and releases the zero-suffix predicate |
+| Khattar–Gidney | conditionally clean workspace and toggle detection | safe restoration of unknown-state wires | a non-self-inverse Hopf rotation is handled by a half-angle/Pauli echo |
+| Zindorf–Bose | ancilla-free multi-controlled `SU(2)` | context for exact individual controlled rotations | all prefix values are aggregated into two UCGs |
+| restricted-UCG work | structured multiplexors | sparse-control context | logical suffix sparsity is converted into smaller physical UCG width |
+| reversible routing | CNOT fanout, Fredkin networks, uncomputation | coherent movement and branch parallelism | explicit tree router realizes the Hopf tail direct sum and reuses cleared copies as flags |
+| first Hopf paper | state chart, metric, and coordinate directions | geometric interface | supplies the structured columns to be preserved |
+| Hopf-QBP paper | global, phase, and checkpoint records | inverse-frame protocol and statistical task boundaries | frame safety is separated from state-column equality and made optimal |
 
-## 8. What is new at the level of the full theorem
+## 8. Full theorem-level contribution
 
-The full contribution is not one isolated circuit identity. It is the theorem
-chain:
+The contribution is the complete chain rather than one isolated circuit
+identity:
 
-1. identify complete frame safety as the compiler contract relevant to the
-   global Hopf record;
-2. show by exact counterexample that state-column equality is weaker;
-3. exploit the addressed Hopf layers and tree-cut direct sum;
-4. close strict zero workspace with the borrowed-suffix echo;
-5. construct a clean binary–one-hot decoder and explicit coherent router;
-6. match the optimal state-preparation size–depth frontier for every `m>=0`;
+1. identify complete frame safety as the compiler contract used by the global
+   inverse-frame record;
+2. show by exact example that a preparation-equivalent completion can fail;
+3. expose the addressed layers and exact tree-cut direct sum;
+4. close strict zero workspace with the in-place suffix echo;
+5. construct the clean binary–one-hot decoder and coherent router;
+6. match the QSP size–depth frontier for every `m>=0`;
 7. transport the result to the phase-dressed complex magnitude frame;
-8. formulate the QBP consequence as a matched general-family logical-depth
-   comparison under the raw-coordinate accuracy target.
+8. state the QBP consequence as a matched logical-program comparison.
 
-The result is specific to the structured Hopf differential frame. It does not
-assert that a generic family of `2^n` orthonormal columns can be compiled at
-state-preparation cost.
+The theorem is specific to the Hopf differential frame. It does not assert that
+a generic family of `N` orthonormal columns can be compiled at state-preparation
+cost.
 
-## 9. Technical search record
+## 9. Detailed search record
 
 The broader source-by-source search, including recent borrowed-workspace,
-uncomputation, and restricted-UCG references, is preserved in
+uncomputation, and restricted-UCG references, is stored in
 [`PRIOR_ART_SEARCH_2026_09.md`](PRIOR_ART_SEARCH_2026_09.md) and
 [`provenance/prior_art_search.json`](../provenance/prior_art_search.json).
 
-Those files document search scope and citation discipline. They are not part of
-the mathematical proof, and an absence of an exact match in a bounded search is
-not treated as proof of novelty or priority.
+Those records document the search scope. An absence of an exact match in a
+bounded search is not treated as proof of novelty or priority.
 
 ## References highlighted on this page
 
@@ -285,9 +280,9 @@ not treated as proof of novelty or priority.
 - B. Zindorf and S. Bose, “Efficient implementation of multi-controlled quantum
   gates,” *Physical Review Applied* **24**, 044030 (2025).
 
-Exact identifiers, source versions, and local dependency locations are listed
-in [the source map](SOURCE_MAP.md).
+Exact identifiers, versions, and local dependency locations are listed in the
+[source map](SOURCE_MAP.md).
 
 ---
 
-[← Source map](SOURCE_MAP.md) · [Read the complete narrative](../REVIEW.md) · [Back to the landing page →](../README.md)
+[← Source map](SOURCE_MAP.md) · [Complete technical note](../REVIEW.md) · [Back to the landing page →](../README.md)
