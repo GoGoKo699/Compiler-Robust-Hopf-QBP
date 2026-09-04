@@ -296,9 +296,9 @@ The principal square root is $\sqrt{g_{j,j}}=\lvert a_j\rvert$.
 
 The canonical domains are:
 
-- real depths $0,\ldots,n-2$: $[0,\\frac{pi}{2}]$;
+- real depths $0,\ldots,n-2$: $[0,\pi/2]$;
 - final real depth: $[0,2\pi)$;
-- every complex magnitude angle: $[0,\\frac{pi}{2}]$.
+- every complex magnitude angle: $[0,\pi/2]$.
 
 Only ancestor angles enter $a_j$, so on these domains
 
@@ -471,7 +471,7 @@ For fixed $p$ and $r$, the four invariant sectors are:
 | $h(r)$ | original $b$ | chronological target word | resulting matrix | final $b$ |
 |---:|---:|---|---|---:|
 | 0 | 0 | none | $I$ | 0 |
-| 0 | 1 | $X,C_p,X,C_p$ | $C_pXC_pX=I$ | 1 |
+| 0 | 1 | $X,C_p,X,C_p$ | $C_p X C_p X=I$ | 1 |
 | 1 | 0 | $C_p,C_p$ | $C_p^2=R_y(\theta_{d,p})$ | 0 |
 | 1 | 1 | $X,X$ | $I$ | 1 |
 

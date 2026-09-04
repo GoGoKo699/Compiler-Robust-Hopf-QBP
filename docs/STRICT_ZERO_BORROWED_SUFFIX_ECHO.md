@@ -112,7 +112,7 @@ Fix one prefix $p$ and one remaining suffix $r$.
 | $h(r)$ | original $b$ | chronological target word | net target action | final $b$ |
 |---:|---:|---|---|---:|
 | 0 | 0 | none | $I$ | 0 |
-| 0 | 1 | $X,C_p,X,C_p$ | $C_pXC_pX=I$ | 1 |
+| 0 | 1 | $X,C_p,X,C_p$ | $C_p X C_p X=I$ | 1 |
 | 1 | 0 | $C_p,C_p$ | $C_p^2=R_y(\theta_{d,p})$ | 0 |
 | 1 | 1 | $X,X$ | $I$ | 1 |
 

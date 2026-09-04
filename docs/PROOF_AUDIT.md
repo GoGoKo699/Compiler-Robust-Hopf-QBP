@@ -241,7 +241,7 @@ For $m\geq4n$, the largest cut satisfying
 2\,2^t(n-t+1)\leq m
 ```
 
-obeys $\frac{2^s}{s}=O(\frac{N}{n+m})$. For $1\leqm<4n$, the direct flagged schedule's
+obeys $\frac{2^s}{s}=O(\frac{N}{n+m})$. For $1\leq m<4n$, the direct flagged schedule's
 $O(n^2)$ term is absorbed. Therefore all positive budgets attain the target
 frontier.
 

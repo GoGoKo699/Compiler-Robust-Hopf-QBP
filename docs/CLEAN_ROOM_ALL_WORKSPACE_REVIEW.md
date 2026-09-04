@@ -105,7 +105,7 @@ derivative. This distinction affects interpretation, not the unitary compiler
 target.
 
 The executable interface uses a tolerance-aware regular-coordinate mask so a
-floating-point representation of a chart boundary, such as $cos(\\frac{pi}{2})$, is not
+floating-point representation of a chart boundary, such as $\cos(\pi/2)$, is not
 mistaken for a physically regular coordinate.
 
 **Classification:** analytic identity, canonical-domain consequence, and
@@ -170,7 +170,7 @@ For fixed $p$ and $r$, the sectors are:
 | $h(r)$ | original $b$ | chronological target word | resulting matrix | final $b$ |
 |---:|---:|---|---|---:|
 | 0 | 0 | none | $I$ | 0 |
-| 0 | 1 | $X,C_p,X,C_p$ | $C_pXC_pX=I$ | 1 |
+| 0 | 1 | $X,C_p,X,C_p$ | $C_p X C_p X=I$ | 1 |
 | 1 | 0 | $C_p,C_p$ | $C_p^2=R_y(\theta_p)$ | 0 |
 | 1 | 1 | $X,X$ | $I$ | 1 |
 
@@ -230,7 +230,7 @@ D_{\mathrm{direct}}
 =O\left(n^2+\frac{2^n}{n+m}\right).
 ```
 
-When $1\leqm<4n$, $n+m<5n$ and $n^3=O(2^n)$, so the polynomial term is absorbed
+When $1\leq m<4n$, $n+m<5n$ and $n^3=O(2^n)$, so the polynomial term is absorbed
 by $\frac{2^n}{n+m}$.
 
 ## 7. Tree-cut identities and conditioned prefix

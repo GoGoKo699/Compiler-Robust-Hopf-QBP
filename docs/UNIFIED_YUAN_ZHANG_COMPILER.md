@@ -135,7 +135,7 @@ S=O(N),
 D=O\left(n^2+\frac{N}{n+m}\right).
 ```
 
-For $1\leqm<4n$, the $\frac{N}{n+m}$ term absorbs $n^2$, so no routed construction is
+For $1\leq m<4n$, the $\frac{N}{n+m}$ term absorbs $n^2$, so no routed construction is
 needed.
 
 ## 6. Tree cut and conditioned prefix

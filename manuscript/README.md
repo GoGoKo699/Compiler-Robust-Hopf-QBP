@@ -67,9 +67,9 @@ $a_j\geq0$ and equals the principal metric square root.
 
 Canonical domains:
 
-- real depths $0,\ldots,n-2$: $[0,\\frac{pi}{2}]$;
+- real depths $0,\ldots,n-2$: $[0,\pi/2]$;
 - final real depth: $[0,2\pi)$;
-- complex magnitude angles: $[0,\\frac{pi}{2}]$.
+- complex magnitude angles: $[0,\pi/2]$.
 
 If $g_{j,j}=0$, the raw differential vanishes.  The marker column is the
 chart-selected orthogonal continuation determined by the complete parameter

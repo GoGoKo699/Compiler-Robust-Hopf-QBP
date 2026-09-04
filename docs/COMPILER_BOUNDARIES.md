@@ -343,7 +343,7 @@ that the checkpoint can probe.
 ## 5. State-column-only checkpoint failure
 
 Use two qubits, checkpoint depth $d=0$, and again set all three Hopf angles to
-$\\frac{pi}{4}$. The checkpoint factors are
+$\pi/4$. The checkpoint factors are
 
 ```math
 A=R_y(\pi/4)\otimes I,
