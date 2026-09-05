@@ -1,0 +1,51 @@
+name: prepare-clean-prose-patch
+
+on:
+  push:
+    branches: [prepare-prose-cleanup-20260905]
+    paths:
+      - _prepare_prose_patch.py
+      - _math_typography_test.py
+      - .github/workflows/prepare-prose-cleanup.yml
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Prepare notation-only patch and verify unchanged tables and circuits
+        run: python _prepare_prose_patch.py
+      - name: Validate exact clean tree
+        run: |
+          git diff --cached --check
+          python -m compileall -q compiler_robust_hopf scripts tests validate.py
+          python scripts/reviewer_walkthrough.py
+          python validate.py
+          python scripts/unified_resource_ledger.py --n 12
+          python scripts/strict_zero_echo_ledger.py --n 12
+          python scripts/check_upstream_sync.py --offline
+      - name: Publish a single clean commit based on main
+        run: |
+          set -euo pipefail
+          base=714111972f9aa257cd2f5e4f54976bd368d6f93e
+          test "$(git rev-parse origin/main)" = "$base"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          tree=$(git write-tree)
+          commit=$(printf '%s\n' 'Polish prose mathematics and clarify family-level bounds' '' 'Preserve approved tables, display equations, scientific implementation, and existing workflows. Retain dimension-label parentheses, correct echo cleanup wording, and add targeted notation regression tests.' | git commit-tree "$tree" -p "$base")
+          git push origin "$commit:refs/heads/prose-math-clean-20260905"
+          echo "PATCH_COMMIT=$commit"
+          echo "PATCH_TREE=$tree"
+          git diff --stat "$base" "$commit"
+          test -z "$(git ls-tree -r --name-only "$commit" | grep -E '(^_prepare_prose_patch.py$|^_math_typography_test.py$|prepare-prose-cleanup.yml|normalize_inline_math|inline_math_candidates)' || true)"
