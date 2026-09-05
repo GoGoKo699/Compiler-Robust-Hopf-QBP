@@ -50,7 +50,7 @@ V=WQ,
 Q|0^n\rangle=|0^n\rangle,
 ```
 
-with no corresponding restriction on `Q` over the orthogonal complement.  The
+with no corresponding restriction on $Q$ over the orthogonal complement.  The
 response resolved by the inverse becomes
 
 ```math
@@ -72,11 +72,11 @@ J_m|\varphi\rangle
 =|\varphi\rangle|0^m\rangle
 ```
 
-append `m` clean workspace qubits.
+append $m$ clean workspace qubits.
 
 ### Definition 1: frame-safe implementation
 
-A unitary `W_tilde` is frame-safe for `W` when
+A unitary $\widetilde W$ is frame-safe for $W$ when
 
 ```math
 \boxed{
@@ -93,11 +93,11 @@ Equivalently, for every system state,
 ```
 
 The contract does not prescribe the action when the compiler workspace begins
-outside `|0^m>`.
+outside $\lvert0^m\rangle$.
 
 ### Lemma 2: inverse frame safety
 
-If `W_tilde` is unitary and frame-safe, then
+If $\widetilde W$ is unitary and frame-safe, then
 
 ```math
 \boxed{
@@ -115,9 +115,9 @@ P_0=J_mJ_m^{\dagger}
 =I\otimes|0^m\rangle\!\langle0^m|.
 ```
 
-The relation `W_tilde J_m=J_m W` maps the range of `P_0` unitarily onto itself.
-Because `W_tilde` is unitary, that subspace is reducing.  Hence both
-`W_tilde` and `W_tilde^dagger` preserve it, and the restriction of the adjoint is
+The relation $\widetilde WJ_m=J_mW$ maps the range of $P_0$ unitarily onto itself.
+Because $\widetilde W$ is unitary, that subspace is reducing.  Hence both
+$\widetilde W$ and $\widetilde W^{\dagger}$ preserve it, and the restriction of the adjoint is
 the adjoint of the restriction.  ∎
 
 This argument is stronger than taking the adjoint of a first-column equality.
@@ -126,11 +126,11 @@ This argument is stronger than taking the adjoint of a first-column equality.
 
 ### Theorem 3: global frame-safe substitution
 
-Replace a logical frame `W` or inverse frame `W^dagger` by a frame-safe compiled
-implementation or its adjoint.  Initialize its work register in `|0^m>` and do
+Replace a logical frame $W$ or inverse frame $W^{\dagger}$ by a frame-safe compiled
+implementation or its adjoint.  Initialize its work register in $\lvert0^m\rangle$ and do
 not couple unrelated operations to that register while the compiled block is
 active.  Then the output on all original protocol registers is unchanged, and
-the compiler workspace returns to `|0^m>`.
+the compiler workspace returns to $\lvert0^m\rangle$.
 
 Consequently, compilation preserves:
 
@@ -145,12 +145,12 @@ Consequently, compilation preserves:
 The forward statement is Definition 1, including when the system is entangled
 with untouched registers.  The inverse statement is Lemma 2.  Applying these
 identities to each frame block leaves the complete protocol state unchanged up
-to a tensor factor `|0^m>`.  ∎
+to a tensor factor $\lvert0^m\rangle$.  ∎
 
 ## 5. Sequential reuse of one workspace pool
 
-Suppose `U_tilde` and `V_tilde` frame-safely implement `U` and `V` using at most
-`a` and `b` clean qubits.  Embed them in one pool of
+Suppose $\widetilde U$ and $\widetilde V$ frame-safely implement $U$ and $V$ using at most
+$a$ and $b$ clean qubits.  Embed them in one pool of
 
 ```math
 m=\max\{a,b\}
@@ -165,7 +165,7 @@ qubits.  Since the first block returns the pool clean,
 ```
 
 Workspace therefore takes a maximum across sequential blocks, while size and
-depth add.  This is the register-level reason that `W_R` and `D_ph` reuse one
+depth add.  This is the register-level reason that $W_{\mathbb R}$ and $D_{\mathrm{ph}}$ reuse one
 pool in
 
 ```math
@@ -235,32 +235,32 @@ Write one preparation as
 U=B_dA_d,
 ```
 
-and let `P_d` project onto the active interface reached by `A_d`.
+and let $P_d$ project onto the active interface reached by $A_d$.
 
 ### Definition 4: active-interface-safe suffix
 
-A compiled suffix `B_tilde_d` is active-interface safe when
+A compiled suffix $\widetilde B_d$ is active-interface safe when
 
 ```math
 \widetilde B_dJ_mP_d
 =e^{i\chi}J_mB_dP_d,
 ```
 
-where `chi` is independent of the interface input.
+where $\chi$ is independent of the interface input.
 
 This is weaker than complete frame safety because no action is prescribed on
 the orthogonal input sector.  It is stronger than preserving only the single
-state `A_d|0^n>`.
+state $A_d\lvert0^n\rangle$.
 
 ### Theorem 5: checkpoint substitution
 
 Use an active-interface-safe suffix consistently in the forward and reverse
-checkpoint circuit.  Then every designated checkpoint estimator at depth `d`
+checkpoint circuit.  Then every designated checkpoint estimator at depth $d$
 has the same expectation as under the original suffix for every allowed
 controlled observable.  The complete output distribution need not be the same.
 
-The reference branch lies in `P_d`, and the checkpoint score operators preserve
-`P_d`.  The adjoint of the interface identity therefore preserves exactly the
+The reference branch lies in $P_d$, and the checkpoint score operators preserve
+$P_d$.  The adjoint of the interface identity therefore preserves exactly the
 component entering the estimator mean.  The complete proof and separating
 examples are given in [`COMPILER_BOUNDARIES.md`](COMPILER_BOUNDARIES.md).
 

@@ -18,7 +18,7 @@ uses.
 
 ## 1. Three different compiler contracts
 
-Let `J` append clean workspace:
+Let $J$ append clean workspace:
 
 ```math
 J|\varphi\rangle
@@ -29,7 +29,7 @@ Three contracts must not be conflated.
 
 ### State-column equality
 
-For one prepared input state `|alpha>`,
+For one prepared input state $\lvert\alpha\rangle$,
 
 ```math
 \widetilde UJ|\alpha\rangle
@@ -37,11 +37,11 @@ For one prepared input state `|alpha>`,
 ```
 
 This certifies one output state, up to a common phase. It places no useful
-restriction on the orthogonal complement of `|alpha>`.
+restriction on the orthogonal complement of $\lvert\alpha\rangle$.
 
 ### Checkpoint active-interface equality
 
-For an active-interface projector `P`,
+For an active-interface projector $P$,
 
 ```math
 \widetilde UJP
@@ -54,7 +54,7 @@ input sector.
 
 ### Full frame safety
 
-For a complete differential-frame unitary `W`,
+For a complete differential-frame unitary $W$,
 
 ```math
 \widetilde WJ=JW.
@@ -94,7 +94,7 @@ The state is
 =\frac{|00\rangle+|01\rangle+|10\rangle+|11\rangle}{2}.
 ```
 
-In computational-column order `0,1,2,3`, the canonical real Hopf frame is
+In computational-column order $0,1,2,3$, the canonical real Hopf frame is
 
 ```math
 W=
@@ -122,7 +122,7 @@ and the metric square roots at this regular point are
 \bigl(1,2^{-1/2},2^{-1/2}\bigr).
 ```
 
-Let `Q` be the two-qubit SWAP matrix,
+Let $Q$ be the two-qubit SWAP matrix,
 
 ```math
 Q|00\rangle=|00\rangle,
@@ -140,13 +140,13 @@ and define
 V=WQ.
 ```
 
-Because `Q|00>=|00>`,
+Because $Q\lvert00\rangle=\lvert00\rangle$,
 
 ```math
 V|00\rangle=W|00\rangle=|\psi\rangle.
 ```
 
-Thus `V` is an exact state-preparation replacement for this point, but not a
+Thus $V$ is an exact state-preparation replacement for this point, but not a
 valid replacement for the Hopf differential frame.
 
 Choose
@@ -183,7 +183,7 @@ The exact coordinate gradient is
 \nabla_{\boldsymbol\theta}E=(2,0,0).
 ```
 
-The fixed Walsh-marker decoder returns this value with `W`, but with `V` it
+The fixed Walsh-marker decoder returns this value with $W$, but with $V$ it
 returns
 
 ```math
@@ -193,38 +193,38 @@ returns
 
 ### Complete output distributions
 
-Write one measured outcome as `(b,y)`, where `b` is the ancilla X-basis bit and
-`y` the two-bit system X-basis label. The correct frame has probability `1/4`
+Write one measured outcome as $(b,y)$, where $b$ is the ancilla X-basis bit and
+$y$ the two-bit system X-basis label. The correct frame has probability $\frac14$
 on
 
 ```text
 (0,00), (0,01), (1,10), (1,11),
 ```
 
-and zero elsewhere. The state-equivalent compiler has probability `1/4` on
+and zero elsewhere. The state-equivalent compiler has probability $\frac14$ on
 
 ```text
 (0,00), (0,10), (1,01), (1,11),
 ```
 
-and zero elsewhere. Their total-variation distance is `1/2`.
+and zero elsewhere. Their total-variation distance is $\frac12$.
 
 > **State-column equality is insufficient for global Hopf backpropagation.**
-> There exist exact unitaries `V` and `W` with `V|0>=W|0>` and a
-> Hermitian-unitary observable `O` for which the designated global marker
+> There exist exact unitaries $V$ and $W$ with $V\lvert0\rangle=W\lvert0\rangle$ and a
+> Hermitian-unitary observable $O$ for which the designated global marker
 > decoder gives different gradients. An exact state-preparation compiler cannot
 > therefore be inverted as a Hopf reverse frame without an additional
 > operator-level contract.
 
 ## 3. Checkpoint notation
 
-At depth `d`, write the designated preparation as
+At depth $d$, write the designated preparation as
 
 ```math
 U=B_dA_d,
 ```
 
-where `A_d` contains depths `0,...,d` and `B_d` contains the later depths. Let
+where $A_d$ contains depths $0,\ldots,d$ and $B_d$ contains the later depths. Let
 
 ```math
 |\alpha_d\rangle=A_d|0^n\rangle,
@@ -247,7 +247,7 @@ The prefix state satisfies
 P_d|\alpha_d\rangle=|\alpha_d\rangle.
 ```
 
-For prefix label `r`, the checkpoint score uses an operator of the form
+For prefix label $r$, the checkpoint score uses an operator of the form
 
 ```math
 K_{d,r}
@@ -263,24 +263,24 @@ It preserves the active-interface sectors:
 ```
 
 The physical score is the corresponding ancilla-system correlation, with the
-repository convention `-2 Y_ancilla tensor K_(d,r)`.
+repository convention $-2Y_{\mathrm{ancilla}}\otimes K_{d,r}$.
 
 ## 4. Active-interface substitution theorem
 
-Let `B_tilde_d` be a unitary compiler acting on system and clean workspace.
-Assume that, for one phase `chi` independent of the active-interface input,
+Let $\widetilde B_d$ be a unitary compiler acting on system and clean workspace.
+Assume that, for one phase $\chi$ independent of the active-interface input,
 
 ```math
 \widetilde B_dJP_d
 =e^{i\chi}JB_dP_d.
 ```
 
-Use `B_tilde_d` consistently in the forward suffix and
-`B_tilde_d^dagger` after the controlled observable.
+Use $\widetilde B_d$ consistently in the forward suffix and
+$\widetilde B_d^{\dagger}$ after the controlled observable.
 
 > **Checkpoint active-interface substitution.** Under the condition above,
-> every designated checkpoint gradient estimator at depth `d` has exactly the
-> same expectation as under `B_d`, for every allowed controlled observable. The
+> every designated checkpoint gradient estimator at depth $d$ has exactly the
+> same expectation as under $B_d$, for every allowed controlled observable. The
 > complete measurement distribution need not be the same.
 
 ### Proof
@@ -321,12 +321,12 @@ P_dJ^\dagger|\beta_1\rangle
 ```
 
 Every checkpoint score is an ancilla-off-diagonal correlation between
-`beta_0` and `beta_1`. Since `beta_0` has clean workspace and lies in the range
-of `P_d`, while each `K_(d,r)` preserves that range, the score depends only on
+$\beta_0$ and $\beta_1$. Since $\beta_0$ has clean workspace and lies in the range
+of $P_d$, while each $K_{d,r}$ preserves that range, the score depends only on
 this active clean component. It is therefore identical to the score produced by
-`B_d`.
+$B_d$.
 
-Components of `beta_1` outside the active clean sector are orthogonal to the
+Components of $\beta_1$ outside the active clean sector are orthogonal to the
 reference branch in the score correlation. They may nevertheless change
 suffix-resolved probabilities and other observables. Equality of means does not
 therefore imply equality of complete distributions.
@@ -342,8 +342,8 @@ that the checkpoint can probe.
 
 ## 5. State-column-only checkpoint failure
 
-Use two qubits, checkpoint depth `d=0`, and again set all three Hopf angles to
-`pi/4`. The checkpoint factors are
+Use two qubits, checkpoint depth $d=0$, and again set all three Hopf angles to
+$\pi/4$. The checkpoint factors are
 
 ```math
 A=R_y(\pi/4)\otimes I,
@@ -373,7 +373,7 @@ Q_{\mathrm{bad}}=X\otimes I,
 C_{\mathrm{bad}}=BQ_{\mathrm{bad}}.
 ```
 
-Because `X|+>=|+>`,
+Because $X\lvert+\rangle=\lvert+\rangle$,
 
 ```math
 C_{\mathrm{bad}}|\alpha\rangle
@@ -396,7 +396,7 @@ Choose
 O=-Z\otimes I.
 ```
 
-The exact root derivative is `2`. Under the designated inverse suffix, the two
+The exact root derivative is $2$. Under the designated inverse suffix, the two
 checkpoint branches before Y-basis readout are the prefix state and its root
 coordinate direction. The nonzero measured outcomes are
 
@@ -405,8 +405,8 @@ correct B:      (ancilla,target,suffix) = (0,1,0), (1,0,0), each 1/2;
 compiled C_bad: (ancilla,target,suffix) = (0,0,0), (1,1,0), each 1/2.
 ```
 
-The checkpoint decoder therefore returns `2` with `B`, but `-2` with
-`C_bad`.
+The checkpoint decoder therefore returns $2$ with $B$, but $-2$ with
+$C_{\mathrm{bad}}$.
 
 > **Checkpoint state-column equality is insufficient.** A recompiled suffix may
 > preserve the exact final prepared state while changing a checkpoint
@@ -416,7 +416,7 @@ The checkpoint decoder therefore returns `2` with `B`, but `-2` with
 
 ## 6. Interface safety preserves means, not full distributions
 
-Keep the same `A`, `B`, and `P`, but define
+Keep the same $A$, $B$, and $P$, but define
 
 ```math
 Q_\perp=\mathrm{diag}(1,1,1,i),
@@ -424,7 +424,7 @@ Q_\perp=\mathrm{diag}(1,1,1,i),
 C_{\mathrm{safe}}=BQ_\perp.
 ```
 
-Since `Q_perp P=P`,
+Since $Q_\perp P=P$,
 
 ```math
 C_{\mathrm{safe}}P=BP.
@@ -452,7 +452,7 @@ as required. Their complete distributions differ:
 \right).
 ```
 
-The total-variation distance is `1/4`.
+The total-variation distance is $\frac14$.
 
 This establishes the precise boundary:
 
@@ -480,7 +480,7 @@ but not
 
 The global method is chart-native but frame-implementation conditional. The
 checkpoint method is factorization- and interface-dependent. It can tolerate
-more freedom than the global frame because behavior outside `P_d` is irrelevant
+more freedom than the global frame because behavior outside $P_d$ is irrelevant
 to its means, but it cannot be inferred from final-state preparation alone.
 
 ## 8. Executable support
