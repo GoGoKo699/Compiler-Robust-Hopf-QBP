@@ -245,7 +245,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
         theorem_compact = compact(theorem)
         self.assertIn("fixed-width controlled Givens rotations", theorem_compact)
         self.assertIn("C-B", theorem)
-        self.assertIn("If `s=1`", theorem)
+        self.assertIn("If $s=1$", theorem)
 
         verification = files["docs/VERIFICATION.md"]
         self.assertIn("explicit CNOT-fanout and Fredkin layers", verification)

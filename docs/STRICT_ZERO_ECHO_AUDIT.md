@@ -33,7 +33,7 @@ in arXiv v3 and retain the forms used below.
 
 ## 1. Exact operator target
 
-At a nonfinal depth `d<n-1`, split the register as
+At a nonfinal depth $d<n-1$, split the register as
 
 ```math
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R.
@@ -64,7 +64,7 @@ C=R_y(\theta_p/2),
 J=X.
 ```
 
-Let `T_h` map `b` to `b xor h`. The chronological sequence is
+Let $T_h$ map $b$ to $b\oplus h$. The chronological sequence is
 
 ```text
 controlled_b(J)
@@ -96,7 +96,7 @@ CJCJ=I.
 
 The desired rotation appears only when the original complete suffix is zero.
 All other sectors receive identity. The borrowed bit is restored and no
-sector-dependent phase is produced. Since `p` and `r` label orthogonal
+sector-dependent phase is produced. Since $p$ and $r$ label orthogonal
 invariant sectors, this proves equality on arbitrary superpositions and
 entangled inputs.
 
@@ -126,10 +126,10 @@ layer matrix test enforce this convention.
 
 The circuit uses only the original system wires:
 
-- `d` prefix wires;
+- $d$ prefix wires;
 - one target wire;
 - one borrowed suffix data wire;
-- `n-d-2` remaining suffix wires.
+- $n-d-2$ remaining suffix wires.
 
 The borrowed wire is not assumed clean, idle, separable, or classical. Its
 restoration follows from the complete sector table.
@@ -146,7 +146,7 @@ remaining suffix wires are idle during the UCG and are not compiler workspace.
 
 ## 5. Exact UCG width
 
-For each prefix `p`, the borrowed-bit UCG blocks are
+For each prefix $p$, the borrowed-bit UCG blocks are
 
 ```math
 U_{p,0}=I,
@@ -154,7 +154,7 @@ U_{p,0}=I,
 U_{p,1}=R_y(\theta_p/2).
 ```
 
-There are `d+1` controls—`d` prefix bits and the borrowed bit—and one target.
+There are $d+1$ controls—$d$ prefix bits and the borrowed bit—and one target.
 The total UCG width in the Yuan–Zhang convention is
 
 ```math
@@ -168,18 +168,18 @@ asymptotic proof.
 
 ## 6. Endpoint audit
 
-- `n=1`: no borrowed-suffix layer exists; the frame is one one-qubit rotation.
-- `d=0`: the half-angle UCG is a two-qubit controlled rotation.
-- `d=n-2`: the remaining suffix is empty, so `h=1` and `T_h=X_b`.
-- `d=n-1`: no lower suffix exists; the final depth is one ordinary `n`-qubit
+- $n=1$: no borrowed-suffix layer exists; the frame is one one-qubit rotation.
+- $d=0$: the half-angle UCG is a two-qubit controlled rotation.
+- $d=n-2$: the remaining suffix is empty, so $h=1$ and $T_h=X_b$.
+- $d=n-1$: no lower suffix exists; the final depth is one ordinary $n$-qubit
   UCG and does not use the echo.
 
 **Audit classification:** all endpoints explicit in code and tests.
 
 ## 7. Size audit
 
-Two width-`d+2` UCGs contribute `O(2^d)` size. Four predicate toggles contribute
-`O(n-d)` size. Two target echoes contribute constants. Hence
+Two width-$d+2$ UCGs contribute $O(2^d)$ size. Four predicate toggles contribute
+$O(n-d)$ size. Two target echoes contribute constants. Hence
 
 ```math
 S(L_d)=O(2^d+n-d).
@@ -200,8 +200,8 @@ S(W_{\mathbb R})
 \end{aligned}
 ```
 
-The real-state family has dimension `2^n-1`, so parameter counting gives the
-matching `Omega(2^n)` lower bound.
+The real-state family has dimension $2^n-1$, so parameter counting gives the
+matching $\Omega(2^n)$ lower bound.
 
 **Audit classification:** upper and lower bounds verified.
 
@@ -213,7 +213,7 @@ The two UCGs contribute
 O\left(d+2+\frac{2^d}{d+2}\right)
 ```
 
-depth up to a constant factor. The predicate toggles contribute `O(n-d)`.
+depth up to a constant factor. The predicate toggles contribute $O(n-d)$.
 Therefore
 
 ```math
@@ -228,7 +228,7 @@ The UCG exponential terms satisfy
 \leq6\frac{2^n}{n}.
 ```
 
-The linear-width and predicate terms total `O(n^2)`, and
+The linear-width and predicate terms total $O(n^2)$, and
 
 ```math
 n^2=O(2^n/n).
@@ -240,9 +240,9 @@ Thus
 D(W_{\mathbb R})=O(n+2^n/n).
 ```
 
-At zero workspace, a depth-`D` circuit on exactly `n` wires contains only
-`O(nD)` continuously parameterized one-qubit locations. Covering the
-`2^n-1` dimensional real-state family requires
+At zero workspace, a depth-$D$ circuit on exactly $n$ wires contains only
+$O(nD)$ continuously parameterized one-qubit locations. Covering the
+$2^n-1$ dimensional real-state family requires
 
 ```math
 D=\Omega(2^n/n),
@@ -259,7 +259,7 @@ dimension-independent argument.
 ## 9. Inverse and complex-magnitude audit
 
 The circuit is unitary and exact, so reversing and adjointing its gates gives
-`W_R^dagger` with the same resources.
+$W_{\mathbb R}^{\dagger}$ with the same resources.
 
 The phase layer
 
@@ -269,8 +269,8 @@ D_{\mathrm{ph}}
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}})
 ```
 
-is one exact `n`-qubit UCG. At zero workspace it has `O(2^n)` size and
-`O(n+2^n/n)` depth. Therefore
+is one exact $n$-qubit UCG. At zero workspace it has $O(2^n)$ size and
+$O(n+2^n/n)$ depth. Therefore
 
 ```math
 W_{\mathbb C,\mathrm{mag}}
@@ -302,7 +302,7 @@ See [Related work](RELATED_WORK.md) and
 
 ## 11. Audit conclusion
 
-The internal reconstruction found no mathematical reason to exclude `m=0`
+The internal reconstruction found no mathematical reason to exclude $m=0$
 from the all-workspace theorem. The strict-zero result is consistent with the
 complete operator contract, uses no hidden wire, covers every endpoint, and
 matches the real-state lower bound.
