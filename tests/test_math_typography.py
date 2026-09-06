@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INLINE_CODE = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)")
 INLINE_MATH = re.compile(r"(?<!\\)\$(?!\$)(.+?)(?<!\\)\$")
 FENCE = re.compile(r"^(?:\s*>\s*)*\s*(`{3,}|~{3,})")
+PROTECTED_MATH = re.compile(r"\$`([^`\n]+)`\$")
 KNOWN_CODE = {
     "incoming_amplitude", "incoming_amplitude**2", "metric", "sqrt_metric",
     "regular_coordinate_mask(atol=...)", "in_canonical_magnitude_domain",
@@ -71,7 +72,7 @@ class MathTypographyTests(unittest.TestCase):
             if any(part in {".git", ".venv", "__pycache__"} for part in path.parts):
                 continue
             for number, line in prose_lines(path.read_text()):
-                for body in INLINE_MATH.findall(line):
+                for body in INLINE_MATH.findall(PROTECTED_MATH.sub(lambda m: "$" + m[1] + "$", line)):
                     self.assertIsNone(
                         re.search(r"\b(?:L_d|F_t|R_t)\^\{?n\}?(?![A-Za-z])", body),
                         msg=f"dimension label lost parentheses: {path}:{number}: {body}",
@@ -125,7 +126,7 @@ class MathTypographyTests(unittest.TestCase):
                 # Existing table typography has its own regression coverage.
                 if line.lstrip().startswith("|"):
                     continue
-                for match in INLINE_CODE.finditer(line):
+                for match in INLINE_CODE.finditer(PROTECTED_MATH.sub("", line)):
                     value = match.group(2)
                     # Long function names and their literal arguments are code.
                     name = value.split("(", 1)[0]
@@ -143,7 +144,7 @@ class MathTypographyTests(unittest.TestCase):
             if any(part in {".git", ".venv", "__pycache__"} for part in path.parts):
                 continue
             for number, line in prose_lines(path.read_text()):
-                without_code = INLINE_CODE.sub("", line)
+                without_code = INLINE_CODE.sub("", PROTECTED_MATH.sub(lambda m: "$" + m[1] + "$", line))
                 if len(re.findall(r"(?<!\\)\$", without_code)) % 2:
                     failures.append(f"{path}:{number}: unpaired dollar delimiter")
                 for body in INLINE_MATH.findall(without_code):

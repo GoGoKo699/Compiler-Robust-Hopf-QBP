@@ -195,7 +195,7 @@ Choosing the largest feasible cut for $m\geq4n$ yields
 ```
 
 including the separate $s=1$ endpoint.  Hence the routed schedule also has
-$O(N)$ size and $O\!\left(n+\frac{N}{n+m}\right)$ depth.
+$O(N)$ size and $`O\!\left(n+\frac{N}{n+m}\right)`$ depth.
 
 ## 5. Matching lower bounds
 

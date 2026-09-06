@@ -49,7 +49,7 @@
   <circle cx="545" cy="333" r="7" class="control"/>
   <rect x="496" y="213" width="98" height="60" rx="9" class="gate"/>
   <text x="545" y="249" text-anchor="middle" class="math">Cₚ</text>
-  <text x="545" y="300" text-anchor="middle" class="small">one UCG</text>
+  <text id="ucg-note-1" data-clear-connectors="true" x="606" y="288" text-anchor="start" class="small">one UCG</text>
 
   <!-- T_h 2 -->
   <line x1="675" y1="333" x2="675" y2="423" stroke="#526f85" stroke-width="3"/>
@@ -78,7 +78,7 @@
   <circle cx="1075" cy="333" r="7" class="control"/>
   <rect x="1026" y="213" width="98" height="60" rx="9" class="gate"/>
   <text x="1075" y="249" text-anchor="middle" class="math">Cₚ</text>
-  <text x="1075" y="300" text-anchor="middle" class="small">one UCG</text>
+  <text id="ucg-note-2" data-clear-connectors="true" x="1136" y="288" text-anchor="start" class="small">one UCG</text>
 
   <!-- T_h 4 -->
   <line x1="1205" y1="333" x2="1205" y2="423" stroke="#526f85" stroke-width="3"/>

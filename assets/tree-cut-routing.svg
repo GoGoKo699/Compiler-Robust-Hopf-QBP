@@ -37,10 +37,10 @@
     <circle cx="280" cy="230" r="19" class="leaf"/>
     <circle cx="460" cy="230" r="19" class="leaf"/>
     <line x1="20" y1="280" x2="480" y2="280" stroke="#61788d" stroke-width="4" stroke-dasharray="12 8"/>
-    <text x="250" y="310" text-anchor="middle" class="label">cut after t depths</text>
+    <text id="cut-label" data-clear-connectors="true" x="250" y="307" text-anchor="middle" class="label"><tspan x="250">cut after </tspan><tspan x="250" dy="27">t depths</tspan></text>
     <path d="M40,249 C20,315 15,345 15,390" class="thin"/>
-    <path d="M220,249 C190,315 180,345 180,390" class="thin"/>
-    <path d="M280,249 C310,315 320,345 320,390" class="thin"/>
+    <path d="M220,249 C165,294 180,340 198,390" class="thin"/>
+    <path d="M280,249 C335,294 320,340 338,390" class="thin"/>
     <path d="M460,249 C480,315 485,345 485,390" class="thin"/>
     <rect x="-20" y="390" width="115" height="85" rx="12" class="branch"/>
     <rect x="140" y="390" width="115" height="85" rx="12" class="branch"/>
@@ -55,7 +55,7 @@
 
   <!-- process -->
   <g transform="translate(690,105)">
-    <rect x="0" y="0" width="590" height="475" rx="18" fill="#ffffff" stroke="#91a8b9" stroke-width="2"/>
+    <rect x="0" y="0" width="590" height="490" rx="18" fill="#ffffff" stroke="#91a8b9" stroke-width="2"/>
     <text x="295" y="42" text-anchor="middle" class="label">Coherent route–operate–unroute schedule</text>
 
     <rect x="55" y="78" width="200" height="72" rx="12" class="node"/>
@@ -80,9 +80,9 @@
     <text x="454" y="292" text-anchor="middle" class="math">Wₛ⁽ᴮ⁻¹⁾</text>
     <text x="295" y="345" text-anchor="middle" class="small">disjoint registers ⇒ parallel depth</text>
 
-    <line x1="295" y1="356" x2="295" y2="394" class="edge" marker-end="url(#arrow)"/>
-    <rect x="75" y="406" width="440" height="50" rx="12" class="node"/>
-    <text x="295" y="438" text-anchor="middle" class="body">inverse router restores the suffix and returns every work register to |0⟩</text>
+    <line x1="295" y1="356" x2="295" y2="388" class="edge" marker-end="url(#arrow)"/>
+    <rect id="inverse-router-box" x="55" y="400" width="480" height="76" rx="12" class="node"/>
+    <text id="inverse-router-caption" x="295" y="430" text-anchor="middle" class="body"><tspan x="295">inverse router restores the suffix </tspan><tspan x="295" dy="25">and returns every work register to |0⟩</tspan></text>
   </g>
 
   <rect x="115" y="610" width="1170" height="46" rx="12" fill="#edf4f8" stroke="#8da5b7"/>

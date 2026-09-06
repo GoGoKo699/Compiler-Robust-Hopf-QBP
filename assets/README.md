@@ -21,3 +21,26 @@ layout.
 The source equations and proof checkpoints are in
 [`REVIEW.md`](../REVIEW.md) and
 [`docs/COMPILER_THEOREM.md`](../docs/COMPILER_THEOREM.md).
+
+## Rendering checks
+
+The optional [presentation checker](../scripts/check_presentation.py) renders
+all five SVGs at their desktop embedding widths and at a 358-pixel image width.
+It measures label containment, label overlap, annotated connector clearance and
+visible arrowheads. It also checks that prose mathematics survives a CommonMark
+handoff and typesets with MathJax. This models the documented protected inline
+syntax; it does not reproduce GitHub's private client implementation.
+
+The numerical compiler suite remains independent of these browser dependencies.
+
+```bash
+python -m pip install -r requirements-presentation.txt
+python -m playwright install chromium
+npm install --prefix /tmp/hopf-mathjax --ignore-scripts --no-audit --no-fund mathjax-full@3.2.1
+python scripts/check_presentation.py \
+  --mathjax /tmp/hopf-mathjax/node_modules/mathjax-full/es5/tex-svg-full.js \
+  --output /tmp/hopf-presentation
+```
+
+Use `--svg-only` to inspect the diagrams without the optional MathJax bundle.
+The browser checker emits previews and measured geometry for inspection.

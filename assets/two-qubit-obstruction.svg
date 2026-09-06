@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="540" viewBox="0 0 1200 540" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="575" viewBox="0 0 1200 575" role="img" aria-labelledby="title desc">
   <title id="title">Two-qubit obstruction to state-column-only compilation</title>
   <desc id="desc">Two unitaries prepare the same state from zero, but one swaps two tangent-marker columns and therefore changes the decoded gradient.</desc>
   <defs>
@@ -14,10 +14,10 @@
       .mathbig{font:24px Georgia,"Times New Roman",serif;fill:#233746}
     </style>
   </defs>
-  <rect width="1200" height="540" rx="20" fill="#f8fbfd"/>
+  <rect width="1200" height="575" rx="20" fill="#f8fbfd"/>
   <text x="600" y="46" text-anchor="middle" class="title">Same prepared state, different differential frame</text>
 
-  <rect x="42" y="82" width="490" height="310" rx="18" fill="#ffffff" stroke="#92a9bb" stroke-width="2"/>
+  <rect x="42" y="82" width="490" height="338" rx="18" fill="#ffffff" stroke="#92a9bb" stroke-width="2"/>
   <text x="287" y="122" text-anchor="middle" class="label">Canonical frame W</text>
   <text x="287" y="153" text-anchor="middle" class="math">columns: |ψ⟩, |e₂⟩, |e₁⟩, |e₃⟩</text>
   <g transform="translate(88,183)">
@@ -34,9 +34,9 @@
     <text x="239" y="168" text-anchor="middle" class="small">|10⟩</text>
     <text x="337" y="168" text-anchor="middle" class="small">|11⟩</text>
   </g>
-  <text x="287" y="367" text-anchor="middle" class="math">W†O|ψ⟩ = |10⟩</text>
+  <text x="287" y="392" text-anchor="middle" class="math">W†O|ψ⟩ = |10⟩</text>
 
-  <rect x="668" y="82" width="490" height="310" rx="18" fill="#ffffff" stroke="#92a9bb" stroke-width="2"/>
+  <rect x="668" y="82" width="490" height="338" rx="18" fill="#ffffff" stroke="#92a9bb" stroke-width="2"/>
   <text x="913" y="122" text-anchor="middle" class="label">State-equivalent completion V = WQ</text>
   <text x="913" y="153" text-anchor="middle" class="math">Q swaps |01⟩ and |10⟩</text>
   <g transform="translate(714,183)">
@@ -53,13 +53,13 @@
     <text x="239" y="168" text-anchor="middle" class="small">|10⟩</text>
     <text x="337" y="168" text-anchor="middle" class="small">|11⟩</text>
   </g>
-  <text x="913" y="367" text-anchor="middle" class="math">V†O|ψ⟩ = |01⟩</text>
+  <text x="913" y="392" text-anchor="middle" class="math">V†O|ψ⟩ = |01⟩</text>
 
   <line x1="545" y1="235" x2="655" y2="235" stroke="#61788d" stroke-width="4" marker-end="url(#arrow)"/>
   <text x="600" y="210" text-anchor="middle" class="small">same first column</text>
   <text x="600" y="270" text-anchor="middle" class="small">different markers</text>
 
-  <rect x="165" y="425" width="870" height="82" rx="14" fill="#eaf2f7" stroke="#87a1b5" stroke-width="2"/>
-  <text x="600" y="458" text-anchor="middle" class="mathbig">V|00⟩ = W|00⟩ = |ψ⟩</text>
-  <text x="600" y="490" text-anchor="middle" class="mathbig">decoded gradient:  (2, 0, 0)  →  (0, √2, 0)</text>
+  <rect x="165" y="456" width="870" height="82" rx="14" fill="#eaf2f7" stroke="#87a1b5" stroke-width="2"/>
+  <text x="600" y="489" text-anchor="middle" class="mathbig">V|00⟩ = W|00⟩ = |ψ⟩</text>
+  <text x="600" y="521" text-anchor="middle" class="mathbig">decoded gradient:  (2, 0, 0)  →  (0, √2, 0)</text>
 </svg>
