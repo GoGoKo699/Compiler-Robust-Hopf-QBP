@@ -69,7 +69,7 @@ coefficients across all suffix frequencies.  The physical angle table is not
 sparse in the required sense.
 
 The strict-zero schedule instead retains a narrow UCG.  One original suffix data
-qubit carries the predicate temporarily, and two half-angle width-$d+2$ UCGs
+qubit carries the predicate temporarily, and two half-angle width-$`d+2`$ UCGs
 produce the full addressed depth while restoring that qubit exactly.
 
 ## 3. Borrowed workspace and controlled-unitary roots
@@ -115,7 +115,7 @@ UCGs.
 The Hopf-specific statement is:
 
 > One original suffix data qubit serves as a restored in-place predicate
-> carrier, reducing every addressed Hopf depth to two total-width-$d+2$ UCGs
+> carrier, reducing every addressed Hopf depth to two total-width-$`d+2`$ UCGs
 > and linear predicate toggles.  Summed over the tree, this gives the optimal
 > strict-zero complete-frame frontier.
 

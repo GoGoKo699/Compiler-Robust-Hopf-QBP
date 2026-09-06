@@ -44,7 +44,7 @@ C_p^2=R_y(\theta_p),
 X C_p X=C_p^{-1}.
 ```
 
-The unwanted original-$b=1$ sector receives a cancelling word, the desired
+The unwanted original-$`b=1`$ sector receives a cancelling word, the desired
 original-full-suffix-zero sector receives $R_y(\theta_p)$, and $b$ is restored.
 All prefix-dependent half-angle rotations are aggregated into two UCGs of total
 width $d+2$.
@@ -139,7 +139,7 @@ The strongest currently defensible statement is:
 
 > For the addressed Hopf frame, one original suffix data qubit can serve as a
 > restored predicate carrier. A four-toggle half-angle echo reduces all
-> prefix-dependent rotations at depth $d$ to two total-width-$d+2$ UCGs and
+> prefix-dependent rotations at depth $d$ to two total-width-$`d+2`$ UCGs and
 > linear-size predicate toggles. Summing the tree depths yields an exact
 > ancilla-free complete-frame compiler with $\Theta(2^n)$ size and
 > $\Theta(n+2^n/n)$ depth.

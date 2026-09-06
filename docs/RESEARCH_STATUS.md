@@ -162,7 +162,7 @@ routing.
 
 The strict-zero contribution is the Hopf-specific use of one original suffix
 data qubit as a restored predicate carrier, reducing one addressed depth to two
-total-width-$d+2$ UCGs and linear predicate toggles.  The positive-workspace
+total-width-$`d+2`$ UCGs and linear predicate toggles.  The positive-workspace
 contribution combines the exact Hopf tree cut with a clean decoder and explicit
 coherent router.  Together they yield the optimal complete-frame frontier for
 every clean-workspace budget.
