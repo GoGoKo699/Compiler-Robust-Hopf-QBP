@@ -1,0 +1,35 @@
+name: prepare-hyphen-inline-math
+
+on:
+  push:
+    branches:
+      - prepare-hyphen-inline-math-20260906
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+
+      - name: Install validation and presentation dependencies
+        run: |
+          python -m pip install -r requirements.txt -r requirements-presentation.txt
+          python -m playwright install --with-deps chromium
+          npm install --prefix "$RUNNER_TEMP/hopf-mathjax" --ignore-scripts --no-audit --no-fund mathjax-full@3.2.1
+
+      - name: Prepare, validate, and publish the clean patch branch
+        env:
+          BASE_SHA: 0e505324b5e5c2a3b6d41d3fe84abb27fcde0e91
+          FINAL_BRANCH: hyphen-inline-math-polish-20260906
+          MATHJAX_ENTRY: ${{ runner.temp }}/hopf-mathjax/node_modules/mathjax-full/es5/tex-svg-full.js
+        run: python _prepare_hyphen_inline_math.py
