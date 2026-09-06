@@ -66,10 +66,10 @@ The review uses:
 - arbitrary one-qubit gates and CNOTs with all-to-all logical connectivity;
 - Lemma 5: exact ancilla-free multi-controlled X with linear size and depth;
 - Lemma 6: a total-width-$q$ UCG using $w$ clean work qubits has size
-  $O(2^q)$ and depth $O\!\left(q+\frac{2^q}{q+w}\right)$;
+  $O(2^q)$ and depth $`O\!\left(q+\frac{2^q}{q+w}\right)`$;
 - Lemma 9: coherent CNOT-tree copying and exact uncopying;
 - Theorem 2: exact state preparation has size $\Theta(2^n)$ and depth
-  $\Theta\!\left(n+\frac{2^n}{n+m}\right)$ for every ancillary budget.
+  $`\Theta\!\left(n+\frac{2^n}{n+m}\right)`$ for every ancillary budget.
 
 The published article corresponds to `arXiv:2202.11302v2`. The imported
 statements were also checked in v3 and retain the forms used here.
@@ -415,7 +415,7 @@ of dimension $2^n-1$.
 - A fixed topology with $G$ arbitrary one-qubit gates has $O(G)$ continuous
   parameters, giving $G=\Omega(2^n)$.
 - A depth-$D$ circuit on $n+m$ wires has $O(D(n+m))$ parameterized one-qubit
-  locations, giving $D=\Omega\!\left(\frac{2^n}{n+m}\right)$.
+  locations, giving $`D=\Omega\!\left(\frac{2^n}{n+m}\right)`$.
 - The union of the backward light cones of the $n$ system outputs gives the
   independent $D=\Omega(n)$ term.
 - At $m=0$, $\Omega(2^n/n)$ already dominates the linear term asymptotically.
@@ -433,7 +433,7 @@ D_{\mathrm{ph}}
 ```
 
 This is one total-width-$n$ UCG with arbitrary $\mathrm{U}(2)$ blocks. Lemma 6 gives size
-$O(2^n)$ and depth $O\!\left(n+\frac{2^n}{n+m}\right)$ for every $m\geq0$. Because the real frame
+$O(2^n)$ and depth $`O\!\left(n+\frac{2^n}{n+m}\right)`$ for every $m\geq0$. Because the real frame
 and phase UCG each return the pool clean, they reuse one workspace sequentially.
 The real subfamily supplies the lower bounds.
 

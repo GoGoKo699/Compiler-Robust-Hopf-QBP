@@ -241,7 +241,7 @@ For $m\geq4n$, the largest cut satisfying
 2\,2^t(n-t+1)\leq m
 ```
 
-obeys $\frac{2^s}{s}=O\!\left(\frac{N}{n+m}\right)$. For $1\leq m<4n$, the direct flagged schedule's
+obeys $`\frac{2^s}{s}=O\!\left(\frac{N}{n+m}\right)`$. For $1\leq m<4n$, the direct flagged schedule's
 $O(n^2)$ term is absorbed. Therefore all positive budgets attain the target
 frontier.
 
@@ -250,7 +250,7 @@ Classification: **proved, with explicit schedule-to-ledger regression tests**.
 ## 9. Lower bounds
 
 The first frame column covers an open $(N-1)$-dimensional real-state family.
-Parameter counting gives $\Omega(N)$ size and $\Omega\!\left(\frac{N}{n+m}\right)$ depth. Backward
+Parameter counting gives $\Omega(N)$ size and $`\Omega\!\left(\frac{N}{n+m}\right)`$ depth. Backward
 light cones of the $n$ system outputs give $\Omega(n)$ depth. At $m=0$, the
 parameter bound $\Omega(N/n)$ already dominates $n$.
 
@@ -264,7 +264,7 @@ The phase diagonal is one total-width-$n$ UCG with blocks
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}}).
 ```
 
-It has size $O(N)$ and depth $O\!\left(n+\frac{N}{n+m}\right)$, and reuses the real-frame work
+It has size $O(N)$ and depth $`O\!\left(n+\frac{N}{n+m}\right)`$, and reuses the real-frame work
 pool sequentially. The result concerns the complex **magnitude** frame. The
 leaf-phase derivatives remain a separate direct stream.
 
