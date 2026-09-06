@@ -61,9 +61,9 @@ s=s.replace('M220,249 C190,315 180,345 180,390','M220,249 C165,294 180,340 198,3
 s=s.replace('M280,249 C310,315 320,345 320,390','M280,249 C335,294 320,340 338,390')
 s=s.replace('width="590" height="475"','width="590" height="490"')
 s=s.replace('y1="356" x2="295" y2="394"','y1="356" x2="295" y2="388"')
-s=s.replace('<rect x="75" y="406" width="440" height="50"', '<rect id="inverse-router-box" x="55" y="400" width="480" height="64"')
+s=s.replace('<rect x="75" y="406" width="440" height="50"', '<rect id="inverse-router-box" x="55" y="400" width="480" height="76"')
 s=s.replace('<text x="295" y="438" text-anchor="middle" class="body">inverse router restores the suffix and returns every work register to |0⟩</text>',
-    '<text id="inverse-router-caption" x="295" y="426" text-anchor="middle" class="body"><tspan x="295">inverse router restores the suffix</tspan><tspan x="295" dy="25">and returns every work register to |0⟩</tspan></text>')
+    '<text id="inverse-router-caption" x="295" y="430" text-anchor="middle" class="body"><tspan x="295">inverse router restores the suffix</tspan><tspan x="295" dy="25">and returns every work register to |0⟩</tspan></text>')
 p.write_text(s)
 
 p=ROOT/'literature-lineage.svg';s=(BASE/'assets'/p.name).read_text()
@@ -86,7 +86,7 @@ s=s.replace('M986,184 C1010,245 1100,245 1135,285','M1000,171 H1045 V287 H1087')
 s=s.replace('M1121,366 C1160,366 1160,305 1135,285','M1000,432 H1045 V341 H1087')
 s=s.replace('<rect x="1065" y="228" width="285" height="130"',
     '<rect id="compiler-result" data-disjoint-panel="true" x="1090" y="244" width="275" height="140"')
-for old,new in [(267,278),(296,307),(322,333),(346,359)]:
+for old,new in [(267,278),(296,307),(322,359-26),(346,359)]:
     s=s.replace(f'<text x="1208" y="{old}"', f'<text x="1227.5" y="{new}"')
 s=s.replace('x="185" y="492" width="1030" height="72"','x="90" y="530" width="1220" height="82"')
 s=s.replace('x="700" y="521"','x="700" y="561"').replace('x="700" y="548"','x="700" y="589"')
@@ -102,7 +102,7 @@ p=ROOT/'literature-lineage.svg'
 s=p.read_text().replace('<path d="M1000,171','<path data-arrow-target="compiler-result" d="M1000,171').replace('<path d="M1000,432','<path data-arrow-target="compiler-result" d="M1000,432')
 p.write_text(s)
 
-ASSET_FINAL = {'literature-lineage.svg': '9ea411f45a8f36513d9f54d1993a2188774e17b9', 'state-vs-frame.svg': 'a7c1c9ff4374799994b61ee76ecce95236c4065f', 'strict-zero-echo.svg': '1d5d0f88a6a318abd1de681323afcd304065cdf7', 'tree-cut-routing.svg': 'efc0bf07f9add9218ab643d57310f3893e454ae2', 'two-qubit-obstruction.svg': '164149d8ebc5475b92a8c65fcb3f26ea2de9c7b3'}
+ASSET_FINAL = {'literature-lineage.svg': '9ea411f45a8f36513d9f54d1993a2188774e17b9', 'state-vs-frame.svg': 'a7c1c9ff4374799994b61ee76ecce95236c4065f', 'strict-zero-echo.svg': '1d5d0f88a6a318abd1de681323afcd304065cdf7', 'tree-cut-routing.svg': '424a15dfbe096e0b694643882d80e37305cf000f', 'two-qubit-obstruction.svg': '164149d8ebc5475b92a8c65fcb3f26ea2de9c7b3'}
 for name, expected in ASSET_FINAL.items():
     raw=(ROOT/name).read_bytes()
     assert blob_sha(raw)==expected, (name,blob_sha(raw),expected)
