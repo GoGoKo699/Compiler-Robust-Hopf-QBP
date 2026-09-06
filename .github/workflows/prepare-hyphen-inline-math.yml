@@ -28,8 +28,17 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/hopf-mathjax" --ignore-scripts --no-audit --no-fund mathjax-full@3.2.1
 
       - name: Prepare, validate, and publish the clean patch branch
+        id: prepare
+        continue-on-error: true
         env:
           BASE_SHA: 0e505324b5e5c2a3b6d41d3fe84abb27fcde0e91
           FINAL_BRANCH: hyphen-inline-math-polish-20260906
           MATHJAX_ENTRY: ${{ runner.temp }}/hopf-mathjax/node_modules/mathjax-full/es5/tex-svg-full.js
         run: python _prepare_hyphen_inline_math.py
+
+      - name: Print deterministic validation details after a preparation failure
+        if: steps.prepare.outcome == 'failure'
+        run: |
+          cd "$RUNNER_TEMP/hopf-hyphen-inline-math"
+          python validate.py || true
+          exit 1
