@@ -14,7 +14,7 @@ WORK = Path(os.environ.get("RUNNER_TEMP", "/tmp")) / "hopf-hyphen-inline-math"
 
 FENCE = re.compile(r"^(?:\s*>\s*)*\s*(`{3,}|~{3,})")
 # GitHub may leave a plain $...$ delimiter literal when it starts immediately
-# after a word-forming hyphen.  Keep the visible compound unchanged but use the
+# after a word-forming hyphen. Keep the visible compound unchanged but use the
 # documented protected inline-math form: total-width-$`n`$.
 PLAIN_HYPHEN_MATH = re.compile(
     r"(?P<hyphen>(?<=[A-Za-z0-9])[-‐‑‒–—])\$(?![`$])(?P<body>[^$\n]+?)(?<!\\)\$(?!\$)"
@@ -143,6 +143,35 @@ if __name__ == "__main__":
     (root / "tests" / "test_hyphen_inline_math.py").write_text(test, encoding="utf-8")
 
 
+def update_reviewer_narrative_test(root: Path) -> None:
+    """Keep protected inline mathematics out of the ordinary-code-span audit."""
+    path = root / "tests" / "test_reviewer_narrative.py"
+    text = path.read_text(encoding="utf-8")
+
+    old_definition = 'INLINE_CODE = re.compile(r"`([^`\\n]+)`")\n'
+    new_definition = (
+        old_definition
+        + 'PROTECTED_INLINE_MATH = re.compile(r"\\$`[^`\\n]+`\\$")\n'
+    )
+    if old_definition not in text:
+        raise SystemExit("Could not locate INLINE_CODE definition in reviewer test.")
+    text = text.replace(old_definition, new_definition, 1)
+
+    old_loop = """                for span in INLINE_CODE.findall(line):
+                    if code_span_looks_mathematical(span):
+                        offenders.append(f\"{relative}:{line_number}: `{span}`\")
+"""
+    new_loop = """                line_without_protected_math = PROTECTED_INLINE_MATH.sub(\"\", line)
+                for span in INLINE_CODE.findall(line_without_protected_math):
+                    if code_span_looks_mathematical(span):
+                        offenders.append(f\"{relative}:{line_number}: `{span}`\")
+"""
+    if old_loop not in text:
+        raise SystemExit("Could not locate table code-span loop in reviewer test.")
+    text = text.replace(old_loop, new_loop, 1)
+    path.write_text(text, encoding="utf-8")
+
+
 def main() -> None:
     if WORK.exists():
         shutil.rmtree(WORK)
@@ -160,6 +189,7 @@ def main() -> None:
         raise SystemExit("No word-hyphen-adjacent plain inline mathematics found.")
 
     write_regression_test(WORK)
+    update_reviewer_narrative_test(WORK)
     print(json.dumps(report, indent=2, ensure_ascii=False))
     print(f"Rewrote {sum(len(items) for items in report.values())} occurrences in {len(report)} files.")
 
@@ -182,9 +212,13 @@ def main() -> None:
         cwd=WORK,
     )
 
-    # Verify the final diff is intentionally narrow.
+    # Verify that the final diff is intentionally narrow.
     changed = run("git", "status", "--short", cwd=WORK)
-    allowed = {"tests/test_hyphen_inline_math.py", *report.keys()}
+    allowed = {
+        "tests/test_hyphen_inline_math.py",
+        "tests/test_reviewer_narrative.py",
+        *report.keys(),
+    }
     observed = {
         line[3:]
         for line in changed.splitlines()
