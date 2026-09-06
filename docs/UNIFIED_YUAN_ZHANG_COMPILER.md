@@ -208,7 +208,7 @@ the target frontier.
 
 ## 8. Complex magnitude frame
 
-The leaf-phase diagonal is one total-width-$n$ UCG:
+The leaf-phase diagonal is one total-width-$`n`$ UCG:
 
 ```math
 D_{\mathrm{ph}}

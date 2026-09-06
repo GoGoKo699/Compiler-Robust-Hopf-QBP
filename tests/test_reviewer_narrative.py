@@ -71,6 +71,7 @@ PROCESS_PHRASES = (
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 HTML_IMAGE = re.compile(r"<img\s+[^>]*src=\"([^\"]+)\"", re.IGNORECASE)
 INLINE_CODE = re.compile(r"`([^`\n]+)`")
+PROTECTED_INLINE_MATH = re.compile(r"\$`[^`\n]+`\$")
 MATH_FUNCTION_CODE = re.compile(
     r"(?<![A-Za-z])(?:Theta|Omega|sqrt|partial|lambda|min|max|diag|O)\s*[(_]"
 )
@@ -141,7 +142,8 @@ class ReviewerNarrativeTests(unittest.TestCase):
             for line_number, line in enumerate(text.splitlines(), start=1):
                 if not markdown_table_body_line(line):
                     continue
-                for span in INLINE_CODE.findall(line):
+                line_without_protected_math = PROTECTED_INLINE_MATH.sub("", line)
+                for span in INLINE_CODE.findall(line_without_protected_math):
                     if code_span_looks_mathematical(span):
                         offenders.append(f"{relative}:{line_number}: `{span}`")
 

@@ -258,7 +258,7 @@ Classification: **proved**.
 
 ## 10. Phase-dressed complex magnitude frame
 
-The phase diagonal is one total-width-$n$ UCG with blocks
+The phase diagonal is one total-width-$`n`$ UCG with blocks
 
 ```math
 \mathrm{diag}(e^{i\phi_{z0}},e^{i\phi_{z1}}).

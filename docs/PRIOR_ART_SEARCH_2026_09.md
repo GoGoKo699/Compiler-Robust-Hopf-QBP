@@ -13,7 +13,7 @@ The searched construction is the following Hopf-specific reduction:
 
 > At addressed tree depth $d$, borrow one original lower-suffix data qubit as a
 > restored predicate carrier, use four predicate toggles and a half-angle echo,
-> aggregate every prefix-dependent rotation into two total-width-$d+2$ UCGs,
+> aggregate every prefix-dependent rotation into two total-width-$`d+2`$ UCGs,
 > and obtain $\Theta(2^n)$ size and $\Theta(n+2^n/n)$ depth for the complete
 > strict-zero Hopf differential frame.
 

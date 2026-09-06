@@ -64,7 +64,7 @@ support, and scope boundary.  It is a navigation aid after the proof.
 | every requested workspace budget is respected | simultaneous peak formula | broad $(n,m)$ grid | clean-ancillary model |
 | the real frame has $\Theta(N)$ size for every $m\geq0$ | three upper-bound schedules and parameter lower bound | both ledgers | exact logical circuit |
 | the real frame has $\Theta\!\left(n+\frac{N}{n+m}\right)$ depth for every $m\geq0$ | three schedules, parameter capacity, and output light cones | integer and rational diagnostics | all-to-all logical depth |
-| the arbitrary leaf-phase diagonal is one exact total-width-$n$ UCG | block decomposition | complete diagonal matrices and inverse | arbitrary one-qubit blocks allowed |
+| the arbitrary leaf-phase diagonal is one exact total-width-$`n`$ UCG | block decomposition | complete diagonal matrices and inverse | arbitrary one-qubit blocks allowed |
 | real frame and phase diagonal reuse one workspace pool | clean sequential composition | complex resource rows | both blocks return the pool to zero |
 | the phase-dressed complex magnitude frame has the same frontier | real theorem plus phase UCG | complex frame matrices and resource ledgers | leaf-phase derivatives use a separate direct stream |
 

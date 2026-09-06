@@ -154,7 +154,7 @@ U_{p,0}=I,
 U_{p,1}=R_y(\theta_p/2).
 ```
 
-There are $d+1$ controls—$d$ prefix bits and the borrowed bit—and one target.
+There are $d+1$ controls—$`d`$ prefix bits and the borrowed bit—and one target.
 The total UCG width in the Yuan–Zhang convention is
 
 ```math
@@ -178,7 +178,7 @@ asymptotic proof.
 
 ## 7. Size audit
 
-Two width-$d+2$ UCGs contribute $O(2^d)$ size. Four predicate toggles contribute
+Two width-$`d+2`$ UCGs contribute $O(2^d)$ size. Four predicate toggles contribute
 $O(n-d)$ size. Two target echoes contribute constants. Hence
 
 ```math
@@ -240,7 +240,7 @@ Thus
 D(W_{\mathbb R})=O(n+2^n/n).
 ```
 
-At zero workspace, a depth-$D$ circuit on exactly $n$ wires contains only
+At zero workspace, a depth-$`D`$ circuit on exactly $n$ wires contains only
 $O(nD)$ continuously parameterized one-qubit locations. Covering the
 $2^n-1$ dimensional real-state family requires
 

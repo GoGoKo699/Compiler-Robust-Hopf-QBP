@@ -287,7 +287,7 @@ The circuit combines established ingredients:
 
 The claim is not that these ingredients are new. The Hopf-specific contribution
 is the aggregation of every prefix-dependent rotation at depth $d$ into two
-total-width-$d+2$ UCGs, using one restored original suffix bit, and the resulting
+total-width-$`d+2`$ UCGs, using one restored original suffix bit, and the resulting
 optimal complete-frame strict-zero bound.
 
 See [Related work](RELATED_WORK.md) for the comparison and

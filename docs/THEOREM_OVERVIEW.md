@@ -239,7 +239,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}
 ```
 
-is one exact total-width-$n$ UCG.  It reuses the real-frame work pool
+is one exact total-width-$`n`$ UCG.  It reuses the real-frame work pool
 sequentially.  Thus
 
 ```math

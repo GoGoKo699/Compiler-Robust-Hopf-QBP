@@ -404,7 +404,7 @@ framework.
 |---|---|
 | optimal QSP theorem | $\Theta(2^q)$ size and $\Theta\!\left(q+\frac{2^q}{q+w}\right)$ depth for a general $q$-qubit state with $w$ clean ancillas |
 | ancilla-free MCT lemma | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
-| all-workspace UCG lemma | a total-width-$q$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
+| all-workspace UCG lemma | a total-width-$`q`$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
 | coherent-copy lemma | CNOT trees copy and uncopy one computational-basis control coherently in logarithmic depth |
 
 Toffoli, Fredkin, controlled one-qubit gates, and the fixed-width controlled
@@ -528,7 +528,7 @@ S(L_d)=O(2^d+n-d),
 D(L_d)=O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-The final depth has no suffix and is one ordinary total-width-$n$ UCG.  Hence
+The final depth has no suffix and is one ordinary total-width-$`n`$ UCG.  Hence
 
 ```math
 S(W_{\mathbb R})
@@ -871,7 +871,7 @@ families cannot cover an open subset of the real-state manifold.  Therefore
 S_{\mathbb R}(n,m)=\Omega(N).
 ```
 
-A depth-$D$ circuit on $n+m$ wires has at most $O(D(n+m))$ parameterized
+A depth-$`D`$ circuit on $n+m$ wires has at most $O(D(n+m))$ parameterized
 one-qubit locations, giving
 
 ```math
@@ -925,7 +925,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-This is one exact total-width-$n$ UCG with arbitrary one-qubit unitary blocks.
+This is one exact total-width-$`n`$ UCG with arbitrary one-qubit unitary blocks.
 It has $O(N)$ size and
 
 ```math
@@ -1093,7 +1093,7 @@ The strict-zero echo combines established ingredients: uniformly controlled
 gates, controlled-unitary roots, Pauli conjugation, borrowed or conditionally
 clean logical qubits, toggle cancellation, and ancilla-free multi-controlled
 gates.  The project-specific statement is the reduction of one addressed Hopf
-depth to two total-width-$d+2$ UCGs plus linear predicate toggles, and the
+depth to two total-width-$`d+2`$ UCGs plus linear predicate toggles, and the
 resulting optimal complete-frame theorem.
 
 The routed schedule uses familiar fanout, Fredkin routing, and uncomputation.

@@ -33,7 +33,7 @@ The proof imports the following results from P. Yuan and S. Zhang, *Quantum*
 |---|---|
 | Yuan–Zhang Theorem 2 | exact $q$-qubit state preparation has $\Theta(2^q)$ size and $\Theta\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillary qubits |
 | Yuan–Zhang Lemma 5 | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
-| Yuan–Zhang Lemma 6 | a total-width-$q$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillary qubits |
+| Yuan–Zhang Lemma 6 | a total-width-$`q`$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillary qubits |
 | Yuan–Zhang Lemma 9 | coherent CNOT-tree copying and exact uncopying have logarithmic depth and linear size |
 
 The published article corresponds to `arXiv:2202.11302v2`.  The imported
@@ -225,7 +225,7 @@ D(L_d)
 =O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-The final depth has no suffix and is one total-width-$n$ UCG.  Consequently,
+The final depth has no suffix and is one total-width-$`n`$ UCG.  Consequently,
 
 ```math
 S(W_{\mathbb R})
@@ -273,7 +273,7 @@ D_{\mathrm{direct}}(n,m)
 
 #### Proof
 
-The nonfinal depth-$d$ UCG has total width $d+2$ and may use $m-1$ additional
+The nonfinal depth-$`d`$ UCG has total width $d+2$ and may use $m-1$ additional
 clean qubits.  The final depth has no predicate flag and may use all $m$ clean
 qubits.  Yuan–Zhang Lemma 6 gives a geometric $O(2^n)$ total size and the
 displayed UCG depth term.  The compute–uncompute predicates contribute
@@ -525,7 +525,7 @@ S_{\mathbb R}(n,m)=\Omega(N).
 
 ### Workspace-dependent depth
 
-A depth-$D$ circuit on $n+m$ wires contains at most $O(D(n+m))$ parameterized
+A depth-$`D`$ circuit on $n+m$ wires contains at most $O(D(n+m))$ parameterized
 one-qubit locations, so
 
 ```math
@@ -571,7 +571,7 @@ e^{i\phi_{z0}}&0\\
 \end{pmatrix}.
 ```
 
-This is one total-width-$n$ UCG with arbitrary one-qubit unitary blocks.
+This is one total-width-$`n`$ UCG with arbitrary one-qubit unitary blocks.
 Yuan–Zhang Lemma 6 gives
 
 ```math

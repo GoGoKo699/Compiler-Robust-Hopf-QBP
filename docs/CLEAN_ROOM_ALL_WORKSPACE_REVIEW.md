@@ -65,7 +65,7 @@ The review uses:
 
 - arbitrary one-qubit gates and CNOTs with all-to-all logical connectivity;
 - Lemma 5: exact ancilla-free multi-controlled X with linear size and depth;
-- Lemma 6: a total-width-$q$ UCG using $w$ clean work qubits has size
+- Lemma 6: a total-width-$`q`$ UCG using $w$ clean work qubits has size
   $O(2^q)$ and depth $`O\!\left(q+\frac{2^q}{q+w}\right)`$;
 - Lemma 9: coherent CNOT-tree copying and exact uncopying;
 - Theorem 2: exact state preparation has size $\Theta(2^n)$ and depth
@@ -197,7 +197,7 @@ S(L_d)=O(2^d+n-d),
 D(L_d)=O\left(n+\frac{2^d}{d+2}\right).
 ```
 
-The final depth is one ordinary total-width-$n$ UCG. Summation gives
+The final depth is one ordinary total-width-$`n`$ UCG. Summation gives
 
 ```math
 S_{\mathbb R}(n,0)=O(2^n),
@@ -414,7 +414,7 @@ of dimension $2^n-1$.
 
 - A fixed topology with $G$ arbitrary one-qubit gates has $O(G)$ continuous
   parameters, giving $G=\Omega(2^n)$.
-- A depth-$D$ circuit on $n+m$ wires has $O(D(n+m))$ parameterized one-qubit
+- A depth-$`D`$ circuit on $n+m$ wires has $O(D(n+m))$ parameterized one-qubit
   locations, giving $`D=\Omega\!\left(\frac{2^n}{n+m}\right)`$.
 - The union of the backward light cones of the $n$ system outputs gives the
   independent $D=\Omega(n)$ term.
@@ -432,7 +432,7 @@ D_{\mathrm{ph}}
 \mathrm{diag}\left(e^{i\phi_{z0}},e^{i\phi_{z1}}\right).
 ```
 
-This is one total-width-$n$ UCG with arbitrary $\mathrm{U}(2)$ blocks. Lemma 6 gives size
+This is one total-width-$`n`$ UCG with arbitrary $\mathrm{U}(2)$ blocks. Lemma 6 gives size
 $O(2^n)$ and depth $`O\!\left(n+\frac{2^n}{n+m}\right)`$ for every $m\geq0$. Because the real frame
 and phase UCG each return the pool clean, they reuse one workspace sequentially.
 The real subfamily supplies the lower bounds.
@@ -465,7 +465,7 @@ toggle detection, and ancilla-free multi-controlled gates.
 
 The narrow project-specific statement is the use of one original suffix data
 qubit as a restored predicate carrier to aggregate one addressed Hopf depth into
-two total-width-$d+2$ UCGs and linear predicate toggles, yielding the optimal
+two total-width-$`d+2`$ UCGs and linear predicate toggles, yielding the optimal
 strict-zero complete-frame frontier. Absence of an exact match in the bounded
 search record is not proof of novelty.
 

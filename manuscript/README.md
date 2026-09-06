@@ -173,7 +173,7 @@ echoes, borrowed or conditionally clean qubits, toggle detection, or reversible
 routing.
 
 The strict-zero statement is the Hopf-specific reduction of one addressed depth
-to two total-width-$d+2$ UCGs and linear predicate toggles using one restored
+to two total-width-$`d+2`$ UCGs and linear predicate toggles using one restored
 logical suffix bit.  The positive-workspace statement is the Hopf-specific tree
 cut, clean decoder, and coherent router attaining the full workspace frontier.
 
