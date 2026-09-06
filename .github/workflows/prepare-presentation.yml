@@ -1,0 +1,59 @@
+name: prepare-presentation-polish
+on:
+  push:
+    branches: [prepare-visual-polish-20260906]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Install validation dependencies
+        run: |
+          python -m pip install -r requirements.txt -r _presentation_requirements.txt
+          python -m playwright install --with-deps chromium
+          npm install --prefix "$RUNNER_TEMP/hopf-mathjax" --ignore-scripts --no-audit --no-fund mathjax-full@3.2.1
+      - name: Prepare exact bounded patch
+        run: python _prepare_presentation.py
+      - name: Validate clean tree and actual browser rendering
+        run: |
+          git diff --cached --check
+          python -m compileall -q compiler_robust_hopf scripts tests validate.py
+          python scripts/reviewer_walkthrough.py
+          python validate.py
+          python scripts/unified_resource_ledger.py --n 12
+          python scripts/strict_zero_echo_ledger.py --n 12
+          python scripts/check_upstream_sync.py --offline
+          python scripts/check_presentation.py \
+            --mathjax "$RUNNER_TEMP/hopf-mathjax/node_modules/mathjax-full/es5/tex-svg-full.js" \
+            --output "$RUNNER_TEMP/hopf-presentation"
+      - name: Publish one clean commit based on the pinned main
+        run: |
+          set -euo pipefail
+          base=7f47e5917d0874f06f90aed2143784c054fbf0f8
+          git fetch origin main
+          test "$(git rev-parse FETCH_HEAD)" = "$base"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          tree=$(git write-tree)
+          commit=$(printf '%s\n' 'Protect inline mathematics and clear diagram spacing' '' 'Keep mathematical content, approved tables, display equations, circuit connectivity, font sizes and colours unchanged. Add isolated browser rendering regression checks.' | git commit-tree "$tree" -p "$base")
+          git push origin "$commit:refs/heads/rendering-polish-20260906"
+          echo "PATCH_COMMIT=$commit"
+          echo "PATCH_TREE=$tree"
+          git diff --stat "$base" "$commit"
+          test -z "$(git ls-tree -r --name-only "$commit" | grep -E '(^_presentation_|^_prepare_presentation.py$|prepare-presentation.yml)' || true)"
+      - name: Retain visual evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: presentation-previews
+          path: ${{ runner.temp }}/hopf-presentation
+          retention-days: 14
+          if-no-files-found: warn
