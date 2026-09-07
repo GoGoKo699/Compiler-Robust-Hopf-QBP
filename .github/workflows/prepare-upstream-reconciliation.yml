@@ -20,8 +20,22 @@ jobs:
           python-version: '3.13'
       - name: Install existing numerical dependencies
         run: python -m pip install -r requirements.txt
-      - name: Reproduce the checked tree, validate, and publish the clean branch
+      - name: Validate the complete patch and publish its content changes
         env:
           GITHUB_TOKEN: ${{ github.token }}
           OPENBLAS_NUM_THREADS: '1'
-        run: python _prepare_upstream_reconciliation.py
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          source = Path('_prepare_upstream_reconciliation.py').read_text(encoding='utf-8')
+          # The complete eight-file tree is validated first. The runner token
+          # may publish content, but not workflow changes. The workflow update
+          # will be applied separately through the authorized repository tool.
+          marker = "run('git', 'commit', '-m', 'Reconcile the reviewed Hopf-QBP baseline and clarify magnitude scope')"
+          replacement = (
+              "run('git', 'restore', '--source=' + BASE, '--staged', '--worktree', '.github/workflows/upstream-sync-audit.yml')\n"
+              + marker
+          )
+          assert source.count(marker) == 1
+          exec(compile(source.replace(marker, replacement), '_prepare_upstream_reconciliation.py', 'exec'))
+          PY
