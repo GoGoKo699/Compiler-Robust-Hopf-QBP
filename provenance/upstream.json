@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "recorded_at_utc": "2026-09-03T05:00:00Z",
+  "recorded_at_utc": "2026-09-07T11:33:27Z",
   "current_repository": "GoGoKo699/Compiler-Robust-Hopf-QBP",
   "upstreams": [
     {
       "repository": "GoGoKo699/Hopf-QBP",
       "tracked_branch": "main",
-      "tracked_commit": "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
+      "tracked_commit": "a9885317cf998a7df87ca07ba86e3bd4f0f419ef",
       "role": "current authority for Hopf-QBP conventions, gradient protocols, task boundaries, and statistical-accuracy statements"
     },
     {
@@ -29,17 +29,25 @@
     ]
   },
   "upstream_reconciliation": {
-    "previous_main_commit": "9957815767ef3649275960fd5e860fb91725ff26",
-    "reviewed_main_commit": "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
-    "commits_reviewed": 10,
-    "relevant_changes": [
-      "raw coordinatewise l_infinity is the primary finite-shot target",
-      "complete raw-gradient l_2, relative, directional, frame, and natural-gradient targets are distinct",
-      "small metric weights suppress raw-coordinate records but condition inverse-metric outputs",
-      "the complex phase block uses the ambient round-sphere metric unless a projective quotient is declared",
-      "matched scalar-versus-gradient comparisons must separate executions, logical depth, output size, and controlled-observable cost"
+    "previous_main_commit": "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
+    "reviewed_main_commit": "a9885317cf998a7df87ca07ba86e3bd4f0f419ef",
+    "commits_reviewed": 5,
+    "reviewed_at_utc": "2026-09-07T11:33:27Z",
+    "changed_upstream_paths": [
+      "docs/CLAIM_SUPPORT.md",
+      "docs/OBSERVABLES_AND_READOUT.md",
+      "docs/STATISTICAL_ACCURACY.md",
+      "qbp_validation/tests/test_documentation.py",
+      "validate_qbp.py"
     ],
-    "local_resolution": "The peer-review revision ports these task and geometry boundaries into REVIEW.md, QBP_CONSEQUENCE.md, HOPF_INTERFACE.md, SOURCE_MAP.md, and the executable chart-domain tests. No upstream source file was copied wholesale."
+    "relevant_changes": [
+      "raw coordinatewise l_infinity remains the primary finite-shot target; normalized-frame and natural-gradient outputs retain their separate conditioning",
+      "the ambient-sphere phase metric is the adopted convention; the projective metric remains a comparison only",
+      "reflection-sum sampling is stated with coefficient-one-norm scaling and a matched controlled-observable comparator",
+      "zero-weight magnitude records vanish; zero-amplitude phase derivatives have zero mean records, but individual phase records need not vanish",
+      "the upstream claim map is repaired and documentation-integrity checks are added; circuit builders, decoders, and the headline sampling theorem are unchanged"
+    ],
+    "local_resolution": "Reviewed the five-commit upstream diff. Existing output-task, metric, and controlled-observable boundaries remain applicable. Scoped the zero-record statements in docs/QBP_CONSEQUENCE.md and SYNC.md explicitly to magnitude coordinates. Updated current-baseline references and provenance tests. Preserved the previous reconciliation, original file lineage, historical seed, and frozen fallback; no scientific implementation or approved layout was changed."
   },
   "project_native_paths": [
     "compiler_robust_hopf/tree_structure.py",
@@ -66,5 +74,20 @@
     "foundational_corrections": "port deliberately to both repositories after review",
     "new_compiler_research": "authoritative only in Compiler-Robust-Hopf-QBP",
     "automatic_overwrite": false
-  }
+  },
+  "upstream_reconciliation_history": [
+    {
+      "previous_main_commit": "9957815767ef3649275960fd5e860fb91725ff26",
+      "reviewed_main_commit": "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582",
+      "commits_reviewed": 10,
+      "relevant_changes": [
+        "raw coordinatewise l_infinity is the primary finite-shot target",
+        "complete raw-gradient l_2, relative, directional, frame, and natural-gradient targets are distinct",
+        "small metric weights suppress raw-coordinate records but condition inverse-metric outputs",
+        "the complex phase block uses the ambient round-sphere metric unless a projective quotient is declared",
+        "matched scalar-versus-gradient comparisons must separate executions, logical depth, output size, and controlled-observable cost"
+      ],
+      "local_resolution": "The peer-review revision ports these task and geometry boundaries into REVIEW.md, QBP_CONSEQUENCE.md, HOPF_INTERFACE.md, SOURCE_MAP.md, and the executable chart-domain tests. No upstream source file was copied wholesale."
+    }
+  ]
 }

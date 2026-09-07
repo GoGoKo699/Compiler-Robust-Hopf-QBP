@@ -8,7 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
-CURRENT_HOPF_QBP_MAIN = "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582"
+PREVIOUS_HOPF_QBP_MAIN = "faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582"
+CURRENT_HOPF_QBP_MAIN = "a9885317cf998a7df87ca07ba86e3bd4f0f419ef"
 
 
 class ProvenanceTests(unittest.TestCase):
@@ -58,12 +59,54 @@ class ProvenanceTests(unittest.TestCase):
             reconciliation["reviewed_main_commit"],
             CURRENT_HOPF_QBP_MAIN,
         )
-        self.assertEqual(reconciliation["commits_reviewed"], 10)
+        self.assertEqual(reconciliation["previous_main_commit"], PREVIOUS_HOPF_QBP_MAIN)
+        self.assertEqual(reconciliation["commits_reviewed"], 5)
         joined = " ".join(reconciliation["relevant_changes"]).lower()
         self.assertIn("raw coordinatewise", joined)
         self.assertIn("natural-gradient", joined)
         self.assertIn("metric", joined)
         self.assertIn("controlled-observable", joined)
+
+    def test_previous_reconciliation_and_file_lineage_are_retained(self) -> None:
+        history = self.payload["upstream_reconciliation_history"]
+        self.assertTrue(history)
+        previous = history[-1]
+        self.assertEqual(previous["reviewed_main_commit"], PREVIOUS_HOPF_QBP_MAIN)
+        self.assertEqual(previous["commits_reviewed"], 10)
+        self.assertEqual(
+            previous["previous_main_commit"],
+            "9957815767ef3649275960fd5e860fb91725ff26",
+        )
+        self.assertEqual(
+            previous["reviewed_main_commit"],
+            self.payload["upstream_reconciliation"]["previous_main_commit"],
+        )
+        for sources in self.payload["file_lineage"].values():
+            self.assertTrue(all(CURRENT_HOPF_QBP_MAIN not in source for source in sources))
+        seed = next(
+            record for record in self.payload["upstreams"]
+            if record["tracked_branch"] == "ancilla-depth-robustness-2026"
+        )
+        self.assertEqual(seed["tracked_commit"], "9cc564f493caff62b847fc362df522a68c6e83bf")
+
+    def test_current_baseline_references_match_the_provenance(self) -> None:
+        for relative in ("docs/SOURCE_MAP.md", "docs/PROOF_AUDIT.md"):
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertIn(CURRENT_HOPF_QBP_MAIN, text, relative)
+            self.assertNotIn(PREVIOUS_HOPF_QBP_MAIN, text, relative)
+
+    def test_zero_record_clarification_is_magnitude_specific(self) -> None:
+        qbp = " ".join((ROOT / "docs/QBP_CONSEQUENCE.md").read_text(encoding="utf-8").split())
+        sync = " ".join((ROOT / "SYNC.md").read_text(encoding="utf-8").split())
+        self.assertIn(
+            "At a singular magnitude coordinate, the raw coordinate record is exactly zero.",
+            qbp,
+        )
+        self.assertNotIn("At a singular coordinate, the raw coordinate record is exactly zero.", qbp)
+        self.assertIn("a zero magnitude metric weight", sync)
+        self.assertIn("need not have zero individual signed one-hot records", sync)
+        joined = " ".join(self.payload["upstream_reconciliation"]["relevant_changes"])
+        self.assertIn("individual phase records need not vanish", joined)
 
     def test_sync_document_names_recorded_commits(self) -> None:
         sync_text = (ROOT / "SYNC.md").read_text(encoding="utf-8")

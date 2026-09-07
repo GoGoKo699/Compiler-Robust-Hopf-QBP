@@ -20,7 +20,7 @@ they become necessary to interpret or correct an established claim there.
 The provenance record tracks:
 
 - `GoGoKo699/Hopf-QBP/main` at
-  `faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582`;
+  `a9885317cf998a7df87ca07ba86e3bd4f0f419ef`;
 - the historical research seed
   `GoGoKo699/Hopf-QBP/ancilla-depth-robustness-2026` at
   `9cc564f493caff62b847fc362df522a68c6e83bf`.
@@ -37,7 +37,7 @@ The ten commits between the former tracked `Hopf-QBP/main` baseline
 9957815767ef3649275960fd5e860fb91725ff26
 ```
 
-and the current baseline
+and the baseline adopted at that time
 
 ```text
 faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582
@@ -50,8 +50,9 @@ upstream changes sharpened the following boundaries:
    primary finite-shot target;
 2. complete-vector, relative, normalized-frame, and natural-gradient targets
    have different conditioning and sample requirements;
-3. a zero metric weight makes the raw differential and raw estimator vanish,
-   while inverse-metric outputs become ill-conditioned near small weights;
+3. a zero magnitude metric weight makes the raw magnitude differential and
+   estimator vanish, while inverse-metric outputs become ill-conditioned near
+   small weights;
 4. the complex phase metric uses the ambient round-sphere convention unless a
    projective quotient is explicitly introduced;
 5. scalar-versus-gradient comparisons must separate independent executions,
@@ -61,6 +62,39 @@ upstream changes sharpened the following boundaries:
 These clarifications are now reflected in the compiler repository's Hopf
 interface, QBP consequence, source map, and peer-review tests. No upstream
 implementation was copied wholesale during this reconciliation.
+
+## Reconciliation completed on 2026-09-07
+
+The five commits from the September 3 baseline
+
+```text
+faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582
+```
+
+to the newly tracked baseline
+
+```text
+a9885317cf998a7df87ca07ba86e3bd4f0f419ef
+```
+
+were reviewed in full. The changes synchronize manuscript terminology for
+raw-coordinate and geometric outputs, the ambient-sphere phase metric, and
+reflection-sum sampling with matched controlled-observable costs. They also
+repair the upstream claim map and add documentation-integrity tests. No circuit
+builder, decoder, or headline sampling theorem changes in this interval.
+
+One clarification is relevant locally: zero-weight magnitude records vanish,
+whereas zero-amplitude phase derivatives have zero mean records but need not
+have zero individual signed one-hot records. The zero-record statement in the
+QBP consequence and the zero-weight statement above now explicitly concern
+magnitude coordinates. The existing frame, sampling, and cost arguments are
+unchanged.
+
+The current-baseline references and provenance tests are updated together. The
+September 3 reconciliation is retained in
+`upstream_reconciliation_history`, and original file lineage, the historical
+seed, and the frozen fallback remain unchanged. No upstream implementation was
+copied and no approved layout was altered.
 
 ## Synchronization procedure
 
@@ -84,7 +118,10 @@ implementation was copied wholesale during this reconciliation.
    python scripts/check_upstream_sync.py --offline
    ```
 
-The audit never modifies either repository automatically.
+The online audit also runs when the provenance record or audit machinery
+changes, before and after merge, as well as on its existing schedule and manual
+trigger. Ordinary numerical validation remains offline. The audit never
+modifies either repository automatically.
 
 ## Historical seed
 
