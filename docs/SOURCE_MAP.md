@@ -66,7 +66,7 @@ contained in `Hopf-QBP`.
 The tracked `Hopf-QBP/main` baseline is
 
 ```text
-faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582
+a9885317cf998a7df87ca07ba86e3bd4f0f419ef
 ```
 
 and is reconciled in [`SYNC.md`](../SYNC.md) and

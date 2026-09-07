@@ -245,7 +245,7 @@ Different guarantees include:
 | normalized-frame coefficients | division by $\sqrt{g_{j,j}}$ conditions small metric weights |
 | natural-gradient coordinates | division by $g_{j,j}$ is still more sensitive |
 
-At a singular coordinate, the raw coordinate record is exactly zero.  The
+At a singular magnitude coordinate, the raw coordinate record is exactly zero.  The
 compiler theorem concerns the frame operator and does not remove conditioning
 from a subsequently rescaled output task.
 

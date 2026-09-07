@@ -1,6 +1,17 @@
 name: upstream-sync-audit
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "provenance/upstream.json"
+      - "scripts/check_upstream_sync.py"
+      - ".github/workflows/upstream-sync-audit.yml"
+  pull_request:
+    paths:
+      - "provenance/upstream.json"
+      - "scripts/check_upstream_sync.py"
+      - ".github/workflows/upstream-sync-audit.yml"
   schedule:
     - cron: "17 3 * * 1"
   workflow_dispatch:
@@ -10,6 +21,8 @@ permissions:
 
 jobs:
   check-upstream-heads:
+    # Only trusted same-repository changes use the online provenance check.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

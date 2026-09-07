@@ -45,7 +45,7 @@ and retain the forms used here. Sun et al. remain the historical predecessor;
 no active schedule selects their earlier regime theorem as a separate compiler.
 
 The current `Hopf-QBP/main` baseline
-`faddc98da5c1fdd07ce42df2b04ca7b6ce3e2582` was reconciled explicitly. Raw-
+`a9885317cf998a7df87ca07ba86e3bd4f0f419ef` was reconciled explicitly. Raw-
 coordinate accuracy, metric conditioning, direct phase-stream, and matched cost
 boundaries have been ported into the present narrative.
 
