@@ -1,6 +1,6 @@
 # Constant-clean Hopf compilation: resume brief
 
-**Status: active research; endpoint still open.** Repository integration is complete. The [checked-progress report](CONSTANT_CLEAN_PROGRESS.md) records a proved one-clean identical-phase batching construction, the dirty-rank compression lemma, restrictions on global program/clock interfaces, and conditional constructive reductions. None changes the unrestricted bounds below. This brief and the linked technical appendices contain the mathematical state needed to continue without the earlier conversation or scratch workspace.
+**Status: active research; endpoint still open.** Repository integration is complete. The [checked-progress report](CONSTANT_CLEAN_PROGRESS.md) records one-clean phase batching for identical angles and bounded integer combinations of shared base angles, the dirty-rank compression lemma, restrictions on global program/clock interfaces, and conditional constructive reductions. None changes the unrestricted bounds below. This brief and the linked technical appendices contain the mathematical state needed to continue without the earlier conversation or scratch workspace.
 
 ## Target and model
 
@@ -141,7 +141,7 @@ Z_mX^{f(x)}Z_m^\dagger X^{-f(x)}
 
 At $`m=\Theta(L)`$, this requires both a constant-clean joint clock costing $`O(m+L)`$ T gates and a carry-aware table translation with a charged ledger, or a direct commutator construction that avoids separate implementations. The hypothetical modular-lookup target is $`O(m+\sqrt{Nm}+Nm/K)`$, where $`K`$ is bank capacity **after** other reservations. At $`m=N`$, the bank-balancing choice is one word; it leaves the original hard modular lookup. Even both primitives need a determinant-one/real-rotation reduction and full prefix/suffix composition with the desired total cost. Their algebra alone is not a frame compiler.
 
-The [current progress report](CONSTANT_CLEAN_PROGRESS.md) adds a direct phase-bank reduction and a [one-clean identical-phase batch](constant_clean/IDENTICAL_PHASE_BATCHING.md) costing $`O((m+L)\log(m+1))`$ T gates. The latter uses a masked accumulator with a clean overflow bit; it does not implement an arbitrary heterogeneous phase bank. Extending that primitive, or synthesizing only the selected commutators required by the reduction, is the next constructive target. Charge where the classical table actually enters. Verify the actual inverse on every work state and the joint dirty/reference action before optimizing its asymptotics.
+The [current progress report](CONSTANT_CLEAN_PROGRESS.md) adds a direct phase-bank reduction and [one-clean masked-accumulator batching](constant_clean/IDENTICAL_PHASE_BATCHING.md). Identical phases cost $`O((m+L)\log(m+1))`$ T gates; the signed-weight extension also covers distinct angles generated from a few shared base angles. A covering bound explains why bounded coefficients and a fixed number of generators cannot approximate arbitrary tables at the endpoint precision. A heterogeneous construction without that compact representation, or synthesis of only the selected commutators required by the reduction, remains the next target. Charge where the classical table actually enters. Verify the actual inverse on every work state and the joint dirty/reference action before optimizing its asymptotics.
 
 ## Success criteria and stopping claims
 

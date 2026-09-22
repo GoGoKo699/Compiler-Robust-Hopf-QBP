@@ -25,7 +25,7 @@ theorem by numerical extrapolation.
 | [`test_decoders.py`](test_decoders.py) | Do direct parity, histogram, Walsh–Hadamard, and direct phase-record decoders agree? |
 | [`test_approximation_contract.py`](test_approximation_contract.py) | Do complete-output error and the actual adjoint control the fixed-parameter QBP measurement bias? |
 | [`test_constant_clean_structure.py`](test_constant_clean_structure.py) | Do Pauli restriction gaps, program/clock Fourier ranks, and sign-corrected dirty echoes satisfy their full-space identities and detect invalid shortcuts? |
-| [`test_identical_phase_batching.py`](test_identical_phase_batching.py) | Does the masked-accumulator phase batch prevent wraparound, restore arbitrary work, cancel literal phase with its actual inverse, and bound leakage? |
+| [`test_identical_phase_batching.py`](test_identical_phase_batching.py) | Do identical and signed-weight phase batches prevent wraparound, restore arbitrary work, cancel literal phase with their actual inverses, and compose despite intermediate leakage? |
 | [`test_provenance.py`](test_provenance.py) | Are upstream commits, source roles, and local lineage recorded consistently? |
 | [`test_literature_policy.py`](test_literature_policy.py) | Does the active proof use one compiler framework and maintain the declared contribution boundary? |
 | [`test_reviewer_narrative.py`](test_reviewer_narrative.py) | Do the primary reading route, diagrams, links, terminology, and source-version statements remain coherent? |

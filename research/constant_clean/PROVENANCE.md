@@ -51,3 +51,14 @@ no priority claim. Its full-input identity, phase cancellation and resource
 ledger received a separate internal proof check. Small regression checks are
 in [test_identical_phase_batching.py](../../tests/test_identical_phase_batching.py).
 The result concerns identical phases, so the unrestricted endpoint remains open.
+
+The next continuation extends that same note to signed integer combinations
+of shared base angles. Independent checks confirm the centering identity,
+coherent constant-offset costs, and reuse of the initialized bit under the
+complete-output error contract. A separate covering argument limits this
+angle-table representation; it is not a frame T-count lower bound. Four
+additional finite tests check signed sums, a missing-centering failure,
+nondiagonal approximation, and sequential reuse with intermediate leakage.
+The offset costs are cited arithmetic primitives, not inferred from the
+permutation macros in those four tests. The unrestricted endpoint bounds
+are unchanged.

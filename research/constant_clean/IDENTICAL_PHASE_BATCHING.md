@@ -1,8 +1,9 @@
-# Identical phases with one clean overflow bit
+# Phase batching with one clean overflow bit
 
-This note gives a deterministic constant-clean compiler for identical phase
-gates on arbitrary input qubits. It also supplies a small-palette special
-case of the [dirty tensor-phase-bank reduction](GLOBAL_BLOCK_FOLLOWUP.md#5-a-constructive-reduction-to-heterogeneous-phase-batching).
+This note gives deterministic constant-clean compilers for identical phases
+and for heterogeneous phases with bounded integer coefficients in a shared
+set of base angles. It also supplies a small-palette special case of the
+[dirty tensor-phase-bank reduction](GLOBAL_BLOCK_FOLLOWUP.md#5-a-constructive-reduction-to-heterogeneous-phase-batching).
 The construction does not require a prepared phase catalyst or an initialized
 Hamming-weight register. It does not resolve arbitrary heterogeneous batching.
 
@@ -185,7 +186,185 @@ $`14mc_r`$ T gates with the checked literal seven-T decomposition.
 Including the $`t`$ low accumulator bits gives $`2t-1`$ dirty qubits.
 The phase-word cost is unchanged, proving (2).
 
-## 4. A small-palette phase bank and frame corollary
+## 4. Distinct angles from shared generators
+
+### One signed generator
+
+Let the desired phases be $`P(k_j\phi)`$ on $`S`$ arbitrary input bits,
+where the integers $`k_j`$ may have either sign. Define
+
+```math
+h(x)=\sum_j k_jx_j,\qquad
+H_- =\sum_j\max\{-k_j,0\},\qquad H=\sum_j|k_j|,
+\qquad q=\#\{j:k_j\ne0\}.
+```
+
+If $`H=0`$, the operation is identity. Otherwise set
+$`t=\lceil\log_2(H+1)\rceil`$, $`Q=2^t>H`$, and $`r=t+1`$.
+Use $`t`$ arbitrary low accumulator bits, one clean top bit, and two
+separately reserved dirty arithmetic helpers. On the full accumulator,
+let $`R`$ add the constant $`H_-`$, let $`A`$ add $`h(x)`$, both modulo
+$`2Q`$, and let $`D_\phi|w\rangle=e^{i\phi w}|w\rangle`$. Then
+
+```math
+V_0=R^\dagger A^\dagger D_\phi A D_\phi^\dagger R
+\quad\Longrightarrow\quad
+V_0|x,y,0,z\rangle
+=e^{i\phi h(x)}|x,y,0,z\rangle,
+\qquad 0\le y<Q.
+\tag{11}
+```
+
+Indeed, $`-H_-\le h(x)\le H-H_-`$, so both accumulator values
+$`y+H_-`$ and $`y+H_-+h(x)`$ lie between zero and $`Q-1+H<2Q`$.
+The phase difference is exactly $`\phi h(x)`$. Centering by $`R`$
+therefore handles signed coefficients with only one initialized bit.
+No input-independent phase is discarded. The proof includes all dirty
+inputs and their references. A negative offset uses the actual inverse
+of its positive-offset circuit.
+
+The coherent constant-offset construction in
+[Gidney, §2.9, Figs. 16 and 18](https://arxiv.org/html/1706.07884v2#S2.SS9)
+costs $`O(r\log r)`$ gates with one dirty helper when uncontrolled,
+or two dirty helpers when controlled by one input bit. Compile $`A`$
+as $`q`$ such controlled offsets, and charge $`R,R^\dagger`$ as well.
+These are complete-input reversible circuits; they use neither
+measurements nor initialized carry words. With a phase approximation
+$`\|C-e^{i\alpha}D_\phi\|\le\varepsilon/2`$, use
+$`R^\dagger A^\dagger C A C^\dagger R`$. The same full-unitary
+hybrid as (7) bounds the error by $`\varepsilon`$. The resulting ledger is
+
+```math
+T,G=O\bigl((q+1)r\log r+r(L+\log r)\bigr),\qquad
+\text{clean}=1,\qquad \text{dirty}=r+1.
+\tag{12}
+```
+
+The dirty count is $`r-1`$ low accumulator bits plus two arithmetic
+helpers. Their work is reused between the centered additions and the
+offsets. Accumulator return is within the full-output error; the separate
+helpers return exactly. For coefficients of magnitude one, the sharper
+increment/decrement construction in Section 3 removes the arithmetic
+$`\log r`$ factor.
+
+### Several generators and inexpensive parity controls
+
+Suppose, modulo $`2\pi`$, that
+$`\theta_j=\sum_{a=1}^d k_{aj}\phi_a`$. Omit generators whose coefficients
+are all zero; if none remain, the operation is identity.
+As a classical simplification, divide a generator's integer coefficients
+by their common divisor and multiply its base angle by that divisor before
+computing its width. This avoids paying for redundant coefficient scaling.
+For each remaining generator define $`q_a,H_a,r_a`$ as above. Apply
+its signed-generator circuit with error $`\varepsilon/d`$, reusing the
+same clean bit and dirty workspace. The complete-isometry hybrid gives
+the tensor phase bank with total error at most $`\varepsilon`$ and
+
+```math
+T,G=O\!\left(\sum_{a=1}^d
+ \left[(q_a+1)r_a\log r_a
+ +r_a(L+\log d+\log r_a)\right]\right),
+\quad \text{clean}=1,\quad
+\text{dirty}=1+\max_a r_a.
+\tag{13}
+```
+
+The actual inverses remain part of every call. Reuse does not assume that
+the actual intermediate accumulator has returned perfectly. Classical
+base-angle errors $`\Delta\phi_a`$ contribute at most
+$`\sum_a H_a|\Delta\phi_a|`$ to the phase-bank operator error. Likewise,
+an approximate angle representation with residuals $`e_j`$ contributes
+at most $`\sum_j|e_j|`$; either error must receive its own share of the
+budget in addition to native synthesis.
+
+The same argument applies to a specified parity-phase polynomial by
+replacing each $`x_j`$ with a parity of input bits. Compute that parity
+into one participating input wire using CNOTs, apply the controlled
+offset, and reverse the CNOTs. This requires no initialized parity bit
+and leaves the T bound unchanged, while adding the sum of the parity
+support sizes to the Clifford ledger, up to constant factors. This
+extension does not itself find a smaller generator representation for
+an arbitrary tensor phase bank.
+
+### A family with all distinct angles
+
+For $`\theta_j=j\phi`$, $`0\le j<S`$, one has
+$`H=S(S-1)/2`$ and $`r=O(\log(S+1))`$. The phases can all be distinct,
+and (12) gives
+
+```math
+T,G=O\bigl(S\log(S+1)\log\log(S+2)+L\log(S+1)\bigr).
+\tag{14}
+```
+
+More generally, a constant number of generators with polynomially bounded
+integer coefficients has the same order. This includes fixed-degree
+integer polynomial multiples $`\theta_j=p(j)\phi`$. In the addressed
+frame reduction, if each depth table has such a representation with a
+uniform constant number of generators and coefficients bounded by a
+fixed power of $`N`$, the sum over depths is
+$`O(Nn\log(n+1)+(L+n)n^2)`$. At $`L=N`$ this is
+$`O(N\log^2 N)`$ with two clean qubits and $`N/2+O(n)`$ dirty qubits.
+This is a sufficient bound for the stated structured family, without an
+optimality or best-known-bound claim.
+
+Arbitrary $`L`$-bit angles can be put on a common dyadic grid, but their
+integer coefficients may require $`\Theta(L)`$ bits. The worst-case
+accumulator width is then $`\Theta(L+\log S)`$, and (12) no longer gives the structured
+bound (14). Classical preprocessing and Clifford changes of basis are
+not a justification for treating those large coefficients as small.
+
+Applying the same construction recursively to an $`r`$-bit phase gradient
+uses weights $`2^k`$, whose sum is $`2^r-1`$, and therefore requires a
+new accumulator of width $`r+1`$: the recursion does not shrink. For the
+primitive $`2^r`$-th-root clock, the extra top phase is identity, but the
+remaining factors are exactly the original clock that still needs synthesis.
+
+### A limit on compressing arbitrary angle tables
+
+Normalize angles by $`2\pi`$ and use circular $`\ell_\infty`$ distance
+on $`\mathbb T^S`$, where $`\mathbb T=\mathbb R/\mathbb Z`$.
+For integers $`d,B\ge1`$, let $`E_{S,d,B}(\epsilon)`$ contain all tables
+within distance $`\epsilon`$ of $`K\varphi\pmod1`$, allowing every
+$`K\in\mathbb Z^{S\times d}`$ with $`|K_{ja}|\le B`$ and every
+$`\varphi\in\mathbb T^d`$. Thus the integer labels and the real base
+angles may both depend on the table. For $`0<\epsilon\le1/8`$, normalized
+Haar measure obeys
+
+```math
+\mu(E_{S,d,B}(\epsilon))
+\le\min\!\left\{1,
+(4\epsilon)^S(2B+1)^{Sd}
+\left(\frac{2dB}{\epsilon}\right)^d\right\}.
+```
+
+There are at most $`(2B+1)^{Sd}`$ coefficient matrices. For each matrix,
+a base-angle grid with spacing at most $`\epsilon/(dB)`$ has at most
+$`(2dB/\epsilon)^d`$ points and its image is an $`\epsilon`$-net.
+The $`\epsilon`$-neighborhood of the image is therefore covered by that
+many circular cubes of radius $`2\epsilon`$, each of measure
+$`(4\epsilon)^S`$. Multiplying proves the bound; only the $`d`$ base
+angles are continuous parameters.
+
+With $`\epsilon=2^{-\ell}`$, covering a fraction $`\alpha>0`$ of all
+tables consequently requires
+
+```math
+S\ell\le Sd\log_2(2B+1)
++d\bigl(\ell+1+\log_2(dB)\bigr)
++2S+\log_2(1/\alpha).
+```
+
+At $`\ell=S`$, polynomially bounded $`B`$ and fixed positive
+$`\alpha`$ force $`d=\Omega(S/\log S)`$. In particular, a constant
+number of bases with polynomial integer labels cannot approximate a
+positive fraction of arbitrary high-precision tables. This is an angle
+representation bound, not a T-count lower bound. Coordinate angle error
+$`\epsilon`$ suffices for phase-bank error $`2\pi S\epsilon`$; using
+$`\ell=L+\log_2 S+O(1)`$ for a bank error $`2^{-L}`$ leaves the stated
+conclusion unchanged when $`L=S`$.
+
+## 5. A small-palette phase bank and frame corollary
 
 Suppose $`S`$ arbitrary bank inputs have phases drawn from at most
 $`p\leq S`$ classically specified angles. Group equal angles, apply
@@ -197,7 +376,7 @@ T_B,G_B
 =O\!\left(\sum_{a=1}^p
  (m_a+\ell+\log p)\log(m_a+1)\right)
 \leq O\bigl((S+p(\ell+\log p))\log(S+1)\bigr).
-\tag{11}
+\tag{15}
 ```
 
 This needs one clean qubit and $`O(\log(S+1))`$ extra dirty qubits,
@@ -209,12 +388,12 @@ uses four such batch calls, a separate clean readout bit, and
 $`O(S+n^2)`$ exact routing/predicate gates. For a Hopf frame with
 $`N=2^n`$, banks of size $`S_d=2^d`$, and at most $`p`$ distinct angles
 **in each depth table**, take
-$`\ell_d=L+n-d+O(1)`$. Summing (11) yields the sufficient bound
+$`\ell_d=L+n-d+O(1)`$. Summing (15) yields the sufficient bound
 
 ```math
 T_F,G_F
 =O\bigl(Nn+p(L+n+\log p)n^2\bigr).
-\tag{12}
+\tag{16}
 ```
 
 The auxiliary budget is two clean qubits and
@@ -230,9 +409,9 @@ the restriction concerns their number of distinct values.
 For unrestricted angle tables, replacing them by a small palette at the
 required precision is not justified. Applying this construction separately
 to every binary precision layer also reintroduces the layer count into the
-arithmetic cost. Equation (12) is not a generic frame-frontier improvement.
+arithmetic cost. Equation (16) is not a generic frame-frontier improvement.
 
-## 5. Lineage and verification boundary
+## 6. Lineage and verification boundary
 
 The dirty commutator algebra is established prior art:
 [Chi–Kim–Lee, Theorem 2 and Eq. (7)](https://arxiv.org/pdf/quant-ph/0006039)
@@ -262,9 +441,15 @@ negative control, the literal seven-T Toffoli over exact algebraic
 arithmetic, and an exact native two-input batch with a reference purifying
 every permitted input. A separate 64-dimensional numerical test checks
 the full-output bound for a nondiagonal phase approximant, common-scalar
-cancellation, and nonzero clean-bit leakage. All seven checks pass.
+cancellation, and nonzero clean-bit leakage. Four further signed-generator
+checks cover centered additions with positive, negative, mixed, and zero
+coefficients, nondiagonal phase error, and reuse of the clean bit across
+two generators despite intermediate leakage. All eleven checks pass.
 
 These finite checks support signs, ordering, native decomposition, counts,
 and the output contract. The asymptotic proofs are above; the sharper
-increment implementation and arbitrary-precision single-qubit synthesis
-are cited primitives, not independently reimplemented by this test suite.
+increment implementation, general controlled constant offsets, and
+arbitrary-precision single-qubit synthesis are cited primitives, not
+independently reimplemented by this test suite. The signed-generator
+fixtures use exact offset permutations; they do not emit those offsets
+into native gates.

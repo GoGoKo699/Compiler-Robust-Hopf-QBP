@@ -2,7 +2,7 @@
 
 The active open problem is the constant-clean, large-dirty, high-precision endpoint for coherent Clifford+T compilation of the prescribed real Hopf frame. Repository integration is complete and research has resumed. Start with the short [checked-progress report](CONSTANT_CLEAN_PROGRESS.md), then use the [endpoint brief](CONSTANT_CLEAN_ENDPOINT.md) for the full contract.
 
-The latest [identical-phase batching construction](constant_clean/IDENTICAL_PHASE_BATCHING.md) uses one clean qubit and logarithmic dirty work. It is a proved restricted primitive; arbitrary heterogeneous phases remain the missing step. The endpoint brief defines the target and resource model, separates the solved neighboring regime from the open endpoint, and states the next concrete proof obligation. The supported endpoint remains
+The latest [phase-batching construction](constant_clean/IDENTICAL_PHASE_BATCHING.md) uses one clean qubit and supports distinct angles built from a few shared base angles with bounded integer coefficients. It is a proved restricted primitive; arbitrary angle tables remain the missing step. The endpoint brief defines the target and resource model, separates the solved neighboring regime from the open endpoint, and states the next concrete proof obligation. The supported endpoint remains
 
 ```math
 a=O(1),\quad b=\Theta(N),\quad L=N,

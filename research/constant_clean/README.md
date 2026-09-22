@@ -6,7 +6,7 @@ Start with the short [checked-progress report](../CONSTANT_CLEAN_PROGRESS.md), t
 
 | Note | Result and boundary |
 |---|---|
-| [Identical-phase batching](IDENTICAL_PHASE_BATCHING.md) | A proved one-clean construction with logarithmic dirty work and $`O((m+L)\log(m+1))`$ T count; arbitrary distinct angles remain unresolved. |
+| [Phase batching with a dirty accumulator](IDENTICAL_PHASE_BATCHING.md) | One clean qubit handles identical phases and distinct phases built from shared base angles with bounded signed integer coefficients; the general angle-table problem remains open. |
 | [Dirty symplectic rank](DIRTY_RETURN_LOWER_BOUND_FOLLOWUP.md) | Same-clean/T/error compression; the retained order is optimal for rank $`O(\sqrt N)`$, while linear T count requires linear rank on hard instances. |
 | [Global program blocks and phase batching](GLOBAL_BLOCK_FOLLOWUP.md) | Accepted-block adjoint and Fourier-rank restrictions; a separate exact phase-bank reduction with an explicitly unproved batch-synthesis hypothesis. |
 | [Joint clock follow-up](JOINT_CLOCK_FOLLOWUP.md) | A single-addition wrapper needs one initialized work qubit per clock bit, even with approximate complete return and arbitrary encoding. |

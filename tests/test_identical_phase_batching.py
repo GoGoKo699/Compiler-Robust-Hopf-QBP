@@ -1,4 +1,4 @@
-"""Finite audits of the one-clean-bit identical-phase construction.
+"""Finite audits of one-clean-bit masked phase batching.
 
 Integer tests exhaust every dirty basis input in the stated small ranges.
 Exact native checks use Q(sqrt(2), i); the small complex128 test separately
@@ -94,6 +94,49 @@ def _exact_apply(state, word):
                 result[output] = result.get(output, CZ) + amplitude
         state = {key: value for key, value in result.items() if value != CZ}
     return state
+
+
+def _signed_phase_fixture(weights, theta, perturbation, scalar, r=None):
+    """Full permutation-matrix offset macros, not native offset emitters.
+
+    A spectator bit models an arbitrary returned arithmetic helper. The
+    separate literature bound pays for implementing these exact permutations.
+    """
+    m = len(weights)
+    if r is None:
+        r = sum(abs(weight) for weight in weights).bit_length() + 1
+    q = 1 << (r - 1)
+    assert q > sum(abs(weight) for weight in weights)
+    mask = (1 << r) - 1
+    size = 1 << (m + r + 1)
+    center = sum(max(-weight, 0) for weight in weights)
+
+    def h(basis):
+        return sum(weight for j, weight in enumerate(weights) if (basis >> j) & 1)
+
+    def add_to_accumulator(basis, offset):
+        old = (basis >> m) & mask
+        return (basis & ~(mask << m)) | (((old + offset) & mask) << m)
+
+    arithmetic_images = [add_to_accumulator(basis, h(basis)) for basis in range(size)]
+    center_images = [add_to_accumulator(basis, center) for basis in range(size)]
+    arithmetic = np.eye(size, dtype=complex)[np.argsort(arithmetic_images)]
+    centering = np.eye(size, dtype=complex)[np.argsort(center_images)]
+    phase = np.diag([np.exp(1j * theta * ((basis >> m) & mask)) for basis in range(size)])
+    top = m + r - 1
+    flip = np.eye(size, dtype=complex)[[basis ^ (1 << top) for basis in range(size)]]
+    error_unitary = np.cos(perturbation) * np.eye(size) + 1j * np.sin(perturbation) * flip
+    compiled = np.exp(1j * scalar) * error_unitary @ phase
+    actual = (centering.conj().T @ arithmetic.conj().T @ compiled @ arithmetic
+              @ compiled.conj().T @ centering)
+    ideal = (centering.conj().T @ arithmetic.conj().T @ phase @ arithmetic
+             @ phase.conj().T @ centering)
+    columns = [basis for basis in range(size) if not ((basis >> top) & 1)]
+    embedding = np.eye(size, dtype=complex)[:, columns]
+    target = np.diag([np.exp(1j * theta * h(basis)) for basis in columns])
+    delta = np.linalg.norm(compiled - np.exp(1j * scalar) * phase, ord=2)
+    leaked_rows = [basis for basis in range(size) if (basis >> top) & 1]
+    return actual, ideal, embedding, target, delta, leaked_rows
 
 
 class IdenticalPhaseBatchingTests(unittest.TestCase):
@@ -205,6 +248,66 @@ class IdenticalPhaseBatchingTests(unittest.TestCase):
         self.assertGreater(np.linalg.norm(actual[np.ix_(leaked_rows, columns)]), 1e-4)
         without_scalar = arithmetic.conj().T @ (error_unitary @ phase) @ arithmetic @ (error_unitary @ phase).conj().T
         np.testing.assert_allclose(actual, without_scalar, atol=2e-12, rtol=0)
+
+    def test_signed_centering_integer_phase_and_all_dirty_return(self):
+        # Exact macro identities for signed offsets. No native cost inferred.
+        fixtures = [(-2, 1), (-1, 0, 3), (3, -4, 2), (-2, -1),
+                    (0, 0), (4, -4), (1, 2, 3)]
+        for weights in fixtures:
+            m = len(weights)
+            total = sum(abs(weight) for weight in weights)
+            q = 1 << total.bit_length()
+            modulus = 2 * q
+            center = sum(max(-weight, 0) for weight in weights)
+            for x in range(1 << m):
+                h = sum(weight for j, weight in enumerate(weights) if (x >> j) & 1)
+                for y in range(q):
+                    for helper in range(4):
+                        # Chronological R, D†, A, D, A†, R†.
+                        centered = (y + center) % modulus
+                        shifted = (centered + h) % modulus
+                        self.assertEqual(centered, y + center)
+                        self.assertEqual(shifted, y + center + h)
+                        self.assertEqual(shifted - centered, h)
+                        after_inverse = (shifted - h - center) % modulus
+                        self.assertEqual((x, after_inverse, helper), (x, y, helper))
+
+    def test_negative_weight_requires_centering_for_general_angle(self):
+        weights = (-3, 2)
+        q = 1 << sum(abs(weight) for weight in weights).bit_length()
+        modulus = 2 * q
+        y, h = 0, weights[0]
+        self.assertEqual((y + h) % modulus - y, h + modulus)
+        self.assertNotEqual((y + h) % modulus - y, h)
+        center = sum(max(-weight, 0) for weight in weights)
+        self.assertEqual((y + center + h) % modulus - (y + center), h)
+
+    def test_signed_batch_nondiagonal_full_output_and_actual_inverse(self):
+        actual, ideal, embedding, target, delta, leaked_rows = _signed_phase_fixture(
+            (-1, 2), theta=0.317, perturbation=0.019, scalar=-0.231)
+        np.testing.assert_allclose(ideal @ embedding, embedding @ target, atol=2e-12, rtol=0)
+        full_error = np.linalg.norm(actual @ embedding - embedding @ target, ord=2)
+        self.assertLessEqual(full_error, 2 * delta + 2e-12)
+        self.assertGreater(full_error, 1e-4)
+        self.assertGreater(np.linalg.norm((actual @ embedding)[leaked_rows]), 1e-4)
+        # A common scalar is canceled by the actual adjoint of the same C.
+        without_scalar = _signed_phase_fixture(
+            (-1, 2), theta=0.317, perturbation=0.019, scalar=0)[0]
+        np.testing.assert_allclose(actual, without_scalar, atol=2e-12, rtol=0)
+
+    def test_two_signed_bases_reuse_clean_bit_with_leakage(self):
+        first = _signed_phase_fixture((-1, 2), 0.317, 0.019, -0.231)
+        second = _signed_phase_fixture((2, -1), -0.413, -0.013, 0.127)
+        v1, _, embedding, target1, delta1, leaked_rows = first
+        v2, _, embedding2, target2, delta2, _ = second
+        np.testing.assert_array_equal(embedding, embedding2)
+        self.assertGreater(np.linalg.norm((v1 @ embedding)[leaked_rows]), 1e-4)
+        # No projection, initialization, or reset between the two actual words.
+        actual = v2 @ v1 @ embedding
+        expected = embedding @ target2 @ target1
+        full_error = np.linalg.norm(actual - expected, ord=2)
+        self.assertLessEqual(full_error, 2 * (delta1 + delta2) + 3e-12)
+        self.assertGreater(full_error, 1e-4)
 
 
 if __name__ == '__main__':

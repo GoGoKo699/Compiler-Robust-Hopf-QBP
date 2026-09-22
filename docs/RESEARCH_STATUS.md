@@ -216,7 +216,7 @@ specific contribution claim; it does not certify priority.
 
 Research on the constant-clean endpoint has resumed. The
 [checked-progress report](../research/CONSTANT_CLEAN_PROGRESS.md) records
-one-clean identical-phase batching, dirty-rank compression, scoped architecture
+one-clean batching for identical and shared-generator phases, dirty-rank compression, scoped architecture
 restrictions, and exact constructive reductions. The unrestricted endpoint bounds and the main
 sufficient-clean theorem are unchanged.
 
