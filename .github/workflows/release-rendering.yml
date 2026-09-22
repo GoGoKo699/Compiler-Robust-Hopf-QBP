@@ -1,0 +1,65 @@
+name: Publish v1.0.2 rendering fixes
+on:
+  push:
+    branches: [release-rendering-v1.0.2]
+permissions:
+  contents: write
+  checks: read
+concurrency:
+  group: publish-rendering-v1.0.2
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'GoGoKo699/Hopf-Frame-Compilation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify the fixed snapshot and publish the rendering correction
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, re, urllib.error, urllib.request
+          BASE = "https://api.github.com/repos/GoGoKo699/Hopf-Frame-Compilation"
+          TARGET = "6c96e342cb7e49816f4c4c424f665e4721f5f8ce"
+          PREVIOUS = "df4da3dd535034358e3bc601f9c38fcd11996d0e"
+          NOTES = "Fixes mathematical rendering in the documentation.\n\n- Replaces 87 equation tags with printed equation numbers that render correctly in native MathML.\n- Protects less-than comparisons from HTML parsing, including the piecewise coefficient and borrowed-workspace summation displays.\n- Checks all 25 Markdown pages using both MathJax SVG and native MathML, with desktop and narrow-screen previews and regression checks for both reported failure modes.\n\nThe formulas, equation references, scientific results, and compiler behavior are unchanged. Citation and package versions are synchronized at 1.0.2."
+          def api(path, payload=None, method=None, missing_ok=False):
+              data = None if payload is None else json.dumps(payload).encode()
+              request = urllib.request.Request(BASE + path, data=data, method=method, headers={
+                  "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                  "Accept": "application/vnd.github+json", "Content-Type": "application/json",
+                  "X-GitHub-Api-Version": "2026-03-10"})
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as error:
+                  if missing_ok and error.code == 404:
+                      return None
+                  raise
+          assert api("/git/ref/tags/v1.0.1")["object"]["sha"] == PREVIOUS
+          assert api("/branches/main")["commit"]["sha"] == TARGET
+          for path, pattern in (
+              ("CITATION.cff", r"(?m)^version: 1\.0\.2$"),
+              ("pyproject.toml", r'(?m)^version = "1\.0\.2"$'),
+              ("compiler_robust_hopf/__init__.py", r'(?m)^__version__ = "1\.0\.2"$')):
+              document = api("/contents/" + path + "?ref=" + TARGET)
+              assert re.search(pattern, base64.b64decode(document["content"]).decode()), path
+          checks = api("/commits/" + TARGET + "/check-runs?per_page=100")["check_runs"]
+          for name in ("analytic (3.11)", "analytic (3.13)", "rendered-presentation"):
+              matching = [check for check in checks if check["name"] == name]
+              assert matching and max(matching, key=lambda check: check["id"])["conclusion"] == "success", name
+          release = api("/releases/tags/v1.0.2", missing_ok=True)
+          if release is None:
+              assert api("/git/ref/tags/v1.0.2", missing_ok=True) is None, "Unexpected existing tag"
+              release = api("/releases", {
+                  "tag_name": "v1.0.2", "target_commitish": TARGET,
+                  "name": "v1.0.2 — Mathematical rendering fixes", "body": NOTES,
+                  "draft": False, "prerelease": False, "make_latest": "true",
+                  "generate_release_notes": False}, method="POST")
+          assert api("/git/ref/tags/v1.0.2")["object"]["sha"] == TARGET
+          assert release["draft"] is False and release["prerelease"] is False
+          assert api("/git/ref/tags/v1.0.1")["object"]["sha"] == PREVIOUS
+          assert api("/releases/latest")["tag_name"] == "v1.0.2"
+          print("Published:", release["html_url"])
+          PY
