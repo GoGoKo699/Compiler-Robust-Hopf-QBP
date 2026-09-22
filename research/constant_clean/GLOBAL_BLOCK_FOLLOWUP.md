@@ -398,9 +398,9 @@ uncharged interpreter.
 ## 5. A constructive reduction to heterogeneous phase batching
 
 There is a second, positive operator identity that avoids the XOR-program
-architecture above. It reduces an addressed rotation to four uses of a
+architecture above. It reduces an addressed rotation to two uses of a
 tensor product of heterogeneous phase gates on arbitrary dirty bits.
-It needs one additional initialized readout qubit and no modular-addition
+It requires no additional initialized work and no modular-addition
 table. The identity and its error bound are unconditional; the fast
 tensor-product compiler specified below is **not known**.
 
@@ -417,51 +417,43 @@ D=\bigotimes_{j=0}^{S-1}P(\theta_j),
 ```
 
 Let $`h`$ be an optional activation predicate on unchanged system bits,
-disjoint from $`x,t`$.
-Define $`Q_t`$ to flip bank bit $`z_x`$ precisely when the predicate is
-true and $`t=1`$. Put
-$`Q_{\bar t}=X_tQ_tX_t`$, and define rightmost-first products
+disjoint from $`x,t`$. Let $`F_h`$ flip bank bit $`z_x`$ precisely when
+the predicate is true, and let $`S_x`$ swap the logical target with that
+bank bit. With rightmost-first products, use
 
 ```math
-E_t=D^\dagger Q_tD Q_t,\qquad
-E_{\bar t}=D^\dagger Q_{\bar t}D Q_{\bar t},\qquad
-B=E_tE_{\bar t}^\dagger.
+V=S_x F_h D^\dagger F_h D S_x.
 \tag{26}
 ```
 
-On an active computational-basis branch put $`s=1-2z_x`$. The two
-commutators return every bank bit and give
+On an active sector the inner word is the inverse selected commutator:
 
 ```math
-E_t=e^{i\theta_x t s},
-\qquad E_{\bar t}^\dagger=e^{-i\theta_x(1-t)s},
-\qquad B=e^{-i\theta_x sZ_t}.
+F_hD^\dagger F_hD=X_xD^\dagger X_xD=e^{-i\theta_xZ_x}.
 \tag{27}
 ```
 
-Inactive branches receive identity.
-
-Initialize a single qubit $`q`$ to zero and let $`R_x`$ XOR the selected
-bank bit into it: $`q\leftarrow q\oplus z_x`$. Let $`C_qX_t`$ be a CNOT
-from $`q`$ to the target. The complete word
+The first swap places the logical target in the bank and stores the
+old dirty bit on the logical target wire. The batch operation does
+not touch that wire. The final swap therefore returns the dirty bit
+and transfers the rotation to the target:
 
 ```math
-V=R_x(C_qX_t)\,B\,(C_qX_t)R_x
+S_x e^{-i\theta_xZ_x}S_x=e^{-i\theta_xZ_t}.
 \tag{28}
 ```
 
-first reads $`q=z_x`$, conjugates the sign in (27), and finally erases
-$`q`$. Since $`XZX=-Z`$,
+On an inactive sector $`F_h=I`$, so the batch operation and its inverse
+cancel exactly and $`S_x^2=I`$. The full action is
 
 ```math
-V\bigl(|x,t,z\rangle|0\rangle_q\bigr)
+V|x,t,z\rangle
 =
 \begin{cases}
-\bigl(R_z(\theta_x)_t|x,t,z\rangle\bigr)|0\rangle_q,
-&\text{active},\\
-|x,t,z\rangle|0\rangle_q,&\text{inactive},
+R_z(\theta_x)_t|x,t,z\rangle,&\text{active},\\
+|x,t,z\rangle,&\text{inactive},
 \end{cases}
-\quad R_z(\theta)=e^{-i\theta Z}.
+\qquad R_z(\theta)=e^{-i\theta Z}.
 \tag{29}
 ```
 
@@ -471,29 +463,31 @@ exactly. A fixed Clifford $`K=SH`$, with $`KZK^\dagger=Y`$, turns (29)
 into the addressed $`R_y(\theta_x)`$ convention by conjugating the logical
 target. No angle-dependent phase is omitted.
 
-The operations in (28) are explicit. A controlled routing network with
+The operations in (26) are explicit. A controlled routing network with
 $`S-1`$ Fredkins moves the selected bank bit to bank position zero.
-Route–CNOT–unroute implements $`R_x`$, and routing around a controlled
-bank flip implements $`Q_t`$. With a suffix-zero activation predicate,
-the central flip is an at-most-$`n`$-controlled X. The already proved
-arbitrary-input borrowed-MCX construction uses $`O(n^2)`$ Toffolis and
-may borrow $`q`$: the readout need not be clean while borrowed, and its
-entanglement with the bank does not invalidate that complete-space
-identity. It returns $`q`$ exactly.
+Routing around an ordinary SWAP implements $`S_x`$; routing around a
+suffix-controlled bank flip implements $`F_h`$. With a suffix-zero
+activation predicate, the central flip is an at-most-$`n`$-controlled X.
+The already proved arbitrary-input borrowed-MCX construction uses
+$`O(n^2)`$ Toffolis and may borrow the logical target wire $`t`$.
+That wire now holds the old dirty bank bit, which may be unknown and
+reference-entangled. The complete-space MCX identity returns it exactly
+before the next batch call. It is disjoint from the suffix controls
+and bank-flip target.
 
-Thus, apart from the four calls to the batch phase operation, (28) uses
-$`O(S+n^2)`$ T and Clifford gates and one clean readout qubit. Exact
-Fredkin/Toffoli decompositions suffice. The address and suffix are
-unchanged; routing is reversed before each batch call. For $`S=1`$,
-routing is omitted.
+Thus, apart from the two batch calls, (26) uses $`O(S+n^2)`$ T and
+Clifford gates and no additional initialized work. Exact Fredkin/Toffoli
+decompositions suffice. The address and suffix are unchanged; routing is
+reversed before each batch call. For $`S=1`$, routing is omitted.
 
 ### 5.2 Full-isometry error for an actual batch circuit
 
 The batch circuit need not be exactly diagonal and need not return its
 private clean work exactly. Let $`A`$ be an actual unitary on the bank,
 its private clean work, and any additional arbitrary dirty helpers.
-The bank and those helpers are disjoint from the logical address, target,
-suffix, and readout $`q`$. For the embedding $`J_B`$ initializing only that
+These wires are disjoint from the logical address, target, and suffix.
+In particular, $`A`$ leaves the old dirty value parked on the logical
+target wire untouched. For the embedding $`J_B`$ initializing only the
 private clean work, suppose
 
 ```math
@@ -504,33 +498,33 @@ private clean work, suppose
 The scalar $`\phi`$ may be arbitrary but must be a common scalar, not
 an input-dependent phase. Use $`A`$ and its **actual inverse** in (26).
 The inverse has the corresponding complete-isometry error $`\delta`$.
-The four appearances contain two forward and two inverse calls, so the
+The two appearances contain one forward and one inverse call, so the
 ideal factors $`e^{i\phi}`$ cancel.
 
-All routing, readout, and borrowed-predicate gates are exact and leave
+All routing, swaps, and borrowed-predicate gates are exact and leave
 the batch compiler's separate private work untouched. At each term in
-the unitary telescoping comparison, its ideal preceding calls have that
+the unitary telescoping comparison, the ideal preceding calls have that
 work initialized. Consequently the whole word satisfies
 
 ```math
-\|V_AJ-JU_{\rm addressed}\|\leq4\delta,
+\|V_AJ-JU_{\rm addressed}\|\leq2\delta,
 \tag{31}
 ```
 
-where $`J`$ initializes both the readout and batch-private clean work,
-and the norm includes every bank/helper input and reference. Earlier
-batch leakage is propagated unitarily; no reset or factorization of an
-actual intermediate state is assumed. In particular, the final erasure
-of $`q`$ is allowed to have leakage in the approximate case: that leakage
-is included in (31).
+where $`J`$ initializes only the batch-private clean work, and the
+norm includes every bank/helper input and reference. Earlier batch
+leakage is propagated unitarily; no reset or factorization of an actual
+intermediate state is assumed. Dirty-bank return and private-work leakage
+are both included in (31). The swaps may correlate the bank, target,
+and address; the complete column norm covers these inputs.
 
 There is a useful exact control check. On an inactive suffix sector,
-$`Q_t=Q_{\bar t}=I`$ even for a dense, nondiagonal actual $`A`$ acting
-on bank and batch-private work. Therefore each commutator is exactly
-$`A^\dagger A=I`$, and the remaining readout/conjugation gates cancel.
-Inactive identity does not depend on the batch approximation.
+$`F_h=I`$ even for a dense, nondiagonal actual $`A`$ acting on bank
+and batch-private work. Therefore the inner word is exactly
+$`A^\dagger A=I`$, and the two swaps cancel. Inactive identity
+does not depend on the batch approximation.
 
-### 5.3 A weaker sufficient batch contract
+### 5.3 Selected commutators and batching equivalence
 
 The full batch approximation (30) is sufficient but stronger than the
 echo requires. Let $`X_x`$ flip the selected bank bit and define the
@@ -563,24 +557,21 @@ The actual inverse obeys the same column bound:
 ```
 
 On an active suffix sector the word (26), with $`A`$ in place of
-$`D`$, has the exact target-block form
+$`D`$, has the exact form
 
 ```math
-E_tE_{\bar t}^\dagger
-=|0\rangle\!\langle0|_t\otimes K_x^\dagger
- +|1\rangle\!\langle1|_t\otimes K_x.
+V_A=S_xK_x^\dagger S_x.
 \tag{31c}
 ```
 
-Thus its complete column error is at most $`\epsilon`$, the maximum
-of the two block errors. Conjugating by the exact readout and sign
-gates in (28) gives complete addressed-rotation error at most
-$`\epsilon`$, including final readout and private-work leakage.
-The readout embedding can correlate the target, address, and bank;
-the uniform operator bound still applies. The private work remains
-disjoint from every readout, routing, and suffix-predicate operation.
-On an inactive suffix sector both controlled flips are identity, so
-the actual word cancels exactly, with no approximation assumption.
+The swaps preserve the initialized private-work subspace and conjugate
+$`U_x^\dagger`$ to the required target rotation. Equation (31b) therefore
+gives complete addressed-rotation error at most $`\epsilon`$, including
+dirty-bank return and private-work leakage. Correlations among the
+target, address, bank, and reference are covered by the uniform operator
+bound. The private work remains disjoint from every swap, routing,
+and suffix-predicate operation. On an inactive suffix sector $`F_h=I`$,
+so the actual word cancels exactly, with no approximation assumption.
 
 This contract allows additional choices of batch circuit. With no additional work,
 its exact version for every bank position is equivalent to
@@ -591,10 +582,85 @@ in the joint X basis, including an entangling one. This factor cancels
 inside each commutator. This characterization is only for the stated
 full-space, no-additional-work case.
 
-Equations (31a)–(31c) give a weaker construction target, not a compiler
-cost bound. Any proposed implementation must charge $`A`$, its actual
-inverse, all initialization, and complete work return. No circuit with
-the desired heterogeneous endpoint cost is established here.
+Although (31a) is a weaker promise on a particular circuit, a universal
+compiler satisfying it already supplies a full heterogeneous batch
+compiler. The following conversion removes the gauge without additional
+clean or dirty work. It does not assume that $`A`$ returns its private
+clean work, or that an exact full-space gauge factorization exists.
+
+Allow position-dependent errors $`\epsilon_j`$ in (31a), write its
+angle as $`\alpha_j`$, and put
+
+```math
+P_j=A^\dagger X_jA,\qquad
+C_j=e^{i\alpha_jZ_j}X_j,\qquad F=\prod_{j=0}^{S-1}X_j.
+\tag{31d}
+```
+
+The physical and logical bank flips intertwine the initialized
+embedding: $`X_jJ_B=J_BX_j`$. Multiplying the $`j`$th commutator
+promise on the right by the logical $`X_j`$ therefore gives
+$`\|P_jJ_B-J_BC_j\|\leq\epsilon_j`$. A unitary telescoping comparison
+now yields
+
+```math
+\left\|\left(\prod_jP_j\right)J_B
+       -J_B\prod_jC_j\right\|
+\leq\sum_j\epsilon_j.
+\tag{31e}
+```
+
+Each ideal preceding factor acts only on the bank and leaves the
+private work initialized. Actual leakage is propagated unitarily,
+so this hybrid requires no intermediate reset. Adjacent calls cancel
+exactly in the actual product:
+$`\prod_jP_j=A^\dagger F A`$.
+Left-multiply (31e) by the physical $`F`$ and use $`FJ_B=J_BF`$.
+Because $`X_j e^{i\alpha_jZ_j}X_j=e^{-i\alpha_jZ_j}`$, the resulting
+two-call circuit satisfies
+
+```math
+V=F A^\dagger F A,\qquad
+\left\|VJ_B-J_B
+  \exp\!\left(-i\sum_j\alpha_jZ_j\right)\right\|
+\leq\sum_j\epsilon_j.
+\tag{31f}
+```
+
+This is the literal tensor product of the rotations
+$`R_z(\alpha_j)=e^{-i\alpha_jZ_j}`$, with all work returned to the
+stated accuracy. It uses the actual inverse of $`A`$ and costs
+$`2T(A)`$ T gates and $`2G(A)+2S`$ Clifford gates, with exactly the same
+initialized and dirty work. The product in (31e) is a proof device;
+the implemented circuit contains two calls, not $`2S`$ calls.
+
+To compile the phase product $`D(\theta)=\bigotimes_jP(\theta_j)`$,
+invoke the universal commutator compiler with
+$`\alpha_j=\theta_j/2`$. Equation (31f) then implements
+$`e^{-i\sum_j\theta_j/2}D(\theta)`$. This is the common scalar allowed
+in (30); no input-dependent phase is discarded. For desired batch
+error $`\delta=2^{-\ell}`$, requesting each commutator error at most
+$`\delta/S`$ adds only $`\lceil\log_2S\rceil`$ precision bits.
+Conversely, (30) with error $`\delta`$ gives (31a) with error
+$`2\delta`$ by a two-factor hybrid using $`A`$ and its actual inverse.
+
+Thus the two universal compilation problems reduce to each other
+with the stated precision margin and constant call overhead. In
+particular, a selected-commutator compiler with the workspace bounds
+in (32), $`T=O(S+\ell)`$, and $`G=O(S\ell)`$ would supply the batch hypothesis
+(32), with $`G=O(S(\ell+\log S))=O(S\ell)`$ in the endpoint range
+$`\ell\geq\log S`$. Gauge freedom alone does not remove the
+heterogeneous batching obligation.
+
+The common $`A`$ and its promises for every bank position on the
+whole input space are essential. A separately compiled
+$`A_x`$, or a promise restricted to the address sector $`x=j`$,
+does not justify (31e). The conversion does not settle those interfaces.
+The linear error accumulation is also generally necessary: with
+$`A=D(\alpha+\tau\mathbf 1)`$, each commutator error is
+$`2|\sin(\tau/2)|`$, whereas the extracted batch error is
+$`2|\sin(S\tau/2)|`$ for sufficiently small $`S|\tau|`$.
+Their ratio tends to $`S`$ as $`\tau`$ tends to zero.
 
 ### 5.4 The missing primitive and its conditional consequence
 
@@ -616,7 +682,7 @@ subroutine. They are additional borrowed bits of the frame compiler;
 they are not initialized phase states. All source preparation, arithmetic,
 helper return, and actual inverses belong to (32).
 
-Under (32), apply (28) at Hopf depth $`d`$ with
+Under (32), apply (26) at Hopf depth $`d`$ with
 $`S_d=2^d`$ and suffix activation from the prescribed full frame.
 Allocate depth error $`2^{-L}2^{d-n}`$ and take
 
@@ -625,9 +691,10 @@ Allocate depth error $`2^{-L}2^{d-n}`$ and take
 \tag{33}
 ```
 
-The four-call factor in (31) changes only the constant precision margin.
-The same constant clean pool and the same dirty bank/helper pools can be
-reused across depths using the complete-isometry hybrid. Their largest
+The two-call factor in (31) changes only the constant precision margin.
+The frame uses exactly the batch compiler's clean pool: no readout qubit
+is added. That pool and the same dirty bank/helper pools can be reused
+across depths using the complete-isometry hybrid. Their largest
 required dirty allocation is $`O(N+L)`$.
 
 Summing (32) and the exact overhead gives the conditional full-frame bound
@@ -687,16 +754,27 @@ $`2.4\times10^{-15}`$.
 
 The independent [structural test suite](../../tests/test_constant_clean_structure.py)
 also checks the full program-space echo, differing-flag lift, common-kernel
-factorization, and Fourier singular-value count. Its tensor-phase tests use
-a complete 64-dimensional circuit and all 32 initialized-readout columns.
-They verify the ideal dirty/reference return, literal phase, both required
-inverse signs, and exact inactive cancellation. A dense, nondiagonal
-approximate batch word with a common scalar phase obeys the full four-call
-error bound while exhibiting nonzero readout leakage; an explicit
-dirty/reference Bell input is checked as well. All 12 tests in that suite
-pass; its additional cyclic and modular tests concern companion notes.
+factorization, and Fourier singular-value count. It retains regression
+tests for the earlier four-call readout implementation. The current
+selected-SWAP construction is checked separately on all 32 initialized
+columns of a 64-dimensional circuit, with private clean work but no
+readout qubit. These tests verify literal $`R_z`$ and $`R_y`$ actions,
+dirty-work return, the weak $`\epsilon`$ and full-batch $`2\delta`$
+error bounds, common-phase cancellation, and exact inactive identity
+on the entire private-work space.
+
+The batch-extraction tests include a 16-dimensional circuit whose
+$`A`$ strongly leaks its private clean bit and entangles a dirty helper.
+The extracted two-call word nevertheless returns that work exactly
+in the ideal case. Dense perturbations check the summed column-error
+bound, including nonzero residual leakage; an explicit purification
+checks arbitrary-reference coherence. A wrong inverse order fails,
+and one through six bank bits verify the linear accumulation example.
+All 18 structural tests pass; the additional cyclic and modular cases
+concern companion notes.
 
 These checks corroborate signs, normalization, and multiplicity. They
-do not replace the factorization and singular-value argument, and they
-do not certify an endpoint circuit. No existing core theorem or
-published repository claim is changed by this follow-up.
+do not replace the proofs or certify an unrestricted endpoint circuit.
+The selected-SWAP wrapper reduces the calls and initialized workspace
+needed by this reduction. The unrestricted constant-clean frontier
+remains unchanged.

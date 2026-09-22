@@ -62,3 +62,13 @@ nondiagonal approximation, and sequential reuse with intermediate leakage.
 The offset costs are cited arithmetic primitives, not inferred from the
 permutation macros in those four tests. The unrestricted endpoint bounds
 are unchanged.
+
+The subsequent wrapper audit replaces the original four-call/readout
+derivation in the global-block note with a two-call selected-swap construction
+requiring no extra initialized bit. The earlier derivation remains in the
+repository history and its finite checks are retained. The structured-frame
+corollaries consequently use one clean bit instead of two. A separately
+reviewed converse extracts a full phase bank from a common circuit satisfying
+all selected-commutator promises, with summed error, two calls, and unchanged
+workspace. This establishes the stated resource reduction between the two
+batching contracts; it does not supply a fast arbitrary-angle compiler.

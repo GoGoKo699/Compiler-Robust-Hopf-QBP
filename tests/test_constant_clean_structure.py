@@ -117,6 +117,57 @@ def _tensor_phase_fixture():
     return embedding, bank_phase, ideal, compile_word
 
 
+def _weak_commutator_fixture():
+    # Order: two bank bits, one arbitrary dirty helper, one private clean bit.
+    # Desired P(theta_j) phases require weak commutator angles alpha_j=theta_j/2.
+    theta = np.array([0.74, -0.46])
+    alpha = theta / 2
+    bank_flips = [_permutation([z ^ (1 << j) for z in range(4)]) for j in range(2)]
+    flips = [np.kron(flip, np.eye(4)) for flip in bank_flips]
+    bank_phase = np.diag([np.exp(1j * sum(alpha[j] for j in range(2)
+                                        if (z >> j) & 1)) for z in range(4)])
+    generator = np.kron(bank_flips[0], np.kron(X, X))
+    gauge = np.cos(0.83) * np.eye(16) + 1j * np.sin(0.83) * generator
+    operation = gauge @ np.kron(bank_phase, np.eye(4))
+    embedding = np.eye(16, dtype=complex)[:, ::2]
+    tensor_target = np.diag([np.exp(1j * sum(theta[j] for j in range(2)
+                                           if (z >> j) & 1)) for z in range(4)])
+    target = np.exp(-1j * sum(alpha)) * np.kron(tensor_target, I2)
+    return embedding, operation, gauge, flips, alpha, target
+
+
+def _swap_selected_commutator_fixture():
+    # Order: suffix-active bit, address, target, two dirty bank bits, A's clean bit.
+    shape = (2, 2, 2, 4, 2)
+    basis = list(np.ndindex(shape))
+
+    def permutation(action):
+        return _permutation([int(np.ravel_multi_index(action(*state), shape))
+                             for state in basis])
+
+    swap = permutation(lambda p, x, t, z, c:
+                       (p, x, (z >> x) & 1,
+                        z ^ ((((z >> x) & 1) ^ t) << x), c))
+    query = permutation(lambda p, x, t, z, c:
+                        (p, x, t, z ^ ((1 << x) if p else 0), c))
+    angles = np.array([0.31, -0.47])
+    bank_phase = np.diag([np.exp(1j * sum(angles[j] for j in range(2)
+                                        if (z >> j) & 1)) for z in range(4)])
+    flip_zero = _permutation([z ^ 1 for z in range(4)])
+    generator = np.kron(flip_zero, X)
+    gauge = np.cos(0.79) * np.eye(8) + 1j * np.sin(0.79) * generator
+    exact = gauge @ np.kron(bank_phase, I2)
+    embedding = np.eye(64, dtype=complex)[:, ::2]
+    ideal = np.diag([np.exp(1j * (2 * t - 1) * angles[x]) if p else 1.0
+                     for p, x, t, z in np.ndindex(2, 2, 2, 4)])
+
+    def compile_word(bank_and_private_work):
+        operation = np.kron(np.eye(8), bank_and_private_work)
+        return swap @ query @ operation.conj().T @ query @ operation @ swap
+
+    return embedding, exact, angles, ideal, compile_word
+
+
 class ConstantCleanStructureTests(unittest.TestCase):
     def test_exhaustive_hermitian_pauli_gap_on_one_clean_zero_code(self):
         # Two arbitrary input qubits followed by one initialized zero qubit.
@@ -405,6 +456,148 @@ class ConstantCleanStructureTests(unittest.TestCase):
                                        atol=ATOL, rtol=0)
         np.testing.assert_allclose(compile_word(batch) @ embedding,
                                    embedding @ ideal, atol=ATOL, rtol=0)
+
+    def test_swap_selected_commutator_needs_no_clean_readout(self):
+        embedding, exact, angles, ideal, compile_word = _swap_selected_commutator_fixture()
+        self.assertGreater(_norm(exact[1::2, ::2]), 0.7)
+        actual = compile_word(exact)
+        np.testing.assert_allclose(actual @ embedding, embedding @ ideal,
+                                   atol=ATOL, rtol=0)
+        self.assertLess(_norm((actual @ embedding)[1::2]), ATOL)
+        # Inactivity is exact on all private-work inputs, not only initialized ones.
+        np.testing.assert_allclose(actual[:, :32], np.eye(64)[:, :32], atol=ATOL, rtol=0)
+        # Explicitly check the project's R_y(theta)=exp(-i theta Y) convention.
+        hadamard = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
+        change = np.diag([1, 1j]) @ hadamard
+        physical_change = np.kron(np.eye(4), np.kron(change, np.eye(8)))
+        y_word = physical_change @ actual @ physical_change.conj().T
+        y_target = _block_diagonal([
+            np.kron(_ry(angles[x]), np.eye(4)) if p else np.eye(8)
+            for p, x in np.ndindex(2, 2)])
+        np.testing.assert_allclose(y_word @ embedding, embedding @ y_target,
+                                   atol=ATOL, rtol=0)
+
+    def test_swap_selected_commutator_dense_error_and_inactive_cancellation(self):
+        embedding, exact, angles, ideal, compile_word = _swap_selected_commutator_fixture()
+        rng = np.random.default_rng(3811)
+        raw = rng.normal(size=(8, 8)) + 1j * rng.normal(size=(8, 8))
+        generator = (raw + raw.conj().T) / 2
+        generator /= _norm(generator)
+        values, vectors = np.linalg.eigh(generator)
+        perturbation = (vectors * np.exp(0.037j * values)) @ vectors.conj().T
+        operation = np.exp(0.29j) * perturbation @ exact
+        bank_embedding = np.eye(8, dtype=complex)[:, ::2]
+        errors = []
+        for j in range(2):
+            flip = np.kron(_permutation([z ^ (1 << j) for z in range(4)]), I2)
+            weak_target = np.diag([
+                np.exp(1j * angles[j] * (1 - 2 * ((z >> j) & 1))) for z in range(4)])
+            commutator = operation.conj().T @ flip @ operation @ flip
+            errors.append(_norm(commutator @ bank_embedding - bank_embedding @ weak_target))
+        actual = compile_word(operation)
+        error = _norm(actual @ embedding - embedding @ ideal)
+        self.assertLessEqual(error, max(errors) + ATOL)
+        self.assertGreater(error, 1e-3)
+        self.assertGreater(_norm((actual @ embedding)[1::2]), 1e-3)
+        np.testing.assert_allclose(actual[:, :32], np.eye(64)[:, :32], atol=ATOL, rtol=0)
+        np.testing.assert_allclose(actual, compile_word(operation / np.exp(0.29j)),
+                                   atol=ATOL, rtol=0)
+        # A full phase-bank approximation has the sharper direct 2*delta bound.
+        # Omit the gauge here: the preceding A is deliberately far from D itself.
+        phase_bank = np.diag([
+            np.exp(1j * sum(angles[j] for j in range(2) if (z >> j) & 1))
+            for z, clean in np.ndindex(4, 2)])
+        approximate_bank = np.exp(0.29j) * perturbation @ phase_bank
+        delta = _norm(approximate_bank / np.exp(0.29j) - phase_bank)
+        from_full_batch = compile_word(approximate_bank)
+        full_batch_error = _norm(from_full_batch @ embedding - embedding @ ideal)
+        self.assertLessEqual(full_batch_error, 2 * delta + ATOL)
+        self.assertGreater(full_batch_error, 1e-3)
+        np.testing.assert_allclose(from_full_batch[:, :32], np.eye(64)[:, :32],
+                                   atol=ATOL, rtol=0)
+
+    def test_weak_commutators_extract_batch_despite_private_work_leakage(self):
+        embedding, operation, gauge, flips, alpha, target = _weak_commutator_fixture()
+        # A itself strongly leaks its clean bit and entangles the dirty helper.
+        self.assertGreater(_norm((operation @ embedding)[1::2]), 0.7)
+        first_column = (operation @ embedding)[:, 0].reshape(4, 2, 2)
+        helper_density = np.einsum('bdc,bec->de', first_column, first_column.conj())
+        self.assertLess(float(np.trace(helper_density @ helper_density).real), 0.6)
+        for j, flip in enumerate(flips):
+            np.testing.assert_allclose(gauge @ flip, flip @ gauge, atol=ATOL, rtol=0)
+            weak_target = np.kron(np.diag([
+                np.exp(1j * alpha[j] * (1 - 2 * ((z >> j) & 1)))
+                for z in range(4)]), I2)
+            commutator = operation.conj().T @ flip @ operation @ flip
+            np.testing.assert_allclose(commutator @ embedding, embedding @ weak_target,
+                                       atol=ATOL, rtol=0)
+
+        all_flip = flips[0] @ flips[1]
+        # Exactly two calls to the common A/A^dagger, with rightmost acting first.
+        extracted = all_flip @ operation.conj().T @ all_flip @ operation
+        np.testing.assert_allclose(extracted @ embedding, embedding @ target,
+                                   atol=ATOL, rtol=0)
+        self.assertLess(_norm((extracted @ embedding)[1::2]), ATOL)
+        # Purify the complete bank-plus-dirty-helper input, including its coherence.
+        reference_dimension = embedding.shape[1]
+        initial = embedding.ravel() / np.sqrt(reference_dimension)
+        expected = (embedding @ target).ravel() / np.sqrt(reference_dimension)
+        np.testing.assert_allclose(np.kron(extracted, np.eye(reference_dimension)) @ initial,
+                                   expected, atol=ATOL, rtol=0)
+
+    def test_weak_commutator_errors_charge_full_output_and_wrong_word(self):
+        embedding, exact, _, flips, alpha, target = _weak_commutator_fixture()
+        rng = np.random.default_rng(28719)
+        raw = rng.normal(size=(16, 16)) + 1j * rng.normal(size=(16, 16))
+        generator = (raw + raw.conj().T) / 2
+        generator /= _norm(generator)
+        values, vectors = np.linalg.eigh(generator)
+        perturbation = (vectors * np.exp(0.031j * values)) @ vectors.conj().T
+        operation = perturbation @ exact
+        errors = []
+        for j, flip in enumerate(flips):
+            weak_target = np.kron(np.diag([
+                np.exp(1j * alpha[j] * (1 - 2 * ((z >> j) & 1)))
+                for z in range(4)]), I2)
+            commutator = operation.conj().T @ flip @ operation @ flip
+            errors.append(_norm(commutator @ embedding - embedding @ weak_target))
+        all_flip = flips[0] @ flips[1]
+        extracted = all_flip @ operation.conj().T @ all_flip @ operation
+        error = _norm(extracted @ embedding - embedding @ target)
+        self.assertLessEqual(error, sum(errors) + ATOL)
+        self.assertGreater(error, 1e-3)
+        self.assertGreater(_norm((extracted @ embedding)[1::2]), 1e-3)
+        # Swapping the forward and inverse calls does not preserve the contract.
+        wrong = all_flip @ operation @ all_flip @ operation.conj().T
+        self.assertGreater(_norm(wrong @ embedding - embedding @ target), 0.5)
+
+    def test_weak_to_batch_linear_error_accumulation_is_sharp(self):
+        beta = 0.021
+        local_error = 2 * np.sin(beta / 2)
+        for count in range(1, 7):
+            alpha = np.array([(-1) ** j * (0.13 + 0.017 * j) for j in range(count)])
+            signs = np.array([[1 - 2 * ((z >> j) & 1) for j in range(count)]
+                              for z in range(1 << count)])
+            for angle in alpha:
+                local_actual = np.exp(1j * (angle + beta) * np.array([1, -1]))
+                local_target = np.exp(1j * angle * np.array([1, -1]))
+                self.assertAlmostEqual(float(np.max(abs(local_actual - local_target))),
+                                       local_error, places=12)
+            # A=product P(alpha_j+beta) extracts exp(-i sum_j(alpha_j+beta) Z_j).
+            actual = np.exp(-1j * (signs @ (alpha + beta)))
+            target = np.exp(-1j * (signs @ alpha))
+            error = float(np.max(abs(actual - target)))
+            expected = 2 * np.sin(count * beta / 2)
+            self.assertLess(count * beta, np.pi / 2)
+            self.assertAlmostEqual(error, expected, places=12)
+            self.assertLessEqual(error, count * local_error + ATOL)
+            self.assertGreaterEqual(error / local_error, 0.99 * count)
+            # For count*beta<pi/2 the endpoint phases +/-count*beta have
+            # optimal common-scalar center 1, so allowing a scalar cannot help.
+            endpoints = actual[[0, -1]] / target[[0, -1]]
+            np.testing.assert_allclose(endpoints,
+                                       np.exp(1j * np.array([-count * beta, count * beta])),
+                                       atol=ATOL, rtol=0)
 
 
 if __name__ == "__main__":

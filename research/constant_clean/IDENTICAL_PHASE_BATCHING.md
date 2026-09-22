@@ -304,7 +304,7 @@ frame reduction, if each depth table has such a representation with a
 uniform constant number of generators and coefficients bounded by a
 fixed power of $`N`$, the sum over depths is
 $`O(Nn\log(n+1)+(L+n)n^2)`$. At $`L=N`$ this is
-$`O(N\log^2 N)`$ with two clean qubits and $`N/2+O(n)`$ dirty qubits.
+$`O(N\log^2 N)`$ with one clean qubit and $`N/2+O(n)`$ dirty qubits.
 This is a sufficient bound for the stated structured family, without an
 optimality or best-known-bound claim.
 
@@ -384,7 +384,7 @@ in addition to the $`S`$ bank inputs, and bounds full output error.
 No quantum sorting is needed: the angle groups are known classically.
 
 The [addressed-rotation reduction](GLOBAL_BLOCK_FOLLOWUP.md#5-a-constructive-reduction-to-heterogeneous-phase-batching)
-uses four such batch calls, a separate clean readout bit, and
+uses two such batch calls, no additional clean qubit, and
 $`O(S+n^2)`$ exact routing/predicate gates. For a Hopf frame with
 $`N=2^n`$, banks of size $`S_d=2^d`$, and at most $`p`$ distinct angles
 **in each depth table**, take
@@ -396,7 +396,7 @@ T_F,G_F
 \tag{16}
 ```
 
-The auxiliary budget is two clean qubits and
+The auxiliary budget is one clean qubit and
 $`N/2+O(n)`$ dirty qubits. In particular, for $`p=O(1)`$ and $`L=N`$,
 this construction gives $`T_F,G_F=O(N\log^2 N)`$, below the retained
 general-purpose upper bound for that special family and within an
