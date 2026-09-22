@@ -90,10 +90,13 @@ class ProvenanceTests(unittest.TestCase):
         self.assertEqual(seed["tracked_commit"], "9cc564f493caff62b847fc362df522a68c6e83bf")
 
     def test_current_baseline_references_match_the_provenance(self) -> None:
-        for relative in ("docs/SOURCE_MAP.md", "docs/PROOF_AUDIT.md"):
-            text = (ROOT / relative).read_text(encoding="utf-8")
-            self.assertIn(CURRENT_HOPF_QBP_MAIN, text, relative)
-            self.assertNotIn(PREVIOUS_HOPF_QBP_MAIN, text, relative)
+        source_map = (ROOT / "docs/SOURCE_MAP.md").read_text(encoding="utf-8")
+        sync = (ROOT / "SYNC.md").read_text(encoding="utf-8")
+        current_upstreams = sync.split("## Current tracked upstreams", 1)[1].split("\n## ", 1)[0]
+        # Historical reconciliation sections deliberately preserve earlier SHAs.
+        for label, text in (("SOURCE_MAP", source_map), ("current upstreams", current_upstreams)):
+            self.assertIn(CURRENT_HOPF_QBP_MAIN, text, label)
+            self.assertNotIn(PREVIOUS_HOPF_QBP_MAIN, text, label)
 
     def test_zero_record_clarification_is_magnitude_specific(self) -> None:
         qbp = " ".join((ROOT / "docs/QBP_CONSEQUENCE.md").read_text(encoding="utf-8").split())

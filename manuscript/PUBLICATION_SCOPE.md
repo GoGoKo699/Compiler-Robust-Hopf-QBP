@@ -1,6 +1,6 @@
 # Publication scope
 
-[Paper architecture](README.md) · [Read the argument](../REVIEW.md) · [Sanity check](../docs/SANITY_CHECK.md)
+[Paper architecture](README.md) · [Read the argument](../REVIEW.md) · [Verification](../docs/VERIFICATION.md)
 
 The selected publication is **one full-length theoretical compiler paper**.
 Its subject is the prescribed Hopf differential frame, studied in two resource
@@ -59,7 +59,7 @@ Result C is a different construction with a constant clean allocation.
 
 Proofs: [A](../docs/COMPILER_THEOREM.md),
 [B](../docs/FAULT_TOLERANT_COMPILER.md),
-[C](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md).
+[C](../docs/OPERATOR_SOURCE_COMPILER.md).
 
 ## Corollaries that stay in the paper
 
@@ -117,21 +117,21 @@ a=2,\qquad b=N+n+7,\qquad L=N,
 This gap is stated once in the main results and revisited in the discussion.
 The paper does not claim that the repeated $`nL`$ charge is necessary, or
 that every constant clean allocation and every linear dirty allocation has
-the same upper bound. The graph-source attenuation theorem restricts one
-returned encoding; it supplies no additive full-frame lower bound.
+the same upper bound. Restrictions on particular source-processing interfaces
+do not supply an additive full-frame lower bound.
 
-## Main text, appendices, and retained research
+## Main text and appendices
 
 | Location | Contents |
 |---|---|
 | Main text | One-column obstruction; shared frame contract; Results A–C and their resource-regime table; proof mechanisms; short complex and QBP corollaries; the open endpoint |
 | Technical appendices | Full echo, decoder, and router schedules; source preparation; residual composition and failure tracking; amplification and error sums; dirty queries/banks; literal diagonal proof; lower-bound reductions; detailed QBP concentration and accounting |
-| Repository research supplement | Graph-source and supplied-source attenuation barriers; dirty-rank compression; modular addition, phase batching, clock, and catalysis investigations; unsuccessful or unresolved routes |
 
-The research supplement remains available and cited when useful. Its full
-contents are not part of the selected manuscript. In particular, the
-graph-source restriction is optional discussion support, not a fourth main
-theorem or a prerequisite for the positive constructions.
+Exploratory attenuation, modular, batching, clock, and catalysis investigations
+are outside the selected manuscript and the active repository. Their earlier
+versions remain recoverable through the snapshot identified in
+[provenance](../provenance/README.md). The current proof chapters contain all
+dependencies of the three principal results and retained corollaries.
 
 ## Contribution and evidence boundaries
 
@@ -152,8 +152,8 @@ end-to-end speedups are outside the selected claims.
 
 ## When manuscript preparation can proceed
 
-The [internal sanity check](../docs/SANITY_CHECK.md) supports drafting this
-scope now. The remaining publication work is to assemble the complete LaTeX
+The analytic proofs and [verification](../docs/VERIFICATION.md) support drafting
+this scope now. The remaining publication work is to assemble the complete LaTeX
 argument, align notation and citations with the earlier Hopf papers, and
 obtain external technical feedback on the complete draft. The endpoint can
 be pursued separately; the present manuscript does not wait for its solution.

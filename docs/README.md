@@ -1,92 +1,38 @@
 # Documentation map
 
-[← Repository landing page](../README.md) · [Complete technical narrative](../REVIEW.md)
+[Landing page](../README.md) · [Read the argument](../REVIEW.md) · [Publication scope](../manuscript/PUBLICATION_SCOPE.md)
 
-The documentation is arranged in three passes.  The first pass states the
-problem and two resource models. The second contains the proofs.  The third exposes the
-implementation, evidence, and provenance.
+Start with the landing page for the question and results, then read
+`REVIEW.md` for the continuous argument. Each formal topic has one primary
+chapter below.
 
-## Pass I: orient the synthesis question
+## Proof chapters
 
-| Page | Purpose |
+| Chapter | Role |
 |---|---|
-| [Landing page](../README.md) | one prepared column versus a prescribed unitary completion; theorem and schedule map |
-| [Technical reading map](INDEPENDENT_REVIEW_GUIDE.md) | a compact route through the proof and executable checks |
-| [Complete narrative](../REVIEW.md) | the full argument in one continuous reading |
-| [Publication scope](../manuscript/PUBLICATION_SCOPE.md) | the three principal results, supporting corollaries, appendix placement, and deferred questions |
+| [Hopf interface](HOPF_INTERFACE.md) | Coordinates, marker columns, singular charts, and addressed layers |
+| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | Complete-input contract, actual adjoints, and sequential reuse |
+| [Compiler boundaries](COMPILER_BOUNDARIES.md) | Concrete distinctions between state, checkpoint, and complete-frame promises |
+| [Exact compiler theorem](COMPILER_THEOREM.md) | All clean-workspace budgets; echo, decoder, router, and matching size/depth bounds |
+| [Fault-tolerant compiler](FAULT_TOLERANT_COMPILER.md) | Sufficient-clean matching T-count; shared source and full-error accounting |
+| [Two-clean compiler](OPERATOR_SOURCE_COMPILER.md) | Dirty operator source, bank tradeoff, literal diagonal and complex-frame corollaries |
+| [Borrowed-workspace appendix](BORROWED_WORKSPACE_COMPILER.md) | Exact dirty lookup and predicates; arbitrary-budget bound and restricted matching splice |
+| [QBP consequence](QBP_CONSEQUENCE.md) | Exact substitution, raw-coordinate accuracy, and matched-program accounting |
+| [Approximate QBP](QBP_APPROXIMATION.md) | Fixed-parameter bias with actual circuits, adjoints, and dirty references |
+| [Open problem](OPEN_PROBLEM.md) | The precise unresolved two-clean high-precision endpoint |
 
-## Pass II: inspect the proof by component
+## Evidence and sources
 
-| Page | Purpose |
+| Page | Role |
 |---|---|
-| [Hopf interface](HOPF_INTERFACE.md) | the four geometric facts consumed by synthesis, plus the addressed-layer operator |
-| [Exact compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and routed schedules with matching size/depth bounds |
-| [Fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) | precision, shared source, clean/dirty workspace, and matching T-count regime |
-| [Approximate QBP](QBP_APPROXIMATION.md) | complete-input circuit error, actual adjoints, and bounded raw-gradient bias |
-| [QBP consequence](QBP_CONSEQUENCE.md) | exact frame-safe substitution, shared records, and the matched-program cost statement |
-| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | clean-subspace operator contract and adjoint consequence |
-| [Compiler boundaries](COMPILER_BOUNDARIES.md) | state-column and checkpoint-interface counterexamples |
-| [Strict-zero echo](STRICT_ZERO_BORROWED_SUFFIX_ECHO.md) | focused four-sector construction and zero-workspace resource proof |
+| [Verification](VERIFICATION.md) | Proof-to-code map, reproducible checks, and evidence limits |
+| [Fault-tolerant receipts](../verification/fault_tolerant/README.md) | Four standalone exact source/kernel/resource checks |
+| [Source map](SOURCE_MAP.md) | Imported results, inherited interfaces, and local constructions |
+| [Related work](RELATED_WORK.md) | Primary-source comparisons and contribution boundaries |
+| [Provenance](../provenance/README.md) | Source versions and upstream lineage |
 
-The [theorem overview](THEOREM_OVERVIEW.md),
-[compiler architecture summary](UNIFIED_YUAN_ZHANG_COMPILER.md), and
-[end-to-end accounting](END_TO_END_QBP.md) provide shorter reference views of
-the same result.
-
-## Pass III: inspect evidence and provenance
-
-| Page | Purpose |
-|---|---|
-| [Fault-tolerant reproduction](../verification/fault_tolerant/README.md) | exact source/kernel fixtures, rational budgets, and their limits |
-| [Proof and executable correspondence](VERIFICATION.md) | what is represented locally, what is imported, and what every test checks |
-| [Source and dependency map](SOURCE_MAP.md) | exact state-preparation, Hopf, and QBP premises with local consumers |
-| [Related work](RELATED_WORK.md) | mathematical lineage and the narrow contribution boundary |
-| [Claim support map](CLAIM_SUPPORT.md) | claim-by-claim proof, implementation, test, and scope ledger |
-| [Full sanity check](SANITY_CHECK.md) | internal audit findings, corrections, reproduced checks, and publication decision |
-
-The internal reconstructions remain visible:
-
-| Record | Distinct role |
-|---|---|
-| [Consolidated proof audit](PROOF_AUDIT.md) | complete operator and resource reconstruction |
-| [Strict-zero audit](STRICT_ZERO_ECHO_AUDIT.md) | order, phase, borrowed-bit restoration, endpoints, and sums |
-| [Clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem re-derived from the target operator and imported compiler results |
-
-Detailed search and provenance records are kept separately from the proof:
-
-- [strict-zero prior-art boundary](STRICT_ZERO_PRIOR_ART.md);
-- [technical search record](PRIOR_ART_SEARCH_2026_09.md);
-- [provenance directory map](../provenance/README.md);
-- [`SYNC.md`](../SYNC.md) upstream synchronization policy.
-
-## Browse the repository by purpose
-
-Every principal directory contains its own short map.
-
-| Directory | Contents |
-|---|---|
-| [implementation](../compiler_robust_hopf/README.md) | modules arranged in proof order, public entry points, and interpretation of resource rows |
-| [tests](../tests/README.md) | validation groups organized by operator and theorem interface |
-| [scripts](../scripts/README.md) | walkthrough, ledgers, and synchronization commands |
-| [diagrams](../assets/README.md) | the five reviewer-facing SVGs and the exact statements they illustrate |
-| [provenance](../provenance/README.md) | compiler versions, Hopf upstreams, and prior-art claim boundaries |
-| [Research continuation](../research/README.md) | two-clean operator-source improvement, exact dirty arithmetic, and the remaining endpoint gap |
-| [manuscript workspace](../manuscript/README.md) | paper question chain, theorem hierarchy, and scope discipline |
-
-## Executable route
-
-```bash
-python scripts/reviewer_walkthrough.py
-python validate.py
-python scripts/verify_fault_tolerant.py
-python scripts/unified_resource_ledger.py --n 12
-python scripts/strict_zero_echo_ledger.py --n 12
-```
-
-The short walkthrough is an orientation.  The complete suite additionally
-tests the explicit coherent router on arbitrary complex prefix–suffix-entangled
-inputs and verifies exact workspace cleanup.
-
----
-
-[← Repository landing page](../README.md) · [Complete technical narrative →](../REVIEW.md)
+The [implementation](../compiler_robust_hopf/README.md),
+[tests](../tests/README.md), [scripts](../scripts/README.md), and
+[diagrams](../assets/README.md) have short
+maps for reproducing the paper's constructions. The
+[manuscript guide](../manuscript/README.md) gives the section order.

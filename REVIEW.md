@@ -137,7 +137,7 @@ separate scope. A finite-precision QBP consequence follows by controlling
 bounded-score bias, not by differentiating a compiled word.
 
 With two clean qubits, the separate
-[operator-source construction](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+[operator-source construction](docs/OPERATOR_SOURCE_COMPILER.md)
 implements every prescribed real Hopf frame with
 
 ```math
@@ -612,7 +612,7 @@ remaining suffix is empty and $T_h=X_b$; the same sector table applies.
 ### Executable counterpart
 
 - [Strict-zero construction](compiler_robust_hopf/strict_zero_echo.py)
-- [Focused proof](docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md)
+- [Formal echo proof](docs/COMPILER_THEOREM.md#4-strict-zero-workspace)
 - [Complete operator tests](tests/test_strict_zero_echo.py)
 - [Exact-rational resource audit](compiler_robust_hopf/strict_zero_audit.py)
 
@@ -1111,7 +1111,7 @@ they do not emit every elementary gate of the asymptotic compiler.
 
 At $L=N$, a sufficiently large $a=\Theta(n)$ clean budget and $b=\Theta(N)$ dirty workspace attain
 $T^\star=\Theta(N)$. A new
-[operator-source compiler](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+[operator-source compiler](docs/OPERATOR_SOURCE_COMPILER.md)
 gives $T=O(N+nL)$ and $G=O(NL)$ with $a=2$ and $b\ge L+n+7$.
 Thus, at $L=N$, the available upper bound is now $O(N\log N)$,
 against the unchanged $\Omega(N)$ lower bound. This is a sufficient allocation,
@@ -1135,10 +1135,8 @@ work. An anticommutator extracts each scalar coefficient times the identity on
 that entire workspace; two clean flags and coherent amplification produce each
 addressed rotation. It needs no initialized precision state. The precision cost
 is still paid once per tree depth, leaving the logarithmic gap. The
-[progress report](research/CONSTANT_CLEAN_PROGRESS.md) is the short reading route;
-the [continuation brief](research/CONSTANT_CLEAN_ENDPOINT.md) gives the complete
-contract. Restricted source-processing obstructions do not establish a stronger
-full-frame lower bound.
+[two-clean proof](docs/OPERATOR_SOURCE_COMPILER.md) gives the full construction;
+the [open-problem statement](docs/OPEN_PROBLEM.md) records the remaining gap.
 
 ---
 

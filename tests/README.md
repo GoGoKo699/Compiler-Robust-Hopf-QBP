@@ -24,15 +24,10 @@ theorem by numerical extrapolation.
 | [`test_resource_bounds.py`](test_resource_bounds.py) | Do the low-workspace absorption, maximal-cut, workspace-envelope, and lower-bound diagnostics hold? |
 | [`test_decoders.py`](test_decoders.py) | Do direct parity, histogram, Walsh–Hadamard, and direct phase-record decoders agree? |
 | [`test_approximation_contract.py`](test_approximation_contract.py) | Do complete-output error and the actual adjoint control the fixed-parameter QBP measurement bias? |
-| [`test_constant_clean_structure.py`](test_constant_clean_structure.py) | Do Pauli/Fourier restrictions, dirty echoes, the two-call swap wrapper, and full-batch extraction satisfy their complete-input identities and leakage bounds? |
-| [`test_identical_phase_batching.py`](test_identical_phase_batching.py) | Do identical and signed-weight phase batches prevent wraparound, restore arbitrary work, cancel literal phase with their actual inverses, and compose despite intermediate leakage? |
 | [`test_operator_source_compiler.py`](test_operator_source_compiler.py) | Do the native source, scalar block, dirty bank and suffix echoes, literal phases, and amplified complete output agree with the construction? |
-| [`test_operator_source_reuse.py`](test_operator_source_reuse.py) | Do Pauli support, exact acceptance arithmetic, and graph-code leakage distinguish a small compression from returned attenuation? |
-| [`test_modular_lookup_compiler.py`](test_modular_lookup_compiler.py) | Do dirty carry extraction and the divide-and-conquer modular table adder restore arbitrary work on every tested basis input? |
 | [`test_provenance.py`](test_provenance.py) | Are upstream commits, source roles, and local lineage recorded consistently? |
 | [`test_literature_policy.py`](test_literature_policy.py) | Does the active proof use one compiler framework and maintain the declared contribution boundary? |
 | [`test_reviewer_narrative.py`](test_reviewer_narrative.py) | Do the primary reading route, diagrams, links, terminology, and source-version statements remain coherent? |
-| [`test_clean_room_review.py`](test_clean_room_review.py) | Does the independent internal reconstruction retain the theorem and evidence boundary? |
 
 ## Highest-leverage operator checks
 
@@ -44,8 +39,16 @@ The following checks are especially useful when modifying the scientific code:
 4. route followed by inverse route is identity on arbitrary complex inputs;
 5. routed tail equals the exact subtree direct sum;
 6. complete routed cut equals the direct frame;
-7. every work register returns to its clean value;
-8. one-UCG phase blocks reproduce the complete leaf-phase diagonal.
+7. exact-compiler work registers return to their promised inputs;
+8. one-UCG phase blocks reproduce the complete leaf-phase diagonal;
+9. two-clean operator-source blocks satisfy full-output error bounds, including
+   core return, while lookup banks and suffix controls return exactly;
+10. actual inverse circuits and sequential composition retain their bounds
+    after intermediate leakage.
+
+All exact-frame, resource, QBP, and two-clean compiler checks are retained.
+Exploratory endpoint investigations are preserved in repository history;
+finite checks for those excluded constructions are outside this suite.
 
 ## Run the suite
 

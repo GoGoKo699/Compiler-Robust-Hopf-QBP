@@ -5,7 +5,7 @@
 At a **fixed parameter tuple**, a full initialized-isometry error bound for the
 prescribed frame controls the actual gradient measurement. Approximate work may
 remain coherent until the final measurement. No derivative of a compiled gate
-word is needed. The [two-clean operator-source compilers](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+word is needed. The [two-clean operator-source compilers](OPERATOR_SOURCE_COMPILER.md)
 now meet this same contract for both the real frame and its phase-dressed
 complex magnitude extension, under their explicit dirty-workspace budgets.
 Their different gate counts do not change the bias argument below.

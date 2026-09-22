@@ -282,7 +282,8 @@ $`P_0=\mathrm{CZ}_{b,{\rm core}\,0}`$.
 
 The conditional mask requires no clean suffix flag. Allocate one
 arbitrary dirty control z, separate from the core and selectors.
-Let G toggle z by h, using the exact borrowed-MCX construction and
+Let G toggle z by h, using the exact
+[borrowed-MCX construction](BORROWED_WORKSPACE_COMPILER.md#3-an-exact-echo-selects-a-logical-sector) and
 borrowing the logical target t. It costs $`O(n^2)`$ Toffolis and
 returns t on every input. Let $`Q_{zg}`$ be the dirty XOR table query
 whose unchanged address is $`(z,b,x)`$ and whose row is
@@ -346,7 +347,7 @@ silently normalized.
 ## 5. Amplification includes rejected-space error
 
 Apply the robust normalization-two lemma from
-[the fault-tolerant compiler chapter](../../docs/FAULT_TOLERANT_COMPILER.md).
+[the fault-tolerant compiler chapter](FAULT_TOLERANT_COMPILER.md).
 Robust oblivious amplitude amplification and its cubic accepted-block
 identity are established in Berry, Childs, Cleve, Kothari, and Somma,
 *Physical Review Letters* **114**, 090502 (2015),
@@ -561,7 +562,7 @@ kept separate from the additional word banks.
 
 For this fixed two-clean budget, $`q=n+2+b=\Theta(b)`$.
 Consequently (34) matches the
-[existing full-frame lower bound](../../docs/FAULT_TOLERANT_COMPILER.md#10-matching-lower-bounds-and-their-lineage)
+[existing full-frame lower bound](FAULT_TOLERANT_COMPILER.md#10-matching-lower-bounds-and-their-lineage)
 whenever the extra $`nL`$ term is absorbed. Two sufficient regimes,
 subject to the workspace threshold in (34), are
 
@@ -632,9 +633,9 @@ T=O\!\left(\sqrt{N\ell}+\ell+\frac{N\ell}{b}\right),
 Since $`q=n+2+b=\Theta(b)`$, (39) matches the diagonal lower bound in
 the same model, with every initialized and borrowed wire included.
 The GKW diagonal theorem cited in
-[Section 10.1 of the main proof](../../docs/FAULT_TOLERANT_COMPILER.md#101-the-real-frame-contains-arbitrary-diagonals)
+[Section 10.1 of the main proof](FAULT_TOLERANT_COMPILER.md#101-the-real-frame-contains-arbitrary-diagonals)
 supplies $`\Omega(\sqrt{N\ell}+\ell)`$.
-The [fixed-width circuit count in Section 10.2](../../docs/FAULT_TOLERANT_COMPILER.md#102-fixed-width-coherent-counting),
+The [fixed-width circuit count in Section 10.2](FAULT_TOLERANT_COMPILER.md#102-fixed-width-coherent-counting),
 applied to an $`N`$-phase diagonal grid packing, supplies
 $`\Omega(N\ell/q)`$ when $`q^2`$ is a sufficiently small multiple of
 $`N\ell`$; otherwise that term is absorbed by $`\sqrt{N\ell}`$.
@@ -666,7 +667,7 @@ unitary and not only a prepared state.
 
 ## 9. Verification and scope
 
-The companion [operator-source tests](../../tests/test_operator_source_compiler.py)
+The companion [operator-source tests](../tests/test_operator_source_compiler.py)
 check small complete matrices for the anticommuting source, its native
 gate word and actual adjoint, all sign masks, dyadic endpoints, and the
 dirty-selector phase query. They also check the two-flag rotation block,
@@ -684,12 +685,8 @@ the asymptotic statement.
 
 The construction combines established Clifford-loader algebra, exact
 dirty XOR lookup, a fixed native geometric specialization, and a
-normalization-two block. It implements one address-selected rotation. This is not a simultaneous
-tensor product of all the table rotations. In particular, its programmed
-mask depends on the address, whereas the earlier batch-extraction converse
-requires one common circuit for all selected bank commutators. The proof
-therefore does not establish the fast heterogeneous tensor-batch hypothesis
-or use it as a subroutine.
+normalization-two block. Its programmed mask depends on the address and
+implements one address-selected rotation.
 
 The unrestricted $`O(N)`$ endpoint remains open. The established new
 upper bound is $`O(N\log N)`$ at the explicit two-clean,

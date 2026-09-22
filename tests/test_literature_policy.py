@@ -104,35 +104,25 @@ class LiteraturePolicyTests(unittest.TestCase):
             "docs/QBP_CONSEQUENCE.md",
             "docs/VERIFICATION.md",
             "docs/SOURCE_MAP.md",
-            "docs/THEOREM_OVERVIEW.md",
-            "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
-            "docs/END_TO_END_QBP.md",
-            "docs/PROOF_AUDIT.md",
-            "docs/RESEARCH_STATUS.md",
-            "docs/CLAIM_SUPPORT.md",
+            "docs/FAULT_TOLERANT_COMPILER.md",
+            "docs/OPERATOR_SOURCE_COMPILER.md",
+            "docs/BORROWED_WORKSPACE_COMPILER.md",
             "manuscript/README.md",
+            "manuscript/PUBLICATION_SCOPE.md",
         )
         source_bearing_docs = (
             "README.md",
             "docs/COMPILER_THEOREM.md",
             "docs/SOURCE_MAP.md",
             "docs/RELATED_WORK.md",
-            "docs/RESEARCH_STATUS.md",
-            "docs/CLAIM_SUPPORT.md",
-            "docs/PROOF_AUDIT.md",
             "manuscript/README.md",
         )
         all_workspace_statement_docs = (
             "README.md",
             "REVIEW.md",
             "docs/COMPILER_THEOREM.md",
-            "docs/THEOREM_OVERVIEW.md",
-            "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
-            "docs/END_TO_END_QBP.md",
-            "docs/PROOF_AUDIT.md",
-            "docs/RESEARCH_STATUS.md",
-            "docs/CLAIM_SUPPORT.md",
             "manuscript/README.md",
+            "manuscript/PUBLICATION_SCOPE.md",
         )
         retired_names = (
             "ancilla_depth.py",
@@ -162,7 +152,7 @@ class LiteraturePolicyTests(unittest.TestCase):
             text = (ROOT / relative).read_text(encoding="utf-8")
             compact_text = "".join(text.split())
             self.assertTrue(
-                "m>=0" in compact_text or "m\\geq0" in compact_text,
+                any(scope in compact_text for scope in ("m>=0", "m\\geq0", "m\\ge0")),
                 msg=f"missing all-workspace theorem scope in {relative}",
             )
 
@@ -197,13 +187,9 @@ class LiteraturePolicyTests(unittest.TestCase):
         self.assertIn("Khattar", related)
         self.assertIn("can be adapted", normalized_related.lower())
 
-        prior_art = (ROOT / "docs" / "STRICT_ZERO_PRIOR_ART.md").read_text(
-            encoding="utf-8"
-        )
-        normalized = " ".join(prior_art.split())
-        self.assertIn("not a legal novelty opinion", normalized)
-        self.assertIn("Hopf-specific", prior_art)
-        self.assertIn("should not be used", prior_art)
+        # The claim policy is checked above in its retained machine-readable
+        # record; historical search and reconstruction reports need no duplicate
+        # wording checks in the publication tree.
 
     def test_active_unified_dispatch_uses_strict_zero_echo(self) -> None:
         text = (

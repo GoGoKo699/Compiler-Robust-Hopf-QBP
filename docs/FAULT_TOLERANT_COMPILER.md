@@ -1,6 +1,6 @@
 # The fault-tolerant compiler for the complete real frame
 
-[← Exact compiler](COMPILER_THEOREM.md) · [QBP consequence](QBP_CONSEQUENCE.md) · [Remaining constant-clean endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md)
+[← Exact compiler](COMPILER_THEOREM.md) · [QBP consequence](QBP_CONSEQUENCE.md) · [Remaining constant-clean endpoint](OPEN_PROBLEM.md)
 
 The exact compiler counts arbitrary one-qubit gates and CNOTs. This chapter
 keeps the same prescribed Hopf frame and changes the gate set to Clifford+T.
@@ -112,7 +112,7 @@ The reservation on $`a`$ is sufficient, not a clean-space lower bound.
 For example, at $`L=N`$, sufficiently many $`O(n)`$ clean qubits and
 $`\Theta(N)`$ borrowed qubits give $`T=\Theta(N)`$. The case of only
 $`O(1)`$ clean qubits is treated separately in the
-[remaining-endpoint note](../research/CONSTANT_CLEAN_ENDPOINT.md).
+[remaining-endpoint note](OPEN_PROBLEM.md).
 
 We first establish three reusable primitives, then give the low- and
 high-precision constructions and the matching lower bound.
@@ -912,9 +912,9 @@ here is their exact logarithmic-width implementation and the shared
 source's complete-frame composition. SelectSwap and the lower-bound
 machinery retain their original attribution. The sufficient reservation
 $`a\geq C(n+h)`$ remains part of Theorem 1; the
-[constant-clean endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md) is not
+[constant-clean endpoint](OPEN_PROBLEM.md) is not
 settled by removing that hypothesis from the displayed formula. A separate
-[operator-source construction](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+[operator-source construction](OPERATOR_SOURCE_COMPILER.md)
 now gives $`T=O(N+nL)`$ and $`G=O(NL)`$ with $`a=2`$ and
 $`b\ge L+n+7`$. At $`L=N`$ its upper bound is $`O(N\log N)`$;
 Theorem 1 and its matching lower bounds are unchanged. The separate note

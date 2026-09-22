@@ -58,12 +58,10 @@
     "compiler_robust_hopf/unified_compiler.py",
     "compiler_robust_hopf/resource_bounds.py",
     "compiler_robust_hopf/compiler_boundaries.py",
-    "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
-    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
-    "docs/STRICT_ZERO_ECHO_AUDIT.md",
-    "docs/STRICT_ZERO_PRIOR_ART.md",
-    "docs/THEOREM_OVERVIEW.md",
-    "docs/PROOF_AUDIT.md"
+    "docs/COMPILER_THEOREM.md",
+    "docs/FAULT_TOLERANT_COMPILER.md",
+    "docs/OPERATOR_SOURCE_COMPILER.md",
+    "docs/BORROWED_WORKSPACE_COMPILER.md"
   ],
   "frozen_fallback": {
     "branch": "near-optimal-audited-2026-09",

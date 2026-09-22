@@ -1,11 +1,12 @@
 # Borrowed-workspace compiler and the all-clean-budget corollary
 
-This appendix supplies the earlier construction needed by the
-[endpoint brief](../CONSTANT_CLEAN_ENDPOINT.md). It is separate from the
-[sufficient-clean compiler](../../docs/FAULT_TOLERANT_COMPILER.md).
-The proof is a condensed derivation of the retained research construction,
-not a new frontier claim. It concerns the prescribed complete **real** Hopf
-frame; no complex-frame or common-phase extension is asserted here.
+This publication appendix proves the arbitrary-budget borrowed-workspace
+upper bound and its restricted matching splice with the
+[sufficient-clean compiler](FAULT_TOLERANT_COMPILER.md). Its dirty lookup
+and predicate-toggle primitives also support the
+[two-clean construction](OPERATOR_SOURCE_COMPILER.md). It concerns the
+prescribed complete **real** Hopf frame; no complex-frame or common-phase
+extension is asserted here.
 
 ## 1. Contract and statements
 
@@ -312,7 +313,7 @@ The proof above supplies the particular exact identities and conservative
 counts needed here; it imports neither measurement-based uncomputation nor
 optimized relative-phase gate constants. One-qubit approximation is the
 same synthesis input used in the
-[main theorem](../../docs/FAULT_TOLERANT_COMPILER.md#primary-references).
+[main theorem](FAULT_TOLERANT_COMPILER.md#primary-references).
 
 In particular, (3) is not a valid dirty interpreter for arbitrary rotations:
 it uses $`G^2=I`$. Equation (6) also requires the exact symmetry (5).
@@ -344,4 +345,6 @@ main theorem give the opposite order and establish (2).
 
 At $`a=O(1), b=\Theta(N), L=N`$, the hypothesis of (2) fails. Equation (1)
 still gives $`O(N^{3/2})`$, against the retained $`\Omega(N)`$ lower bound.
-This appendix preserves that gap.
+The [two-clean construction](OPERATOR_SOURCE_COMPILER.md) improves this upper
+bound at its stated allocation; the remaining gap is recorded in the
+[open problem](OPEN_PROBLEM.md).

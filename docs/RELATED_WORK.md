@@ -125,10 +125,11 @@ The Hopf-specific statement is:
 
 ## 4. Sparse and restricted multiplexors
 
-Recent restricted-UCG work asks when block repetition or limited control
-participation can reduce synthesis cost.  The addressed Hopf layer is related,
-but its sparsity has a particular form: one long all-zero suffix predicate is
-shared by every prefix-selected rotation.
+[Xu et al., “A Unified Framework for Optimizing Uniformly Controlled
+Structures in Quantum Circuits”](https://arxiv.org/abs/2512.08675) study
+restricted UCGs and synthesis savings from limited control participation.
+The addressed Hopf layer is related, but its sparsity has a particular form:
+one long all-zero suffix predicate is shared by every prefix-selected rotation.
 
 The borrowed-suffix factorization converts this logical predicate into smaller
 physical UCG width rather than attempting to prune the full-width Möttönen angle
@@ -288,7 +289,7 @@ T=\Theta\!\left(\sqrt{NL}+L+\frac{NL}{n+a+b}\right),
 where $a$ and $b$ count clean and dirty ancillary qubits. The theorem retains
 its sufficient clean-workspace reservation. A separate retained corollary for
 all clean budgets, under an additional restriction on precision and dirty
-width, is proved in the [borrowed-workspace appendix](../research/constant_clean/BORROWED_WORKSPACE_COMPILER.md).
+width, is proved in the [borrowed-workspace appendix](BORROWED_WORKSPACE_COMPILER.md).
 The lower bounds follow from GKW and LKS with the stated reductions; the
 contribution is the upper construction and the resulting match in those
 regimes. The all-clean-budget extension also uses the earlier borrowed-work
@@ -310,17 +311,14 @@ a T-count comparison. Recent sparse-QROM and sparse-state bounds address
 different input families. These distinctions delimit the use of each result;
 they do not establish priority by absence of a matching theorem.
 
-The integration also keeps two application limits explicit. Small-source
-attenuation bounds are auxiliary statements, not general lower bounds for
-frame synthesis or gradient estimation. At a fixed parameter value, a
-full-isometry error can bound the bias of the
+At a fixed parameter value, a full-isometry error can bound the bias of the
 [bounded-score QBP estimator](QBP_APPROXIMATION.md).
 This does not differentiate the compiled Clifford+T word as a function of the
 parameters and does not prove optimal gradient-query complexity.
 
 ## 11. What the two-clean construction adds
 
-The [operator-source compiler](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+The [operator-source compiler](OPERATOR_SOURCE_COMPILER.md)
 uses two initialized flags and an arbitrary dirty bank. Full-space
 anticommuting loaders are established by
 [Kerenidis–Prakash](https://arxiv.org/html/2202.00054v2), Definitions 4.4/4.6
@@ -344,18 +342,11 @@ The remaining $`nL`$ term matters: at $`L=N`$ the two-clean result is an
 $`O(N\log N)`$ upper bound, not a matched linear bound. The claimed
 contribution is this explicitly charged construction and its stated resource
 regimes, not the invention of loaders, dirty lookup, overlap algebra, or
-amplification. The [publication scope](../manuscript/PUBLICATION_SCOPE.md)
-sets the role of these results in the paper.
-
-## 12. Detailed source record
+amplification.
 
 The [source map](SOURCE_MAP.md) gives exact theorem numbers and local consumers.
-The broader technical search is retained in
-[`PRIOR_ART_SEARCH_2026_09.md`](PRIOR_ART_SEARCH_2026_09.md) and
-[`provenance/prior_art_search.json`](../provenance/prior_art_search.json).
-
-A negative result from that bounded search is not treated as proof of novelty or
-priority.
+The comparisons identify dependencies and specific additional constructions;
+they do not certify priority.
 
 ## References highlighted here
 
@@ -378,6 +369,9 @@ priority.
   quantum circuit constructions,” *Quantum* **9**, 1752 (2025).
 - B. Zindorf and S. Bose, “Efficient implementation of multi-controlled quantum
   gates,” *Physical Review Applied* **24**, 044030 (2025).
+- C. Xu et al., [“A Unified Framework for Optimizing Uniformly Controlled
+  Structures in Quantum Circuits”](https://arxiv.org/abs/2512.08675),
+  arXiv:2512.08675 (2025).
 - J. Bausch, [“Fast Black-Box Quantum State Preparation”](https://arxiv.org/pdf/2009.10709v4),
   arXiv:2009.10709v4 (2022), Eqs. (4), (6), and Section 2.3.3.
 - G. H. Low, V. Kliuchnikov, and L. Schaeffer,

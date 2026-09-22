@@ -17,35 +17,26 @@ PRIMARY_PAGES = (
     "docs/HOPF_INTERFACE.md",
     "docs/COMPILER_THEOREM.md",
     "docs/FAULT_TOLERANT_COMPILER.md",
+    "docs/OPERATOR_SOURCE_COMPILER.md",
+    "docs/BORROWED_WORKSPACE_COMPILER.md",
+    "docs/OPEN_PROBLEM.md",
     "docs/QBP_APPROXIMATION.md",
     "docs/QBP_CONSEQUENCE.md",
+    "docs/FRAME_SAFE_COMPILATION.md",
+    "docs/COMPILER_BOUNDARIES.md",
     "docs/VERIFICATION.md",
     "docs/SOURCE_MAP.md",
     "docs/RELATED_WORK.md",
-    "docs/INDEPENDENT_REVIEW_GUIDE.md",
-    "docs/RESEARCH_STATUS.md",
-    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
-    "docs/STRICT_ZERO_ECHO_AUDIT.md",
-    "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
     "compiler_robust_hopf/README.md",
     "tests/README.md",
     "scripts/README.md",
     "assets/README.md",
     "provenance/README.md",
     "manuscript/README.md",
-    "research/README.md",
-    "research/CONSTANT_CLEAN_ENDPOINT.md",
-    "research/CONSTANT_CLEAN_PROGRESS.md",
-    "research/constant_clean/README.md",
-    "research/constant_clean/GLOBAL_BLOCK_FOLLOWUP.md",
-    "research/constant_clean/JOINT_CLOCK_FOLLOWUP.md",
-    "research/constant_clean/DIRTY_RETURN_LOWER_BOUND_FOLLOWUP.md",
-    "research/constant_clean/MODULAR_LOOKUP_FOLLOWUP.md",
-    "research/constant_clean/ENDPOINT_LITERATURE_FOLLOWUP.md",
-    "research/constant_clean/IDENTICAL_PHASE_BATCHING.md",
-    "research/constant_clean/OPERATOR_SOURCE_COMPILER.md",
-    "research/constant_clean/OPERATOR_SOURCE_REUSE.md",
+    "manuscript/PUBLICATION_SCOPE.md",
+    "verification/fault_tolerant/README.md",
 )
+
 
 TABLE_MATH_PAGES = (
     "README.md",
@@ -53,17 +44,25 @@ TABLE_MATH_PAGES = (
     "docs/HOPF_INTERFACE.md",
     "docs/COMPILER_THEOREM.md",
     "docs/FAULT_TOLERANT_COMPILER.md",
+    "docs/OPERATOR_SOURCE_COMPILER.md",
+    "docs/BORROWED_WORKSPACE_COMPILER.md",
     "docs/QBP_APPROXIMATION.md",
     "docs/QBP_CONSEQUENCE.md",
-    "docs/END_TO_END_QBP.md",
-    "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
-    "docs/CLAIM_SUPPORT.md",
     "docs/SOURCE_MAP.md",
-    "docs/RESEARCH_STATUS.md",
-    "docs/STRICT_ZERO_BORROWED_SUFFIX_ECHO.md",
-    "docs/STRICT_ZERO_ECHO_AUDIT.md",
-    "docs/CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md",
+    "manuscript/PUBLICATION_SCOPE.md",
 )
+
+
+def markdown_pages():
+    """Inspect the full reading corpus, excluding generated/dependency trees."""
+    for path in sorted(ROOT.rglob("*.md")):
+        parts = path.relative_to(ROOT).parts
+        if any(part.startswith(".") or part in {
+            "node_modules", "__pycache__", "build", "dist"
+        } for part in parts):
+            continue
+        yield path
+
 
 DIAGRAMS = (
     "assets/state-vs-frame.svg",
@@ -178,10 +177,10 @@ class ReviewerNarrativeTests(unittest.TestCase):
             r"$W_{\mathbb C,\mathrm{mag}}=D_{\mathrm{ph}}W_{\mathbb R}$",
             hopf,
         )
-        accounting = (ROOT / "docs" / "END_TO_END_QBP.md").read_text(
+        accounting = (ROOT / "docs" / "QBP_CONSEQUENCE.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn(r"$\ell_\infty$", accounting)
+        self.assertIn(r"\|\widehat{\nabla E_O}-\nabla E_O\|_{\infty}", accounting)
 
     def test_landing_page_starts_from_the_prescribed_completion(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -275,20 +274,26 @@ class ReviewerNarrativeTests(unittest.TestCase):
         self.assertIn("T_{\\mathrm{scalar}}^{\\mathrm{matched}}", qbp)
         self.assertIn("T_{\\mathrm{grad}}^{\\mathrm{matched}}", qbp)
 
-    def test_clean_room_review_matches_the_active_theorem(self) -> None:
-        clean_room = (
-            ROOT / "docs" / "CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("S_{\\mathbb C,\\mathrm{mag}}", clean_room)
-        self.assertIn("D_{\\mathbb C,\\mathrm{mag}}", clean_room)
-        self.assertIn("\\mathrm{diag}", clean_room)
-        self.assertIn("router.py", clean_room)
-        self.assertNotIn("S_{\\mathbb C}(n,m)", clean_room)
-        self.assertNotIn("D_{\\mathbb C}(n,m)", clean_room)
+    def test_publication_scope_preserves_claim_and_evidence_boundaries(self) -> None:
+        scope = (ROOT / "manuscript/PUBLICATION_SCOPE.md").read_text(encoding="utf-8")
+        normalized = compact(scope).lower()
+        for proof in (
+            "COMPILER_THEOREM.md",
+            "FAULT_TOLERANT_COMPILER.md",
+            "OPERATOR_SOURCE_COMPILER.md",
+        ):
+            self.assertIn(proof, scope)
+        self.assertIn("worst-case", normalized)
+        self.assertIn("operator core returns approximately", normalized)
+        self.assertIn("literal phases", normalized)
+        self.assertIn("not arbitrary complex-unitary synthesis", normalized)
+        self.assertIn("do not prove universal statements", normalized)
+        self.assertIn("open problem", normalized)
+        self.assertIn(r"\Omega(N)\le T^\star\le O(N\log N)", scope)
 
-    def test_primary_local_links_resolve(self) -> None:
-        for relative in PRIMARY_PAGES:
-            page = ROOT / relative
+    def test_all_markdown_local_links_resolve(self) -> None:
+        for page in markdown_pages():
+            relative = page.relative_to(ROOT)
             text = page.read_text(encoding="utf-8")
             targets = MARKDOWN_LINK.findall(text) + HTML_IMAGE.findall(text)
             for raw_target in targets:
@@ -333,9 +338,10 @@ class ReviewerNarrativeTests(unittest.TestCase):
         documentation_index = (ROOT / "docs" / "README.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("Pass I: orient the synthesis question", documentation_index)
-        self.assertIn("Pass II: inspect the proof by component", documentation_index)
-        self.assertIn("Pass III: inspect evidence and provenance", documentation_index)
+        self.assertIn("[Landing page](../README.md)", documentation_index)
+        self.assertIn("[Read the argument](../REVIEW.md)", documentation_index)
+        self.assertIn("## Proof chapters", documentation_index)
+        self.assertIn("## Evidence and sources", documentation_index)
         for target in (
             "../compiler_robust_hopf/README.md",
             "../tests/README.md",
@@ -348,9 +354,12 @@ class ReviewerNarrativeTests(unittest.TestCase):
         verification = (ROOT / "docs" / "VERIFICATION.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("PROOF_AUDIT.md", verification)
-        self.assertIn("STRICT_ZERO_ECHO_AUDIT.md", verification)
-        self.assertIn("CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md", verification)
+        for target in (
+            "../tests/test_strict_zero_echo.py",
+            "../tests/test_operator_source_compiler.py",
+            "../verification/fault_tolerant/README.md",
+        ):
+            self.assertIn(target, verification)
 
     def test_router_and_source_versions_are_machine_checkable(self) -> None:
         self.assertTrue((ROOT / "compiler_robust_hopf" / "router.py").is_file())

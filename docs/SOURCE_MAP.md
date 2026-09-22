@@ -123,7 +123,6 @@ from the exact clean-workspace size–depth theorem.
 | F7 | [Li–Ou–Wang–Yao–Yuan–Zhang, arXiv:2607.28260v1](https://arxiv.org/html/2607.28260v1), Sections 3–4 | sparse QROM and sparse-state comparison | different input families; no general full-frame conclusion is imported |
 | F8 | Khattar–Gidney, arXiv:2407.17966v2, Sections 3, 4 and 7.4 | conditionally clean and dirty selector context | cancellation and selector reuse are established techniques, not a separate contribution here |
 | F9 | [Kerenidis–Prakash, arXiv:2202.00054v2](https://arxiv.org/html/2202.00054v2), Definitions 4.4/4.6 and Theorem 4.9; [Chee et al., arXiv:2301.07477](https://arxiv.org/pdf/2301.07477), Appendix C | full-space Clifford loaders and their scalar/antisymmetric product decomposition | the Pauli representation and overlap algebra predate this work; the operator-source note supplies a native geometric specialization and dirty-programmed rotation construction |
-| F10 | [Gidney, arXiv:1706.07884v2](https://arxiv.org/html/1706.07884v2), Sections 2.9–2.10 | coherent dirty constant offsets and linear controlled increments | the new modular table adder uses the increment primitive within charged carry-query layers; the finite test emitter is not evidence for its asymptotic cost |
 | F11 | [Berry–Childs–Cleve–Kothari–Somma, arXiv:1412.4687](https://arxiv.org/pdf/1412.4687), Eqs. (11)–(15) | normalization-two oblivious amplification and its cubic accepted block | amplification is inherited; the local proofs explicitly bound the complete initialized isometry, including rejected work retained coherently |
 
 Standard Pauli linear combinations, reversible arithmetic, and oblivious
@@ -136,18 +135,21 @@ local construction, not additional oracle assumptions.
 | R12 | exact compact capped geometric preparation | simultaneous linear T count and logarithmic peak clean width, with ordinary binary labels and exact temporary return; refines the implementation of the established geometric source |
 | R13 | addressed SU(2) sampling and direct frame composition | complete operator contract with small clean work; combines fixed Pauli atoms, geometric bit sampling, and charged dirty lookup |
 | R14 | shared-source composition of frame residuals | the principal uniform-precision construction: accepted-branch shifts, retained source, failure tracking, and one final amplification; see [theorem and proof](FAULT_TOLERANT_COMPILER.md) |
-| R15 | matching T-count in the stated workspace regimes | the sufficient-clean [theorem](FAULT_TOLERANT_COMPILER.md) plus the F3/F4 reductions; the separate all-clean-budget [corollary and borrowed-workspace proof](../research/constant_clean/BORROWED_WORKSPACE_COMPILER.md) also uses the earlier compiler under its additional condition |
+| R15 | matching T-count in the stated workspace regimes | the sufficient-clean [theorem](FAULT_TOLERANT_COMPILER.md) plus the F3/F4 reductions; the separate all-clean-budget [corollary and borrowed-workspace proof](BORROWED_WORKSPACE_COMPILER.md) also uses the arbitrary-budget compiler under its additional condition |
 | R16 | fixed-parameter bounded-score robustness | [QBP approximation](QBP_APPROXIMATION.md): full-isometry and observable errors bound estimator bias, without differentiating a compiled word or proving gradient-query optimality |
-| R17 | two-clean operator-source compiler and corollaries | [proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md): full-frame composition gives $T=O(N+nL)$ for $b\ge L+n+7$; dirty banks give $O(\sqrt{NL}+nL+NL/b)$ for $b\ge2(L+n+7)$; literal diagonals and the phase-dressed magnitude frame have their stated separate reservations; operator-core return error is included in the norm |
-| R18 | zero-clean modular table addition | [proof](../research/constant_clean/MODULAR_LOOKUP_FOLLOWUP.md): four-query dirty carry extraction and sign-corrected divide-and-conquer composition give $T=O((N+m)\log(m+1))$; a joint precision clock remains separate |
-| R19 | returned graph-source attenuation restriction | [proof](../research/constant_clean/OPERATOR_SOURCE_REUSE.md): Pauli-support rank, the anticommuting geometric tail, and the retained Galois acceptance bound limit one specific returned encoding; no sum over unrestricted frame circuits |
+| R17 | two-clean operator-source compiler and corollaries | [proof](OPERATOR_SOURCE_COMPILER.md): full-frame composition gives $T=O(N+nL)$ for $b\ge L+n+7$; dirty banks give $O(\sqrt{NL}+nL+NL/b)$ for $b\ge2(L+n+7)$; literal diagonals and the phase-dressed magnitude frame have their stated separate reservations; operator-core return error is included in the norm |
 
 For polynomial accuracy-bit budgets, the direct sampler can already attain the
 matching T count. That regime is not attributed to the later shared-source
 composition. The latter removes the repeated precision cost uniformly over
-precision. Small-source attenuation obstructions are auxiliary results and do
-not establish a general constant-clean-workspace frame lower bound; the
-[remaining endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md) is kept separate.
+precision. The two-clean construction retains a logarithmic gap at the
+[selected high-precision endpoint](OPEN_PROBLEM.md).
+
+The two-clean proof uses the
+[two-pass dirty lookup](BORROWED_WORKSPACE_COMPILER.md#2-exact-dirty-table-and-reflection-interpreter)
+and [borrowed predicate toggle](BORROWED_WORKSPACE_COMPILER.md#3-an-exact-echo-selects-a-logical-sector)
+proved in the borrowed-workspace appendix, together with amplification and
+the lower bounds stated in the fault-tolerant chapter.
 
 The source audit supports these precise dependencies and comparisons. It does
 not certify priority or infer novelty from a bounded search finding no match.
@@ -175,12 +177,18 @@ fault-tolerant checks are not a general emitted Clifford+T frame compiler.
   file lineage, and reconciliation;
 - [`provenance/literature.json`](../provenance/literature.json): compiler source
   versions and role assignments;
-- [`provenance/prior_art_search.json`](../provenance/prior_art_search.json):
-  bounded technical search and claim limits;
 - [`SYNC.md`](../SYNC.md): human-readable synchronization policy.
 
 These records preserve provenance and source discipline; they are not additional
 scientific assumptions.
+
+The [borrowed-workspace appendix](BORROWED_WORKSPACE_COMPILER.md) condenses
+the original research derivations in `Hopf_Fault_Tolerant_Research.md`,
+Sections 4.5–4.6, 4.8 and 5.19, and `Hopf_Small_Clean_Workspace.md`.
+Those filenames identify its historical source, not additional proof or runtime
+dependencies. The appendix contains the complete real-frame argument used by
+this publication, including the dirty lookup, exact sector echo, resource sum,
+and restricted matching splice.
 
 ---
 

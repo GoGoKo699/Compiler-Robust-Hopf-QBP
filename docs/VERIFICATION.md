@@ -15,30 +15,18 @@ peaks.  The asymptotic theorem itself is established analytically.
 | explicit construction | a complete reversible or logical-gate schedule is supplied |
 | imported exact synthesis | an elementary compiler theorem is used under its stated model |
 | finite regression check | independently constructed matrices, states, schedules, or ledgers are compared |
-| internal reconstruction | the proof is re-derived separately to search for hidden assumptions |
 
 These levels are kept distinct.  A matrix test does not prove an asymptotic
 bound, and an asymptotic bound does not certify an implementation's bit order.
 
-The [constant-clean progress report](../research/CONSTANT_CLEAN_PROGRESS.md)
-links the new [operator-source proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
-and its [finite circuit checks](../tests/test_operator_source_compiler.py).
+The [operator-source proof](OPERATOR_SOURCE_COMPILER.md) is accompanied by
+[finite circuit checks](../tests/test_operator_source_compiler.py).
 These test the native geometric operator, its programmable scalar block,
 the two-flag rotation, coherent amplification, dirty word-bank routing, the
 restored suffix echo, and literal phase-diagonal composition on arbitrary dirty
-inputs. The [graph-source reuse checks](../tests/test_operator_source_reuse.py)
-separately test Pauli support, exact acceptance arithmetic and code leakage.
+inputs.
 The analytic proof establishes the improved upper bound; finite matrices test
 its fragile identities and conventions.
-
-The earlier [structural checks](../tests/test_constant_clean_structure.py) cover
-Pauli restrictions, full program-space echoes, Fourier-rank witnesses, dirty
-modular echoes, and phase-bank reductions. Separate suites cover
-[masked phase batching](../tests/test_identical_phase_batching.py) and
-[the coherent modular adder](../tests/test_modular_lookup_compiler.py).
-All are included in `python validate.py`. The arbitrary-angle tensor-batch
-hypothesis remains unproved; the new frame compiler uses an addressed operator
-construction instead.
 
 ## 2. What is represented locally
 
@@ -235,21 +223,7 @@ Files:
 - [decoders](../compiler_robust_hopf/decoders.py)
 - [decoder tests](../tests/test_decoders.py)
 
-## 9. Internal reconstructions
-
-The proof has been re-derived in three complementary ways.
-
-| Record | Distinct role |
-|---|---|
-| [consolidated proof audit](PROOF_AUDIT.md) | operator, register, workspace, upper-bound, and lower-bound reconstruction |
-| [strict-zero echo audit](STRICT_ZERO_ECHO_AUDIT.md) | chronological order, phases, hidden workspace, endpoints, and sums |
-| [clean-room reconstruction](CLEAN_ROOM_ALL_WORKSPACE_REVIEW.md) | theorem re-derived from the target operator and imported compiler results |
-
-The [claim support map](CLAIM_SUPPORT.md) provides the corresponding
-claim-by-claim ledger.  These documents record internal checking; independent
-technical judgment remains separate.
-
-## 10. Reproduce the checks
+## 9. Reproduce the checks
 
 Use Python 3.11 or 3.13.
 
@@ -290,7 +264,7 @@ Check the recorded upstream versions without network access:
 python scripts/check_upstream_sync.py --offline
 ```
 
-## 11. Evidence boundary
+## 10. Evidence boundary
 
 The repository does not use finite experiments to establish asymptotic
 optimality.  It also does not test:
@@ -309,11 +283,7 @@ The proof should be assessed in four separate steps:
 3. the imported synthesis bounds and resource sums;
 4. the matched QBP output and access conventions.
 
----
-
-[← QBP consequence](QBP_CONSEQUENCE.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)
-
-## 12. Fault-tolerant evidence and approximate QBP
+## 11. Fault-tolerant evidence and approximate QBP
 
 The [fault-tolerant theorem](FAULT_TOLERANT_COMPILER.md) separates the analytic
 resource proof from the [focused finite checks](../verification/fault_tolerant/README.md).
@@ -324,13 +294,21 @@ The runner compares scientific receipt fields and separately verifies the
 deterministic source-file hashes, whose values changed when the sources were
 relocated into this repository.
 
-The shift fixtures test complete finite kernel columns, actual inverses, source
-defects, failure tracking, and negative controls. They do not instantiate all
-production parameters or an elementary emitter of the full asymptotic circuit.
-The resource suite checks rational scales and ledgers; those rows are not
-measured gate counts. The source-specific receipt map states each boundary.
+| Standalone receipt suite | What it checks | Evidence boundary |
+|---|---|---|
+| Gray geometric source | Emitted logical source words, actual inverse, scratch return, reference witnesses, and gate-count recurrences | Finite clean-scratch fixtures; the full source is not emitted as an elementary Clifford+T circuit |
+| Shift kernel | Complete finite kernel columns, actual inverses, source defects, failure tracking, and negative controls | Small fixed parameters, without the production residual construction or emitted outer amplification |
+| Shift resource | Exact rational scales, coefficient rounding, scalar error budgets, and resource ledgers | Analytic proxies and inequalities; the rows are not measured gate counts |
+| Geometric reflection | Small source/reflection matrices, exact Pauli-transfer arithmetic, and algebraic norm separation | Supporting source-cost evidence and a kernel-suite dependency; no additive lower bound follows from these fixtures |
+
+The [receipt map](../verification/fault_tolerant/README.md) records the exact
+fixture ranges, source dependencies, and provenance for all four suites.
 
 The [approximation bridge](QBP_APPROXIMATION.md) has tests for full-input error,
 actual-adjoint transfer, leakage, reference-entangled borrowed inputs, and
 bounded estimator bias. These validate the finite examples behind the general
 proof, not differentiation of a synthesized family.
+
+---
+
+[← QBP consequence](QBP_CONSEQUENCE.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)

@@ -26,8 +26,7 @@ same frame costs at finite precision. The exact logical theorem covers every
 clean-workspace budget. The fault-tolerant theorem gives a matched T-count
 frontier in its stated clean/dirty-workspace regime. The
 [publication scope](manuscript/PUBLICATION_SCOPE.md) selects one full-length
-paper around these results and the two-clean construction; the
-[sanity check](docs/SANITY_CHECK.md) records the audit and its corrections.
+paper around these results and the two-clean construction.
 
 <p align="center">
   <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column, whereas Hopf differential-frame compilation fixes the state and designated frame columns." />
@@ -130,13 +129,13 @@ The [fault-tolerant chapter](docs/FAULT_TOLERANT_COMPILER.md) gives the proof,
 register ledger, and inherited primitives.
 
 At $L=N$, sufficient $a=\Theta(n)$ and $b=\Theta(N)$ give $T^\star=\Theta(N)$.
-The new [operator-source construction](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+The [two-clean operator-source construction](docs/OPERATOR_SOURCE_COMPILER.md)
 uses **two clean qubits** and $N+O(\log N)$ dirty qubits to give
 $O(N\log N)$ T gates for arbitrary prescribed real Hopf frames at the same precision.
 The lower bound remains $\Omega(N)$: **a logarithmic gap is still open**.
-The [progress report](research/CONSTANT_CLEAN_PROGRESS.md) explains the construction
-and its explicit workspace requirement; smaller clean allocations retain the
-earlier bounds.
+The [open-problem statement](docs/OPEN_PROBLEM.md) gives the explicit endpoint
+allocation. Smaller allocations retain the
+[borrowed-workspace bound](docs/BORROWED_WORKSPACE_COMPILER.md).
 
 The operator-source note also gives the same T-count order for the
 phase-dressed complex magnitude frame, using two clean qubits and
@@ -165,14 +164,11 @@ finite-size crossover.
 
 ## Read the repository in three passes
 
-The repository is arranged as a technical website.  No knowledge of its branch,
-issue, or pull-request history is needed.
-
 | Time | Route | Purpose |
 |---:|---|---|
 | 5 minutes | this page | problem, theorem, and construction map |
 | 30–40 minutes | **[complete technical narrative](REVIEW.md)** | shared contract, the two resource models, and the QBP consequence |
-| full audit | **[exact theorem](docs/COMPILER_THEOREM.md)**, **[T-count theorem](docs/FAULT_TOLERANT_COMPILER.md)**, and **[verification map](docs/VERIFICATION.md)** | proofs, register schedules, evidence limits, and source dependencies |
+| full audit | **[exact theorem](docs/COMPILER_THEOREM.md)**, **[T-count theorem](docs/FAULT_TOLERANT_COMPILER.md)**, **[two-clean theorem](docs/OPERATOR_SOURCE_COMPILER.md)**, and **[verification map](docs/VERIFICATION.md)** | proofs, register schedules, evidence limits, and source dependencies |
 
 Focused pages are available for the unfamiliar parts:
 
@@ -181,6 +177,8 @@ Focused pages are available for the unfamiliar parts:
 | [Minimal Hopf interface](docs/HOPF_INTERFACE.md) | tree coordinates, marker columns, chart domains, singular coordinates, and addressed layers |
 | [Complete compiler theorem](docs/COMPILER_THEOREM.md) | all three workspace schedules, explicit router, workspace ledger, and optimality |
 | [Finite-precision compiler](docs/FAULT_TOLERANT_COMPILER.md) | complete error contract, shared source, clean/dirty resource bounds |
+| [Two-clean compiler](docs/OPERATOR_SOURCE_COMPILER.md) | dirty operator source, bank tradeoff, literal diagonal and complex-frame corollaries |
+| [Borrowed-workspace appendix](docs/BORROWED_WORKSPACE_COMPILER.md) | exact dirty lookup and predicates, arbitrary-budget upper bound, restricted matching splice |
 | [Approximate QBP](docs/QBP_APPROXIMATION.md) | circuit error transferred to fixed-parameter gradient-estimator bias |
 | [QBP consequence](docs/QBP_CONSEQUENCE.md) | frame-safe substitution, raw-coordinate accuracy, and the matched-program cost statement |
 | [Verification and evidence](docs/VERIFICATION.md) | proof-to-code correspondence and exact finite checks |
@@ -259,10 +257,6 @@ The normative compiler citation is:
 > P. Yuan and S. Zhang, “Optimal (controlled) quantum state preparation and
 > improved unitary synthesis by quantum circuits with any number of ancillary
 > qubits,” *Quantum* **7**, 956 (2023).
-
-The earlier state-preparation paper is retained as the historical predecessor
-and original source of selected primitives.  Möttönen and Bergholm provide the
-multiplexor and UCG lineage used throughout the discussion.
 
 ## Consequence for quantum backpropagation
 

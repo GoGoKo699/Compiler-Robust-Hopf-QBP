@@ -106,6 +106,11 @@ W^{\dagger}O|\psi\rangle.
 The second vector contains all magnitude-coordinate responses in the marker
 basis.
 
+The interference protocol requires one clean branch ancilla in addition to
+the frame compiler's workspace. Any work needed for controlled-observable
+access is charged separately. The strict-zero compiler's borrowed suffix bit
+is logical data and does not supply this protocol ancilla.
+
 ## 3. One outcome gives one record for every magnitude coordinate
 
 Let $(b,y)$ denote the branch-ancilla outcome and the $n$-bit system outcome in
@@ -155,7 +160,9 @@ time, with $O(N)$ storage for the dense transform.  This is a classical output
 cost; it is not an additional quantum execution count.
 
 For the complex phase stream, each observed leaf contributes a signed one-hot
-record directly.  No inverse magnitude frame is used in that stream.
+record directly. Accumulating $S$ outcomes and materializing the phase gradient
+costs $O(S+N)$ classical time and $O(N)$ output storage. No inverse magnitude
+frame is used in that stream.
 
 ### Executable counterpart
 
@@ -306,6 +313,15 @@ The statement uses the same state family, preparation convention, controlled
 observable, and accuracy convention on both sides.  It does not compare against
 an instance-specialized scalar shortcut, and it excludes classical
 materialization of the $M$-entry output.
+
+### Classical compiler preprocessing
+
+In the exact model, generating the strict-zero half-angle tables, partitioning
+the $N-1$ magnitude angles into a prefix and subtree lists, and pairing the
+$N$ leaf phases each require $O(N)$ table operations on the supplied angle
+data. These are classical preprocessing costs, separate from the quantum
+size and depth bounds. They do not bound the bit complexity of angle
+evaluation or the running time of elementary UCG synthesis.
 
 ## 7. Checkpoint protocols use a different interface
 
