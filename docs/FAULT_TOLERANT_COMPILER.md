@@ -232,7 +232,12 @@ T_1=2,\qquad T_t=2T_{t-1}+14t+16
 
 Clifford work obeys the same $`2G_{t-1}+O(t)`$ recurrence. Scratch can be
 reused between children and bridge, with
-$`W_1=0, W_t=\max\{1+W_{t-1},t-1\}=t-1`$. One additional root enable
+
+```math
+W_1=0,\qquad W_t=\max\{1+W_{t-1},t-1\}=t-1.
+```
+
+One additional root enable
 is prepared and restored by X. The induction proves a full unitary with
 exact scratch return on arbitrary logical inputs, so reversing the
 actual word is legitimate. ∎

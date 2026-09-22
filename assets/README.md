@@ -27,9 +27,14 @@ The source equations and proof checkpoints are in
 The optional [presentation checker](../scripts/check_presentation.py) renders
 all five SVGs at their desktop embedding widths and at a 358-pixel image width.
 It measures label containment, label overlap, annotated connector clearance and
-visible arrowheads. It also checks that prose mathematics survives a CommonMark
-handoff and typesets with MathJax. This models the documented protected inline
-syntax; it does not reproduce GitHub's private client implementation.
+visible arrowheads. It also checks that prose and table mathematics survive a
+CommonMark handoff and typeset with MathJax, then renders every Markdown page
+with tables, images, and display equations at desktop and narrow widths.
+Page overflow, missing images, and oversized desktop equations fail the check;
+local scrolling of wide tables and narrow-screen display equations is recorded.
+Saved page, table, and diagram previews support visual inspection. This models
+the documented protected inline syntax with a local reading stylesheet;
+it does not reproduce GitHub's private client implementation.
 
 The numerical compiler suite remains independent of these browser dependencies.
 

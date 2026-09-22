@@ -6,8 +6,8 @@ uses a linear combination of anticommuting Pauli operators to encode
 precision coefficients. No precision register is initialized to a
 geometric state.
 
-**Theorem.** Let $`N=2^n`$`, `$`n\geq1`$`, `$`0<\eta\leq1/64`$,
-$`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$`, and let `$`W`$ be the
+**Theorem.** Let $`N=2^n`$, $`n\geq1`$, $`0<\eta\leq1/64`$,
+$`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$, and let $`W`$ be the
 prescribed complete real Hopf frame, with the rotation convention
 $`R_y(\theta)=e^{-i\theta Y}`$. If
 
@@ -38,7 +38,7 @@ approximations can be computed. That classical evaluation and table
 construction are separate preprocessing costs, excluded from T and G;
 the resulting quantum lookup circuits are fully charged below.
 
-At $`L=N`$`, choosing `$`a=2`$` and `$`b=N+n+7`$ gives
+At $`L=N`$, choosing $`a=2`$ and $`b=N+n+7`$ gives
 
 ```math
 T=O(N\log N)=o(N^{3/2}),\qquad G=O(N^2).
@@ -60,7 +60,7 @@ On $`m\geq2`$ arbitrary dirty qubits define
 ```
 
 Each operator is a Hermitian involution. For $`j<k`$, the X on wire
-$`j`$` anticommutes with the Z on that wire in `$`\Gamma_k`$, and all
+$`j`$ anticommutes with the Z on that wire in $`\Gamma_k`$, and all
 other overlaps commute. Hence
 
 ```math
@@ -103,12 +103,12 @@ a_j=
 
 The last two squared coefficients are equal and
 $`\sum_j a_j^2=1`$. Equations (5) and (8) also directly prove
-$`M_m^\dagger=M_m`$` and `$`M_m^2=I`$ on the entire dirty Hilbert space.
+$`M_m^\dagger=M_m`$ and $`M_m^2=I`$ on the entire dirty Hilbert space.
 
-Every $`R_j`$` is a weight-two Pauli `$`\pi/8`$ rotation, implemented
+Every $`R_j`$ is a weight-two Pauli $`\pi/8`$ rotation, implemented
 with one T-dagger and a constant number of Clifford gates, up to a
 common scalar. That scalar cancels in $`U_mX_0U_m^\dagger`$.
-Thus an exact circuit for $`M_m`$` uses `$`2(m-1)`$ T gates and
+Thus an exact circuit for $`M_m`$ uses $`2(m-1)`$ T gates and
 $`O(m)`$ Clifford gates, with no initialized work.
 
 A controlled source costs the same T count. For either control value
@@ -233,7 +233,7 @@ an expectation value on a prepared source state.
 Here is an encoding covering the endpoints and zero without requiring
 an exact comparison against a real rounding tie. Given $`c\in[-1,1]`$,
 put $`e=2^{1-m}`$ and compute a certified rational estimate
-$`\widehat c`$` with `$`|\widehat c-c|\leq e/4`$. Clamp the estimate
+$`\widehat c`$ with $`|\widehat c-c|\leq e/4`$. Clamp the estimate
 to $`[-1,1]`$, which does not increase this error, and choose
 
 ```math
@@ -242,7 +242,7 @@ k=\mathrm{round}\bigl((1-\widehat c)2^{m-2}\bigr),
 \tag{12}
 ```
 
-If $`k<2^{m-1}`$`, take the first `$`m-1`$` bits of `$`f`$ to be the
+If $`k<2^{m-1}`$, take the first $`m-1`$ bits of $`f`$ to be the
 binary fraction representing $`k/2^{m-1}`$, and set the final bit
 to zero. If $`k=2^{m-1}`$, set every bit to one. Equation (8) then gives
 
@@ -253,13 +253,13 @@ c_f=1-\frac{k}{2^{m-2}},\qquad
 ```
 
 The rounding in (12) is rational arithmetic with either fixed tie rule.
-Known literal entries $`c=1`$`, `$`c=0`$`, and `$`c=-1`$ are assigned
+Known literal entries $`c=1`$, $`c=0`$, and $`c=-1`$ are assigned
 their exact encodings; in particular, inactive rows use exact values.
 No amplitude is divided out or normalized after selecting the digits.
 
 ## 3. Dirty programming and a one-flag scalar block
 
-Let $`y`$` be a k-bit address and let `$`f(y)`$ be an arbitrary
+Let $`y`$ be a k-bit address and let $`f(y)`$ be an arbitrary
 classically specified m-bit table. The exact XOR table operation is
 
 ```math
@@ -268,7 +268,7 @@ Q_f:\ |y,z,w\rangle\longmapsto
 \tag{14}
 ```
 
-where the m output bits $`z`$` and k selector bits `$`w`$ are all
+where the m output bits $`z`$ and k selector bits $`w`$ are all
 arbitrary dirty inputs. It costs $`O(2^k)`$ Toffolis and
 $`O(2^k m+2^k)`$ Clifford gates, with no clean work.
 
@@ -358,7 +358,7 @@ Let G toggle z by h, using the exact
 borrowing the logical target t. It costs $`O(n^2)`$ Toffolis and
 returns t on every input. Let $`Q_{zg}`$ be the dirty XOR table query
 whose unchanged address is $`(z,b,x)`$ and whose row is
-$`z g(b,x)`$`. It has `$`4S`$` rows, `$`S=2^d`$`, and uses `$`d+2`$
+$`z g(b,x)`$. It has $`4S`$ rows, $`S=2^d`$, and uses $`d+2`$
 dirty selectors.
 
 The chronological sequence $`G,Q_{zg},G,Q_{zg}`$ adds
@@ -379,7 +379,7 @@ table address. The complete mask costs $`O(S+n^2)`$ T gates and
 $`O(Sm+n^2)`$ Clifford gates. In (10), use this actual mask and its
 actual inverse.
 
-Let $`c_{x,h}`$` and `$`s_{x,h}`$ be the encoded coefficients.
+Let $`c_{x,h}`$ and $`s_{x,h}`$ be the encoded coefficients.
 The literal target operation $`XZ=-iY`$ is Clifford. Its controlled
 version is the product of a CNOT and a controlled Z, with the order
 chosen to give XZ on the b=1 branch. Define
@@ -411,7 +411,7 @@ $`R_y(\theta_x)`$ when h=1 and identity when h=0,
 ```
 
 The same bound holds across the coherent address direct sum.
-Inactive rows are exact: $`c_{x,0}=1`$` and `$`s_{x,0}=0`$.
+Inactive rows are exact: $`c_{x,0}=1`$ and $`s_{x,0}=0`$.
 The possibly imperfect length $`c_{x,h}^2+s_{x,h}^2`$ is not
 silently normalized.
 
@@ -436,8 +436,8 @@ R=I-2JJ^\dagger,\qquad
 
 Then $`\|\mathcal A J-JW\|\leq4\zeta`$, including rejected-space
 leakage. A short proof is worth retaining here. Put
-$`\delta=\zeta/2`$` and use the polar decomposition `$`B=VH`$.
-Then $`\|H-I/2\|\leq\delta`$` and `$`\|V-W\|\leq4\delta`$.
+$`\delta=\zeta/2`$ and use the polar decomposition $`B=VH`$.
+Then $`\|H-I/2\|\leq\delta`$ and $`\|V-W\|\leq4\delta`$.
 The accepted amplified block is
 $`3B-4BB^\dagger B=V(3H-4H^3)`$. Since
 
@@ -484,7 +484,7 @@ m_d=L+n-d+4.
 \tag{25}
 ```
 
-The source uses $`m_d`$` dirty qubits and the lookup uses `$`d+2`$
+The source uses $`m_d`$ dirty qubits and the lookup uses $`d+2`$
 additional dirty selectors, together with one dirty suffix control.
 Their sum is exactly
 
@@ -541,7 +541,7 @@ With a third initialized qubit, compute h into it once before OAA, query
 the table with address $`(h,b,x)`$ directly, and erase h afterward.
 The suffix is preserved throughout and the borrowed-MCX identity
 returns its target helper on all inputs. This gives the same basic
-bound with $`a=3`$` and `$`b\geq L+n+6`$. The bank tradeoff below
+bound with $`a=3`$ and $`b\geq L+n+6`$. The bank tradeoff below
 also holds for this variant with threshold $`b\geq2(L+n+6)`$.
 
 ## 7. Trading additional dirty banks for lookup cost
@@ -555,7 +555,7 @@ one of the banks.
 
 For each high address, the dirty traversal of Section 3 loads the
 $`\lambda`$ table words into their respective banks by XOR. This loader
-$`\mathcal L`$` costs `$`O(S/\lambda)`$` Toffolis and `$`O(Sm)`$
+$`\mathcal L`$ costs $`O(S/\lambda)`$ Toffolis and $`O(Sm)`$
 Clifford gates. It needs at most k dirty selectors. Let
 $`\mathcal R`$ route the low-address-selected bank to position zero,
 using $`O(\lambda m)`$ Fredkins, and let C XOR that bank into the
@@ -592,8 +592,8 @@ and the OAA error proof are unchanged.
 
 For the real frame put $`B_0=L+n+7`$. This reserves the core, all
 selectors, and the separate dirty suffix control at every depth.
-Suppose $`b\geq2B_0`$`, leaving `$`K=b-B_0\geq b/2`$ bank wires.
-At each depth $`K\geq m_d`$`. Choose `$`\lambda`$ by rounding the
+Suppose $`b\geq2B_0`$, leaving $`K=b-B_0\geq b/2`$ bank wires.
+At each depth $`K\geq m_d`$. Choose $`\lambda`$ by rounding the
 following value down to the largest power of two not exceeding it:
 
 ```math
@@ -602,8 +602,8 @@ following value down to the largest power of two not exceeding it:
 \tag{32}
 ```
 
-The $`\lambda m_d`$` word-bank wires then fit. When `$`m_d>S`$,
-the choice $`\lambda=1`$` is covered by the additive `$`m_d`$ term.
+The $`\lambda m_d`$ word-bank wires then fit. When $`m_d>S`$,
+the choice $`\lambda=1`$ is covered by the additive $`m_d`$ term.
 Equations (31)–(32), together with the source and suffix-toggle costs,
 give
 
@@ -616,7 +616,7 @@ T_d=O\!\left(\sqrt{S m_d}+m_d+\frac{S m_d}{b}+n^2\right),
 The previously proved error and workspace-return contracts still hold.
 Using
 $`\sum_d\sqrt{2^dm_d}=O(\sqrt{NL})`$,
-$`\sum_d2^dm_d=O(NL)`$`, and `$`n^3=O(2^{n/2})`$ yields
+$`\sum_d2^dm_d=O(NL)`$, and $`n^3=O(2^{n/2})`$ yields
 
 ```math
 a=2,\quad b\geq2(L+n+7)
@@ -627,7 +627,7 @@ T=O\!\left(\sqrt{NL}+nL+\frac{NL}{b}\right),
 ```
 
 The two sum bounds follow by writing $`k=n-d`$ and summing
-$`2^{-k/2}\sqrt{L+k+4}`$` and `$`2^{-k}(L+k+4)`$.
+$`2^{-k/2}\sqrt{L+k+4}`$ and $`2^{-k}(L+k+4)`$.
 The same pool is reused at all depths; the fixed reservation B_0 is
 kept separate from the additional word banks.
 
@@ -644,10 +644,10 @@ b\leq N/n.
 \tag{35}
 ```
 
-The first absorbs $`nL`$` into `$`\sqrt{NL}`$; the second absorbs it
+The first absorbs $`nL`$ into $`\sqrt{NL}`$; the second absorbs it
 into $`NL/b`$. This is a statement at the specified constant clean
 budget, not at a budget with an unrestricted number of clean qubits.
-At $`L=N`$`, (34) retains the `$`N\log N`$ source cost.
+At $`L=N`$, (34) retains the $`N\log N`$ source cost.
 
 ## 8. Literal diagonal unitaries and phase-dressed frames
 
@@ -677,8 +677,8 @@ address-dependent scalar is discarded. The same certified rounding,
 actual inverse, normalization-two amplification, and complete
 isometry estimate apply.
 
-For desired error $`2^{-\ell}`$`, `$`\ell\geq6`$, take
-$`m=\ell+4`$`. There are `$`n+1`$ dirty selectors and no dirty suffix
+For desired error $`2^{-\ell}`$, $`\ell\geq6`$, take
+$`m=\ell+4`$. There are $`n+1`$ dirty selectors and no dirty suffix
 control, so the exact base reservation is
 $`B_{\rm diag}=\ell+n+5`$. This proves
 
@@ -708,8 +708,8 @@ The GKW diagonal theorem cited in
 supplies $`\Omega(\sqrt{N\ell}+\ell)`$.
 The [fixed-width circuit count in Section 10.2](FAULT_TOLERANT_COMPILER.md#102-fixed-width-coherent-counting),
 applied to an $`N`$-phase diagonal grid packing, supplies
-$`\Omega(N\ell/q)`$` when `$`q^2`$ is a sufficiently small multiple of
-$`N\ell`$`; otherwise that term is absorbed by `$`\sqrt{N\ell}`$.
+$`\Omega(N\ell/q)`$ when $`q^2`$ is a sufficiently small multiple of
+$`N\ell`$; otherwise that term is absorbed by $`\sqrt{N\ell}`$.
 In particular, the diagonal problem has an $`O(N)`$
 construction at $`\ell=N`$ with a sufficiently large linear dirty bank.
 
@@ -721,16 +721,16 @@ U=D_\phi W_{\mathbb R}.
 \tag{40}
 ```
 
-Compile $`W_{\mathbb R}`$` and then `$`D_\phi`$, each to error at most
-$`\eta/2`$`. With `$`L`$` as in the theorem, use `$`L'=L+1`$.
+Compile $`W_{\mathbb R}`$ and then $`D_\phi`$, each to error at most
+$`\eta/2`$. With $`L`$ as in the theorem, use $`L'=L+1`$.
 The real-frame reservation is $`L+n+8`$ and dominates the diagonal
 reservation $`L+n+6`$. Both circuits reuse the same two clean flags
 and the same dirty pool. A unitary hybrid gives total complete-isometry
 error at most $`\eta`$, including any work leakage from the first
 circuit.
 
-Thus $`a=2`$` and `$`b\geq L+n+8`$ give
-$`T=O(N+nL)`$` and `$`G=O(NL)`$ for (40). If
+Thus $`a=2`$ and $`b\geq L+n+8`$ give
+$`T=O(N+nL)`$ and $`G=O(NL)`$ for (40). If
 $`b\geq2(L+n+8)`$, the improved bound is
 $`T=O(\sqrt{NL}+nL+NL/b)`$, with the same Clifford count.
 This covers the full phase-dressed frame (40), not an arbitrary complex

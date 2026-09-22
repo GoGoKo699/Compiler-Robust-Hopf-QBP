@@ -19,7 +19,7 @@ jobs:
           python -m pip install -r requirements-presentation.txt
           python -m playwright install --with-deps chromium
           npm install --prefix "$RUNNER_TEMP/hopf-mathjax" --ignore-scripts --no-audit --no-fund mathjax-full@3.2.1
-      - name: Check rendered diagrams and inline mathematics
+      - name: Check diagrams, complete documents, and mathematics
         run: |
           python scripts/check_presentation.py \
             --mathjax "$RUNNER_TEMP/hopf-mathjax/node_modules/mathjax-full/es5/tex-svg-full.js" \

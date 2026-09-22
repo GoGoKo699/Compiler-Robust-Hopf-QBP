@@ -2,8 +2,9 @@
 
 [← Repository landing page](../README.md) · [Verification map](../docs/VERIFICATION.md)
 
-The scripts provide one readable orientation, two resource ledgers, and one
-source-synchronization check.  They do not replace the analytic proof.
+The scripts provide a readable orientation, resource ledgers, source checks,
+exact verification receipts, and rendered presentation checks. They do not
+replace the analytic proof.
 
 ## Technical walkthrough
 
@@ -68,3 +69,12 @@ Run `python scripts/verify_fault_tolerant.py` to reproduce four focused exact
 source/kernel and rational-resource suites. See the
 [scope and receipt guide](../verification/fault_tolerant/README.md). Temporary
 outputs are used by default, leaving the expected evidence files unchanged.
+
+## Visual checks
+
+The optional `check_presentation.py` checker renders the diagrams and complete
+Markdown pages, including tables, inline mathematics, and display equations.
+It saves desktop and narrow-screen previews with measured layout checks.
+The [rendering guide](../assets/README.md#rendering-checks) gives the separate
+browser and MathJax dependencies and the reproducible command. These previews
+model GitHub-style rendering; they do not reproduce GitHub's private client.

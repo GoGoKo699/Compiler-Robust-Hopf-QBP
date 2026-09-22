@@ -471,7 +471,7 @@ framework.
 |---|---|
 | optimal QSP theorem | $\Theta(2^q)$ size and $`\Theta\!\left(q+\frac{2^q}{q+w}\right)`$ depth for a general $q$-qubit state with $w$ clean ancillas |
 | ancilla-free MCT lemma | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
-| all-workspace UCG lemma | a total-width-$`q`$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
+| all-workspace UCG lemma | a total-width-$`q`$ UCG has $O(2^q)$ size and $`O\!\left(q+\frac{2^q}{q+w}\right)`$ depth with $w$ clean ancillas |
 | coherent-copy lemma | CNOT trees copy and uncopy one computational-basis control coherently in logarithmic depth |
 
 Toffoli, Fredkin, controlled one-qubit gates, and the fixed-width controlled

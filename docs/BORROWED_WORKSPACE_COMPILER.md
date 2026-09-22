@@ -14,10 +14,11 @@ Use the rotation convention, frame order, and complete initialized-isometry
 contract of the main theorem. In particular, set
 
 ```math
-N=2^n,\qquad q=n+a+b,\qquad
+\begin{gathered}
+N=2^n,\qquad q=n+a+b,\qquad 0<\eta\le1/64,\\
 L=\max\{6,\lceil\log_2(1/\eta)\rceil\},\qquad
-h=1+\lceil\log_2(L+n+2)\rceil,
-\qquad 0<\eta\le1/64.
+h=1+\lceil\log_2(L+n+2)\rceil.
+\end{gathered}
 ```
 
 For every $`n\ge1`$ and every $`a,b\ge0`$, a coherent Clifford+T circuit
@@ -152,8 +153,8 @@ At Hopf depth d, let t be the rotation target. When a suffix exists, take its
 first bit as a borrowed control $`\beta`$ whose selected value is zero.
 At the final depth, take one prefix bit as $`\beta`$ and process its two
 values in separate sectors. Leave $`r_d`$ other prefix bits as a free table
-address. The remaining $`n-2-r_d`$ system bits form F, with predicate
-$`P=[F=\text{specified outer prefix and zero suffix}]`$. The predicate
+address. The remaining $`n-2-r_d`$ system bits form F. Let $`P`$ indicate
+that F equals the specified outer prefix and zero suffix. The predicate
 toggle M acts as $`\beta\mapsto\beta\oplus P`$, borrowing t, and costs
 $`O(n^2)`$ Toffolis.
 

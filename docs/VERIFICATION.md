@@ -278,6 +278,12 @@ Check the recorded upstream versions without network access:
 python scripts/check_upstream_sync.py --offline
 ```
 
+For the optional browser audit, follow the
+[rendering guide](../assets/README.md#rendering-checks). It checks all diagrams
+and complete Markdown pages, including table mathematics, display equations,
+missing expressions, and horizontal overflow. Saved previews support human
+inspection; the local stylesheet is not GitHub's private renderer.
+
 ## 10. Evidence boundary
 
 The repository does not use finite experiments to establish asymptotic

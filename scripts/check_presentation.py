@@ -1,4 +1,4 @@
-"""Browser-level SVG layout and Markdown-to-MathJax regression checks.
+"""Browser-level SVG, whole-document layout, and MathJax regression checks.
 
 Optional tooling only: numerical validation does not depend on a browser.
 The Markdown handoff models GitHub's documented protected inline syntax; it
@@ -7,6 +7,7 @@ is not an authenticated screenshot of GitHub's private rendering pipeline.
 from __future__ import annotations
 
 import argparse
+import base64
 import html
 import json
 import re
@@ -42,7 +43,7 @@ def math_tokens(line: str) -> list[dict[str, Any]]:
     ]
 
 
-def prose_lines(text: str):
+def prose_lines(text: str, *, include_tables: bool = False):
     fence = None
     for number, line in enumerate(text.splitlines(), 1):
         marker = FENCE.match(line)
@@ -53,7 +54,7 @@ def prose_lines(text: str):
             elif token[0] == fence[0] and len(token) >= len(fence):
                 fence = None
             continue
-        if fence is None and not line.lstrip().startswith("|"):
+        if fence is None and (include_tables or not line.lstrip().startswith("|")):
             yield number, line
 
 
@@ -161,7 +162,7 @@ def check_math(page: Any, root: Path, mathjax: Path, output: Path) -> dict:
     for path in sorted(root.rglob("*.md")):
         if any(part.startswith(".") or part in {"node_modules", "__pycache__"} for part in path.relative_to(root).parts):
             continue
-        for number, line in prose_lines(path.read_text(encoding="utf-8")):
+        for number, line in prose_lines(path.read_text(encoding="utf-8"), include_tables=True):
             for token in math_tokens(line):
                 converted = markdown_handoff(token["source"], renderer)
                 expected = "$" + token["body"] + "$"
@@ -205,6 +206,111 @@ def check_math(page: Any, root: Path, mathjax: Path, output: Path) -> dict:
             "pipeline": "CommonMark, documented protected-token handoff, MathJax SVG; not GitHub's private filter"}
 
 
+# A local reading preview, not a pixel-for-pixel copy of GitHub's stylesheet.
+PAGE_STYLE = """
+*{box-sizing:border-box}body{margin:0;color:#1f2328;background:white;
+font:16px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+article{max-width:1012px;margin:auto;padding:32px;overflow-wrap:break-word}
+h1,h2{line-height:1.25;border-bottom:1px solid #d1d9e0;padding-bottom:.3em}
+h1{font-size:2em}h2{font-size:1.5em;margin-top:24px}h3{font-size:1.25em}
+a{color:#0969da;text-decoration:none}p,ul,ol,table,pre{margin:0 0 16px}
+img{max-width:100%;height:auto}table{display:block;max-width:100%;overflow:auto;
+border-collapse:collapse}td,th{padding:6px 13px;border:1px solid #d1d9e0}
+tr:nth-child(even){background:#f6f8fa}code{font-size:85%;background:#eff1f3;
+padding:.2em .4em;border-radius:4px}pre{padding:16px;overflow:auto;background:#f6f8fa}
+pre code{padding:0}blockquote{margin-left:0;padding-left:1em;border-left:4px solid #d1d9e0;
+color:#59636e}.math-display{max-width:100%;overflow-x:auto;overflow-y:hidden}
+mjx-container[display=true]{padding:4px 0}small{color:#59636e}
+@media(max-width:600px){article{padding:16px}}
+"""
+
+
+def rendered_markdown(path: Path) -> tuple[str, int]:
+    """Render complete Markdown, including tables and GitHub math fences."""
+    from markdown_it import MarkdownIt
+    renderer = MarkdownIt("commonmark", {"html": True}).enable("table")
+    default_fence = renderer.renderer.rules["fence"]
+
+    def fence(tokens, index, options, env):
+        token = tokens[index]
+        if token.info.strip() == "math":
+            return '<div class="math-display">\\[' + html.escape(token.content) + '\\]</div>\n'
+        return default_fence(tokens, index, options, env)
+
+    renderer.renderer.rules["fence"] = fence
+    source = path.read_text(encoding="utf-8")
+    expected_math = sum(len(math_tokens(line))
+                        for _, line in prose_lines(source, include_tables=True))
+    expected_math += sum(token.type == "fence" and token.info.strip() == "math"
+                         for token in renderer.parse(source))
+    markup = renderer.render(source)
+    markup = re.sub(r"\$<code>(.*?)</code>\$", lambda m: "$" + m[1] + "$", markup)
+
+    def local_image(match):
+        source = html.unescape(match[2])
+        image_path = path.parent / source
+        if not image_path.is_file():
+            raise AssertionError(f"Missing local preview image: {path}: {source}")
+        suffix = image_path.suffix.lower()
+        mime = "image/svg+xml" if suffix == ".svg" else "image/" + suffix.lstrip(".")
+        data = base64.b64encode(image_path.read_bytes()).decode("ascii")
+        return match[1] + 'data:' + mime + ';base64,' + data + match[3]
+
+    return re.sub(r'(<img\b[^>]*\bsrc=")([^"]+)(")', local_image, markup), expected_math
+
+
+def check_documents(page: Any, root: Path, mathjax: Path, output: Path) -> dict:
+    """Check whole-page math and overflow; retain previews for human review."""
+    report: dict[str, Any] = {"pages": {}, "failures": []}
+    bundle = mathjax.read_text(encoding="utf-8")
+    for path in sorted(root.rglob("*.md")):
+        relative = path.relative_to(root)
+        if any(p.startswith(".") or p in {"node_modules", "__pycache__"} for p in relative.parts):
+            continue
+        stem = str(relative.with_suffix("")).replace("/", "--")
+        markup, expected_math = rendered_markdown(path)
+        page.set_viewport_size({"width": 1280, "height": 960})
+        page.set_content('<!doctype html><meta charset="utf-8"><style>' + PAGE_STYLE
+                         + '</style><article>' + markup + '</article>')
+        page.evaluate("window.MathJax={startup:{typeset:false},tex:{inlineMath:[['$','$']]},svg:{fontCache:'local'}}")
+        page.add_script_tag(content=bundle)
+        page.evaluate("() => MathJax.startup.promise.then(() => MathJax.typesetPromise())")
+        errors = page.locator('[data-mml-node="merror"],mjx-merror,.MathJax_Error').all_text_contents()
+        if errors:
+            report["failures"].append(f"{relative}: MathJax errors: {errors}")
+        document: dict[str, Any] = {"math_expressions": page.locator('mjx-container').count(),
+                                    "tables": page.locator('table').count(), "viewports": {}}
+        if document["math_expressions"] != expected_math:
+            report["failures"].append(f"{relative}: rendered {document['math_expressions']} of {expected_math} expressions")
+        for mode, width in [("desktop", 1280), ("narrow", 390)]:
+            page.set_viewport_size({"width": width, "height": 960})
+            page.evaluate("window.scrollTo(0,0)")
+            metrics = page.evaluate("""() => ({
+              page_overflow: document.documentElement.scrollWidth > innerWidth + 1,
+              scrolling_tables: [...document.querySelectorAll('table')].filter(e=>e.scrollWidth>e.clientWidth+1).length,
+              scrolling_equations: [...document.querySelectorAll('.math-display')].filter(e=>e.scrollWidth>e.clientWidth+1).length,
+              broken_images: [...document.images].filter(e=>!e.complete || !e.naturalWidth).length,
+              wide_inline_math: [...document.querySelectorAll('mjx-container:not([display])')].filter(e=>{
+                if(e.closest('table'))return false;
+                const r=e.getBoundingClientRect();return r.right>innerWidth-8 || r.left<0;
+              }).map(e=>({text:e.textContent.slice(0,120),width:e.getBoundingClientRect().width}))
+            })""")
+            document["viewports"][mode] = metrics
+            if metrics["page_overflow"] or metrics["broken_images"]:
+                report["failures"].append(f"{relative}/{mode}: page overflow or broken image: {metrics}")
+            if mode == "desktop" and metrics["scrolling_equations"]:
+                report["failures"].append(f"{relative}: display equation exceeds desktop reading width")
+            page.screenshot(path=str(output / f'{stem}-{mode}.png'))
+        page.set_viewport_size({"width": 1280, "height": 960})
+        # Tables and long display equations need inspection beyond the first screen.
+        for i, table in enumerate(page.locator('table').all()):
+            table.screenshot(path=str(output / f'{stem}-table-{i + 1}.png'))
+        rendered = page.evaluate("() => {const d=document.documentElement.cloneNode(true);d.querySelectorAll('script').forEach(x=>x.remove());return '<!doctype html>'+d.outerHTML}")
+        (output / f'{stem}-rendered.html').write_text(rendered, encoding='utf-8')
+        report["pages"][str(relative)] = document
+    return report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=ROOT)
@@ -243,6 +349,8 @@ def main() -> None:
                     (args.output / f'{Path(name).stem}-geometry.json').write_text(json.dumps(data, indent=2), encoding='utf-8')
         if not args.svg_only:
             report['inline_math'] = check_math(page, args.root, args.mathjax, args.output)
+            report['documents'] = check_documents(page, args.root, args.mathjax, args.output)
+            report['failures'].extend(report['documents']['failures'])
         browser.close()
     (args.output / 'presentation-report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     print(json.dumps(report, indent=2))
