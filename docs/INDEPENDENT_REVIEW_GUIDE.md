@@ -62,11 +62,13 @@ local elementary-gate emitter.
 
 ## The question deliberately left open
 
-At $a=3$, $b\ge N+n+6$, and $L=N$, the known bounds here are $\Omega(N)$
+At $a=2$, $b\ge N+n+7$, and $L=N$, the known bounds here are $\Omega(N)$
 and $O(N\log N)$. The new
 [operator-source proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
 should be checked at the full-dirty-space anticommutator, controlled source,
-normalization-two amplification, and simultaneous workspace ledger. Its finite
+dirty suffix echo, normalization-two amplification, and simultaneous workspace
+ledger. Its banked lookup and literal diagonal corollaries extend the same
+contract to additional workspace regimes and the complex magnitude frame. Its finite
 checks do not replace these arguments. The
 [continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md) records the remaining
 gap and the smaller budgets not covered by this sufficient allocation.

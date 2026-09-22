@@ -8,7 +8,7 @@ The repository supports one compiler paper with two resource models. The exact
 logical frontier is established at every clean-workspace budget. The real-frame
 T-count frontier is matched above a sufficient clean reservation. The
 constant-clean endpoint is the active research question. The new operator-source
-construction improves its upper bound to $O(N\log N)$ for three clean qubits
+construction improves its upper bound to $O(N\log N)$ for two clean qubits
 and the explicit dirty allocation below; the lower bound remains $\Omega(N)$.
 
 ## Exact logical result
@@ -71,19 +71,29 @@ The [operator-source construction](../research/constant_clean/OPERATOR_SOURCE_CO
 adds a sufficient constant-clean regime:
 
 ```math
-a\ge3,\qquad b\ge L+n+6,
+a\ge2,\qquad b\ge L+n+7,
 \qquad T=O(N+nL),\qquad G=O(NL).
 ```
 
-At $L=N$ this gives $O(N\log N)$ T gates with three clean qubits and
+At $L=N$ this gives $O(N\log N)$ T gates with two clean qubits and
 $N+O(\log N)$ dirty qubits, improving the earlier $O(N^{3/2})$ upper bound.
 The lower bound remains $\Omega(N)$. The explicit width condition matters;
 this theorem does not cover every smaller constant clean or dirty allocation.
 The [continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md) records the
 remaining logarithmic gap.
 
-The source-channel obstruction is a supporting interface theorem, not an
-additive or stronger general frame lower bound. Optimal T-depth remains open.
+With $`b\ge2(L+n+7)`$, dirty word banks sharpen the two-clean upper bound to
+$`O(\sqrt{NL}+nL+NL/b)`$. It matches the existing worst-case lower bound
+when $`n^2L\le N`$ or $`b\le N/n`$, under that sufficient allocation.
+An arbitrary literal diagonal uses two clean qubits and $`O(N+L)`$ T gates;
+composing it with the real frame gives the phase-dressed complex magnitude
+frame with $`b\ge L+n+8`$ and the same order of cost.
+
+A new [graph-source reuse bound](../research/constant_clean/OPERATOR_SOURCE_REUSE.md)
+excludes cheap returned scalar attenuation on one specific encoding of the
+operator source. It is a single-kernel statement, not an additive or stronger
+full-frame lower bound. The earlier source-channel theorem has its own
+independent-source contract. Optimal T-depth remains open.
 
 ## Construction
 

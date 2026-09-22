@@ -25,13 +25,13 @@ responses. What resources are needed to retain that stronger interface?
 |---|---|
 | Optimal size and depth | exact arbitrary one-qubit gates and CNOTs; every clean-workspace budget; real and phase-dressed complex magnitude frames |
 | Matched T-count | coherent finite precision; real full frame; separate clean/dirty promises; sufficient clean reservation |
-| Constant-clean improvement | arbitrary real frames; three clean qubits and $`b\ge L+n+6`$ dirty qubits; $`T=O(N+nL)`$, leaving a logarithmic endpoint gap |
+| Constant-clean improvement | two clean qubits; real frames with $`b\ge L+n+7`$ or phase-dressed complex magnitude frames with $`b\ge L+n+8`$; $`T=O(N+nL)`$ with a sharper bank tradeoff, leaving a logarithmic endpoint gap |
 | QBP consequence | fixed-parameter raw-gradient records with matched access assumptions and an explicit approximation-bias budget |
 
 For every integer $m\geq0$, the exact theorem has $S=\Theta(N)$ and
 $D=\Theta(n+N/(n+m))$. The real-frame T theorem has the sufficient clean
 condition $a\geq C(n+h)$, with the definitions and full quantifiers in its
-formal chapter. A separate [operator-source construction](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md) gives the stated constant-clean upper bound, without claiming a matching lower bound.
+formal chapter. A separate [operator-source construction](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md) gives the stated constant-clean upper bound, its matching lower-precision subregimes, and the phase-dressed complex magnitude extension. The high-precision endpoint still has a logarithmic gap.
 
 These statements do not assert a single jointly optimal circuit or optimal
 complexity among all gradient algorithms.
@@ -50,7 +50,8 @@ complexity among all gradient algorithms.
 4. **Fault-tolerant compilation.** Coarse structured residual, compact source,
    accepted-branch reuse, global amplification, full resource ledger and
    matching theorem in the stated regime; then the operator-source construction
-   and its three-clean improvement, using the same full-input contract.
+   and its two-clean improvement, dirty-bank tradeoff, and literal complex
+   magnitude extension, using the same full-input contract.
 5. **Compiler-robust QBP.** Exact substitution and finite-precision bounded-score
    bias; quantum executions, per-execution circuit costs, classical output, and
    observable access kept separate.
@@ -102,7 +103,7 @@ resource statements.
 
 The repository now carries the integrated proof and evidence reading route.
 The constant-clean continuation now improves the endpoint upper bound to
-$`O(N\log N)`$ at the explicit three-clean allocation. The
+$`O(N\log N)`$ at the explicit two-clean allocation. The
 [research brief](../research/CONSTANT_CLEAN_ENDPOINT.md) records the remaining
 question: share the precision cost across depths or prove a stronger general
 lower bound. The [progress report](../research/CONSTANT_CLEAN_PROGRESS.md) gives

@@ -3,7 +3,7 @@
 The constant-clean research now has an improved arbitrary-angle compiler.
 Start with the [checked-progress report](CONSTANT_CLEAN_PROGRESS.md), then
 read the [operator-source proof](constant_clean/OPERATOR_SOURCE_COMPILER.md).
-With three clean qubits and $`b\ge L+n+6`$ dirty qubits it gives
+With two clean qubits and $`b\ge L+n+7`$ dirty qubits it gives
 $`T=O(N+nL)`$ and $`G=O(NL)`$ for the complete real Hopf frame.
 
 At $`L=N`$, the sufficient allocation is $`b=N+O(\log N)`$ and the frontier is
@@ -18,7 +18,13 @@ full contract, sufficient allocations, and remaining logarithmic gap. The
 [sufficient-clean matching theorem](../docs/FAULT_TOLERANT_COMPILER.md) and
 all general lower bounds are unchanged.
 
+The same source proof adds a sharper dirty-bank tradeoff, matching lower
+bounds in the stated lower-precision regimes, and a two-clean literal diagonal
+compiler. It consequently covers the phase-dressed complex magnitude frame
+with $`b\ge L+n+8`$.
+
 The [technical reading map](constant_clean/README.md) also covers the new
+[graph-source reuse restriction](constant_clean/OPERATOR_SOURCE_REUSE.md), the
 zero-clean modular table adder, one-clean shared-generator phase batching,
 dirty-rank compression, and the scoped program/clock obstructions. The
 operator-source compiler does not depend on the unresolved arbitrary phase

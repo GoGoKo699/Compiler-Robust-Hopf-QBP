@@ -1,6 +1,6 @@
 # Constant-clean Hopf compilation: resume brief
 
-**Status: improved upper bound; endpoint still open.** The new [operator-source compiler](constant_clean/OPERATOR_SOURCE_COMPILER.md) gives $`O(N\log N)`$ T gates at $`L=N`$ with three clean qubits and $`N+O(\log N)`$ dirty qubits. The lower bound remains $`\Omega(N)`$. The [checked-progress report](CONSTANT_CLEAN_PROGRESS.md) is the human reading entry. This brief records the complete model, explicit sufficient allocation, other workspace regimes, and the remaining logarithmic gap.
+**Status: improved upper bound; endpoint still open.** The new [operator-source compiler](constant_clean/OPERATOR_SOURCE_COMPILER.md) gives $`O(N\log N)`$ T gates at $`L=N`$ with two clean qubits and $`N+O(\log N)`$ dirty qubits. The lower bound remains $`\Omega(N)`$. The [checked-progress report](CONSTANT_CLEAN_PROGRESS.md) is the human reading entry. This brief records the complete model, explicit sufficient allocation, other workspace regimes, and the remaining logarithmic gap.
 
 ## Target and model
 
@@ -47,12 +47,19 @@ B(n,a,b,L)=\sqrt{NL}+L+\frac{NL}{q}.
 | Sufficient clean reservation $`a\ge C(n+h)`$, every retained precision and dirty budget | $`\tau^*_{F,\mathbb R}=\Theta(B)`$, with $`O(NL)`$ Clifford cost |
 | Every clean budget, provided $`h+b\le c\sqrt N`$ for fixed $`c>0`$ | $`\tau^*_{F,\mathbb R}=\Theta_c(B)`$ |
 | Arbitrary clean/dirty budgets, retained borrowed-work construction | $`T=O(NL/q+L\sqrt N)`$, $`G=O(NL)`$ |
-| New operator-source regime: $`a\ge3, b\ge L+n+6`$ | $`T=O(N+nL)`$, $`G=O(NL)`$ for arbitrary prescribed real frames |
-| **Selected endpoint:** $`a=3, b=N+n+6, L=N`$ | **Lower $`\Omega(N)`$, available upper $`O(N\log N)`$** |
+| New operator-source regime: $`a\ge2, b\ge L+n+7`$ | $`T=O(N+nL)`$, $`G=O(NL)`$ for arbitrary prescribed real frames |
+| Banked operator-source regime: $`a=2, b\ge2(L+n+7)`$ | $`T=O(\sqrt{NL}+nL+NL/b)`$; matches the retained lower bound if $`n^2L\le N`$ or $`b\le N/n`$ |
+| **Selected endpoint:** $`a=2, b=N+n+7, L=N`$ | **Lower $`\Omega(N)`$, available upper $`O(N\log N)`$** |
 
-At $`L=N`$, $`h=\Theta(n)`$, so the first row gives $`\Theta(N)`$ with a sufficiently large fixed multiple of $`n`$ clean qubits. The new three-clean construction leaves a logarithmic gap. Its explicit dirty-width requirement matters: this is not a bound for every fixed clean count or every prefactor in $`b=\Theta(N)`$. For smaller allocations, the earlier arbitrary-budget upper bound remains available. Neither sufficient reservation is proved necessary.
+At $`L=N`$, $`h=\Theta(n)`$, so the first row gives $`\Theta(N)`$ with a sufficiently large fixed multiple of $`n`$ clean qubits and $`b=\Theta(N)`$ dirty qubits. The new two-clean construction leaves a logarithmic gap. Its explicit dirty-width requirement matters: this is not a bound for every fixed clean count or every prefactor in $`b=\Theta(N)`$. For smaller allocations, the earlier arbitrary-budget upper bound remains available. Neither sufficient reservation is proved necessary.
 
-The all-clean-budget corollary has a short splice proof. If the clean reservation fits, use the shifted-source compiler. Otherwise $`q<(C+1)n+Ch+b=O_c(\sqrt N)`$, and the borrowed compiler's $`L\sqrt N`$ term is absorbed by $`NL/q`$. At the selected endpoint $`b=\Theta(N)`$, that hypothesis fails. Rebalancing these same upper bounds alone does not close the gap. The sufficient-clean construction and general lower bounds are proved in the [fault-tolerant compiler theorem](../docs/FAULT_TOLERANT_COMPILER.md). The separate [borrowed-workspace appendix](constant_clean/BORROWED_WORKSPACE_COMPILER.md) proves the arbitrary-budget upper bound and this splice. The new operator-source theorem is independent of that splice: a full-input Pauli operator supplies binary scalar weights through an anticommutator, followed by a two-flag rotation block and coherent amplification. Its $`O(L)`$ precision cost is charged at each tree depth.
+The all-clean-budget corollary has a short splice proof. If the clean reservation fits, use the shifted-source compiler. Otherwise $`q<(C+1)n+Ch+b=O_c(\sqrt N)`$, and the borrowed compiler's $`L\sqrt N`$ term is absorbed by $`NL/q`$. At the selected endpoint $`b=\Theta(N)`$, that hypothesis fails. Rebalancing these same upper bounds alone does not close the gap. The sufficient-clean construction and general lower bounds are proved in the [fault-tolerant compiler theorem](../docs/FAULT_TOLERANT_COMPILER.md). The separate [borrowed-workspace appendix](constant_clean/BORROWED_WORKSPACE_COMPILER.md) proves the arbitrary-budget upper bound and this splice. The new operator-source theorem is independent of that splice: a full-input Pauli operator supplies binary scalar weights through an anticommutator, followed by a two-flag rotation block and coherent amplification. Its $`O(L)`$ precision cost is charged at each tree depth. A dirty predicate
+echo replaces the earlier initialized suffix flag, so only the two block flags
+need to start in zero. The same note compiles arbitrary literal diagonals with
+two clean qubits and $`b\ge L+n+5`$. Consequently the phase-dressed complex
+magnitude frame $`D_{\rm ph}W_{\mathbb R}`$ has the same order of upper bound
+with $`b\ge L+n+8`$ after splitting its error budget. This is not an arbitrary
+complex-unitary theorem.
 
 ## The strongest retained source-interface result
 
@@ -114,7 +121,18 @@ so implementing it by controlled $`U`$ and $`U^\dagger`$ assumes the original ha
 
 ## Constructive proof obligations
 
-The new construction already achieves $`O(N+nL)`$ T count with three clean bits. The remaining constructive target is **one complete global block** that shares the precision cost across depths, or another mechanism removing that repeated charge. For every prescribed $`W`$ at $`L=N`$, exhibit an actual native circuit $`U`$ using a fixed constant $`c`$ of clean work and $`b=\Theta(N)`$ arbitrary dirty work, with
+The [graph-source reuse theorem](constant_clean/OPERATOR_SOURCE_REUSE.md)
+rules out one direct way to share the new source. If
+$`E\psi=(|0\rangle\psi+|1\rangle M\psi)/\sqrt2`$, a returned attenuation
+$`KE\approx2^{-k}E`$ with constant relative error and $`r`$ additional
+initialized/projected flags requires either $`\tau+r\ge m`$ or
+$`\tau\ge k-(3r+1)/2-\log_2(1+\theta)`$, for $`\theta<1`$.
+Thus constant extra clean work does not give cheap large-exponent kernels on
+this encoding. A small compressed overlap $`E^\dagger KE`$ alone omits its
+code leakage. This does not exclude a different encoding or a joint compiler
+without intermediate returned-source guarantees.
+
+The new construction already achieves $`O(N+nL)`$ T count with two clean bits. The remaining constructive target is **one complete global block** that shares the precision cost across depths, or another mechanism removing that repeated charge. For every prescribed $`W`$ at $`L=N`$, exhibit an actual native circuit $`U`$ using a fixed constant $`c`$ of clean work and $`b=\Theta(N)`$ arbitrary dirty work, with
 
 ```math
 2J_c^\dagger UJ_c=M,\qquad

@@ -912,9 +912,13 @@ $`a\geq C(n+h)`$ remains part of Theorem 1; the
 [constant-clean endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md) is not
 settled by removing that hypothesis from the displayed formula. A separate
 [operator-source construction](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
-now gives $`T=O(N+nL)`$ and $`G=O(NL)`$ with $`a=3`$ and
-$`b\ge L+n+6`$. At $`L=N`$ its upper bound is $`O(N\log N)`$;
-Theorem 1 and its matching lower bounds are unchanged.
+now gives $`T=O(N+nL)`$ and $`G=O(NL)`$ with $`a=2`$ and
+$`b\ge L+n+7`$. At $`L=N`$ its upper bound is $`O(N\log N)`$;
+Theorem 1 and its matching lower bounds are unchanged. The separate note
+also sharpens this bound to $`O(\sqrt{NL}+nL+NL/b)`$ when
+$`b\ge2(L+n+7)`$, and adds a literal diagonal/complex magnitude corollary.
+Its stated matching subregimes use the existing lower bounds; they do not
+remove Theorem 1's sufficient-clean hypothesis by substitution.
 
 ### Primary references
 

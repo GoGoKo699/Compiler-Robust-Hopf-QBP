@@ -1,6 +1,6 @@
 # A compiler from an operator source on dirty qubits
 
-Three initialized qubits and a precision-sized bank of arbitrary dirty
+Two initialized qubits and a precision-sized bank of arbitrary dirty
 qubits suffice for the following full-frame upper bound. The construction
 uses a linear combination of anticommuting Pauli operators to encode
 precision coefficients. No precision register is initialized to a
@@ -12,7 +12,7 @@ prescribed complete real Hopf frame, with the rotation convention
 $`R_y(\theta)=e^{-i\theta Y}`$. If
 
 ```math
-a\geq3,\qquad b\geq L+n+6,
+a\geq2,\qquad b\geq L+n+7,
 \tag{1}
 ```
 
@@ -34,7 +34,7 @@ approximations can be computed. That classical evaluation and table
 construction are separate preprocessing costs, excluded from T and G;
 the resulting quantum lookup circuits are fully charged below.
 
-At $`L=N`$, choosing $`a=3`$ and $`b=N+n+6`$ gives
+At $`L=N`$, choosing $`a=2`$ and $`b=N+n+7`$ gives
 
 ```math
 T=O(N\log N)=o(N^{3/2}),\qquad G=O(N^2).
@@ -44,7 +44,7 @@ T=O(N\log N)=o(N^{3/2}),\qquad G=O(N^2).
 This improves the previously retained upper bound at that explicit
 workspace allocation. It does not establish $`O(N)`$ T count, nor does
 it claim the same result for every constant prefactor in $`b=\Theta(N)`$
-or for fewer than three initialized qubits.
+or for fewer than two initialized qubits.
 
 ## 1. The operator source and its exact native circuit
 
@@ -253,60 +253,89 @@ a=1,\quad b=m+k.
 This is a charged one-clean block encoding of an arbitrary dyadic real
 table, with a scalar accepted action on the entire dirty space.
 
-## 4. Two flags encode an addressed rotation with normalization two
+## 4. Two flags encode a suffix-controlled rotation
 
-At Hopf depth d, let $`x`$ be the d-bit prefix and t the rotation
-target. Compute the predicate h that the lower suffix is all zero
-into a third initialized qubit. A borrowed-MCX construction uses
-$`O(n^2)`$ Toffolis and may borrow t in its arbitrary state. For an
-empty suffix, flip h to one.
+At Hopf depth d, let $`x`$ be the d-bit prefix, t the rotation target,
+and $`h`$ the Boolean predicate that the lower suffix is all zero.
+Here h is a function of unchanged logical wires, not a clean register.
+For an empty suffix it is the constant one.
 
-The following block treats h as an unchanged address bit. Flag b chooses
-between the cosine and sine tables:
+Flag b chooses between the active cosine and sine tables. Let
+$`f_{\rm act}(b,x)`$ be their m-bit encodings from (12)–(13).
+The inactive coefficients one and zero have the fixed encoding
 
 ```math
-g_0(x,h)=
-\begin{cases}\cos\theta_x,&h=1,\\1,&h=0,\end{cases}
-\qquad
-g_1(x,h)=
-\begin{cases}\sin\theta_x,&h=1,\\0,&h=0.\end{cases}
+f_0(b)=b e_0,\qquad
+g(b,x)=f_{\rm act}(b,x)\oplus f_0(b),\qquad
+f(b,x,h)=f_0(b)\oplus h g(b,x).
 \tag{19}
 ```
 
-Use (12)–(13) to encode each entry by $`f(b,h,x)`$. The table has
-$`2^{d+2}=4S`$ rows, where $`S=2^d`$, and uses $`d+2`$ dirty
-selectors. Let $`c_{x,h}`$ and $`s_{x,h}`$ be its encoded coefficients.
+Indeed, the all-zero word gives coefficient one, while flipping only
+the first sign changes the coefficient by $`2a_0^2=1`$ and gives
+zero. The inactive Pauli mask is the Clifford
+$`P_0=\mathrm{CZ}_{b,{\rm core}\,0}`$.
 
+The conditional mask requires no clean suffix flag. Allocate one
+arbitrary dirty control z, separate from the core and selectors.
+Let G toggle z by h, using the exact borrowed-MCX construction and
+borrowing the logical target t. It costs $`O(n^2)`$ Toffolis and
+returns t on every input. Let $`Q_{zg}`$ be the dirty XOR table query
+whose unchanged address is $`(z,b,x)`$ and whose row is
+$`z g(b,x)`$. It has $`4S`$ rows, $`S=2^d`$, and uses $`d+2`$
+dirty selectors.
+
+The chronological sequence $`G,Q_{zg},G,Q_{zg}`$ adds
+$`(z\oplus h)g\oplus zg=hg`$ to the core and returns z, every
+selector, and the borrowed target. In rightmost-first notation,
+$`\mathcal E=Q_{zg}GQ_{zg}G`$. Therefore
+
+```math
+P_{f(b,x,h)}
+=P_0 H^{\otimes m}\mathcal E H^{\otimes m}.
+\tag{19a}
+```
+
+This is an exact full-space identity, including unknown or entangled z
+and core inputs. Each use of G restores its borrowed target before the
+next query. Its suffix controls are disjoint from that target and the
+table address. The complete mask costs $`O(S+n^2)`$ T gates and
+$`O(Sm+n^2)`$ Clifford gates. In (10), use this actual mask and its
+actual inverse.
+
+Let $`c_{x,h}`$ and $`s_{x,h}`$ be the encoded coefficients.
 The literal target operation $`XZ=-iY`$ is Clifford. Its controlled
 version is the product of a CNOT and a controlled Z, with the order
 chosen to give XZ on the b=1 branch. Define
 
 ```math
-Q=H_b\,C_b(XZ_t)\,\mathcal S_{f(b,h,x)}\,H_b.
+Q=H_b\,C_b(XZ_t)\,\mathcal S_{f(b,x,h)}\,H_b.
 \tag{20}
 ```
 
-Both the scalar block circuit and the controlled target operation
-preserve b, h, and x. They act coherently when b is in superposition.
-With $`J`$ initializing only the flags a and b, the accepted block is
+Both the scalar block and the controlled target operation preserve b
+and x; the suffix is unchanged by the complete mask circuit. The dirty
+control and selectors return exactly after every mask use. With $`J`$
+initializing only the flags a and b, the accepted block is
 
 ```math
 B=J^\dagger QJ
 =\frac12\left(c_{x,h}I_t-i s_{x,h}Y_t\right)
- \otimes I_{\rm core,selectors}.
+ \otimes I_{\rm core,control,selectors}.
 \tag{21}
 ```
 
-For the unitary $`D_d`$ that applies $`R_y(\theta_x)`$ when h=1
-and identity when h=0,
+For the prescribed Hopf layer $`L_d`$, which applies
+$`R_y(\theta_x)`$ when h=1 and identity when h=0,
 
 ```math
-\|2B-D_d\|\leq\frac{5\sqrt2}{4}\,2^{1-m}.
+\|2B-(L_d\otimes I_{\rm dirty})\|
+\leq\frac{5\sqrt2}{4}\,2^{1-m}.
 \tag{22}
 ```
 
-The same bound holds across the coherent address direct sum. Inactive
-rows are exact: $`c_{x,0}=1`$ and $`s_{x,0}=0`$.
+The same bound holds across the coherent address direct sum.
+Inactive rows are exact: $`c_{x,0}=1`$ and $`s_{x,0}=0`$.
 The possibly imperfect length $`c_{x,h}^2+s_{x,h}^2`$ is not
 silently normalized.
 
@@ -345,31 +374,24 @@ Clifford scalar, implementable by $`XZXZ=-I`$. There are two forward
 calls to Q and one actual inverse, so every source and query inverse
 has the same charged cost.
 
-The predicate h and the suffix are unchanged throughout Q and (23).
-Compute h once before amplification and uncompute it afterward.
-The borrowed MCX may again use t even if it is entangled after the
-amplified word: its full-unitary identity returns the borrowed wire.
-The predicate is erased exactly because its suffix controls were
-unchanged. The full stage therefore has three initialized qubits and
+The dirty suffix echo is part of each actual Q and its inverse.
+It returns its dirty control and borrowed target exactly on all inputs,
+even if they are entangled with flags after an earlier call. Thus the
+amplified physical stage has two initialized qubits and
 
 ```math
-\|\widetilde L_dJ_3-J_3(L_d\otimes I_b)\|
+\|\widetilde L_dJ_2-J_2(L_d\otimes I_b)\|
 \leq5\sqrt2\,2^{1-m}\leq2^{4-m}.
 \tag{24}
 ```
 
-Here $`L_d`$ is the prescribed Hopf layer on the original logical
-register, obtained by substituting the suffix predicate for h in
-$`D_d`$, and $`\widetilde L_d`$ includes its predicate computation
-and erasure. The uniform bound for $`D_d`$ remains valid on that
-correlated subspace. Equation (24) includes all core, selector, and flag
-inputs in their stated roles.
-
-On an inactive suffix, (21) has $`B=I/2`$ exactly. Applying the lemma
-with $`\zeta=0`$ shows that the actual amplified stage is exactly
-identity on the initialized-flag columns, including dirty-work return.
-The pre-amplification word Q may have a rejected component.
-There is no source-state preparation or fresh initialization between calls.
+Equation (24) includes all core, control, selector, and flag inputs
+in their stated roles. On an inactive suffix, (21) has $`B=I/2`$
+exactly. Applying the lemma with $`\zeta=0`$ shows that the actual
+amplified stage is exactly identity on the initialized-flag columns,
+including dirty-work return. The pre-amplification word Q may have a
+rejected component. There is no source-state preparation or fresh
+initialization between calls.
 
 ## 6. Precision, workspace, and full-frame composition
 
@@ -381,20 +403,23 @@ m_d=L+n-d+4.
 ```
 
 The source uses $`m_d`$ dirty qubits and the lookup uses $`d+2`$
-additional dirty selectors. Their sum is exactly
+additional dirty selectors, together with one dirty suffix control.
+Their sum is exactly
 
 ```math
-m_d+(d+2)=L+n+6.
+m_d+(d+2)+1=L+n+7.
 \tag{26}
 ```
 
-The same arbitrary dirty pool is repartitioned between these two roles
+The same arbitrary dirty pool is repartitioned between these roles
 at each depth. No source-private helper or initialized lookup output
-is missing from (26). The three clean qubits are exactly a, b, and h.
+is missing from (26). The two clean qubits are exactly the scalar and
+sector flags a and b.
 
 Each source call uses $`2(m_d-1)`$ T gates. Each Q uses three such
-calls, of which two are controlled using (9), and two whole-word
-dirty-mask queries. Amplification multiplies these costs by three.
+calls, of which two are controlled using (9), and two phase-mask
+circuits. Each mask contains two whole-word XOR queries and two
+predicate toggles. Amplification multiplies these costs by three.
 The target-sector Cliffords, two-flag reflections, and predicate
 compute/uncompute are also charged. Thus
 
@@ -410,7 +435,7 @@ specified order. Its ideal preceding layers return all work; actual
 earlier leakage is propagated unitarily. Consequently
 
 ```math
-\|VJ_3-J_3(W\otimes I_b)\|
+\|VJ_2-J_2(W\otimes I_b)\|
 \leq\sum_{d=0}^{n-1}2^{-L}2^{d-n}
 <2^{-L}\leq\eta.
 \tag{28}
@@ -429,16 +454,221 @@ Here $`n^3=O(2^n)`$ and
 $`\sum_d2^d(n-d)=O(N)`$. This proves (1)–(3), with the complete
 prescribed frame, rather than only its first prepared-state column.
 
-## 7. Verification and scope
+An alternative reservation exchanges one dirty wire for one clean wire.
+With a third initialized qubit, compute h into it once before OAA, query
+the table with address $`(h,b,x)`$ directly, and erase h afterward.
+The suffix is preserved throughout and the borrowed-MCX identity
+returns its target helper on all inputs. This gives the same basic
+bound with $`a=3`$ and $`b\geq L+n+6`$. The bank tradeoff below
+also holds for this variant with threshold $`b\geq2(L+n+6)`$.
+
+## 7. Trading additional dirty banks for lookup cost
+
+The unary lookup above can be replaced by a whole-word dirty-bank
+SelectSwap query. Consider an S-row, m-bit table, with $`S=2^k`$,
+and choose a power of two $`1\leq\lambda\leq S`$. Reserve
+$`\lambda`$ additional arbitrary m-bit banks, separate from the
+operator core. Split the address into a high part and a low part selecting
+one of the banks.
+
+For each high address, the dirty traversal of Section 3 loads the
+$`\lambda`$ table words into their respective banks by XOR. This loader
+$`\mathcal L`$ costs $`O(S/\lambda)`$ Toffolis and $`O(Sm)`$
+Clifford gates. It needs at most k dirty selectors. Let
+$`\mathcal R`$ route the low-address-selected bank to position zero,
+using $`O(\lambda m)`$ Fredkins, and let C XOR that bank into the
+separate operator core. Use the following chronological sequence:
+
+```math
+\mathcal L,\ \mathcal R,\ C,\ \mathcal R^\dagger,\
+\mathcal L^\dagger,\ \mathcal R,\ C,\ \mathcal R^\dagger.
+\tag{30}
+```
+
+If the original selected bank word is z, the two contributions to the
+core are $`z\oplus f(y)`$ and z. Thus (30) implements (14) on an
+arbitrary core input and returns every bank and selector exactly.
+This basis identity extends to arbitrary superpositions and references.
+The inverse loader is applied only after routing has been reversed;
+the core is not among its targets. This is the whole-word version of
+the dirty-bank SelectSwap pattern in
+[Low, Kliuchnikov, and Schaeffer](https://arxiv.org/abs/1812.00954).
+
+Including both traversals and all routes gives
+
+```math
+T_{\rm query}=O(S/\lambda+\lambda m),\qquad
+G_{\rm query}=O(Sm),\qquad
+b_{\rm query}\leq m+\lambda m+k.
+\tag{31}
+```
+
+No bank or core output is initialized. Conjugating the core by Hadamards
+still gives a phase mask. The dirty suffix echo of Section 4 uses a
+constant number of these exact queries, so its cancellation identity
+and the OAA error proof are unchanged.
+
+For the real frame put $`B_0=L+n+7`$. This reserves the core, all
+selectors, and the separate dirty suffix control at every depth.
+Suppose $`b\geq2B_0`$, leaving $`K=b-B_0\geq b/2`$ bank wires.
+At each depth $`K\geq m_d`$. Choose $`\lambda`$ by rounding the
+following value down to the largest power of two not exceeding it:
+
+```math
+\max\!\left\{1,\min\!\left(S,\sqrt{S/m_d},K/m_d\right)\right\},
+\qquad S=2^{d+2}.
+\tag{32}
+```
+
+The $`\lambda m_d`$ word-bank wires then fit. When $`m_d>S`$,
+the choice $`\lambda=1`$ is covered by the additive $`m_d`$ term.
+Equations (31)–(32), together with the source and suffix-toggle costs,
+give
+
+```math
+T_d=O\!\left(\sqrt{S m_d}+m_d+\frac{S m_d}{b}+n^2\right),
+\qquad G_d=O(Sm_d+m_d+n^2).
+\tag{33}
+```
+
+The previously proved error and workspace-return contracts still hold.
+Using
+$`\sum_d\sqrt{2^dm_d}=O(\sqrt{NL})`$,
+$`\sum_d2^dm_d=O(NL)`$, and $`n^3=O(2^{n/2})`$ yields
+
+```math
+a=2,\quad b\geq2(L+n+7)
+\quad\Longrightarrow\quad
+T=O\!\left(\sqrt{NL}+nL+\frac{NL}{b}\right),
+\qquad G=O(NL).
+\tag{34}
+```
+
+The two sum bounds follow by writing $`k=n-d`$ and summing
+$`2^{-k/2}\sqrt{L+k+4}`$ and $`2^{-k}(L+k+4)`$.
+The same pool is reused at all depths; the fixed reservation B_0 is
+kept separate from the additional word banks.
+
+For this fixed two-clean budget, $`q=n+2+b=\Theta(b)`$.
+Consequently (34) matches the
+[existing full-frame lower bound](../../docs/FAULT_TOLERANT_COMPILER.md#10-matching-lower-bounds-and-their-lineage)
+whenever the extra $`nL`$ term is absorbed. Two sufficient regimes,
+subject to the workspace threshold in (34), are
+
+```math
+n^2L\leq N
+\quad\text{or}\quad
+b\leq N/n.
+\tag{35}
+```
+
+The first absorbs $`nL`$ into $`\sqrt{NL}`$; the second absorbs it
+into $`NL/b`$. This is a statement at the specified constant clean
+budget, not at a budget with an unrestricted number of clean qubits.
+At $`L=N`$, (34) retains the $`N\log N`$ source cost.
+
+## 8. Literal diagonal unitaries and phase-dressed frames
+
+The scalar block also gives a direct compiler for an arbitrary
+classically specified diagonal unitary
+
+```math
+D_\phi=\sum_{x=0}^{N-1}e^{i\phi_x}|x\rangle\langle x|.
+\tag{36}
+```
+
+Use the cosine and sine sign tables for $`\phi_x`$ with address
+$`(b,x)`$, and omit both the rotation target and the suffix predicate.
+Replace the controlled target XZ in (20) by a phase S on the sector
+flag b:
+
+```math
+Q_{\rm diag}=H_b S_b\,\mathcal S_{f(b,x)}\,H_b,\qquad
+J^\dagger Q_{\rm diag}J
+=\frac12\,\mathrm{diag}(c_x+i s_x)\otimes I_{\rm dirty}.
+\tag{37}
+```
+
+The two flags a and b are the only initialized wires. The literal factor
+i on the sine branch fixes the phase in (36); no common or
+address-dependent scalar is discarded. The same certified rounding,
+actual inverse, normalization-two amplification, and complete
+isometry estimate apply.
+
+For desired error $`2^{-\ell}`$, $`\ell\geq6`$, take
+$`m=\ell+4`$. There are $`n+1`$ dirty selectors and no dirty suffix
+control, so the exact base reservation is
+$`B_{\rm diag}=\ell+n+5`$. This proves
+
+```math
+a=2,\quad b\geq\ell+n+5
+\quad\Longrightarrow\quad
+T=O(N+\ell),\qquad G=O(N\ell),
+\tag{38}
+```
+
+with
+$`\|V_{\rm diag}J_2-J_2(D_\phi\otimes I_b)\|\leq2^{-\ell}`$.
+Additional dirty banks give
+
+```math
+a=2,\quad b\geq2(\ell+n+5)
+\quad\Longrightarrow\quad
+T=O\!\left(\sqrt{N\ell}+\ell+\frac{N\ell}{b}\right),
+\qquad G=O(N\ell).
+\tag{39}
+```
+
+Since $`q=n+2+b=\Theta(b)`$, (39) matches the diagonal lower bound in
+the same model, with every initialized and borrowed wire included.
+The GKW diagonal theorem cited in
+[Section 10.1 of the main proof](../../docs/FAULT_TOLERANT_COMPILER.md#101-the-real-frame-contains-arbitrary-diagonals)
+supplies $`\Omega(\sqrt{N\ell}+\ell)`$.
+The [fixed-width circuit count in Section 10.2](../../docs/FAULT_TOLERANT_COMPILER.md#102-fixed-width-coherent-counting),
+applied to an $`N`$-phase diagonal grid packing, supplies
+$`\Omega(N\ell/q)`$ when $`q^2`$ is a sufficiently small multiple of
+$`N\ell`$; otherwise that term is absorbed by $`\sqrt{N\ell}`$.
+In particular, the diagonal problem has an $`O(N)`$
+construction at $`\ell=N`$ with a sufficiently large linear dirty bank.
+
+There is also an immediate, explicitly scoped complex extension.
+For independently supplied real Hopf angles and diagonal phases, consider
+
+```math
+U=D_\phi W_{\mathbb R}.
+\tag{40}
+```
+
+Compile $`W_{\mathbb R}`$ and then $`D_\phi`$, each to error at most
+$`\eta/2`$. With $`L`$ as in the theorem, use $`L'=L+1`$.
+The real-frame reservation is $`L+n+8`$ and dominates the diagonal
+reservation $`L+n+6`$. Both circuits reuse the same two clean flags
+and the same dirty pool. A unitary hybrid gives total complete-isometry
+error at most $`\eta`$, including any work leakage from the first
+circuit.
+
+Thus $`a=2`$ and $`b\geq L+n+8`$ give
+$`T=O(N+nL)`$ and $`G=O(NL)`$ for (40). If
+$`b\geq2(L+n+8)`$, the improved bound is
+$`T=O(\sqrt{NL}+nL+NL/b)`$, with the same Clifford count.
+This covers the full phase-dressed frame (40), not an arbitrary complex
+unitary and not only a prepared state.
+
+## 9. Verification and scope
 
 The companion [operator-source tests](../../tests/test_operator_source_compiler.py)
 check small complete matrices for the anticommuting source, its native
 gate word and actual adjoint, all sign masks, dyadic endpoints, and the
 dirty-selector phase query. They also check the two-flag rotation block,
 amplification on all initialized columns, dirty/reference return, and
-negative controls. A two-layer full-frame fixture also checks suffix erasure,
-exact inactive action, and reuse after intermediate flag leakage. These checks
-support the signs and normalization;
+negative controls. The dirty suffix echo is checked on every input of
+a nine-wire fixture, including arbitrary borrowed control and target
+bits; a complete source/OAA fixture checks its coherent composition.
+Whole-word SelectSwap tests cover arbitrary core, bank, and selector
+inputs. Direct diagonal tests retain literal common phase and
+dirty/reference return. The earlier three-clean, two-layer fixture
+remains a hybrid-composition baseline. These checks support the signs
+and normalization;
 the dimension-independent identities and resource proof above establish
 the asymptotic statement.
 
@@ -452,5 +682,5 @@ therefore does not establish the fast heterogeneous tensor-batch hypothesis
 or use it as a subroutine.
 
 The unrestricted $`O(N)`$ endpoint remains open. The established new
-upper bound is $`O(N\log N)`$ at the explicit three-clean,
-$`N+n+6`$-dirty allocation.
+upper bound is $`O(N\log N)`$ at the explicit two-clean,
+$`N+n+7`$-dirty allocation.

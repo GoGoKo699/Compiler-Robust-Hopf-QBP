@@ -68,7 +68,7 @@ Every principal directory contains its own short map.
 | [scripts](../scripts/README.md) | walkthrough, ledgers, and synchronization commands |
 | [diagrams](../assets/README.md) | the five reviewer-facing SVGs and the exact statements they illustrate |
 | [provenance](../provenance/README.md) | compiler versions, Hopf upstreams, and prior-art claim boundaries |
-| [Research continuation](../research/README.md) | three-clean operator-source improvement, exact dirty arithmetic, and the remaining endpoint gap |
+| [Research continuation](../research/README.md) | two-clean operator-source improvement, exact dirty arithmetic, and the remaining endpoint gap |
 | [manuscript workspace](../manuscript/README.md) | paper question chain, theorem hierarchy, and scope discipline |
 
 ## Executable route

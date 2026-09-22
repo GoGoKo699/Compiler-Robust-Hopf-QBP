@@ -39,7 +39,7 @@ circuit that simultaneously minimizes every cost.
 | Model | Resource question | Scope of the matching theorem |
 |---|---|---|
 | Arbitrary one-qubit gates and CNOTs | exact size and depth versus clean workspace | real and phase-dressed complex magnitude frames, every clean budget |
-| Clifford+T | T-count versus accuracy and clean/dirty workspace | prescribed real frame, every precision above the sufficient clean reservation below |
+| Clifford+T | T-count versus accuracy and clean/dirty workspace | prescribed real frame, every precision, provided the sufficient clean reservation below is met |
 
 ### Exact logical theorem
 
@@ -128,16 +128,18 @@ register ledger, and inherited primitives.
 
 At $L=N$, sufficient $a=\Theta(n)$ and $b=\Theta(N)$ give $T^\star=\Theta(N)$.
 The new [operator-source construction](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
-uses **three clean qubits** and $N+O(\log N)$ dirty qubits to give
+uses **two clean qubits** and $N+O(\log N)$ dirty qubits to give
 $O(N\log N)$ T gates for arbitrary real frames at the same precision.
 The lower bound remains $\Omega(N)$: **a logarithmic gap is still open**.
 The [progress report](research/CONSTANT_CLEAN_PROGRESS.md) explains the construction
 and its explicit workspace requirement; smaller clean allocations retain the
 earlier bounds.
 
-The exact-model complex theorem remains separately stated. The displayed
-fault-tolerant theorem is for the real frame; literal complex phase conventions
-and a separate leaf-phase stream require their own accounting.
+The operator-source note also gives the same T-count order for the
+phase-dressed complex magnitude frame, using two clean qubits and
+$`b\ge L+n+8`$. It compiles the complete literal phase diagonal; the separate
+leaf-phase derivative stream keeps its own QBP accounting. The displayed
+sufficient-clean matching theorem above is still stated for the real frame.
 
 ## Exact construction at a glance
 

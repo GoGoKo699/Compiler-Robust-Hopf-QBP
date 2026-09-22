@@ -1095,10 +1095,23 @@ they do not emit every elementary gate of the asymptotic compiler.
 At $L=N$, a sufficiently large $a=\Theta(n)$ clean budget and $b=\Theta(N)$ dirty workspace attain
 $T^\star=\Theta(N)$. A new
 [operator-source compiler](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
-gives $T=O(N+nL)$ and $G=O(NL)$ with $a=3$ and $b\ge L+n+6$.
+gives $T=O(N+nL)$ and $G=O(NL)$ with $a=2$ and $b\ge L+n+7$.
 Thus, at $L=N$, the available upper bound is now $O(N\log N)$,
 against the unchanged $\Omega(N)$ lower bound. This is a sufficient allocation,
 not a claim for every fixed clean count or every prefactor in $b=\Theta(N)$.
+
+With more dirty capacity, $`b\ge2(L+n+7)`$, its banked lookup gives
+
+```math
+T=O\!\left(\sqrt{NL}+nL+\frac{NL}{b}\right),\qquad G=O(NL).
+```
+
+For the fixed clean allocation $`a=2`$, this matches the existing worst-case
+lower bound when $`n^2L\le N`$, or when the available bank also satisfies
+$`b\le N/n`$. Neither condition removes the endpoint's repeated precision
+charge. A separate two-clean diagonal compiler adds arbitrary literal leaf
+phases, giving the same order for $`D_{\rm ph}W_{\mathbb R}`$ with
+$`b\ge L+n+8`$ (or $`2(L+n+8)`$ for the banked bound).
 
 The construction represents binary weights in a charged Pauli operator on dirty
 work. An anticommutator extracts each scalar coefficient times the identity on

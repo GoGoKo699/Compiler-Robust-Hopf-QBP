@@ -24,7 +24,10 @@ The [constant-clean progress report](../research/CONSTANT_CLEAN_PROGRESS.md)
 links the new [operator-source proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
 and its [finite circuit checks](../tests/test_operator_source_compiler.py).
 These test the native geometric operator, its programmable scalar block,
-the two-flag rotation, and coherent amplification on arbitrary dirty inputs.
+the two-flag rotation, coherent amplification, dirty word-bank routing, the
+restored suffix echo, and literal phase-diagonal composition on arbitrary dirty
+inputs. The [graph-source reuse checks](../tests/test_operator_source_reuse.py)
+separately test Pauli support, exact acceptance arithmetic and code leakage.
 The analytic proof establishes the improved upper bound; finite matrices test
 its fragile identities and conventions.
 

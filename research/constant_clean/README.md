@@ -1,12 +1,13 @@
 # Constant-clean technical appendices
 
-Start with the short [checked-progress report](../CONSTANT_CLEAN_PROGRESS.md), then the [endpoint brief](../CONSTANT_CLEAN_ENDPOINT.md). The full-frame endpoint is now between $`\Omega(N)`$ and $`O(N\log N)`$ with three clean qubits, $`b\ge N+n+6`$ dirty qubits, and $`L=N`$. Smaller allocations retain the earlier bounds.
+Start with the short [checked-progress report](../CONSTANT_CLEAN_PROGRESS.md), then the [endpoint brief](../CONSTANT_CLEAN_ENDPOINT.md). The full-frame endpoint is now between $`\Omega(N)`$ and $`O(N\log N)`$ with two clean qubits, $`b\ge N+n+7`$ dirty qubits, and $`L=N`$. Smaller allocations retain the earlier bounds.
 
 ## Current research
 
 | Note | Result and boundary |
 |---|---|
-| [Operator-source compiler](OPERATOR_SOURCE_COMPILER.md) | Arbitrary real frames with three clean bits and $`b\ge L+n+6`$: $`T=O(N+nL)`$, $`G=O(NL)`$; leaves a logarithmic endpoint gap. |
+| [Operator-source compiler](OPERATOR_SOURCE_COMPILER.md) | Arbitrary real frames with two clean bits and $`b\ge L+n+7`$: $`T=O(N+nL)`$, $`G=O(NL)`$; dirty banks sharpen the tradeoff, and a literal diagonal gives the complex magnitude extension. The endpoint gap remains logarithmic. |
+| [Operator-source reuse](OPERATOR_SOURCE_REUSE.md) | A specific returned graph encoding needs linear processing T count for large attenuation exponents with constant additional clean flags; not an additive frame lower bound. |
 | [Phase batching with a dirty accumulator](IDENTICAL_PHASE_BATCHING.md) | One clean qubit handles identical phases and distinct phases built from shared base angles with bounded signed integer coefficients; the fast arbitrary tensor-batch problem remains open. |
 | [Dirty symplectic rank](DIRTY_RETURN_LOWER_BOUND_FOLLOWUP.md) | Same-clean/T/error compression; the retained order is optimal for rank $`O(\sqrt N)`$, while linear T count requires linear rank on hard instances. |
 | [Global program blocks and phase batching](GLOBAL_BLOCK_FOLLOWUP.md) | Two-call addressed reduction with no extra clean qubit; uniform selected commutators and full batching are equivalent up to a precision margin. The fast batch hypothesis remains unproved. |

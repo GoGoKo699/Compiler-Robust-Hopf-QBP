@@ -73,7 +73,7 @@ all selected-commutator promises, with summed error, two calls, and unchanged
 workspace. This establishes the stated resource reduction between the two
 batching contracts; it does not supply a fast arbitrary-angle compiler.
 
-The latest continuation adds the [operator-source compiler](OPERATOR_SOURCE_COMPILER.md),
+The next continuation adds the [operator-source compiler](OPERATOR_SOURCE_COMPILER.md),
 which changes the arbitrary-angle upper bound to $`O(N+nL)`$ with three clean
 bits and $`b\ge L+n+6`$. At $`L=N`$ this is $`O(N\log N)`$. Its proof
 credits prior Clifford loaders and their overlap algebra, and charges the
@@ -90,3 +90,22 @@ and sign correction are checked in
 The joint-clock problem remains open, and that arithmetic result is not a
 dependency of the operator-source compiler. Earlier statements above that the
 bounds were unchanged describe their respective earlier continuations.
+
+The following continuation reduces that compiler from three clean bits to
+two by an exact dirty suffix-query echo, using one additional dirty bit. It
+retains the former three-clean allocation as an alternative. A whole-word
+SelectSwap echo adds the stated dirty-bank tradeoff and matching subregimes;
+a two-flag literal phase block extends the construction to the phase-dressed
+complex magnitude frame. These reuse established lookup/routing and block
+techniques with explicit workspace and full-output error accounting.
+
+The separate [operator-source reuse theorem](OPERATOR_SOURCE_REUSE.md) bounds
+a returned attenuation kernel for one particular graph encoding. Its Pauli
+support and geometric-tail argument sharpens the retained acceptance-arithmetic
+tool for that interface. It does not give an additive or unrestricted
+whole-frame lower bound. Four exact checks are in
+[test_operator_source_reuse.py](../../tests/test_operator_source_reuse.py).
+The compiler fixtures now also check dirty word banks, the restored suffix
+echo, literal phase diagonals, and composition after intermediate leakage.
+The high-precision endpoint remains between $`\Omega(N)`$ and
+$`O(N\log N)`$ under the new two-clean allocation.
