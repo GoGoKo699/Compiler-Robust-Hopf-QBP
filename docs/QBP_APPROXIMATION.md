@@ -31,7 +31,7 @@ Write $`W_D=W\otimes I_D`$, and let $`J`$ append $`|0\rangle_C`$ to an arbitrary
 input on $`SD`$. The compiler supplies an actual unitary $`V`$ such that
 
 ```math
-\|VJ-JW_D\|_{\rm op}\leq\eta.                 \tag{1}
+\|VJ-JW_D\|_{\rm op}\leq\eta.                 \qquad\text{(1)}
 ```
 
 This is an operator-norm bound on **every** input of $`SD`$, not only the state
@@ -75,7 +75,7 @@ implies
 
 ```math
 \|V^\dagger J-JW_D^\dagger\|_{\rm op}
-=\|VJ-JW_D\|_{\rm op}\leq\eta.              \tag{2}
+=\|VJ-JW_D\|_{\rm op}\leq\eta.              \qquad\text{(2)}
 ```
 
 Both outer factors are unitary. This proves the inverse guarantee for the
@@ -121,7 +121,7 @@ error, even when the oracle's work leaks. Thus the full premeasurement state,
 including all retained work and the reference, obeys
 
 ```math
-\delta_{\rm out}\leq\sqrt2\,\eta+\eta_O.       \tag{3}
+\delta_{\rm out}\leq\sqrt2\,\eta+\eta_O.       \qquad\text{(3)}
 ```
 
 The total-variation distance of the observed $`(b,y)`$ distributions is at most
@@ -151,7 +151,7 @@ The response error just proved is at most $`2\eta`$, so
 
 ```math
 |\mathbb E_VZ_j-\partial_{\theta_j}E_O|
-\leq4|a_j|\eta.                              \tag{4}
+\leq4|a_j|\eta.                              \qquad\text{(4)}
 ```
 
 This use of a projected amplitude is justified by the actual complete branch

@@ -27,7 +27,7 @@ implements the specified real frame with
 ```math
 T=O\!\left(\frac{NL}{q}+L\sqrt N\right),
 \qquad G=O(NL).
-\tag{1}
+\qquad\text{(1)}
 ```
 
 All extra wires are treated as arbitrary borrowed inputs. The construction
@@ -47,7 +47,7 @@ h+b\le c\sqrt N
 \tau^*_{F,\mathbb R}(n,a,b,\eta)
 =\Theta_c\!\left(\sqrt{NL}+L+\frac{NL}{q}\right)
 \quad\text{for every }a\ge0.
-\tag{2}
+\qquad\text{(2)}
 ```
 
 Here the optimum and lower bound are worst-case over prescribed angle tuples.
@@ -108,7 +108,7 @@ chronological sequence:
 ```math
 L_f,\ R,\ C_{\beta,\mathrm{bank}\,0}G,\ R^\dagger,\ L_f^\dagger,
 \ R,\ C_{\beta,\mathrm{bank}\,0}G,\ R^\dagger.
-\tag{3}
+\qquad\text{(3)}
 ```
 
 On an original selected bank value z, the two target exponents are
@@ -126,7 +126,7 @@ The controlled multiplexor consequently costs
 ```math
 T_{\rm mux}=O\!\left(w(S/\lambda+\lambda+1)\right),
 \qquad G_{\rm mux}=O(Sw),
-\tag{4}
+\qquad\text{(4)}
 ```
 
 with at most r dirty selectors and $`\lambda`$ dirty banks. For $`S=1`$,
@@ -169,7 +169,7 @@ The scalar phase cancels. Exactly, regardless of approximation error,
 
 ```math
 \det C_x=1,\qquad XC_xX=C_x^\dagger.
-\tag{5}
+\qquad\text{(5)}
 ```
 
 It approximates $`R_y(\theta_x/2)`$. Implement its controlled table using
@@ -179,7 +179,7 @@ All these bits return before each predicate toggle. Now apply, chronologically,
 ```math
 C_\beta X,\ M,\ C_\beta C,\ M^\dagger,
 \ C_\beta X,\ M,\ C_\beta C,\ M^\dagger.
-\tag{6}
+\qquad\text{(6)}
 ```
 
 | Original borrowed control | Predicate | Target action |
@@ -202,7 +202,7 @@ a maximum rather than adding. Set
 ```math
 \epsilon_d=\eta\,2^{d-n},\qquad
 w_d=O(L+n-d).
-\tag{7}
+\qquad\text{(7)}
 ```
 
 Standard one-qubit synthesis supplies these word lengths, including Clifford
@@ -221,7 +221,7 @@ r=\min\left\{
 \left\lceil\log_2(n^2K+K^2)\right\rceil,\ n-2,
 \max\left(0,\left\lfloor\frac{K-3}{2}\right\rfloor\right)
 \right\},\qquad A=2^r.
-\tag{8}
+\qquad\text{(8)}
 ```
 
 At depth d use $`r_d=\min(d,r)`$, except that the final depth permits at
@@ -231,7 +231,7 @@ external bank capacity is
 
 ```math
 K-2-2r_d.
-\tag{9}
+\qquad\text{(9)}
 ```
 
 There are $`2^{d-r_d}`$ sectors, including both borrowed-control values at
@@ -242,7 +242,7 @@ and the predicate toggles give per sector
 
 ```math
 O\!\left(n^2+\frac{Sw_d}{K}+w_d\sqrt S+w_d\right).
-\tag{10}
+\qquad\text{(10)}
 ```
 
 First suppose $`B<4n`$. For all sufficiently large n, (8) has
@@ -253,7 +253,7 @@ $`\Omega(n)=\Omega(K)`$. Deep layers, $`d\ge r`$, contribute
 O\!\left(\frac{Nn^2}{A}+\frac{NL}{K}
 +\frac{NL}{\sqrt A}+\frac{NL}{A}\right)
 =O(NL/K),
-\tag{11}
+\qquad\text{(11)}
 ```
 
 because $`A\ge n^2K,K^2`$. Shallow layers contribute at most

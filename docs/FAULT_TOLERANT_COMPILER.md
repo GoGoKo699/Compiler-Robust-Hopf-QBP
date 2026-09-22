@@ -39,7 +39,7 @@ W=L_{n-1}\cdots L_0,\qquad N=2^n,
 L_d=I+\sum_{p=0}^{2^d-1}|p\rangle\langle p|
 \otimes(R_y(\theta_{d,p})-I)
 \otimes|0^{n-d-1}\rangle\langle0^{n-d-1}|.
-\tag{1}
+\qquad\text{(1)}
 ```
 
 The rightmost layer acts first. The complete angle tuple specifies the
@@ -61,7 +61,7 @@ A valid circuit $`V`$ satisfies the complete-isometry contract
 
 ```math
 \left\|VJ_a-J_a(W\otimes I_b)\right\|\leq\eta.
-\tag{2}
+\qquad\text{(2)}
 ```
 
 The norm is the operator norm on the entire system-and-borrowed input
@@ -93,7 +93,7 @@ there is a circuit satisfying (2), using at most those budgets, with
 ```math
 T=O\!\left(\sqrt{NL}+L+\frac{NL}{q}\right),
 \qquad G_{\rm Clifford}=O(NL).
-\tag{3}
+\qquad\text{(3)}
 ```
 
 The worst-case minimum T-count over this frame family is
@@ -102,7 +102,7 @@ The worst-case minimum T-count over this frame family is
 \tau_F(n,a,b,\eta)
 =\Theta\!\left(\sqrt{NL}+L+\frac{NL}{q}\right)
 \quad\text{when }a\geq C(n+h).
-\tag{4}
+\qquad\text{(4)}
 ```
 
 The upper bound holds for every supplied tuple; the lower bound is
@@ -126,7 +126,7 @@ fraction of $`a`$. Put
 
 ```math
 K=c+b=\Theta(q).
-\tag{5}
+\qquad\text{(5)}
 ```
 
 A live source or output word is never simultaneously counted as a bank.
@@ -138,7 +138,7 @@ query has action
 ```math
 |x\rangle|y\rangle|z\rangle
 \longmapsto |x\rangle|y\oplus f(x)\rangle|z\rangle.
-\tag{6}
+\qquad\text{(6)}
 ```
 
 Here $`y`$ is arbitrary and $`z`$ is the entire borrowed bank. To see the
@@ -150,7 +150,7 @@ copy that bank into $`y`$. The chronological sequence
 ```math
 A_f,\ P,\ C_y,\ P^\dagger,\ A_f^\dagger,
 \ P,\ C_y,\ P^\dagger
-\tag{7}
+\qquad\text{(7)}
 ```
 
 copies $`z_r\oplus f(x)`$ and then $`z_r`$, restoring the banks and leaving
@@ -168,7 +168,7 @@ gives, when a full $`v`$-bit output word and the required bank fit,
 ```math
 T_{\rm table}=O\!\left(\sqrt{Sv}+\frac{Sv}{K}+v\right),
 \qquad G_{\rm table}=O(Sv+\log S).
-\tag{8}
+\qquad\text{(8)}
 ```
 
 If necessary, use the larger of the clean or borrowed pools; its size is
@@ -178,7 +178,7 @@ tables, (8) reduces to
 
 ```math
 T_{\rm bit}=O(\sqrt S+S/K),\qquad G_{\rm bit}=O(S).
-\tag{9}
+\qquad\text{(9)}
 ```
 
 The bounds include the actual lookup inverse when a computed word must
@@ -195,7 +195,7 @@ there is an exact Clifford+T unitary $`P_M`$ whose initialized column is
 g=P_M|0^t\rangle
 =\sum_{j=0}^{M-2}2^{-(j+1)/2}|j\rangle
  +2^{-(M-1)/2}|M-1\rangle.
-\tag{10}
+\qquad\text{(10)}
 ```
 
 It uses $`O(M)`$ T and Clifford gates and $`O(\log M)`$ total initialized
@@ -248,7 +248,7 @@ $`j<M-1`$ and zero at the last label. The output-one probability obeys
 
 ```math
 0\leq p-p_M\leq2^{-M+1}.
-\tag{11}
+\qquad\text{(11)}
 ```
 
 The endpoint $`p=1`$ uses a literal constant-one function. Thus a
@@ -289,7 +289,7 @@ then
 
 ```math
 \|FJ-JW\|\leq4\zeta.
-\tag{12}
+\qquad\text{(12)}
 ```
 
 *Proof.* Multiplying the reflections gives
@@ -338,7 +338,7 @@ complete-isometry implementation with
 T=O\!\left(\sqrt{S\ell}+\ell+\frac{S\ell}{K}\right),
 \quad G=O(S\ell+\ell),
 \quad a_{\rm reserved}=O(\log S+\log\ell).
-\tag{13}
+\qquad\text{(13)}
 ```
 
 Its actual circuit preserves the address exactly, and every table query
@@ -393,7 +393,7 @@ $`\|H_dJ-JL_d\|\leq\epsilon_d`$, unitary telescoping gives
 ```math
 \|H_{n-1}\cdots H_0J-JW\|
 \leq\sum_d\epsilon_d.
-\tag{14}
+\qquad\text{(14)}
 ```
 
 Each comparison uses the ideal preceding layers with work zero; the
@@ -413,7 +413,7 @@ give
 ```math
 T_{\rm direct}=O(\sqrt{NL}+nL+NL/K),\qquad
 G_{\rm direct}=O(NL),\qquad a_{\rm reserved}=O(n+h).
-\tag{15}
+\qquad\text{(15)}
 ```
 
 For $`L<n^3`$, $`nL/\sqrt{NL}\leq n^{5/2}/2^{n/2}`$, whose supremum
@@ -445,7 +445,7 @@ $`E_i=C_i^\dagger W_i-I`$ has a fixed permitted support of size
 ```math
 S_i=2^{e_i-s_i}\bigl[(2s_i-1)2^{s_i}+2\bigr]
 \leq2s_i2^{e_i}.
-\tag{16}
+\qquad\text{(16)}
 ```
 
 After splitting each entry into its nonnegative real and imaginary
@@ -455,7 +455,7 @@ $`Q_i=O(s_i2^{e_i})`$. These actual padded dictionaries satisfy
 ```math
 \sum_i Q_i=O(N),\qquad
 \sum_i\sqrt{Q_i}=O(\sqrt N),\qquad \log Q_i=O(n).
-\tag{17}
+\qquad\text{(17)}
 ```
 
 *Proof.* A group preserves its initial prefix of length $`e_i-s_i`$.
@@ -507,7 +507,7 @@ Choose
 p=2^{-\lceil\log_2(8R)\rceil},\qquad
 J=2^{\lceil\log_2(L+8)\rceil},\qquad M=4J,
 \qquad \gamma=(1-p)^R\geq1-Rp\geq7/8.
-\tag{18}
+\qquad\text{(18)}
 ```
 
 Here $`p`$ is the exact probability of an all-zero outcome on
@@ -516,7 +516,7 @@ each original depth with error at most
 
 ```math
 \delta_c=\frac{p}{4nQ_{\max}J}.
-\tag{19}
+\qquad\text{(19)}
 ```
 
 The phase-calibrated one-qubit synthesis primitive supplies words of
@@ -536,7 +536,7 @@ targets. It obeys
 ```math
 \|E_i\|=\|C_i-W_i\|\leq s_i\delta_c
 \leq\frac{p}{4Q_{\max}J}.
-\tag{20}
+\qquad\text{(20)}
 ```
 
 Define the classical scale
@@ -555,7 +555,7 @@ that grid. This produces Boolean digits satisfying
 =\varepsilon_i\sum_{k=0}^{J-1}f_{i\ell k}2^{-k},\qquad
 0\leq a_{i\ell}-\widehat a_{i\ell}
 <2\varepsilon_i2^{1-J}.
-\tag{21}
+\qquad\text{(21)}
 ```
 
 Positive and negative parts can be enclosed by clipping rational
@@ -579,7 +579,7 @@ These are contractions. For $`d=0`$, $`S_0=I`$; for every $`1\leq d<M`$,
 
 ```math
 \|S_dg-2^{-d/2}g\|^2=(4-2\sqrt2)2^{-M}.
-\tag{22}
+\qquad\text{(22)}
 ```
 
 Indeed all coordinates before $`M-d-1`$ agree. At that coordinate the
@@ -622,7 +622,7 @@ to zero gives the exact contraction
 ```math
 T_i=(1-p)I+\frac{p}{Q_iJ}
 \sum_{\ell,k}f_{i\ell k}S_{2k}\otimes A_{i\ell}.
-\tag{23}
+\qquad\text{(23)}
 ```
 
 No source projector is inserted. Let $`E_g=|g\rangle\otimes I`$,
@@ -637,7 +637,7 @@ Using (22) for every digit and (21) for every coefficient yields
 ```math
 \|T_iE_g-E_gD_i\|
 \leq p e_M+\frac{2p}{J}2^{1-J}.
-\tag{24}
+\qquad\text{(24)}
 ```
 
 For clarity, the shift error is bounded by
@@ -688,7 +688,7 @@ Contractive telescoping of (24) proves
 \qquad
 \xi\leq Rp\left(e_M+\frac2J2^{1-J}\right)
 \leq\frac{2^{-L}}{128}.
-\tag{25}
+\qquad\text{(25)}
 ```
 
 This is the accepted-block estimate; no claim of full output correctness
@@ -716,7 +716,7 @@ test. Its accepted block is exactly
 ```math
 B=\widetilde w V_0,\qquad
 \|2B-W\|\leq2\xi+2\epsilon_0.
-\tag{26}
+\qquad\text{(26)}
 ```
 
 Let $`U`$ denote this entire actual unitary, including both source
@@ -729,7 +729,7 @@ The final complete-isometry error is less than
 
 ```math
 8\xi+8\epsilon_0\leq2^{-L}/8<\eta.
-\tag{27}
+\qquad\text{(27)}
 ```
 
 There are three complete stream appearances, one reversed. Each
@@ -793,7 +793,7 @@ compiler has the same isometry error: from (2),
 \|V^\dagger J_a-J_a(W^\dagger\otimes I_b)\|
 =\|V^\dagger[J_a(W\otimes I_b)-VJ_a]
  (W^\dagger\otimes I_b)\|\leq\eta.
-\tag{28}
+\qquad\text{(28)}
 ```
 
 This is the inverse interface used by downstream differential-frame
@@ -1005,7 +1005,7 @@ including ancillary return. GKW Theorem 4.2 [2] gives
 
 ```math
 \tau_F=\Omega(\sqrt{NL}+L).
-\tag{29}
+\qquad\text{(29)}
 ```
 
 For $`n=1`$, a fixed Clifford conjugates the one-qubit $`R_y`$ family
@@ -1033,7 +1033,7 @@ and all shorter lengths gives the conservative bound
 ```math
 \#\{\text{width-}q\text{ words of T-count at most }t\}
 \leq2^{2q^2+3q+5+(2q+1)t}.
-\tag{30}
+\qquad\text{(30)}
 ```
 
 This is the LKS fixed-width counting route [1], specialized here to the
@@ -1059,7 +1059,7 @@ t\geq
 \left[
 \frac{(N-1)(\log_2(1/\eta)-2)-2q^2-3q-5}{2q+1}
 \right]_+.
-\tag{31}
+\qquad\text{(31)}
 ```
 
 The exact logarithm in (31) avoids a rounding ambiguity: with the

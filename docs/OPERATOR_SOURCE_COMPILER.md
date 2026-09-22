@@ -13,7 +13,7 @@ $`R_y(\theta)=e^{-i\theta Y}`$. If
 
 ```math
 a\geq2,\qquad b\geq L+n+7,
-\tag{1}
+\qquad\text{(1)}
 ```
 
 then a coherent Clifford+T circuit $`V`$ satisfies
@@ -22,7 +22,7 @@ then a coherent Clifford+T circuit $`V`$ satisfies
 \|VJ_a-J_a(W\otimes I_b)\|\leq\eta,
 \qquad
 T=O(N+nL),\qquad G=O(NL).
-\tag{2}
+\qquad\text{(2)}
 ```
 
 The norm is over all logical and dirty inputs and therefore includes
@@ -42,7 +42,7 @@ At $`L=N`$, choosing $`a=2`$ and $`b=N+n+7`$ gives
 
 ```math
 T=O(N\log N)=o(N^{3/2}),\qquad G=O(N^2).
-\tag{3}
+\qquad\text{(3)}
 ```
 
 This improves the previously retained upper bound at that explicit
@@ -56,7 +56,7 @@ On $`m\geq2`$ arbitrary dirty qubits define
 
 ```math
 \Gamma_j=Z_0Z_1\cdots Z_{j-1}X_j,\qquad 0\leq j<m.
-\tag{4}
+\qquad\text{(4)}
 ```
 
 Each operator is a Hermitian involution. For $`j<k`$, the X on wire
@@ -65,7 +65,7 @@ other overlaps commute. Hence
 
 ```math
 \Gamma_j\Gamma_k+\Gamma_k\Gamma_j=2\delta_{jk}I.
-\tag{5}
+\qquad\text{(5)}
 ```
 
 For adjacent generators put
@@ -75,7 +75,7 @@ R_j=\exp\!\left(\frac{i\pi}{8}Y_jX_{j+1}\right),
 \qquad
 U_m=R_{m-2}\cdots R_0,\qquad
 M_m=U_mX_0U_m^\dagger.
-\tag{6}
+\qquad\text{(6)}
 ```
 
 The sign in (6) matters. Since
@@ -84,7 +84,7 @@ $`i\Gamma_j\Gamma_{j+1}=Y_jX_{j+1}`$, direct conjugation gives
 ```math
 R_j\Gamma_jR_j^\dagger
 =\frac{\Gamma_j+\Gamma_{j+1}}{\sqrt2}.
-\tag{7}
+\qquad\text{(7)}
 ```
 
 The same rotation commutes with every other $`\Gamma_k`$ except
@@ -98,7 +98,7 @@ a_j=
 2^{-(j+1)/2},&j<m-1,\\
 2^{-(m-1)/2},&j=m-1.
 \end{cases}
-\tag{8}
+\qquad\text{(8)}
 ```
 
 The last two squared coefficients are equal and
@@ -116,7 +116,7 @@ $`v\in\{0,1\}`$,
 
 ```math
 C_{a=v}(M_m)=U_m\,C_{a=v}(X_0)\,U_m^\dagger.
-\tag{9}
+\qquad\text{(9)}
 ```
 
 The central controlled X is Clifford, including a negative control.
@@ -212,7 +212,7 @@ A bit string $`f\in\{0,1\}^m`$ defines the Pauli mask
 ```math
 P_f=\prod_{j=0}^{m-1}Z_j^{f_j},\qquad
 N_f=P_fM_mP_f.
-\tag{10}
+\qquad\text{(10)}
 ```
 
 The mask is its own actual inverse. Conjugating by $`Z_j`$ changes
@@ -223,7 +223,7 @@ N_f=\sum_j a_j(-1)^{f_j}\Gamma_j,\qquad
 \frac{M_mN_f+N_fM_m}{2}=c_fI,
 \quad
 c_f=\sum_j a_j^2(-1)^{f_j}.
-\tag{11}
+\qquad\text{(11)}
 ```
 
 The mixed terms cancel pairwise by anticommutation. This is an operator
@@ -239,7 +239,7 @@ to $`[-1,1]`$, which does not increase this error, and choose
 ```math
 k=\mathrm{round}\bigl((1-\widehat c)2^{m-2}\bigr),
 \qquad 0\leq k\leq2^{m-1}.
-\tag{12}
+\qquad\text{(12)}
 ```
 
 If $`k<2^{m-1}`$, take the first $`m-1`$ bits of $`f`$ to be the
@@ -249,7 +249,7 @@ to zero. If $`k=2^{m-1}`$, set every bit to one. Equation (8) then gives
 ```math
 c_f=1-\frac{k}{2^{m-2}},\qquad
 |c_f-\widehat c|\leq e,\qquad |c_f-c|\leq\frac54e.
-\tag{13}
+\qquad\text{(13)}
 ```
 
 The rounding in (12) is rational arithmetic with either fixed tie rule.
@@ -265,7 +265,7 @@ classically specified m-bit table. The exact XOR table operation is
 ```math
 Q_f:\ |y,z,w\rangle\longmapsto
 |y,z\oplus f(y),w\rangle,
-\tag{14}
+\qquad\text{(14)}
 ```
 
 where the m output bits $`z`$ and k selector bits $`w`$ are all
@@ -291,7 +291,7 @@ mask directly:
 
 ```math
 P_{f(y)}=H^{\otimes m}Q_fH^{\otimes m}.
-\tag{15}
+\qquad\text{(15)}
 ```
 
 No separate initialized program word is loaded. The selector work returns
@@ -302,7 +302,7 @@ With one initialized flag a, define
 ```math
 \mathcal S_f
 =H_a\,C_{a=0}(M_m)\,N_f\,C_{a=1}(M_m)\,H_a.
-\tag{16}
+\qquad\text{(16)}
 ```
 
 Before the final Hadamard, the two branches apply $`M_mN_f`$ and
@@ -311,7 +311,7 @@ $`N_fM_m`$. Thus (11) proves the accepted block
 ```math
 (\langle0|_a\otimes I)\mathcal S_f(|0\rangle_a\otimes I)
 =c_{f(y)}I_{\rm core,selectors}.
-\tag{17}
+\qquad\text{(17)}
 ```
 
 The rejected block is retained coherently. Equation (16) contains three
@@ -322,7 +322,7 @@ by a; the masks are not. Its resources are consequently
 T(\mathcal S_f)=O(2^k+m),\qquad
 G(\mathcal S_f)=O(2^km+m),\qquad
 a=1,\quad b=m+k.
-\tag{18}
+\qquad\text{(18)}
 ```
 
 This is a charged one-clean block encoding of an arbitrary dyadic real
@@ -343,7 +343,7 @@ The inactive coefficients one and zero have the fixed encoding
 f_0(b)=b e_0,\qquad
 g(b,x)=f_{\rm act}(b,x)\oplus f_0(b),\qquad
 f(b,x,h)=f_0(b)\oplus h g(b,x).
-\tag{19}
+\qquad\text{(19)}
 ```
 
 Indeed, the all-zero word gives coefficient one, while flipping only
@@ -369,7 +369,7 @@ $`\mathcal E=Q_{zg}GQ_{zg}G`$. Therefore
 ```math
 P_{f(b,x,h)}
 =P_0 H^{\otimes m}\mathcal E H^{\otimes m}.
-\tag{19a}
+\qquad\text{(19a)}
 ```
 
 This is an exact full-space identity, including unknown or entangled z
@@ -386,7 +386,7 @@ chosen to give XZ on the b=1 branch. Define
 
 ```math
 Q=H_b\,C_b(XZ_t)\,\mathcal S_{f(b,x,h)}\,H_b.
-\tag{20}
+\qquad\text{(20)}
 ```
 
 Both the scalar block and the controlled target operation preserve b
@@ -398,7 +398,7 @@ initializing only the flags a and b, the accepted block is
 B=J^\dagger QJ
 =\frac12\left(c_{x,h}I_t-i s_{x,h}Y_t\right)
  \otimes I_{\rm core,control,selectors}.
-\tag{21}
+\qquad\text{(21)}
 ```
 
 For the prescribed Hopf layer $`L_d`$, which applies
@@ -407,7 +407,7 @@ $`R_y(\theta_x)`$ when h=1 and identity when h=0,
 ```math
 \|2B-(L_d\otimes I_{\rm dirty})\|
 \leq\frac{5\sqrt2}{4}\,2^{1-m}.
-\tag{22}
+\qquad\text{(22)}
 ```
 
 The same bound holds across the coherent address direct sum.
@@ -431,7 +431,7 @@ $`\zeta=\|2J^\dagger QJ-W\|\leq1/4`$, put
 ```math
 R=I-2JJ^\dagger,\qquad
 \mathcal A=-QRQ^\dagger RQ.
-\tag{23}
+\qquad\text{(23)}
 ```
 
 Then $`\|\mathcal A J-JW\|\leq4\zeta`$, including rejected-space
@@ -464,7 +464,7 @@ amplified physical stage has two initialized qubits and
 ```math
 \|\widetilde L_dJ_2-J_2(L_d\otimes I_b)\|
 \leq5\sqrt2\,2^{1-m}\leq2^{4-m}.
-\tag{24}
+\qquad\text{(24)}
 ```
 
 Equation (24) includes all core, control, selector, and flag inputs
@@ -481,7 +481,7 @@ At depth $`d=0,\ldots,n-1`$, choose
 
 ```math
 m_d=L+n-d+4.
-\tag{25}
+\qquad\text{(25)}
 ```
 
 The source uses $`m_d`$ dirty qubits and the lookup uses $`d+2`$
@@ -490,7 +490,7 @@ Their sum is exactly
 
 ```math
 m_d+(d+2)+1=L+n+7.
-\tag{26}
+\qquad\text{(26)}
 ```
 
 The same arbitrary dirty pool is repartitioned between these roles
@@ -508,7 +508,7 @@ compute/uncompute are also charged. Thus
 ```math
 T_d=O(2^d+m_d+n^2),\qquad
 G_d=O(2^dm_d+m_d+n^2).
-\tag{27}
+\qquad\text{(27)}
 ```
 
 Equation (24) is at most $`2^{-L}2^{d-n}`$.
@@ -520,7 +520,7 @@ earlier leakage is propagated unitarily. Consequently
 \|VJ_2-J_2(W\otimes I_b)\|
 \leq\sum_{d=0}^{n-1}2^{-L}2^{d-n}
 <2^{-L}\leq\eta.
-\tag{28}
+\qquad\text{(28)}
 ```
 
 Finally,
@@ -529,7 +529,7 @@ Finally,
 \sum_dT_d=O(N+nL+n^3)=O(N+nL),
 \qquad
 \sum_dG_d=O(NL).
-\tag{29}
+\qquad\text{(29)}
 ```
 
 Here $`n^3=O(2^n)`$ and
@@ -564,7 +564,7 @@ separate operator core. Use the following chronological sequence:
 ```math
 \mathcal L,\ \mathcal R,\ C,\ \mathcal R^\dagger,\
 \mathcal L^\dagger,\ \mathcal R,\ C,\ \mathcal R^\dagger.
-\tag{30}
+\qquad\text{(30)}
 ```
 
 If the original selected bank word is z, the two contributions to the
@@ -582,7 +582,7 @@ Including both traversals and all routes gives
 T_{\rm query}=O(S/\lambda+\lambda m),\qquad
 G_{\rm query}=O(Sm),\qquad
 b_{\rm query}\leq m+\lambda m+k.
-\tag{31}
+\qquad\text{(31)}
 ```
 
 No bank or core output is initialized. Conjugating the core by Hadamards
@@ -599,7 +599,7 @@ following value down to the largest power of two not exceeding it:
 ```math
 \max\!\left\{1,\min\!\left(S,\sqrt{S/m_d},K/m_d\right)\right\},
 \qquad S=2^{d+2}.
-\tag{32}
+\qquad\text{(32)}
 ```
 
 The $`\lambda m_d`$ word-bank wires then fit. When $`m_d>S`$,
@@ -610,7 +610,7 @@ give
 ```math
 T_d=O\!\left(\sqrt{S m_d}+m_d+\frac{S m_d}{b}+n^2\right),
 \qquad G_d=O(Sm_d+m_d+n^2).
-\tag{33}
+\qquad\text{(33)}
 ```
 
 The previously proved error and workspace-return contracts still hold.
@@ -623,7 +623,7 @@ a=2,\quad b\geq2(L+n+7)
 \quad\Longrightarrow\quad
 T=O\!\left(\sqrt{NL}+nL+\frac{NL}{b}\right),
 \qquad G=O(NL).
-\tag{34}
+\qquad\text{(34)}
 ```
 
 The two sum bounds follow by writing $`k=n-d`$ and summing
@@ -641,7 +641,7 @@ subject to the workspace threshold in (34), are
 n^2L\leq N
 \quad\text{or}\quad
 b\leq N/n.
-\tag{35}
+\qquad\text{(35)}
 ```
 
 The first absorbs $`nL`$ into $`\sqrt{NL}`$; the second absorbs it
@@ -656,7 +656,7 @@ classically specified diagonal unitary
 
 ```math
 D_\phi=\sum_{x=0}^{N-1}e^{i\phi_x}|x\rangle\langle x|.
-\tag{36}
+\qquad\text{(36)}
 ```
 
 Use the cosine and sine sign tables for $`\phi_x`$ with address
@@ -668,7 +668,7 @@ flag b:
 Q_{\rm diag}=H_b S_b\,\mathcal S_{f(b,x)}\,H_b,\qquad
 J^\dagger Q_{\rm diag}J
 =\frac12\,\mathrm{diag}(c_x+i s_x)\otimes I_{\rm dirty}.
-\tag{37}
+\qquad\text{(37)}
 ```
 
 The two flags a and b are the only initialized wires. The literal factor
@@ -686,7 +686,7 @@ $`B_{\rm diag}=\ell+n+5`$. This proves
 a=2,\quad b\geq\ell+n+5
 \quad\Longrightarrow\quad
 T=O(N+\ell),\qquad G=O(N\ell),
-\tag{38}
+\qquad\text{(38)}
 ```
 
 with
@@ -698,7 +698,7 @@ a=2,\quad b\geq2(\ell+n+5)
 \quad\Longrightarrow\quad
 T=O\!\left(\sqrt{N\ell}+\ell+\frac{N\ell}{b}\right),
 \qquad G=O(N\ell).
-\tag{39}
+\qquad\text{(39)}
 ```
 
 Since $`q=n+2+b=\Theta(b)`$, (39) matches the diagonal lower bound in
@@ -718,7 +718,7 @@ For independently supplied real Hopf angles and diagonal phases, consider
 
 ```math
 U=D_\phi W_{\mathbb R}.
-\tag{40}
+\qquad\text{(40)}
 ```
 
 Compile $`W_{\mathbb R}`$ and then $`D_\phi`$, each to error at most
