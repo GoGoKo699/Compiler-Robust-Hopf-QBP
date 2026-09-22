@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "Cite this repository when using the prescribed-frame compilers, exact and fault-tolerant resource theorems, or validation code."
 title: "Exact and Fault-Tolerant Compilation of Hopf Differential Frames"
 type: software
-version: 0.4.0a0
+version: 1.0.1
 date-released: 2026-09-22
 authors:
   - family-names: Lin

@@ -234,4 +234,4 @@ __all__ = [
     "zero_amplitude_phase_residual",
 ]
 
-__version__ = "0.4.0a0"
+__version__ = "1.0.1"
