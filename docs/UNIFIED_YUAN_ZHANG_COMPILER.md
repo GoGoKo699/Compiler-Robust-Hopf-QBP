@@ -1,5 +1,10 @@
 # Compiler architecture at a glance
 
+This page concerns the **exact logical model**. The integrated paper also has
+a [fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) and an
+[approximate-QBP bridge](QBP_APPROXIMATION.md); their hypotheses and evidence
+are stated separately.
+
 [← Theorem overview](THEOREM_OVERVIEW.md) · [Complete narrative](../REVIEW.md) · [Formal proof →](COMPILER_THEOREM.md)
 
 This page shows how one exact state-preparation toolkit is adapted to a

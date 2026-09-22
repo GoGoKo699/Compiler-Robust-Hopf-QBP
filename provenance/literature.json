@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "active_compiler_framework": {
     "authors": [
       "Pei Yuan",
@@ -22,7 +22,7 @@
       "lemma_6": "exact uniformly controlled-gate size and depth tradeoff",
       "lemma_9": "coherent CNOT-tree copy-use-uncopy primitive"
     },
-    "policy": "sole active external compiler framework and QSP benchmark"
+    "policy": "sole active external compiler framework and QSP benchmark for the exact arbitrary-one-qubit+CNOT size-depth theorem; the separate fault-tolerant theorem uses the sources recorded below"
   },
   "historical_predecessor": {
     "authors": [
@@ -152,6 +152,110 @@
     "No generic all-column controlled-state-preparation implementation of the Hopf frame",
     "No claim that the abstract square-root or borrowed-bit echo was invented in this project"
   ],
+  "fault_tolerant_sources": [
+    {
+      "id": "bausch_bit_index",
+      "authors": ["Johannes Bausch"],
+      "title": "Fast Black-Box Quantum State Preparation",
+      "checked_eprint": "arXiv:2009.10709v4",
+      "year": 2022,
+      "url": "https://arxiv.org/pdf/2009.10709v4",
+      "locators": ["Equation (4)", "Equation (6)", "Section 2.3.3"],
+      "roles": [
+        "geometric precision-index state and individual-bit oracle",
+        "capped geometric source and its preparation lineage"
+      ],
+      "boundary": "The explicit exact preparation uses a linear-size unary temporary, binary conversion, and routing cleanup. Logarithmic source-register width is not a logarithmic peak-clean-workspace guarantee. No strict gate-count improvement over the routing variants is asserted."
+    },
+    {
+      "id": "lks_lookup_and_counting",
+      "authors": ["Guang Hao Low", "Vadym Kliuchnikov", "Luke Schaeffer"],
+      "title": "Trading T gates for dirty qubits in state preparation and unitary synthesis",
+      "journal": "Quantum",
+      "volume": 8,
+      "article": 1375,
+      "year": 2024,
+      "doi": "10.22331/q-2024-06-17-1375",
+      "checked_eprint": "arXiv:1812.00954v2",
+      "url": "https://arxiv.org/html/1812.00954v2",
+      "locators": ["Section 2", "Table 2", "Figure 1(d)", "Equation (8)", "Section 5", "Appendix C, Theorem 2"],
+      "roles": [
+        "exact dirty-assisted lookup and complete dirty-bank restoration",
+        "finite-width Clifford+T circuit counting"
+      ],
+      "boundary": "Dirty lookup banks do not replace the initialized output program. The basis-state cancellation identity extends to reference-entangled inputs by linearity. Neither dirty lookup nor the counting method is claimed as new."
+    },
+    {
+      "id": "gkw_t_count",
+      "authors": ["David Gosset", "Robin Kothari", "Kewen Wu"],
+      "title": "Quantum state preparation with optimal T-count",
+      "journal": "Quantum",
+      "volume": 10,
+      "article": 2168,
+      "year": 2026,
+      "doi": "10.22331/q-2026-07-22-2168",
+      "checked_eprint": "arXiv:2411.04790v3",
+      "url": "https://quantum-journal.org/papers/q-2026-07-22-2168/pdf/",
+      "locators": ["Theorems 1.1-1.2", "Theorems 4.1-4.2", "Lemmas 2.1 and 2.3", "Lemma B.1", "Corollary B.2"],
+      "roles": [
+        "optimal unrestricted state-preparation and diagonal-synthesis benchmarks",
+        "ancilla-independent diagonal lower bound used through a frame subfamily",
+        "Boolean and single-qubit synthesis primitives",
+        "complete multiplexors and geometric layer-error allocation"
+      ],
+      "boundary": "A generic preparation theorem does not prescribe the remaining frame columns. An unrestricted-ancilla result does not supply the clean/dirty tradeoff. Multiplexor synthesis and geometric error allocation are already in Appendix B."
+    },
+    {
+      "id": "tan_general_unitary_comparison",
+      "authors": ["Xinyu Tan"],
+      "title": "Unitary Synthesis with Fewer T Gates",
+      "journal": "PRX Quantum",
+      "volume": 7,
+      "article": "033058",
+      "year": 2026,
+      "doi": "10.1103/pxhd-9s9q",
+      "published_date": "2026-09-16",
+      "url": "https://journals.aps.org/prxquantum/pdf/10.1103/pxhd-9s9q",
+      "locators": ["Definition I.2", "Theorem I.1", "Lemma IV.1", "Remark IV.2"],
+      "roles": ["general-unitary comparison", "batching controlled single-qubit instruction tables"],
+      "boundary": "Use the published precision-dependent T and ancilla bounds separately. The displayed instruction-word construction uses initialized program registers and does not directly give the stated small-clean/dirty frame theorem."
+    },
+    {
+      "id": "sparse_t_count_context",
+      "authors": ["Tongyang Li", "Fengning Ou", "Xinzhao Wang", "Penghui Yao", "Pei Yuan", "Shengyu Zhang"],
+      "title": "Optimal T Counts under Sparsity: from QROM to State Preparation and Block Encoding",
+      "checked_eprint": "arXiv:2607.28260v1",
+      "year": 2026,
+      "url": "https://arxiv.org/html/2607.28260v1",
+      "locators": ["Section 3", "Section 4"],
+      "roles": ["sparse QROM and sparse-state comparison"],
+      "boundary": "Different input families; no generic full-frame or bounded-clean-workspace theorem is imported."
+    }
+  ],
+  "fault_tolerant_claim_policy": {
+    "audit_date": "2026-09-22",
+    "audit_scope": "Checkpoint 32 primary-source comparison, including Bausch; a bounded technical audit, not certification of priority",
+    "model": "Approximate coherent Clifford+T synthesis of the prescribed real frame, with a complete initialized-isometry error bound and exact return of arbitrary dirty/reference inputs. Clean and dirty budgets, precision, and Clifford cost are recorded separately.",
+    "do_not_claim": [
+      "invention of optimal unrestricted state preparation or diagonal synthesis",
+      "invention of multiplexor synthesis or geometric layer-error allocation",
+      "invention of geometric precision indexing or dyadic bit-oracle sampling",
+      "invention of dirty lookup, selector cancellation, or borrowed-bit echoes",
+      "new finite-width counting or ancilla-independent lower-bound machinery",
+      "one circuit simultaneously optimal in CNOT size, depth, and T count",
+      "a general constant-clean-workspace frame lower bound from a small-source obstruction",
+      "differentiation of the compiled circuit family or optimal gradient-query complexity",
+      "priority inferred from absence of a matching result in a bounded search"
+    ],
+    "compact_source_role": "An explicit exact O(L)-T, O(log L)-peak-clean implementation of the established capped geometric source, with ordinary binary labels and exact temporary return.",
+    "direct_sampler_role": "A complete addressed SU(2) compiler using fixed Pauli atoms, geometric bit sampling, charged lookup, and standard oblivious amplitude amplification. Its direct frame composition already yields the matching count in polynomial-precision examples.",
+    "principal_contribution": "The structured full-frame, uniform-in-precision upper construction: residual grouping, one shared accepted-branch shift source, failure tracking, and global amplification. Combined with imported lower bounds, it matches T count in the explicitly stated workspace regimes.",
+    "all_clean_budget_corollary": "A splice of supported compilers under an additional workspace/precision condition; not a new independent lower bound.",
+    "moderate_precision_boundary": "The L=n^2, a=Theta(n), b=Theta(n sqrt(N)) witness is already attained by the earlier direct sampler and must not be presented as an incremental checkpoint-28 gain.",
+    "qbp_bridge": "At fixed parameters, complete-isometry and observable-implementation error bound the bias of a bounded-score estimator. No derivative of the classically selected Clifford+T word is taken.",
+    "evidence_boundary": "Analytic construction and finite component checks; no general emitted fault-tolerant frame compiler is claimed.",
+    "review_status": "Internal source and proof audit; broader independent review remains necessary before submission."
+  },
   "strict_zero_claim_policy": {
     "do_not_claim": [
       "invention of borrowed or dirty ancillas",

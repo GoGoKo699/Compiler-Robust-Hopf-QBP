@@ -1,207 +1,110 @@
 # Manuscript architecture
 
-The repository contains the complete proof and executable support for one
-all-workspace Hopf-frame compiler.  The intended paper should preserve the same
-compiler-first question chain as [`REVIEW.md`](../REVIEW.md), while moving
-constant-bearing ledgers and repeated verification material to appendices.
+[Read the argument](../REVIEW.md) · [Exact theorem](../docs/COMPILER_THEOREM.md) · [T-count theorem](../docs/FAULT_TOLERANT_COMPILER.md)
+
+This is one compiler paper about a prescribed Hopf differential frame, with
+exact logical and fault-tolerant resource theorems. The same complete-input
+contract connects both to the inverse-frame gradient protocol.
 
 ## Working title
 
-**Optimal Compilation of Hopf Differential Frames for Quantum Backpropagation**
+**Exact and Fault-Tolerant Compilation of Hopf Differential Frames**
 
-The title should remain Hopf-specific unless a broader prescribed-frame theorem
-is proved.
+Quantum backpropagation motivates the required completion and supplies the
+application. The compiler theorem remains meaningful independently of that
+application. Keep the title Hopf-specific unless a broader frame theorem is
+proved.
 
-## Central statement
+## Central question and results
 
-Let $N=2^n$.  For every clean-workspace budget $m\geq0$, the real Hopf
-differential frame and phase-dressed complex magnitude frame have exact
-frame-safe implementations with
+A state-preparation circuit can choose all columns except its prepared state.
+The prescribed Hopf frame fixes the marker columns used to resolve coordinate
+responses. What resources are needed to retain that stronger interface?
 
-```math
-S=\Theta(N),
-\qquad
-D=\Theta\left(n+\frac{N}{n+m}\right).
-```
+| Result | Model and domain |
+|---|---|
+| Optimal size and depth | exact arbitrary one-qubit gates and CNOTs; every clean-workspace budget; real and phase-dressed complex magnitude frames |
+| Matched T-count | coherent finite precision; real full frame; separate clean/dirty promises; sufficient clean reservation |
+| QBP consequence | fixed-parameter raw-gradient records with matched access assumptions and an explicit approximation-bias budget |
 
-The complete complex coordinate gradient combines this magnitude-frame stream
-with a separate direct leaf-phase stream.
+For every integer $m\geq0$, the exact theorem has $S=\Theta(N)$ and
+$D=\Theta(n+N/(n+m))$. The real-frame T theorem has the sufficient clean
+condition $a\geq C(n+h)$, with the definitions and full quantifiers in its
+formal chapter.
 
-The compiler theorem matches the optimal arbitrary-state-preparation frontier
-in the same exact logical model.  Its distinguishing requirement is that a
-prescribed unitary completion, rather than one initialized state column, must be
-preserved.
-
-## Opening question chain
-
-The introduction should establish the following sequence before presenting the
-construction.
-
-1. Exact state preparation fixes one initialized column of a unitary.
-2. The global Hopf gradient circuit applies the inverse of a prescribed
-   state-and-marker frame.
-3. A state-equivalent completion can therefore corrupt the gradient.
-4. The Hopf frame has addressed zero-suffix tree structure absent from a generic
-   unitary.
-5. That structure permits the all-workspace state-preparation toolkit to be
-   adapted without losing the prescribed columns.
-6. The resulting complete frame reaches the same optimal size–depth frontier.
-7. Compiler-robust QBP follows as a matched-program consequence.
-
-The numerical two-qubit obstruction should appear immediately after the
-compiler-contract distinction.
-
-## Geometric convention
-
-For unrestricted magnitude angles,
-
-```math
-\partial_{\theta_j}|\psi\rangle
-=a_j|e_j\rangle,
-\qquad
-g_{j,j}=a_j^2,
-```
-
-where $a_j$ is the oriented incoming amplitude.  On the canonical Hopf domains,
-$a_j\geq0$ and equals the principal metric square root.
-
-Canonical domains:
-
-- real depths $0,\ldots,n-2$: $[0,\pi/2]$;
-- final real depth: $[0,2\pi)$;
-- complex magnitude angles: $[0,\pi/2]$.
-
-If $g_{j,j}=0$, the raw differential vanishes.  The marker column is the
-chart-selected orthogonal continuation determined by the complete parameter
-tuple, not a normalized nonzero derivative.
-
-## Compiler source policy
-
-The active exact compiler framework and QSP comparison benchmark is P. Yuan and
-S. Zhang, *Quantum* **7**, 956 (2023):
-
-- Theorem 2: optimal QSP frontier;
-- Lemma 5: ancilla-free multi-controlled X;
-- Lemma 6: all-workspace UCG synthesis;
-- Lemma 9: coherent copy–uncopy.
-
-The published article corresponds to `arXiv:2202.11302v2`; the imported
-statements were checked against v3.  The preceding state-preparation paper is
-cited as the historical predecessor and original source of selected primitives.
-Möttönen and Bergholm supply the multiplexor/UCG lineage.
-
-The preferred relational wording is:
-
-> Once the Hopf completion is exposed as a product of addressed
-> complete-operator layers, the state-preparation primitives can be adapted
-> while preserving the designated marker columns.
-
-## Theorem chain
-
-1. **Hopf differential-frame interface.** State column, marker columns,
-   oriented differential weights, and canonical domains.
-2. **Frame-safe substitution.** Complete clean-input equality implies the exact
-   inverse-frame relation.
-3. **State-column obstruction.** The two-qubit completion changes the decoded
-   gradient while preserving the state.
-4. **Borrowed-suffix echo.** One addressed nonfinal layer is implemented at
-   strict zero workspace.
-5. **Strict-zero optimality.** The complete real frame has $\Theta(N)$ size and
-   $\Theta(n+N/n)$ depth.
-6. **Conditioned-prefix identity.** The first $t$ depths are a smaller frame
-   conditioned on the external zero suffix.
-7. **Tail direct sum.** The remaining depths split into $2^t$ subtree frames.
-8. **Binary–one-hot decoder.** The prefix frame is implemented in $O(t)$ depth
-   and $O(2^t)$ size.
-9. **Coherent router.** Route–controlled-subframes–unroute realizes the tail and
-   clears all workspace.
-10. **All-workspace real theorem.** Direct and routed schedules attain the upper
-    bound; parameter capacity and light cones provide the lower bound.
-11. **Complex magnitude corollary.** One phase UCG preserves the same frontier.
-12. **Matched QBP corollary.** Frame-safe compilation adds no new asymptotic
-    depth factor to the global inverse-frame record.
-13. **Checkpoint interface theorem.** A factorization-specific active interface
-    supports a weaker substitution statement.
+These statements do not assert a single jointly optimal circuit or optimal
+complexity among all gradient algorithms.
 
 ## Preferred paper structure
 
-1. Introduction: from one prepared column to a prescribed completion
-2. Hopf differential-frame interface
-3. Compiler contracts and the two-qubit obstruction
-4. Exact circuit model and imported state-preparation toolkit
-5. Strict-zero borrowed-suffix echo
-6. Tree cut and conditioned prefix
-7. Coherent routing and workspace parallelism
-8. All-workspace optimality
-9. Phase-dressed complex magnitude frame
-10. Compiler-robust global QBP
-11. Checkpoint interface and limitations
-12. Discussion
+1. **Problem and significance.** One prepared column versus a prescribed
+   differential frame; the two-qubit readout obstruction; the two resource
+   models and the scope of the main results.
+2. **Shared mathematical interface.** Hopf tree and markers, oriented incoming
+   weights, singular coordinates, full-input compilation, actual adjoints, and
+   the separate complex leaf-phase stream.
+3. **Exact logical compilation.** Borrowed-suffix echo, small clean flag,
+   conditioned tree cut and coherent routing, with the all-workspace size/depth
+   theorem and lower bounds.
+4. **Fault-tolerant compilation.** Coarse structured residual, compact source,
+   accepted-branch reuse, global amplification, full resource ledger and
+   matching theorem in the stated regime.
+5. **Compiler-robust QBP.** Exact substitution and finite-precision bounded-score
+   bias; quantum executions, per-execution circuit costs, classical output, and
+   observable access kept separate.
+6. **Discussion.** The constant-clean endpoint, T-depth, elementary emission,
+   and scope of the mathematical model.
 
-The four-sector echo proof, explicit router action, simultaneous workspace peak,
-maximal-cut inequality, and main theorem belong in the main text.  Detailed gate
-and register ledgers may move to appendices.
+The main text should explain why the source can be reused, why failed branches
+cannot re-enter the accepted block, and where every workspace region is
+charged. Detailed reversible arithmetic, exact small fixtures, and repeated
+register ledgers can go in appendices.
 
-## Runtime and statistical wording
+## Source and contribution discipline
 
-The primary finite-shot target is simultaneous absolute accuracy of the raw
-Hopf-coordinate gradient.  Complete-vector, relative, normalized-frame, and
-natural-gradient targets have different conditioning.
+The exact toolkit follows P. Yuan and S. Zhang, *Quantum* **7**, 956 (2023),
+with the established multiplexor and borrowed-workspace lineage. Its local
+contribution is the Hopf complete-operator factorization and workspace schedule.
 
-The scalar and gradient programs should be compared as
+The finite-precision toolkit credits Gosset–Kothari–Wu for optimal synthesis
+benchmarks, Low–Kliuchnikov–Schaeffer for dirty lookup/counting, and Bausch for
+geometric digit weighting and the bit-indexed oracle. Ordinary LCU, compression,
+and oblivious amplification retain their original lineage. The main technical
+candidate is the precision-uniform full-frame composition with a charged,
+reusable source. See the [source map](../docs/SOURCE_MAP.md).
 
-```math
-T_{\mathrm{scalar}}^{\mathrm{matched}}
-=S_E(D_{\mathrm{prep}}+D_O),
-```
+The supporting source-channel obstruction is not needed to prove the positive
+T theorem. Keep its role focused on the [open endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md);
+it must not become a claimed general frame lower bound. Most failed routes and
+the research chronology belong outside the main narrative.
 
-```math
-T_{\mathrm{grad}}^{\mathrm{matched}}
-=S_{\nabla}(D_{\mathrm{prep}}+D_O+D_{\mathrm{frame}}).
-```
+Alternative shadow-based gradient estimators, learned scores, and classical
+validation algorithms are outside this compiler paper's selected scope. They
+can inform comparisons without becoming a third central storyline.
 
-At fixed comparable scalar and raw-coordinate absolute accuracy and confidence,
-the inverse frame changes per-execution depth only by a constant asymptotic
-factor and the execution overhead is $O(\log n)=O(\log\log M)$.  The statement is
-for the same general state family and controlled observable; it excludes
-classical output materialization and instance-specific scalar shortcuts.
+## Accuracy and geometry
 
-## Contribution boundary
+The primary gradient target is simultaneous absolute error for the raw
+Hopf-coordinate gradient. Relative, normalized-frame, natural-gradient, and
+complete-vector targets have different conditioning. An oriented incoming
+amplitude multiplies the corresponding marker; at zero magnitude weight the
+raw derivative vanishes but the chart-selected continuation remains prescribed.
 
-Do not claim invention of UCGs, controlled-unitary roots, Pauli-conjugation
-echoes, borrowed or conditionally clean qubits, toggle detection, or reversible
-routing.
+Approximate compilation is evaluated at a fixed parameter tuple. The proof
+controls measurement-score bias using the actual synthesized circuit and its
+actual inverse. It does not differentiate a potentially discontinuous compiler.
+The complex magnitude frame and its separate phase stream retain their own
+resource statements.
 
-The strict-zero statement is the Hopf-specific reduction of one addressed depth
-to two total-width-$`d+2`$ UCGs and linear predicate toggles using one restored
-logical suffix bit.  The positive-workspace statement is the Hopf-specific tree
-cut, clean decoder, and coherent router attaining the full workspace frontier.
+## Remaining work
 
-## Evidence already available
+The repository now carries the integrated proof and evidence reading route.
+The next mathematical task is the constant-clean endpoint, specified in the
+[research continuation](../research/CONSTANT_CLEAN_ENDPOINT.md). Resume it after
+this repository update, using the retained construction and obstruction notes.
 
-- complete frame and strict-zero operator tests;
-- canonical-domain and singular-coordinate tests;
-- exact global and checkpoint compiler-boundary fixtures;
-- explicit decoder and router schedules;
-- arbitrary-entangled-input routing tests;
-- token, copy, flag, and additional-data cleanup;
-- one-UCG phase diagonal;
-- integer and exact-rational resource ledgers;
-- output-sensitive magnitude and direct-phase decoders;
-- source, claim, and evidence maps;
-- three internal proof reconstructions.
-
-## Remaining manuscript work
-
-- obtain independent technical review of the strict-zero echo, router,
-  workspace peak, maximal-cut bound, lower bounds, and matched QBP statement;
-- complete the closest-prior-art check and freeze claim wording;
-- cross-check notation against both Hopf manuscripts;
-- decide whether any resource plot adds information beyond the circuit and tree
-  diagrams;
-- prepare and audit the complete LaTeX package;
-- update `CITATION.cff` after a manuscript identifier is available.
-
-The abstract may state the theorem directly, while distinguishing internal
-verification from independent review and keeping the contribution claim
-Hopf-specific.
+For a submission package, prepare the full LaTeX manuscript, align notation
+with the earlier Hopf papers, check all imported theorem hypotheses, and obtain
+external technical feedback. Existing internal checks are not external review
+or a certification of priority. Update `CITATION.cff` when a manuscript
+identifier is available.

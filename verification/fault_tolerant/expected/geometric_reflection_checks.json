@@ -1,0 +1,418 @@
+{
+  "checkpoint": 25,
+  "status": "passed",
+  "arithmetic": "Exact Fraction arithmetic in Q(sqrt(2),i)",
+  "scope": "Independent finite full-matrix coefficients, reduced denominators, physical Galois examples and rational tail constants. These tests do not prove the asymptotic lattice theorem, synthesize circuits, or certify an additive lower bound for whole sequences.",
+  "reflection_matrices": {
+    "full_matrix_cases": [
+      {
+        "M": 4,
+        "t": 2,
+        "z": "1/4",
+        "u": "1/16",
+        "reflection_denominator_exponent": 4,
+        "reflection_2d_expression": 8,
+        "preparation_denominator_exponent": 2,
+        "preparation_2d_expression": 4,
+        "reflection_matrix_sha256": "227b2bf2f1835eeee753b41c4c2bbaa9805df3fbf73a4c3a7e7593e5828f4173"
+      },
+      {
+        "M": 8,
+        "t": 3,
+        "z": "21/64",
+        "u": "4537/8192",
+        "reflection_denominator_exponent": 13,
+        "reflection_2d_expression": 26,
+        "preparation_denominator_exponent": 6,
+        "preparation_2d_expression": 12,
+        "reflection_matrix_sha256": "9c7e0eb12d66bf842637798ea9014c15a4f6e9a5e33820a6893d9310721e1a20"
+      },
+      {
+        "M": 16,
+        "t": 4,
+        "z": "5461/16384",
+        "u": "835128889/1073741824",
+        "reflection_denominator_exponent": 30,
+        "reflection_2d_expression": 60,
+        "preparation_denominator_exponent": 14,
+        "preparation_2d_expression": 28,
+        "reflection_matrix_sha256": "fa79006aae4ce62e460c1c36d2cfa9f0a4d2e863af7d304659ab6f501d1d4dc2"
+      }
+    ],
+    "extended_column_cases": [
+      {
+        "fixture": "one_zero_bit",
+        "source_M": 4,
+        "dimension": 8,
+        "q": 3,
+        "u": "17/32",
+        "denominator_exponent": 5
+      },
+      {
+        "fixture": "second_independent_source",
+        "source_M": 4,
+        "dimension": 16,
+        "q": 4,
+        "u": "49/64",
+        "denominator_exponent": 6
+      }
+    ],
+    "incorrect_overflow_detected": true,
+    "unnormalized_trace_detected": true,
+    "off_by_one_denominator_detected": true
+  },
+  "physical_galois": {
+    "fixtures": [
+      {
+        "fixture": "T",
+        "qubits": 1,
+        "word": [
+          [
+            "T",
+            0
+          ]
+        ],
+        "T_or_TDG_count": 1,
+        "full_PTM_entries": 16,
+        "unitary_matrix_sha256": "1dccf6510a56a0457e92e34a57be08f0c0f7d1e5674861c3410d5ef6ab2438c3",
+        "physical_galois_matrix_sha256": "a6353e946ed106b3ce65d0a9d5611545e5b0bf7f8d8dcf7af055e9644e24e813"
+      },
+      {
+        "fixture": "TDG",
+        "qubits": 1,
+        "word": [
+          [
+            "TDG",
+            0
+          ]
+        ],
+        "T_or_TDG_count": 1,
+        "full_PTM_entries": 16,
+        "unitary_matrix_sha256": "966ba68db337c6ae279d120ed38eae3969868a8bb6ebbbfd50823c77fe9cd5c3",
+        "physical_galois_matrix_sha256": "168013d3247631b219b8fefad1e884e56b2e05993e56aa06d824ea2c093a3c31"
+      },
+      {
+        "fixture": "one_qubit_mixed",
+        "qubits": 1,
+        "word": [
+          [
+            "H",
+            0
+          ],
+          [
+            "T",
+            0
+          ],
+          [
+            "S",
+            0
+          ],
+          [
+            "TDG",
+            0
+          ],
+          [
+            "H",
+            0
+          ]
+        ],
+        "T_or_TDG_count": 2,
+        "full_PTM_entries": 16,
+        "unitary_matrix_sha256": "85a60b3ae4b2e37c425255ec6fa18dd32bce0e2f45ee2f98ce6ee14b3fb7c961",
+        "physical_galois_matrix_sha256": "85a60b3ae4b2e37c425255ec6fa18dd32bce0e2f45ee2f98ce6ee14b3fb7c961"
+      },
+      {
+        "fixture": "two_qubit_entangling",
+        "qubits": 2,
+        "word": [
+          [
+            "H",
+            0
+          ],
+          [
+            "T",
+            0
+          ],
+          [
+            "CX",
+            0
+          ],
+          [
+            "TDG",
+            1
+          ],
+          [
+            "S",
+            0
+          ],
+          [
+            "CZ",
+            0
+          ],
+          [
+            "H",
+            1
+          ],
+          [
+            "T",
+            1
+          ]
+        ],
+        "T_or_TDG_count": 3,
+        "full_PTM_entries": 256,
+        "unitary_matrix_sha256": "d28d5dce6d35f92f0df445387b0202d7effde55167bb032d70e2799f7276e9dc",
+        "physical_galois_matrix_sha256": "e65d594ac72467bc4e43feb4ef97b7123ffc1565cb382e186be19e33022ed24e"
+      }
+    ],
+    "nontrivial_field_conjugation_exercised": true,
+    "full_PTM_entries_checked": 304,
+    "initialized_and_mixed_helper_coefficients": 32,
+    "finite_algebraic_norm_separation_checks": 1312,
+    "scope": "Finite physical examples of the identities; not a proof of the general channel lattice or ancillary lower bound."
+  },
+  "exact_tails": {
+    "cases": [
+      {
+        "M": 4,
+        "z": "1/4",
+        "u": "1/16",
+        "reflection_tail": "7/144",
+        "reflection_tail_bound": "1/18",
+        "preparation_tail": "1/12",
+        "precision_cases": [
+          {
+            "L": 1,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 2,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 3,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 4,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 5,
+            "reflection_condition": false,
+            "preparation_condition": false
+          }
+        ]
+      },
+      {
+        "M": 8,
+        "z": "21/64",
+        "u": "4537/8192",
+        "reflection_tail": "127/73728",
+        "reflection_tail_bound": "1/576",
+        "preparation_tail": "1/192",
+        "precision_cases": [
+          {
+            "L": 1,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 2,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 6,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 7,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 8,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 9,
+            "reflection_condition": false,
+            "preparation_condition": false
+          }
+        ]
+      },
+      {
+        "M": 16,
+        "z": "5461/16384",
+        "u": "835128889/1073741824",
+        "reflection_tail": "32767/9663676416",
+        "reflection_tail_bound": "1/294912",
+        "preparation_tail": "1/49152",
+        "precision_cases": [
+          {
+            "L": 1,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 2,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 14,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 15,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 16,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 17,
+            "reflection_condition": false,
+            "preparation_condition": false
+          }
+        ]
+      },
+      {
+        "M": 32,
+        "z": "357913941/1073741824",
+        "u": "8198552921410080313/9223372036854775808",
+        "reflection_tail": "2147483647/83010348331692982272",
+        "reflection_tail_bound": "1/38654705664",
+        "preparation_tail": "1/3221225472",
+        "precision_cases": [
+          {
+            "L": 1,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 2,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 30,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 31,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 32,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 33,
+            "reflection_condition": false,
+            "preparation_condition": false
+          }
+        ]
+      },
+      {
+        "M": 64,
+        "z": "1537228672809129301/4611686018427387904",
+        "u": "321377790980886326603273421237019446841/340282366920938463463374607431768211456",
+        "reflection_tail": "9223372036854775807/3062541302288446171170371466885913903104",
+        "reflection_tail_bound": "1/332041393326771929088",
+        "preparation_tail": "1/13835058055282163712",
+        "precision_cases": [
+          {
+            "L": 1,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 2,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 62,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 63,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 64,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 65,
+            "reflection_condition": false,
+            "preparation_condition": false
+          }
+        ]
+      },
+      {
+        "M": 128,
+        "z": "28356863910078205288614550619314017621/85070591730234615865843651857942052864",
+        "u": "225151284628114824434721359739115376381339398940583266828752892537195987177017/231584178474632390847141970017375815706539969331281128078915168015826259279872",
+        "reflection_tail": "170141183460469231731687303715884105727/2084257606271691517624277730156382341358859723981530152710236512142436333518848",
+        "reflection_tail_bound": "1/12250165209153784684681485867543655612416",
+        "preparation_tail": "1/255211775190703847597530955573826158592",
+        "precision_cases": [
+          {
+            "L": 1,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 2,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 126,
+            "reflection_condition": true,
+            "preparation_condition": true
+          },
+          {
+            "L": 127,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 128,
+            "reflection_condition": true,
+            "preparation_condition": false
+          },
+          {
+            "L": 129,
+            "reflection_condition": false,
+            "preparation_condition": false
+          }
+        ]
+      }
+    ],
+    "reflection_budget_checks": 29,
+    "preparation_budget_checks": 17,
+    "scope": "Exact rational tails and stated numerical constants; no synthesized approximate reflection is supplied."
+  },
+  "source_sha256": {
+    "geometric_reflection_checks.py": "7e7832292cd3089fa5339303de75d9005d43e0080449d43e32d9a4572c3a0a3a"
+  }
+}

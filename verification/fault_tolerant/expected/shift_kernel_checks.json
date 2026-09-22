@@ -1,0 +1,240 @@
+{
+  "checkpoint": 28,
+  "status": "passed",
+  "arithmetic": "exact Q(sqrt(2),i), stdlib fractions",
+  "scope": "Finite explicit unitary fixtures and exact identities; no compiled gate counts or universal proof inferred.",
+  "fixture_limit": "M=4,Q=J=2,p=1/2 and arbitrary digits (including f_0=1) test the general local identity, not production M=4J, tightened-coarse residuals, bounded normalization, or an emitted outer OAA.",
+  "source_sha256": "3edebc5b6dcc8d8fdccd8070db67dbb958c0471a0c0d81f7c3e3f8e759c71933",
+  "helper_sha256": "7e7832292cd3089fa5339303de75d9005d43e0080449d43e32d9a4572c3a0a3a",
+  "shifts": {
+    "fixtures": [
+      {
+        "M": 2,
+        "valid_nonzero_offsets": 1,
+        "offset_codes_checked": 4
+      },
+      {
+        "M": 4,
+        "valid_nonzero_offsets": 3,
+        "offset_codes_checked": 8
+      },
+      {
+        "M": 8,
+        "valid_nonzero_offsets": 7,
+        "offset_codes_checked": 16
+      },
+      {
+        "M": 16,
+        "valid_nonzero_offsets": 15,
+        "offset_codes_checked": 32
+      }
+    ],
+    "permutation_input_cases": 1360,
+    "valid_nonzero_defects": 26,
+    "invalid_offset_defects": 30
+  },
+  "kernels": {
+    "fixtures": [
+      {
+        "stage": 0,
+        "accepted_block_sha256": "8a258c29ee856311e7365d430b37eb7f601d2a0e515bc475cf9f206ab25ca10a",
+        "factor_target_sha256": "18d1852549ea4a4f3e98b676b2b02f6780a7644894d76aacc9cf7aeac2f0879f",
+        "error_gram": [
+          [
+            [
+              "1/256",
+              "-1/512",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "1/256",
+              "-1/512",
+              "0",
+              "0"
+            ]
+          ]
+        ]
+      },
+      {
+        "stage": 1,
+        "accepted_block_sha256": "2b1a9bbff5e55ded6ffcfc20640cb4d0e4751a4be2a826c3ad34a6d2abdc7a0a",
+        "factor_target_sha256": "8c325552ce295b6d99bec628daa14a9fdd517741fe95ed12c140a07b396de741",
+        "error_gram": [
+          [
+            [
+              "1/256",
+              "-1/512",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          ]
+        ]
+      },
+      {
+        "stage": 2,
+        "accepted_block_sha256": "cd2ebfbf750419fe39281cec56165d8d608676b367d90118a553a454d77e9cff",
+        "factor_target_sha256": "66f84d5609986eeb4c88c0cdcb3cdaf1370f4892e3da123120ffc526542aa808",
+        "error_gram": [
+          [
+            [
+              "1/256",
+              "-1/512",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "1/256",
+              "-1/512",
+              "0",
+              "0"
+            ]
+          ]
+        ]
+      }
+    ],
+    "full_inverse_columns": 1536,
+    "initialized_accepted_block_columns": 24,
+    "negative_controls": [
+      "omitted_zero_digit_flag",
+      "omitted_underflow_flag",
+      "wrong_overflow_probability"
+    ]
+  },
+  "streaming": {
+    "fixtures": [
+      {
+        "stages": [
+          0,
+          1
+        ],
+        "counter_modulus": 2,
+        "accepted_product_sha256": "40ccb73d1c6e3691aa9832f621bcac0c1b835ad128e127b2918e13e6ee6d40f2",
+        "one_preparation_final_clean_columns": [
+          [
+            [
+              "69/256",
+              "1/512",
+              "0",
+              "0"
+            ],
+            [
+              "5/64",
+              "1/128",
+              "5/64",
+              "1/128"
+            ]
+          ],
+          [
+            [
+              "-1/64",
+              "-1/128",
+              "-1/16",
+              "0"
+            ],
+            [
+              "63/256",
+              "-1/512",
+              "0",
+              "0"
+            ]
+          ]
+        ]
+      },
+      {
+        "stages": [
+          0,
+          1,
+          2
+        ],
+        "counter_modulus": 4,
+        "accepted_product_sha256": "675ab3d3eb34f8d1b4152f3fa742c869672088c89bb4fd99a0dbd902e48848a6",
+        "one_preparation_final_clean_columns": [
+          [
+            [
+              "69/512",
+              "1/1024",
+              "17/2048",
+              "17/4096"
+            ],
+            [
+              "13/256",
+              "3/512",
+              "7/256",
+              "1/512"
+            ]
+          ],
+          [
+            [
+              "-3/512",
+              "-3/1024",
+              "-1/32",
+              "0"
+            ],
+            [
+              "63/512",
+              "-1/1024",
+              "-79/2048",
+              "-15/4096"
+            ]
+          ]
+        ]
+      }
+    ],
+    "accepted_product_columns": 16,
+    "actual_inverse_prepared_columns": 4,
+    "negative_controls": [
+      "no_failure_history",
+      "missing_unprepared_labels_from_F",
+      "counter_wraparound"
+    ]
+  }
+}

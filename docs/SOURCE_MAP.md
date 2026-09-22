@@ -10,7 +10,9 @@ This page separates the proof into three layers:
    repository.
 
 The tables identify the precise fact used, rather than citing an entire paper as
-a premise.
+a premise. Section 5 adds the separate Clifford+T toolkit. Yuan–Zhang remains
+the normative framework for the exact arbitrary-one-qubit+CNOT theorem; the
+fault-tolerant theorem has its own precision and workspace hypotheses.
 
 ## 1. Imported state-preparation toolkit
 
@@ -98,9 +100,51 @@ and is reconciled in [`SYNC.md`](../SYNC.md) and
 | R10 | the real frame and phase-dressed complex magnitude frame attain the all-workspace optimum | [compiler theorem, main theorem](COMPILER_THEOREM.md#main-theorem-optimal-exact-hopf-frame-compilation) | [`unified_compiler.py`](../compiler_robust_hopf/unified_compiler.py), both resource ledgers |
 | R11 | frame-safe compilation preserves the global record and introduces no additional asymptotic depth factor in the matched program | [QBP consequence](QBP_CONSEQUENCE.md) | decoder and boundary tests; reviewer walkthrough |
 
-## 5. Evidence classification
+## 5. Fault-tolerant sources and contribution boundaries
 
-The local evidence has four distinct levels.
+The [fault-tolerant compiler](FAULT_TOLERANT_COMPILER.md) uses a complete
+initialized-isometry approximation, uniformly over logical and dirty inputs
+and their references. Dirty workspace is restored exactly. Initialized logical
+work may have residual error included in that isometry norm. This is a
+different resource theorem from the exact clean-workspace size–depth theorem.
+
+| ID | Source and locator | Imported fact or comparison | Boundary |
+|---|---|---|---|
+| F1 | [Bausch, arXiv:2009.10709v4](https://arxiv.org/pdf/2009.10709v4), Eqs. (4), (6), Section 2.3.3 | geometric precision weights, address-and-digit bit oracle, capped source | these ideas predate this project; the explicit exact preparation uses a unary temporary before binary conversion |
+| F2 | [LKS, arXiv:1812.00954v2](https://arxiv.org/html/1812.00954v2), Section 2, Table 2, Figure 1(d), Eq. (8), Appendix C Theorem 2 | exact dirty-assisted Boolean lookup and restored banks | the identity extends to arbitrary reference entanglement; dirty banks do not replace clean instruction outputs |
+| F3 | LKS, Section 5 | Clifford+T circuit counting at finite width | the frame packing and specialization of dirty inputs supply the local reduction; the counting method is imported |
+| F4 | [GKW, published Quantum article](https://quantum-journal.org/papers/q-2026-07-22-2168/pdf/), Theorems 1.1–1.2 and 4.1–4.2 | unrestricted optimal T-count benchmarks and ancilla-independent lower bounds | generic state preparation does not prescribe the Hopf completion; the diagonal subfamily supplies the frame reduction |
+| F5 | GKW, Lemmas 2.1, 2.3, B.1 and Corollary B.2 | Boolean synthesis, one-qubit approximation, complete multiplexors, geometric layer-error allocation | neither multiplexor synthesis nor geometric allocation is claimed as new; the direct composition retains a repeated precision charge |
+| F6 | [Tan, published PRX Quantum article](https://journals.aps.org/prxquantum/pdf/10.1103/pxhd-9s9q), Definition I.2, Theorem I.1, Lemma IV.1 and Remark IV.2 | general-unitary comparison and shared Boolean instruction synthesis | the instruction registers in the displayed construction are initialized; this is not the prescribed small-clean/dirty tradeoff |
+| F7 | [Li–Ou–Wang–Yao–Yuan–Zhang, arXiv:2607.28260v1](https://arxiv.org/html/2607.28260v1), Sections 3–4 | sparse QROM and sparse-state comparison | different input families; no general full-frame conclusion is imported |
+| F8 | Khattar–Gidney, arXiv:2407.17966v2, Sections 3, 4 and 7.4 | conditionally clean and dirty selector context | cancellation and selector reuse are established techniques, not a separate contribution here |
+
+Standard Pauli linear combinations, reversible arithmetic, and oblivious
+amplitude amplification are used with their actual preparations and adjoints.
+The operator and workspace arguments that instantiate them are part of the
+local construction, not additional oracle assumptions.
+
+| ID | Local fault-tolerant result | Contribution and support |
+|---|---|---|
+| R12 | exact compact capped geometric preparation | simultaneous linear T count and logarithmic peak clean width, with ordinary binary labels and exact temporary return; refines the implementation of the established geometric source |
+| R13 | addressed SU(2) sampling and direct frame composition | complete operator contract with small clean work; combines fixed Pauli atoms, geometric bit sampling, and charged dirty lookup |
+| R14 | shared-source composition of frame residuals | the principal uniform-precision construction: accepted-branch shifts, retained source, failure tracking, and one final amplification; see [theorem and proof](FAULT_TOLERANT_COMPILER.md) |
+| R15 | matching T-count in the stated workspace regimes | the sufficient-clean [theorem](FAULT_TOLERANT_COMPILER.md) plus the F3/F4 reductions; the separate all-clean-budget [corollary and borrowed-workspace proof](../research/constant_clean/BORROWED_WORKSPACE_COMPILER.md) also uses the earlier compiler under its additional condition |
+| R16 | fixed-parameter bounded-score robustness | [QBP approximation](QBP_APPROXIMATION.md): full-isometry and observable errors bound estimator bias, without differentiating a compiled word or proving gradient-query optimality |
+
+For polynomial accuracy-bit budgets, the direct sampler can already attain the
+matching T count. That regime is not attributed to the later shared-source
+composition. The latter removes the repeated precision cost uniformly over
+precision. Small-source attenuation obstructions are auxiliary results and do
+not establish a general constant-clean-workspace frame lower bound; the
+[remaining endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md) is kept separate.
+
+The source audit supports these precise dependencies and comparisons. It does
+not certify priority or infer novelty from a bounded search finding no match.
+
+## 6. Evidence classification
+
+The local evidence separates the following kinds of support.
 
 | Level | Examples |
 |---|---|
@@ -108,11 +152,14 @@ The local evidence has four distinct levels.
 | explicit reversible construction | binary–one-hot decoder and coherent router |
 | imported exact synthesis | elementary UCG and multi-controlled-X circuits |
 | finite regression evidence | matrix equality, entangled-input routing, cleanup, and resource ledgers |
+| fault-tolerant analytic construction | compact source, complete sampler block, shared-source composition, and charged resource proof |
+| fault-tolerant finite checks | exact small circuits and arithmetic certificates described in the [verification index](../verification/fault_tolerant/README.md) |
 
 The finite checks are designed to expose convention, indexing, order, phase,
-cleanup, and resource errors.  They do not replace the asymptotic proofs.
+cleanup, and resource errors. They do not replace the asymptotic proofs. The
+fault-tolerant checks are not a general emitted Clifford+T frame compiler.
 
-## 6. Provenance records
+## 7. Provenance records
 
 - [`provenance/upstream.json`](../provenance/upstream.json): upstream commits,
   file lineage, and reconciliation;

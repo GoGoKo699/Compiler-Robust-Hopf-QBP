@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Cite this repository when using the prescribed-frame compiler, all-workspace resource theorem, or validation code."
+message: "Cite this repository when using the prescribed-frame compilers, exact and fault-tolerant resource theorems, or validation code."
 title: "Optimal Compilation of Hopf Differential Frames"
 type: software
 version: 0.4.0-alpha
@@ -20,3 +20,6 @@ keywords:
   - ancillary qubits
   - borrowed qubits
   - coherent routing
+  - fault-tolerant synthesis
+  - T-count
+  - precision

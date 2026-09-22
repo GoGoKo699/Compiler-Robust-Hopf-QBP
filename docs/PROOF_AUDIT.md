@@ -1,5 +1,10 @@
 # Internal proof audit of the all-workspace compiler
 
+This page concerns the **exact logical model**. The integrated paper also has
+a [fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) and an
+[approximate-QBP bridge](QBP_APPROXIMATION.md); their hypotheses and evidence
+are stated separately.
+
 ## Status
 
 This is the consolidated internal audit of the exact Hopf-frame compiler. It is

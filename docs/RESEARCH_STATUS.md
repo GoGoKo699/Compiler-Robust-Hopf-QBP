@@ -2,9 +2,14 @@
 
 [Landing page](../README.md) · [Complete narrative](../REVIEW.md) · [Verification](VERIFICATION.md)
 
-Last updated: September 2026.
+Last updated: 22 September 2026.
 
-## Result
+The repository supports one compiler paper with two resource models. The exact
+logical frontier is established at every clean-workspace budget. The real-frame
+T-count frontier is matched above a sufficient clean reservation. The
+constant-clean endpoint is the next research question after this integration.
+
+## Exact logical result
 
 Let
 
@@ -43,6 +48,32 @@ compiler schedule respects the requested clean-workspace budget, implements the
 complete logical frame on clean workspace input, and returns the workspace to
 zero.
 
+## Fault-tolerant result
+
+Let $a$ count clean qubits, $b$ count borrowed qubits, and $q=n+a+b$. For
+$0<\eta\leq1/64$, put $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$ and
+$h=1+\lceil\log_2(L+n+2)\rceil$. For sufficiently large fixed $C$,
+
+```math
+T^\star_{F,\mathbb R}(n,a,b,\eta)
+=\Theta\left(\sqrt{NL}+L+\frac{NL}{q}\right),
+\qquad a\geq C(n+h).
+```
+
+The construction charges $O(NL)$ Clifford work and every precision source.
+It implements the prescribed real frame on every initialized-clean and arbitrary
+borrowed/reference input. The [formal chapter](FAULT_TOLERANT_COMPILER.md)
+states the complete error contract and proof.
+
+At $a=O(1)$, $b=\Theta(N)$ and $L=N$, the retained lower bound is $\Omega(N)$
+and upper bound is $O(N^{3/2})$. A sufficient $O(n)$-clean construction does not
+settle this constant-clean slice. The [continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md)
+is the authoritative next-task specification. No new endpoint attempt is part
+of this repository integration.
+
+The source-channel obstruction is a supporting interface theorem, not an
+additive or stronger general frame lower bound. Optimal T-depth remains open.
+
 ## Construction
 
 | Workspace | Schedule | Supporting structure |
@@ -54,7 +85,7 @@ zero.
 The phase diagonal is one exact $n$-qubit UCG and reuses the same workspace pool
 sequentially.
 
-## Circuit model
+## Exact circuit model
 
 The theorem is stated in the exact all-to-all logical model with:
 
@@ -72,6 +103,13 @@ and original source of selected primitives.  The complete source division is in
 [the dependency map](SOURCE_MAP.md).
 
 ## Evidence available
+
+The finite-precision branch includes [four reproducible suites](../verification/fault_tolerant/README.md)
+and a [fixed-parameter estimator proof](QBP_APPROXIMATION.md). Its source and
+kernel fixtures use exact arithmetic. Its resource grids are finite algebraic
+checks. Neither constitutes a general elementary emitter or a proof of the
+asymptotic theorem by enumeration.
+
 
 ### Dimension-independent proofs
 
@@ -167,19 +205,25 @@ contribution combines the exact Hopf tree cut with a clean decoder and explicit
 coherent router.  Together they yield the optimal complete-frame frontier for
 every clean-workspace budget.
 
+The finite-precision contribution is the structural residual composition with
+one source reused across accepted branches, together with its charged workspace
+and precision ledger. Geometric digit encoding, Boolean lookup, ordinary LCU,
+and amplification are credited to their sources. The novelty audit supports a
+specific contribution claim; it does not certify priority.
+
 ## Review status
 
 The repository has completed its internal analytic and executable checks and is
 ready for independent technical review.  The shortest route is:
 
 1. [complete narrative](../REVIEW.md);
-2. [formal compiler theorem](COMPILER_THEOREM.md);
+2. [exact theorem](COMPILER_THEOREM.md) and [fault-tolerant theorem](FAULT_TOLERANT_COMPILER.md);
 3. [verification and evidence](VERIFICATION.md);
 4. [source and dependency map](SOURCE_MAP.md).
 
 ## Scope
 
 No claim is made about device-connectivity depth, native hardware gates,
-approximate Clifford+T synthesis, noise, finite-size constant optimality,
+physical noise thresholds, finite-size constant optimality,
 optimizer convergence, generic non-Hopf charts, or application-independent
 controlled-observable cost.

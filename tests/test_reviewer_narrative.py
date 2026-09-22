@@ -16,6 +16,8 @@ PRIMARY_PAGES = (
     "docs/README.md",
     "docs/HOPF_INTERFACE.md",
     "docs/COMPILER_THEOREM.md",
+    "docs/FAULT_TOLERANT_COMPILER.md",
+    "docs/QBP_APPROXIMATION.md",
     "docs/QBP_CONSEQUENCE.md",
     "docs/VERIFICATION.md",
     "docs/SOURCE_MAP.md",
@@ -38,6 +40,8 @@ TABLE_MATH_PAGES = (
     "REVIEW.md",
     "docs/HOPF_INTERFACE.md",
     "docs/COMPILER_THEOREM.md",
+    "docs/FAULT_TOLERANT_COMPILER.md",
+    "docs/QBP_APPROXIMATION.md",
     "docs/QBP_CONSEQUENCE.md",
     "docs/END_TO_END_QBP.md",
     "docs/UNIFIED_YUAN_ZHANG_COMPILER.md",
@@ -181,7 +185,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
         review = (ROOT / "REVIEW.md").read_text(encoding="utf-8")
         self.assertGreater(len(review), 25_000)
         headings = (
-            "## 0. Problem and result",
+            "## 0. Problem and results",
             "## 1. Why the prescribed completion matters",
             "## 2. The Hopf operator seen by a compiler",
             "## 3. Exact compiler toolkit",
@@ -190,7 +194,8 @@ class ReviewerNarrativeTests(unittest.TestCase):
             "## 6. Larger workspace: cut, route, and parallelize",
             "## 7. Matching lower bounds",
             "## 8. Phase-dressed complex magnitude frame",
-            "## 9. Consequence for quantum backpropagation",
+            "## 9. Finite precision and fault-tolerant compilation",
+            "## 10. Consequence for quantum backpropagation",
         )
         positions = [review.index(heading) for heading in headings]
         self.assertEqual(positions, sorted(positions))

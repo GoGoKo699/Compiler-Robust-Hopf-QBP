@@ -35,6 +35,8 @@ jobs:
         run: python scripts/reviewer_walkthrough.py
       - name: Run deterministic validation
         run: python validate.py
+      - name: Reproduce fault-tolerant exact fixtures and budgets
+        run: python scripts/verify_fault_tolerant.py
       - name: Exercise unified Yuan--Zhang resource ledger
         run: python scripts/unified_resource_ledger.py --n 12 --format json > /tmp/unified-ledger.json
       - name: Exercise strict-zero echo ledger

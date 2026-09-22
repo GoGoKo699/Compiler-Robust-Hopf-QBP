@@ -60,3 +60,11 @@ factorization and its optimal complete-frame resource consequence.
 python scripts/check_upstream_sync.py --offline
 python -m unittest -v tests.test_provenance tests.test_literature_policy
 ```
+
+## Fault-tolerant integration
+
+The [source map](../docs/SOURCE_MAP.md) records the imported synthesis and lookup
+results. The [finite-check provenance](../verification/fault_tolerant/README.md)
+identifies the selected research files and their adaptations. The
+[endpoint archive](../research/constant_clean/README.md) preserves a small
+collection of supporting proofs for the next research question.

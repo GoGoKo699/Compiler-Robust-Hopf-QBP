@@ -1,5 +1,10 @@
 # Resource accounting after frame compilation
 
+This page concerns the **exact logical model**. The integrated paper also has
+a [fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) and an
+[approximate-QBP bridge](QBP_APPROXIMATION.md); their hypotheses and evidence
+are stated separately.
+
 [← Compiler theorem](COMPILER_THEOREM.md) · [QBP consequence](QBP_CONSEQUENCE.md) · [Verification →](VERIFICATION.md)
 
 This page collects the end-to-end resources after the prescribed Hopf frame has

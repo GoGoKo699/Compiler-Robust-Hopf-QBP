@@ -1,10 +1,16 @@
 # Optimal Compilation of Hopf Differential Frames
 
-### A technical narrative from a prescribed unitary completion to compiler-robust quantum backpropagation
+### A technical narrative through exact and fault-tolerant compilation
 
 [Landing page](README.md) · [Minimal Hopf interface](docs/HOPF_INTERFACE.md) · [Formal compiler theorem](docs/COMPILER_THEOREM.md) · [Verification map](docs/VERIFICATION.md)
 
-## 0. Problem and result
+This is the continuous reading route for a quantum-computing reader meeting the
+project for the first time. Sections 1–2 define the object. Sections 3–8 give
+the exact logical compiler. Section 9 explains the finite-precision compiler,
+and Section 10 connects both to gradient readout. Detailed T-count proofs are
+in the [fault-tolerant chapter](docs/FAULT_TOLERANT_COMPILER.md).
+
+## 0. Problem and results
 
 Exact quantum state preparation with $m$ clean ancillary qubits asks for
 
@@ -40,7 +46,7 @@ for every system input $\lvert\varphi\rangle$.
 The question is whether this stronger map can retain the optimal all-workspace
 state-preparation frontier.
 
-### Main theorem
+### Exact logical theorem
 
 Let
 
@@ -99,6 +105,37 @@ columns.
 <p align="center">
   <img src="assets/literature-lineage.svg" width="980" alt="The all-workspace state-preparation line and the Hopf differential-frame line meet in the optimal complete-frame compiler." />
 </p>
+
+### Finite-precision theorem and the common contract
+
+The second implementation model is coherent Clifford+T synthesis. Let $J_a$
+initialize $a$ clean qubits, while $b$ borrowed qubits can contain arbitrary
+unknown information and be entangled with a reference. The common contract is
+
+```math
+\left\|VJ_a-J_a(W\otimes I_b)\right\|\leq\eta.
+```
+
+This is an operator norm over every system/borrowed input, including the entire
+output workspace. Exact logical synthesis uses $b=0$ and $\eta=0$; finite-gate
+synthesis allows $\eta>0$. A prepared-column guarantee alone is insufficient
+for this prescribed inverse-frame protocol.
+
+Put $q=n+a+b$, $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$ and
+$h=1+\lceil\log_2(L+n+2)\rceil$. For the real frame, $0<\eta\leq1/64$, and
+$a\geq C(n+h)$ with sufficiently large fixed $C$,
+
+```math
+T^\star=\Theta\left(\sqrt{NL}+L+\frac{NL}{q}\right),
+\qquad G_{\mathrm{Clifford}}=O(NL).
+```
+
+The T bound is a worst-case optimum in its stated workspace regime. It is not
+a T-depth result or simultaneous optimization of Clifford and T gates. The
+exact complex magnitude theorem above and this real-frame T theorem have
+separate scope. A finite-precision QBP consequence follows by controlling
+bounded-score bias, not by differentiating a compiled word.
+
 
 ---
 
@@ -402,7 +439,7 @@ framework.
 
 | Imported result | Form used here |
 |---|---|
-| optimal QSP theorem | $\Theta(2^q)$ size and $\Theta\!\left(q+\frac{2^q}{q+w}\right)$ depth for a general $q$-qubit state with $w$ clean ancillas |
+| optimal QSP theorem | $\Theta(2^q)$ size and $`\Theta\!\left(q+\frac{2^q}{q+w}\right)`$ depth for a general $q$-qubit state with $w$ clean ancillas |
 | ancilla-free MCT lemma | an $r$-controlled X has $O(r)$ size and depth with no ancillary qubit |
 | all-workspace UCG lemma | a total-width-$`q`$ UCG has $O(2^q)$ size and $O\!\left(q+\frac{2^q}{q+w}\right)$ depth with $w$ clean ancillas |
 | coherent-copy lemma | CNOT trees copy and uncopy one computational-basis control coherently in logarithmic depth |
@@ -960,9 +997,116 @@ $2N-1$ real complex-chart directions into one $N$-column unitary.
 
 ---
 
-## 9. Consequence for quantum backpropagation
+## 9. Finite precision and fault-tolerant compilation
 
-### 9.1 Preserving the global record
+The exact compiler makes arbitrary rotations available as primitive gates.
+A finite fault-tolerant gate set makes their accuracy a resource. Synthesizing
+each rotation independently can repeat the precision cost across many tree
+levels. The aim here is to pay that cost collectively while preserving every
+frame column.
+
+### 9.1 What clean and dirty workspace can do
+
+Clean qubits have known initial values and may hold a prepared precision
+source. Dirty qubits are borrowed in unknown states. They can support reversible
+lookup, provided their joint state with the data and any reference is restored.
+They cannot simply be treated as an initialized instruction buffer.
+
+The main theorem reserves $O(n+h)$ clean wires for source, labels, flags,
+arithmetic, and a coarse instruction word. The remaining clean and dirty
+capacity supports exact Boolean lookup. Accounting for their peak simultaneous
+use is essential; a short output register does not by itself imply a short
+preparation workspace.
+
+### 9.2 Coarse frame and structured corrections
+
+Partition the addressed tree into unequal groups. The group dictionaries have
+sizes $Q_i$ satisfying
+
+```math
+\sum_iQ_i=O(N),\qquad
+\sum_i\sqrt{Q_i}=O(\sqrt N).
+```
+
+Each group first has an exactly work-returning coarse Clifford+T circuit $C_i$.
+The full group target is $W_i=C_i(I+E_i)$. Only a specified sparse set of
+matrix-unit coefficients can occur in $E_i$. Stronger coarse accuracy makes
+those coefficients small enough to implement as a rare correction.
+
+The coarse instruction length is $O(n+h)$, rather than the final precision
+length $L$. Fine coefficients are accessed one bit at a time using an address
+and a logarithmic-size digit index. Geometric digit weighting and bit-oracle
+transduction have prior precedents, particularly Bausch; the distinctive
+resource question here is how the full correction stream shares its source.
+
+### 9.3 One source throughout the correction stream
+
+Let $J$ be the least power of two at least $L+8$, and set $M=4J$. Prepare the capped geometric source
+
+```math
+g_j=2^{-(j+1)/2}\quad(0\leq j<M-1),\qquad
+g_{M-1}=2^{-(M-1)/2}.
+```
+
+Its exact preparation uses $O(L)$ T gates and $O(\log L)$ clean wires. The
+lowering partial shift $S_d$ obeys the useful uniform relation
+
+```math
+\left\|S_dg-2^{-d/2}g\right\|^2
+=(4-2\sqrt2)2^{-M},\qquad 1\leq d<M.
+```
+
+A reversible subtractor with an underflow flag realizes the shift as an accepted
+block. Selecting $d=2k$ supplies binary weight $2^{-k}$ while approximately
+returning the source. The digit address is distinct from the shifted source,
+so reversing the lookup remains valid on failure branches.
+
+Each local kernel has a precise accepted-source relation. A history counter
+prevents an earlier rejected branch from re-entering the final accepted block.
+All kernels are actual unitaries: mathematical projections describe blocks;
+there is no intermediate measurement or physical postselection. A contraction
+hybrid bounds the accumulated source error. One inverse source preparation and
+one final normalization-two oblivious amplification finish the complete frame.
+The reflection includes every register with possible approximate-return error.
+
+### 9.4 Resource and evidence summary
+
+| Cost | Origin |
+|---|---|
+| $O(\sqrt{NL}+NL/q)$ T gates | summed Boolean table queries with charged lookup capacity |
+| $O(L)$ T gates | source preparation and final normalization, each a constant number of times |
+| $O(n+h)$ clean reservation | source, private work, failure record, mode and coarse program |
+| $O(NL)$ Clifford gates | conservative complete construction ledger |
+
+At smaller precision the simpler addressed sampler already fits the same
+asymptotic envelope. That earlier route handles the low-precision branch; the
+shared-source argument is what removes repeated precision costs uniformly in
+$L$. Matching precision and width lower bounds are credited to the published
+synthesis/counting framework and its reductions to the frame family.
+
+Read [the complete proof](docs/FAULT_TOLERANT_COMPILER.md) for rounding scales,
+normalization, error constants, and the workspace ledger. The
+[finite exact checks](verification/fault_tolerant/README.md) test source and
+kernel identities and separate rational budgets. They support the derivation;
+they do not emit every elementary gate of the asymptotic compiler.
+
+### 9.5 The retained open endpoint
+
+At $L=N$, a sufficiently large $a=\Theta(n)$ clean budget and $b=\Theta(N)$ dirty workspace attain
+$T^\star=\Theta(N)$. For $a=O(1)$ with the same precision and dirty capacity,
+the retained lower and upper bounds are $\Omega(N)$ and $O(N^{3/2})$.
+
+This is the next research question after the repository integration. The
+[continuation brief](research/CONSTANT_CLEAN_ENDPOINT.md) states the exact
+model, reusable results, and unproved compiler interfaces. Restricted
+source-processing obstructions do not establish a stronger full-frame lower
+bound.
+
+---
+
+## 10. Consequence for quantum backpropagation
+
+### 10.1 Preserving the global record
 
 The global magnitude protocol prepares the Hopf state, creates a controlled
 objective response, applies the inverse differential frame, and measures a
@@ -979,7 +1123,7 @@ The compiler theorem therefore removes compilation depth as an additional
 asymptotic penalty: the inverse frame has the same general-family logical depth
 order as optimal state preparation at the same workspace budget.
 
-### 9.2 Statistical target
+### 10.2 Statistical target
 
 The primary finite-shot target is simultaneous absolute accuracy of the **raw
 Hopf-coordinate gradient**.  One global magnitude outcome contributes one
@@ -1000,7 +1144,7 @@ Complete-vector, relative, directional, normalized-frame, and natural-gradient
 targets are different tasks.  Their costs may depend on output dimension,
 gradient norm, or small metric weights.
 
-### 9.3 Matched-program cost statement
+### 10.3 Matched-program cost statement
 
 Define
 
@@ -1048,7 +1192,23 @@ not compare against an instance-specialized scalar shortcut.
 
 ---
 
-## 10. Proof-to-code correspondence
+### 10.4 Finite-precision transfer
+
+For a fixed parameter tuple, the complete-input error bound also controls the
+actual adjoint. Use the same compiled frame for preparation and its actual
+reversed word for the inverse. The raw-coordinate records are bounded, so the
+resulting distribution error produces a controlled additive estimator bias.
+Budget circuit and observable errors below the requested raw-coordinate
+accuracy, then spend the remaining budget on sampling.
+
+The [complete approximation proof](docs/QBP_APPROXIMATION.md) gives constants,
+borrowed/reference-input scope, and the corresponding T-cost accounting.
+This statement estimates the target gradient at the fixed parameter tuple; it
+does not differentiate the map from parameters to discrete synthesized words.
+The complex leaf-phase stream remains separate. Neither compiler theorem is a
+lower bound on all possible gradient algorithms.
+
+## 11. Proof-to-code correspondence
 
 The repository separates analytic proof, explicit construction, imported
 synthesis, and finite regression evidence.
@@ -1073,6 +1233,7 @@ Run the complete deterministic suite and resource ledgers:
 
 ```bash
 python validate.py
+python scripts/verify_fault_tolerant.py
 python scripts/unified_resource_ledger.py --n 12
 python scripts/strict_zero_echo_ledger.py --n 12
 ```
@@ -1083,7 +1244,7 @@ fact, imported compiler theorem, local construction, and test.
 
 ---
 
-## 11. Scope and contribution boundary
+## 12. Scope and contribution boundary
 
 The construction is specific to the addressed Hopf differential frame.  It does
 not assert that an arbitrary prescribed $N$-column unitary family can be
@@ -1100,15 +1261,22 @@ The routed schedule uses familiar fanout, Fredkin routing, and uncomputation.
 Its project-specific role is to realize the Hopf tail direct sum inside the
 same workspace envelope as the conditioned prefix.
 
-The result is exact and logical.  Device routing, a native hardware gate set,
-approximate fault-tolerant synthesis, noisy execution, optimizer convergence,
+The exact and finite-precision models are logical circuit models. Device
+routing, physical noise thresholds, optimal T-depth, optimizer convergence,
 and application-specific controlled-observable implementations remain outside
-its scope.
+their stated conclusions. The constant-clean T-count endpoint remains open.
 
-The theorem has passed the analytic and executable checks recorded in this
-repository.  Independent human proof and prior-art review remain the final
-scientific gate.
+The repository records analytical arguments and finite internal checks. Their
+scope and provenance are explicit; external review and priority certification
+are not claimed.
 
 ---
+
+The finite-precision contribution is the full-frame residual composition with
+one reusable source and its explicit clean/dirty resource ledger. The
+[source map](docs/SOURCE_MAP.md) credits the established lookup, digit-weighting,
+synthesis, and amplification ingredients. Alternative shadow-based gradient
+algorithms and their classical training problems are outside this compiler
+paper's main argument.
 
 [Landing page](README.md) · [Minimal Hopf interface](docs/HOPF_INTERFACE.md) · [Formal compiler theorem](docs/COMPILER_THEOREM.md) · [Verification map](docs/VERIFICATION.md)

@@ -61,3 +61,10 @@ python validate.py
 ```
 
 The complete test map is in [`tests/README.md`](../tests/README.md).
+
+## Fault-tolerant checks
+
+Run `python scripts/verify_fault_tolerant.py` to reproduce four focused exact
+source/kernel and rational-resource suites. See the
+[scope and receipt guide](../verification/fault_tolerant/README.md). Temporary
+outputs are used by default, leaving the expected evidence files unchanged.

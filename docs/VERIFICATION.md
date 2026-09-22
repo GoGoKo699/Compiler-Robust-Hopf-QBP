@@ -272,7 +272,7 @@ optimality.  It also does not test:
 
 - device connectivity or routing overhead;
 - a hardware-native gate set;
-- approximate Clifford+T synthesis;
+- a general elementary-gate emitter for the full asymptotic Clifford+T compiler;
 - noisy execution or readout mitigation;
 - application-specific controlled-observable implementations;
 - arbitrary non-Hopf differential frames.
@@ -287,3 +287,24 @@ The proof should be assessed in four separate steps:
 ---
 
 [← QBP consequence](QBP_CONSEQUENCE.md) · [Complete narrative](../REVIEW.md) · [Source map →](SOURCE_MAP.md)
+
+## 12. Fault-tolerant evidence and approximate QBP
+
+The [fault-tolerant theorem](FAULT_TOLERANT_COMPILER.md) separates the analytic
+resource proof from the [focused finite checks](../verification/fault_tolerant/README.md).
+Run `python scripts/verify_fault_tolerant.py` from the repository root. Four
+stdlib-only suites reproduce the retained exact Gray-source, shift-kernel,
+resource, and reflection receipts without changing their saved reference files.
+The runner identifies nondeterministic provenance fields separately from
+scientific output.
+
+The shift fixtures test complete finite kernel columns, actual inverses, source
+defects, failure tracking, and negative controls. They do not instantiate all
+production parameters or an elementary emitter of the full asymptotic circuit.
+The resource suite checks rational scales and ledgers; those rows are not
+measured gate counts. The source-specific receipt map states each boundary.
+
+The [approximation bridge](QBP_APPROXIMATION.md) has tests for full-input error,
+actual-adjoint transfer, leakage, reference-entangled borrowed inputs, and
+bounded estimator bias. These validate the finite examples behind the general
+proof, not differentiation of a synthesized family.

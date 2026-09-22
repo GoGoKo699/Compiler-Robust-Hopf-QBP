@@ -2,14 +2,18 @@
 
 [← Source map](SOURCE_MAP.md) · [Complete narrative](../REVIEW.md) · [Landing page →](../README.md)
 
-The result joins two technical lines:
+The paper joins three technical lines around the same prescribed frame:
 
 1. exact state preparation with arbitrary clean workspace;
-2. Hopf coordinates and inverse-frame gradient readout.
+2. Hopf coordinates and inverse-frame gradient readout;
+3. precision-aware Clifford+T synthesis with clean and dirty workspace.
 
 Borrowed-workspace and controlled-unitary constructions explain the strict-zero
 schedule.  This page places the ingredients by mathematical role and keeps the
-new claim narrow.
+contribution narrow. The exact size–depth and approximate T-count results use
+different circuit models; they do not assert simultaneous optimality of one
+circuit. The [fault-tolerant theorem](FAULT_TOLERANT_COMPILER.md) states the
+second model and its workspace conditions separately.
 
 <p align="center">
   <img src="../assets/literature-lineage.svg" width="940" alt="The all-workspace state-preparation line and the Hopf differential-frame line meet in the prescribed-completion compiler." />
@@ -209,7 +213,7 @@ frontier.
 
 ## 8. Contribution at theorem level
 
-The complete contribution is the following chain.
+The exact compiler contribution is the following chain.
 
 1. Identify complete frame safety as the compiler contract used by the global
    inverse-frame record.
@@ -225,7 +229,96 @@ The theorem is specific to the structured Hopf completion.  It does not imply
 that an arbitrary family of prescribed unitary columns can be implemented at
 state-preparation cost.
 
-## 9. Detailed source record
+## 9. Fault-tolerant lineage and the precision register
+
+Let $N=2^n$ and let $L$ denote the requested number of accuracy bits. Three
+established results are particularly close to the fault-tolerant construction.
+
+**Gosset–Kothari–Wu (GKW).** Their Theorems 1.1–1.2 give the optimal unrestricted
+T-count $\Theta(\sqrt{NL}+L)$ for state preparation and diagonal synthesis.
+Their Appendix B already treats complete single-qubit multiplexors and allocates
+error geometrically across state-preparation layers, obtaining
+$O(\sqrt{NL}+nL)$. These are imported benchmarks and methods. A state-preparation
+theorem alone does not specify the remaining columns of the Hopf frame, and an
+unrestricted-ancilla theorem does not supply a prescribed clean/dirty budget.
+Their Theorem 4.2 supplies the ancilla-independent lower bound used through the
+frame's diagonal subfamily.
+
+**Low–Kliuchnikov–Schaeffer (LKS).** Section 2, Table 2, Figure 1(d), and Eq. (8)
+provide dirty-assisted SelectSwap lookup with exact bank restoration. For an
+$m$-bit table with $D$ entries, its T count is $O(D/\lambda+m\lambda)$ with
+$m\lambda$ dirty bank qubits and $O(\log D+m)$ clean wires. Appendix C also
+gives exact Boolean XOR constructions using dirty auxiliaries. The basis-state
+identity in Eq. (8) extends to reference-entangled inputs by linearity. We do
+not claim dirty lookup or its cancellation identity as a contribution. Its
+dirty bank does not replace the clean output word needed by an instruction-word
+interpreter. Section 5 supplies the finite-width counting method.
+
+**Bausch.** Equations (4) and (6) of *Fast Black-Box Quantum State Preparation*
+already use a geometric precision register and a bit oracle addressed by the
+data index and precision position. Section 2.3.3 includes a capped geometric
+source. Its explicit exact preparation uses a linear-size unary temporary,
+then binary conversion and routing cleanup. Consequently, logarithmic output
+width there does not by itself establish logarithmic peak clean workspace.
+The compact Gray construction used here supplies the specific simultaneous
+resource guarantee: exact $O(L)$ T count, $O(\log L)$ peak clean workspace,
+ordinary binary labels, and restored temporary work. The geometric weighting
+and bit-oracle idea are credited to Bausch; no strict gate-count improvement
+over his routing variants is asserted.
+
+The addressed SU(2) compiler combines this source with a constant-size Pauli
+linear combination and oblivious amplitude amplification. It is a
+space-efficient application of these ingredients, with all preparations,
+adjoints, reflections, and one-bit tables charged. It is not a new general
+principle of dyadic sampling or amplitude amplification.
+
+## 10. What the full-frame T theorem adds
+
+The main additional construction is the uniform-in-precision composition of
+complete frame corrections. A shared geometric source supplies approximate
+shift amplitudes on accepted branches; the source is retained between stages.
+The residual decomposition, failure tracking, and one final amplification
+control the full initialized isometry while returning dirty workspace exactly.
+Under the conditions in the [theorem](FAULT_TOLERANT_COMPILER.md), this gives
+
+```math
+T=\Theta\!\left(\sqrt{NL}+L+\frac{NL}{n+a+b}\right),
+```
+
+where $a$ and $b$ count clean and dirty ancillary qubits. The theorem retains
+its sufficient clean-workspace reservation. A separate retained corollary for
+all clean budgets, under an additional restriction on precision and dirty
+width, is proved in the [borrowed-workspace appendix](../research/constant_clean/BORROWED_WORKSPACE_COMPILER.md).
+The lower bounds follow from GKW and LKS with the stated reductions; the
+contribution is the upper construction and the resulting match in those
+regimes. The all-clean-budget extension also uses the earlier borrowed-work
+compiler; it is a compiler splice, not an independent lower-bound technique.
+
+The simpler direct sampler already costs
+$O(\sqrt{NL}+nL+NL/(n+a+b))$ with logarithmic precision workspace. For example,
+at $L=n^2$, $a=\Theta(n)$ with sufficient headroom, and
+$b=\Theta(n\sqrt N)$, it already attains $\Theta(n\sqrt N)$ T gates.
+This illustrates the small-clean sampler; it is not an additional improvement
+due to shared-source composition. Eliminating repeated precision charges is
+the reason for the stronger uniform-precision construction.
+
+Tan's published Theorem I.1 and Lemma IV.1 treat general unitary synthesis and
+batched controlled gates. Remark IV.2 uses zeroed precision-length instruction
+registers; it does not directly give the clean/dirty contract above. The
+Yuan–Zhang depth theorem uses arbitrary continuous one-qubit gates, so it is not
+a T-count comparison. Recent sparse-QROM and sparse-state bounds address
+different input families. These distinctions delimit the use of each result;
+they do not establish priority by absence of a matching theorem.
+
+The integration also keeps two application limits explicit. Small-source
+attenuation bounds are auxiliary statements, not general lower bounds for
+frame synthesis or gradient estimation. At a fixed parameter value, a
+full-isometry error can bound the bias of the
+[bounded-score QBP estimator](QBP_APPROXIMATION.md).
+This does not differentiate the compiled Clifford+T word as a function of the
+parameters and does not prove optimal gradient-query complexity.
+
+## 11. Detailed source record
 
 The [source map](SOURCE_MAP.md) gives exact theorem numbers and local consumers.
 The broader technical search is retained in
@@ -256,6 +349,19 @@ priority.
   quantum circuit constructions,” *Quantum* **9**, 1752 (2025).
 - B. Zindorf and S. Bose, “Efficient implementation of multi-controlled quantum
   gates,” *Physical Review Applied* **24**, 044030 (2025).
+- J. Bausch, [“Fast Black-Box Quantum State Preparation”](https://arxiv.org/pdf/2009.10709v4),
+  arXiv:2009.10709v4 (2022), Eqs. (4), (6), and Section 2.3.3.
+- G. H. Low, V. Kliuchnikov, and L. Schaeffer,
+  [“Trading T gates for dirty qubits in state preparation and unitary synthesis”](https://arxiv.org/html/1812.00954v2),
+  *Quantum* **8**, 1375 (2024).
+- D. Gosset, R. Kothari, and K. Wu,
+  [“Quantum state preparation with optimal T-count”](https://quantum-journal.org/papers/q-2026-07-22-2168/pdf/),
+  *Quantum* **10**, 2168 (2026).
+- X. Tan, [“Unitary Synthesis with Fewer T Gates”](https://journals.aps.org/prxquantum/pdf/10.1103/pxhd-9s9q),
+  *PRX Quantum* **7**, 033058 (2026).
+- T. Li, F. Ou, X. Wang, P. Yao, P. Yuan, and S. Zhang,
+  [“Optimal T Counts under Sparsity: from QROM to State Preparation and Block Encoding”](https://arxiv.org/html/2607.28260v1),
+  arXiv:2607.28260v1 (2026).
 
 ---
 

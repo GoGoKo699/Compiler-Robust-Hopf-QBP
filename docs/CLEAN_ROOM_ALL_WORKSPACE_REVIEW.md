@@ -1,5 +1,10 @@
 # Clean-room review of the optimal all-workspace Hopf-frame compiler
 
+This page concerns the **exact logical model**. The integrated paper also has
+a [fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) and an
+[approximate-QBP bridge](QBP_APPROXIMATION.md); their hypotheses and evidence
+are stated separately.
+
 [← Verification overview](VERIFICATION.md) · [Complete compiler theorem](COMPILER_THEOREM.md) · [Complete narrative](../REVIEW.md)
 
 ## Status

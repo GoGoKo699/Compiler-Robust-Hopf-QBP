@@ -359,3 +359,8 @@ which their compiler robustness depends.
 ---
 
 [← Compiler theorem](COMPILER_THEOREM.md) · [Complete narrative](../REVIEW.md) · [Verification →](VERIFICATION.md)
+
+For finite synthesis error, [the approximation contract](QBP_APPROXIMATION.md)
+proves that a shared compiled frame and its actual adjoint preserve the raw
+sampling order, with explicit full-workspace and controlled-observable error
+budgets.

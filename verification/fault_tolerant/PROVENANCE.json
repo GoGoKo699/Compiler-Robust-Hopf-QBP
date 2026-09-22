@@ -1,0 +1,46 @@
+{
+  "adaptations": [
+    "Gray imports only exact scalar classes extracted verbatim; unrelated Boolean-dictionary and residual-frame code is omitted.",
+    "Gray check accepts --output and creates its output parent; its source hash list names the extracted helper.",
+    "Shift-kernel dependency resolves only to this directory, with no fallback to a research checkout; output parent is created.",
+    "Standalone default output locations are results/, never expected/.",
+    "All expected receipts are byte-for-byte copies of historical research results; only top-level source_sha256 and helper_sha256 are excluded from scientific-output comparison."
+  ],
+  "arithmetic_extractions": [
+    {
+      "class": "Q2",
+      "class_text_sha256": "327c06fa4211c66cea5a0acf97c5ee9791c944fb0a46e58450dbbee65efa983f",
+      "from": "boolean_frame_certificate.py"
+    },
+    {
+      "class": "CQ2",
+      "class_text_sha256": "0429e99f2d509e55136ceebe65630f72c5f6575060e4506fe4304d54d6393c76",
+      "from": "residual_precision_correction.py"
+    }
+  ],
+  "expected_receipts_sha256": {
+    "geometric_reflection_checks.json": "3ecbdb53f4431f2f194d36f72daffcb6c614f6ac3070f5c0eefad3a65fbf9428",
+    "gray_geometric_checks.json": "1d77390846a393324f93afbea845a680a669ff7fdf290edf3b815e7690bce8e6",
+    "shift_kernel_checks.json": "267fe55af31d802dee55e1df884f18faf98a5a93e16e8a4881a5964df71656a7",
+    "shift_resource_checks.json": "e0b220e164dcf1b08993df7238bfee0e773f652a443c34b922d1ced3f2df22c3"
+  },
+  "format_version": 1,
+  "imported_sources_sha256": {
+    "boolean_frame_certificate.py": "8131638dbd40d3ce4534fa73b49da5c2f82768e17048bb5c2e52a34e9bc90602",
+    "geometric_reflection_checks.py": "7e7832292cd3089fa5339303de75d9005d43e0080449d43e32d9a4572c3a0a3a",
+    "gray_geometric.py": "4ca1b739c0d9e932326ac18936e1205d052852bc76313c5672805a4388312864",
+    "gray_geometric_checks.py": "21fa2e8cd991ad8d37cf3781e686d0613428269bd728909797bc0355e91b89ed",
+    "residual_precision_correction.py": "0448db6852783d9576c1eb55cf0291f499d579960c4639fa517437b6ab2ccbe1",
+    "shift_kernel_checks.py": "3edebc5b6dcc8d8fdccd8070db67dbb958c0471a0c0d81f7c3e3f8e759c71933",
+    "shift_resource_checks.py": "08c8b855bab09f6d1ee481f11d90f86d74f49dc5019755376cb723164df2fbc9"
+  },
+  "local_sources_sha256": {
+    "exact_arithmetic.py": "8278bcb00560b1a91d88f879f273e9a0c91f620504e069692aa4a7f79ec0f179",
+    "geometric_reflection_checks.py": "7e7832292cd3089fa5339303de75d9005d43e0080449d43e32d9a4572c3a0a3a",
+    "gray_geometric.py": "40fe530f0e1a5cc1b9256ac08a58e0f8bcd6e9f24b1f6af4c0b8f3cf79485556",
+    "gray_geometric_checks.py": "abd8be89c1bd5763070f097ca9bb0bbee659b413487ced8e1182b16d1e6d195e",
+    "shift_kernel_checks.py": "ed6560bce6beb8d13a8aac7f6e9a9e15c748b5e8b58f2a9f4d19eebcd96dd0eb",
+    "shift_resource_checks.py": "8224cf6a04851fe687c5841d071e22816f32c73322da854d3707dc79d660abea"
+  },
+  "upstream_directory": "hopf_research"
+}

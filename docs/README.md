@@ -3,7 +3,7 @@
 [← Repository landing page](../README.md) · [Complete technical narrative](../REVIEW.md)
 
 The documentation is arranged in three passes.  The first pass states the
-problem and result.  The second contains the proof.  The third exposes the
+problem and two resource models. The second contains the proofs.  The third exposes the
 implementation, evidence, and provenance.
 
 ## Pass I: orient the synthesis question
@@ -19,7 +19,9 @@ implementation, evidence, and provenance.
 | Page | Purpose |
 |---|---|
 | [Hopf interface](HOPF_INTERFACE.md) | the four geometric facts consumed by synthesis, plus the addressed-layer operator |
-| [Compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and routed schedules with matching lower bounds |
+| [Exact compiler theorem](COMPILER_THEOREM.md) | strict-zero, direct, and routed schedules with matching size/depth bounds |
+| [Fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) | precision, shared source, clean/dirty workspace, and matching T-count regime |
+| [Approximate QBP](QBP_APPROXIMATION.md) | complete-input circuit error, actual adjoints, and bounded raw-gradient bias |
 | [QBP consequence](QBP_CONSEQUENCE.md) | exact frame-safe substitution, shared records, and the matched-program cost statement |
 | [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | clean-subspace operator contract and adjoint consequence |
 | [Compiler boundaries](COMPILER_BOUNDARIES.md) | state-column and checkpoint-interface counterexamples |
@@ -34,6 +36,7 @@ the same result.
 
 | Page | Purpose |
 |---|---|
+| [Fault-tolerant reproduction](../verification/fault_tolerant/README.md) | exact source/kernel fixtures, rational budgets, and their limits |
 | [Proof and executable correspondence](VERIFICATION.md) | what is represented locally, what is imported, and what every test checks |
 | [Source and dependency map](SOURCE_MAP.md) | exact state-preparation, Hopf, and QBP premises with local consumers |
 | [Related work](RELATED_WORK.md) | mathematical lineage and the narrow contribution boundary |
@@ -65,6 +68,7 @@ Every principal directory contains its own short map.
 | [scripts](../scripts/README.md) | walkthrough, ledgers, and synchronization commands |
 | [diagrams](../assets/README.md) | the five reviewer-facing SVGs and the exact statements they illustrate |
 | [provenance](../provenance/README.md) | compiler versions, Hopf upstreams, and prior-art claim boundaries |
+| [Research continuation](../research/README.md) | constant-clean endpoint, retained bounds, and the next proof obligation |
 | [manuscript workspace](../manuscript/README.md) | paper question chain, theorem hierarchy, and scope discipline |
 
 ## Executable route
@@ -72,6 +76,7 @@ Every principal directory contains its own short map.
 ```bash
 python scripts/reviewer_walkthrough.py
 python validate.py
+python scripts/verify_fault_tolerant.py
 python scripts/unified_resource_ledger.py --n 12
 python scripts/strict_zero_echo_ledger.py --n 12
 ```

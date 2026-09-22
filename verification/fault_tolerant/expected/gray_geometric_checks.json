@@ -1,0 +1,237 @@
+{
+  "checkpoint": 22,
+  "status": "passed",
+  "arithmetic": "Exact sparse states in Q(sqrt(2), i); every emitted logical gate is applied.",
+  "controlled_H": {
+    "all_basis_columns": 4,
+    "literal_phase_equal": true,
+    "chronological_word": [
+      "SDG",
+      "H",
+      "TDG",
+      "H",
+      "S",
+      "CZ",
+      "SDG",
+      "H",
+      "T",
+      "H",
+      "S"
+    ],
+    "counted_operations": {
+      "CZ": 1,
+      "H": 4,
+      "S": 2,
+      "SDG": 2,
+      "T": 1,
+      "TDG": 1
+    },
+    "T_and_Tdag_count": 2
+  },
+  "width_cases": [
+    {
+      "t": 1,
+      "M": 2,
+      "physical_qubits_without_reference": 2,
+      "scratch_bits": 0,
+      "root_enable_bits": 1,
+      "all_initialized_scratch_input_columns": 4,
+      "counted_chain_operations": {
+        "X": 0,
+        "CCX": 0,
+        "CH": 1
+      },
+      "counted_chain_word_length": 1,
+      "outer_decoder_CX_count": 0,
+      "exact_probabilities": [
+        "1/2",
+        "1/2"
+      ],
+      "frozen_probability_mass": "1/2",
+      "terminal_tail_probability": "1/2",
+      "all_amplitudes_positive": true,
+      "all_logical_columns_scratch_clean": true,
+      "actual_reverse_passed": true,
+      "nonzero_data_controlled_reference_witness": true
+    },
+    {
+      "t": 2,
+      "M": 4,
+      "physical_qubits_without_reference": 4,
+      "scratch_bits": 1,
+      "root_enable_bits": 1,
+      "all_initialized_scratch_input_columns": 8,
+      "counted_chain_operations": {
+        "X": 6,
+        "CCX": 6,
+        "CH": 3
+      },
+      "counted_chain_word_length": 15,
+      "outer_decoder_CX_count": 1,
+      "exact_probabilities": [
+        "1/2",
+        "1/4",
+        "1/8",
+        "1/8"
+      ],
+      "frozen_probability_mass": "7/8",
+      "terminal_tail_probability": "1/8",
+      "all_amplitudes_positive": true,
+      "all_logical_columns_scratch_clean": true,
+      "actual_reverse_passed": true,
+      "nonzero_data_controlled_reference_witness": true
+    },
+    {
+      "t": 3,
+      "M": 8,
+      "physical_qubits_without_reference": 6,
+      "scratch_bits": 2,
+      "root_enable_bits": 1,
+      "all_initialized_scratch_input_columns": 16,
+      "counted_chain_operations": {
+        "X": 20,
+        "CCX": 20,
+        "CH": 7
+      },
+      "counted_chain_word_length": 47,
+      "outer_decoder_CX_count": 2,
+      "exact_probabilities": [
+        "1/2",
+        "1/4",
+        "1/8",
+        "1/16",
+        "1/32",
+        "1/64",
+        "1/128",
+        "1/128"
+      ],
+      "frozen_probability_mass": "127/128",
+      "terminal_tail_probability": "1/128",
+      "all_amplitudes_positive": true,
+      "all_logical_columns_scratch_clean": true,
+      "actual_reverse_passed": true,
+      "nonzero_data_controlled_reference_witness": true
+    },
+    {
+      "t": 4,
+      "M": 16,
+      "physical_qubits_without_reference": 8,
+      "scratch_bits": 3,
+      "root_enable_bits": 1,
+      "all_initialized_scratch_input_columns": 32,
+      "counted_chain_operations": {
+        "X": 50,
+        "CCX": 50,
+        "CH": 15
+      },
+      "counted_chain_word_length": 115,
+      "outer_decoder_CX_count": 3,
+      "exact_probabilities": [
+        "1/2",
+        "1/4",
+        "1/8",
+        "1/16",
+        "1/32",
+        "1/64",
+        "1/128",
+        "1/256",
+        "1/512",
+        "1/1024",
+        "1/2048",
+        "1/4096",
+        "1/8192",
+        "1/16384",
+        "1/32768",
+        "1/32768"
+      ],
+      "frozen_probability_mass": "32767/32768",
+      "terminal_tail_probability": "1/32768",
+      "all_amplitudes_positive": true,
+      "all_logical_columns_scratch_clean": true,
+      "actual_reverse_passed": true,
+      "nonzero_data_controlled_reference_witness": true
+    },
+    {
+      "t": 5,
+      "M": 32,
+      "physical_qubits_without_reference": 10,
+      "scratch_bits": 4,
+      "root_enable_bits": 1,
+      "all_initialized_scratch_input_columns": 64,
+      "counted_chain_operations": {
+        "X": 112,
+        "CCX": 112,
+        "CH": 31
+      },
+      "counted_chain_word_length": 255,
+      "outer_decoder_CX_count": 4,
+      "exact_probabilities": [
+        "1/2",
+        "1/4",
+        "1/8",
+        "1/16",
+        "1/32",
+        "1/64",
+        "1/128",
+        "1/256",
+        "1/512",
+        "1/1024",
+        "1/2048",
+        "1/4096",
+        "1/8192",
+        "1/16384",
+        "1/32768",
+        "1/65536",
+        "1/131072",
+        "1/262144",
+        "1/524288",
+        "1/1048576",
+        "1/2097152",
+        "1/4194304",
+        "1/8388608",
+        "1/16777216",
+        "1/33554432",
+        "1/67108864",
+        "1/134217728",
+        "1/268435456",
+        "1/536870912",
+        "1/1073741824",
+        "1/2147483648",
+        "1/2147483648"
+      ],
+      "frozen_probability_mass": "2147483647/2147483648",
+      "terminal_tail_probability": "1/2147483648",
+      "all_amplitudes_positive": true,
+      "all_logical_columns_scratch_clean": true,
+      "actual_reverse_passed": true,
+      "nonzero_data_controlled_reference_witness": true
+    }
+  ],
+  "regressions": {
+    "t": 2,
+    "missing_reverse_half_X_detected": true,
+    "prefix_uncompute_deferred_past_bridge_detected": true,
+    "deferred_prefix_uncompute_leaks_scratch": true
+  },
+  "total_initialized_scratch_columns": 124,
+  "counting": {
+    "source": "Counts are read from literal emitted gate words, then their finite recurrences are checked.",
+    "CH_recurrence": "H_t = 2 H_(t-1) + 1, H_1 = 1",
+    "CCX_recurrence": "C_t = 2 C_(t-1) + 2t + 2, C_1 = 0",
+    "qualification": "The asymptotic recurrence solution and seven-T Toffoli compilation are analytic. No compiled T count or generic frame resource bound is certified by these finite tests."
+  },
+  "scope": [
+    "Widths t=1..5; all 124 data/enable basis columns with initialized scratch, exact positive geometric amplitudes, frozen probabilities, terminal tail, and actual reverse words.",
+    "The raw chain is controlled and exactly disabled on every data input. The separate unconditional outer Gray decoder is tested only as an enable-one state-preparation wrapper.",
+    "The child-enable scratch is erased before the bridge changes the high data bit and reuses that scratch pool. An explicit wrong-order regression leaks scratch.",
+    "Each width includes a coherent untouched-reference witness with nonzero data and both enable values.",
+    "Controlled-H has an independently checked literal-phase Clifford+T decomposition. Other logical Toffoli gates are evaluated as exact permutations.",
+    "No old suite, generic frame compiler, coefficient sampler, digit lookup, QASM, or end-to-end resource theorem is claimed."
+  ],
+  "source_sha256": {
+    "gray_geometric.py": "4ca1b739c0d9e932326ac18936e1205d052852bc76313c5672805a4388312864",
+    "gray_geometric_checks.py": "21fa2e8cd991ad8d37cf3781e686d0613428269bd728909797bc0355e91b89ed",
+    "residual_precision_correction.py": "0448db6852783d9576c1eb55cf0291f499d579960c4639fa517437b6ab2ccbe1",
+    "boolean_frame_certificate.py": "8131638dbd40d3ce4534fa73b49da5c2f82768e17048bb5c2e52a34e9bc90602"
+  }
+}

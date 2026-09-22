@@ -1,5 +1,10 @@
 # Complete all-workspace compiler theorem
 
+This page concerns the **exact logical model**. The integrated paper also has
+a [fault-tolerant compiler theorem](FAULT_TOLERANT_COMPILER.md) and an
+[approximate-QBP bridge](QBP_APPROXIMATION.md); their hypotheses and evidence
+are stated separately.
+
 [← Hopf interface](HOPF_INTERFACE.md) · [Complete narrative](../REVIEW.md) · [QBP consequence →](QBP_CONSEQUENCE.md)
 
 This page gives the formal operator and resource proof.  The construction uses

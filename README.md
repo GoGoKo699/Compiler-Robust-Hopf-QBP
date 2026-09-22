@@ -1,6 +1,6 @@
 # Optimal Compilation of Hopf Differential Frames
 
-### A prescribed unitary completion at the all-workspace state-preparation frontier
+### One prescribed frame, exact logical and fault-tolerant compilation
 
 Exact state preparation normally specifies one initialized input:
 
@@ -10,7 +10,7 @@ Exact state preparation normally specifies one initialized input:
 |\psi\rangle|0^m\rangle.
 ```
 
-The Hopf backpropagation circuit uses a more structured map.  Its preparation
+The Hopf backpropagation circuit uses a prescribed unitary completion.  Its preparation
 unitary contains the target state in the first column and prescribed coordinate
 frame directions in designated nonzero columns.  The inverse of this complete
 unitary is then used to read a common objective response.
@@ -18,16 +18,30 @@ unitary is then used to read a common objective response.
 | Synthesis task | Required action |
 |---|---|
 | Exact state preparation | fix $U\lvert 0^n\rangle$ |
-| Hopf differential-frame compilation | fix $W\lvert x\rangle$ for every system basis state $\lvert x\rangle$ and return all workspace clean |
+| Hopf differential-frame compilation | fix $W\lvert x\rangle$ for every system basis state $\lvert x\rangle$ and restore workspace according to its input promise |
 
 This repository asks whether the prescribed Hopf completion can retain the same
-size–depth frontier as arbitrary state preparation.  It can.
+size–depth frontier as arbitrary state preparation, and what implementing the
+same frame costs at finite precision. The exact logical theorem covers every
+clean-workspace budget. The fault-tolerant theorem gives a matched T-count
+frontier in its stated clean/dirty-workspace regime.
 
 <p align="center">
   <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column, whereas Hopf differential-frame compilation fixes the state and designated frame columns." />
 </p>
 
-## Main theorem
+## Two resource models
+
+The mathematical target is the complete frame in both models. Their resource
+bounds describe different compiler constructions; they do not assert one
+circuit that simultaneously minimizes every cost.
+
+| Model | Resource question | Scope of the matching theorem |
+|---|---|---|
+| Arbitrary one-qubit gates and CNOTs | exact size and depth versus clean workspace | real and phase-dressed complex magnitude frames, every clean budget |
+| Clifford+T | T-count versus accuracy and clean/dirty workspace | prescribed real frame, every precision above the sufficient clean reservation below |
+
+### Exact logical theorem
 
 Let
 
@@ -76,7 +90,53 @@ The construction uses at most the requested $m$ clean ancillary qubits and
 returns them exactly to zero.  Thus a prescribed Hopf completion reaches the
 optimal arbitrary-state-preparation frontier for every clean-workspace budget.
 
-## Construction at a glance
+### Fault-tolerant theorem
+
+Let $a$ be the number of initialized clean qubits and $b$ the number of borrowed
+qubits in an arbitrary unknown state. Write
+
+```math
+q=n+a+b,\qquad
+L=\max\{6,\lceil\log_2(1/\eta)\rceil\},\qquad
+h=1+\lceil\log_2(L+n+2)\rceil.
+```
+
+For $0<\eta\leq1/64$ and a sufficiently large fixed constant $C$, the prescribed
+real frame has matching worst-case T-count
+
+```math
+\boxed{
+T^\star(n,a,b,\eta)
+=\Theta\left(\sqrt{NL}+L+\frac{NL}{n+a+b}\right),
+\qquad a\geq C(n+h).
+}
+```
+
+The upper construction uses $O(NL)$ Clifford gates. Every supplied precision
+source is prepared and charged. Borrowed qubits are restored jointly with any
+external reference; complete-input approximation includes clean-work leakage.
+There are no measurements, resets, or free supplied catalysts in this model.
+
+**Why the precision cost can be shared.** First approximate the frame coarsely.
+Its structured residual is corrected using binary coefficient tables. One small
+geometric source supplies the binary weights across the entire correction
+stream. Returning that source accurately on accepted branches permits one
+shared preparation per base block. Final amplification repeats that block only
+a constant number of times, giving the single additive $L$ term.
+The [fault-tolerant chapter](docs/FAULT_TOLERANT_COMPILER.md) gives the proof,
+register ledger, and inherited primitives.
+
+At $L=N$, sufficient $a=\Theta(n)$ and $b=\Theta(N)$ give $T^\star=\Theta(N)$.
+With only $a=O(1)$ clean qubits, the retained bounds at the same endpoint are
+$\Omega(N)$ and $O(N^{3/2})$. **That constant-clean question remains open.** It is
+[the next research task](research/CONSTANT_CLEAN_ENDPOINT.md), to be resumed
+from this repository after the present integration.
+
+The exact-model complex theorem remains separately stated. The displayed
+fault-tolerant theorem is for the real frame; literal complex phase conventions
+and a separate leaf-phase stream require their own accounting.
+
+## Exact construction at a glance
 
 The Hopf frame is a product of addressed tree layers.  At depth $d$, the prefix
 selects one rotation angle and the complete lower suffix supplies a shared
@@ -103,8 +163,8 @@ issue, or pull-request history is needed.
 | Time | Route | Purpose |
 |---:|---|---|
 | 5 minutes | this page | problem, theorem, and construction map |
-| 30–40 minutes | **[complete technical narrative](REVIEW.md)** | the proof chain from one prescribed completion to compiler-robust QBP |
-| full audit | **[compiler theorem](docs/COMPILER_THEOREM.md)** and **[verification map](docs/VERIFICATION.md)** | register schedules, upper and lower bounds, exact tests, and source dependencies |
+| 30–40 minutes | **[complete technical narrative](REVIEW.md)** | shared contract, the two resource models, and the QBP consequence |
+| full audit | **[exact theorem](docs/COMPILER_THEOREM.md)**, **[T-count theorem](docs/FAULT_TOLERANT_COMPILER.md)**, and **[verification map](docs/VERIFICATION.md)** | proofs, register schedules, evidence limits, and source dependencies |
 
 Focused pages are available for the unfamiliar parts:
 
@@ -112,10 +172,17 @@ Focused pages are available for the unfamiliar parts:
 |---|---|
 | [Minimal Hopf interface](docs/HOPF_INTERFACE.md) | tree coordinates, marker columns, chart domains, singular coordinates, and addressed layers |
 | [Complete compiler theorem](docs/COMPILER_THEOREM.md) | all three workspace schedules, explicit router, workspace ledger, and optimality |
+| [Finite-precision compiler](docs/FAULT_TOLERANT_COMPILER.md) | complete error contract, shared source, clean/dirty resource bounds |
+| [Approximate QBP](docs/QBP_APPROXIMATION.md) | circuit error transferred to fixed-parameter gradient-estimator bias |
 | [QBP consequence](docs/QBP_CONSEQUENCE.md) | frame-safe substitution, raw-coordinate accuracy, and the matched-program cost statement |
 | [Verification and evidence](docs/VERIFICATION.md) | proof-to-code correspondence and exact finite checks |
 | [Source map](docs/SOURCE_MAP.md) | every inherited fact, imported theorem, local proof, implementation, and test |
 | [Related work](docs/RELATED_WORK.md) | state preparation, UCGs, borrowed workspace, and the narrow contribution boundary |
+
+A reader needs quantum circuits, operator norms, and basic asymptotic notation.
+The [minimal Hopf interface](docs/HOPF_INTERFACE.md) supplies the geometry;
+knowledge of the earlier Hopf papers is useful but not required. Begin with the
+two-qubit example in the narrative before reading the compiler machinery.
 
 ## Why the completion matters
 
@@ -208,6 +275,12 @@ program adds one inverse frame of the same asymptotic logical depth as optimal
 state preparation.  Classical materialization of an $M$-entry output is not
 included in that quantum-depth ratio.
 
+At finite precision, the [approximation bridge](docs/QBP_APPROXIMATION.md)
+controls the bias of the same fixed-parameter, bounded-score estimator. It uses
+the actual compiled circuit and its actual adjoint. It does not differentiate a
+discontinuous family of compiled words. Frame-synthesis lower bounds alone do
+not establish optimal gradient-query or training complexity.
+
 ## Verification boundary
 
 The repository supplies:
@@ -223,9 +296,15 @@ state-preparation framework rather than regenerated locally.  Finite checks are
 used to expose indexing, phase, order, cleanup, and resource errors; the
 asymptotic theorem rests on the dimension-independent proof.
 
-The result does not address device connectivity, native-gate depth,
-approximate Clifford+T synthesis, noise, arbitrary non-Hopf charts, or the
-application-specific cost of controlled observable access.
+The fault-tolerant evidence adds exact finite source/kernel identities and
+rational resource checks. It does not yet provide a general elementary emitter
+for the complete asymptotic shared-source compiler. See the
+[focused reproduction guide](verification/fault_tolerant/README.md).
+
+Device connectivity, physical noise thresholds, optimal T-depth, arbitrary
+non-Hopf charts, and application-independent observable costs remain outside
+the claims. Clifford work, T work, quantum executions, and classical output
+costs are reported separately.
 
 ## Reproduce the checks
 
@@ -236,6 +315,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python scripts/reviewer_walkthrough.py
 python validate.py
+python scripts/verify_fault_tolerant.py
 python scripts/unified_resource_ledger.py --n 12
 python scripts/strict_zero_echo_ledger.py --n 12
 ```
@@ -246,13 +326,16 @@ python scripts/strict_zero_echo_ledger.py --n 12
 |---|---|
 | [`Hopf-ansatz`](https://github.com/GoGoKo699/Hopf-ansatz) | coordinate chart, inverse map, metric, tangent preparation, and optimization interface |
 | [`Hopf-QBP`](https://github.com/GoGoKo699/Hopf-QBP) | global, direct-phase, and checkpoint gradient records, including the earlier Möttönen-style robustness result |
-| **This repository** | complete-frame compiler contracts, optimal all-workspace synthesis, and the compiler-robust QBP consequence |
+| **This repository** | complete-frame contracts, exact and fault-tolerant compilation, and their scoped QBP consequences |
 
 The exact fact-level dependencies are listed in
 [the source map](docs/SOURCE_MAP.md).
 
 ## Status and license
 
-The theorem has passed the analytic and executable checks documented in this
-repository and is ready for independent technical review.  The repository is
+The exact compiler and fault-tolerant construction have the analytical and
+finite evidence identified in the [verification map](docs/VERIFICATION.md).
+The [source map](docs/SOURCE_MAP.md) distinguishes inherited ingredients from
+local constructions. These records are internal research evidence; no external
+review or exhaustive novelty certification is claimed.  The repository is
 licensed under MIT; see [`LICENSE`](LICENSE).
