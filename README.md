@@ -127,10 +127,13 @@ The [fault-tolerant chapter](docs/FAULT_TOLERANT_COMPILER.md) gives the proof,
 register ledger, and inherited primitives.
 
 At $L=N$, sufficient $a=\Theta(n)$ and $b=\Theta(N)$ give $T^\star=\Theta(N)$.
-With only $a=O(1)$ clean qubits, the retained bounds at the same endpoint are
-$\Omega(N)$ and $O(N^{3/2})$. **That constant-clean question remains open.** It is
-[the next research task](research/CONSTANT_CLEAN_ENDPOINT.md), to be resumed
-from this repository after the present integration.
+The new [operator-source construction](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+uses **three clean qubits** and $N+O(\log N)$ dirty qubits to give
+$O(N\log N)$ T gates for arbitrary real frames at the same precision.
+The lower bound remains $\Omega(N)$: **a logarithmic gap is still open**.
+The [progress report](research/CONSTANT_CLEAN_PROGRESS.md) explains the construction
+and its explicit workspace requirement; smaller clean allocations retain the
+earlier bounds.
 
 The exact-model complex theorem remains separately stated. The displayed
 fault-tolerant theorem is for the real frame; literal complex phase conventions

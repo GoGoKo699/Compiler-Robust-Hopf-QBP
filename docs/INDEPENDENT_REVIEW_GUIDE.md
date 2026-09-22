@@ -62,10 +62,14 @@ local elementary-gate emitter.
 
 ## The question deliberately left open
 
-At $a=O(1)$, $b=\Theta(N)$, and $L=N$, the known bounds here are $\Omega(N)$
-and $O(N^{3/2})$. The [continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md)
-contains the exact next research task and the limits of previous approaches.
-Resolving it is separate from assessing the theorem already stated.
+At $a=3$, $b\ge N+n+6$, and $L=N$, the known bounds here are $\Omega(N)$
+and $O(N\log N)$. The new
+[operator-source proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+should be checked at the full-dirty-space anticommutator, controlled source,
+normalization-two amplification, and simultaneous workspace ledger. Its finite
+checks do not replace these arguments. The
+[continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md) records the remaining
+gap and the smaller budgets not covered by this sufficient allocation.
 
 The complete frame is the compiler target. Its lower bounds do not rule out
 other gradient algorithms using different measurements or classical processing.

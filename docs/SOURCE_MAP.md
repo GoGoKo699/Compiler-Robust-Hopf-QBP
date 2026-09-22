@@ -118,6 +118,8 @@ different resource theorem from the exact clean-workspace size–depth theorem.
 | F6 | [Tan, published PRX Quantum article](https://journals.aps.org/prxquantum/pdf/10.1103/pxhd-9s9q), Definition I.2, Theorem I.1, Lemma IV.1 and Remark IV.2 | general-unitary comparison and shared Boolean instruction synthesis | the instruction registers in the displayed construction are initialized; this is not the prescribed small-clean/dirty tradeoff |
 | F7 | [Li–Ou–Wang–Yao–Yuan–Zhang, arXiv:2607.28260v1](https://arxiv.org/html/2607.28260v1), Sections 3–4 | sparse QROM and sparse-state comparison | different input families; no general full-frame conclusion is imported |
 | F8 | Khattar–Gidney, arXiv:2407.17966v2, Sections 3, 4 and 7.4 | conditionally clean and dirty selector context | cancellation and selector reuse are established techniques, not a separate contribution here |
+| F9 | [Kerenidis–Prakash, arXiv:2202.00054v2](https://arxiv.org/html/2202.00054v2), Definitions 4.4/4.6 and Theorem 4.9; [Chee et al., arXiv:2301.07477](https://arxiv.org/pdf/2301.07477), Appendix C | full-space Clifford loaders and their scalar/antisymmetric product decomposition | the Pauli representation and overlap algebra predate this work; the operator-source note supplies a native geometric specialization and dirty-programmed rotation construction |
+| F10 | [Gidney, arXiv:1706.07884v2](https://arxiv.org/html/1706.07884v2), Sections 2.9–2.10 | coherent dirty constant offsets and linear controlled increments | the new modular table adder uses the increment primitive within charged carry-query layers; the finite test emitter is not evidence for its asymptotic cost |
 
 Standard Pauli linear combinations, reversible arithmetic, and oblivious
 amplitude amplification are used with their actual preparations and adjoints.
@@ -131,6 +133,8 @@ local construction, not additional oracle assumptions.
 | R14 | shared-source composition of frame residuals | the principal uniform-precision construction: accepted-branch shifts, retained source, failure tracking, and one final amplification; see [theorem and proof](FAULT_TOLERANT_COMPILER.md) |
 | R15 | matching T-count in the stated workspace regimes | the sufficient-clean [theorem](FAULT_TOLERANT_COMPILER.md) plus the F3/F4 reductions; the separate all-clean-budget [corollary and borrowed-workspace proof](../research/constant_clean/BORROWED_WORKSPACE_COMPILER.md) also uses the earlier compiler under its additional condition |
 | R16 | fixed-parameter bounded-score robustness | [QBP approximation](QBP_APPROXIMATION.md): full-isometry and observable errors bound estimator bias, without differentiating a compiled word or proving gradient-query optimality |
+| R17 | three-clean operator-source compiler | [proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md): native binary weights, whole-word dirty sign lookup, scalar anticommutator, constant-flag amplification and full-frame composition give $T=O(N+nL)$ for $b\ge L+n+6$; full return error is included in the norm |
+| R18 | zero-clean modular table addition | [proof](../research/constant_clean/MODULAR_LOOKUP_FOLLOWUP.md): four-query dirty carry extraction and sign-corrected divide-and-conquer composition give $T=O((N+m)\log(m+1))$; a joint precision clock remains separate |
 
 For polynomial accuracy-bit budgets, the direct sampler can already attain the
 matching T count. That regime is not attributed to the later shared-source

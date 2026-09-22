@@ -910,7 +910,11 @@ source's complete-frame composition. SelectSwap and the lower-bound
 machinery retain their original attribution. The sufficient reservation
 $`a\geq C(n+h)`$ remains part of Theorem 1; the
 [constant-clean endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md) is not
-settled by removing that hypothesis from the displayed formula.
+settled by removing that hypothesis from the displayed formula. A separate
+[operator-source construction](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+now gives $`T=O(N+nL)`$ and $`G=O(NL)`$ with $`a=3`$ and
+$`b\ge L+n+6`$. At $`L=N`$ its upper bound is $`O(N\log N)`$;
+Theorem 1 and its matching lower bounds are unchanged.
 
 ### Primary references
 

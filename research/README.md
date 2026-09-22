@@ -1,24 +1,40 @@
 # Research continuation
 
-The active open problem is the constant-clean, large-dirty, high-precision endpoint for coherent Clifford+T compilation of the prescribed real Hopf frame. Repository integration is complete and research has resumed. Start with the short [checked-progress report](CONSTANT_CLEAN_PROGRESS.md), then use the [endpoint brief](CONSTANT_CLEAN_ENDPOINT.md) for the full contract.
+The constant-clean research now has an improved arbitrary-angle compiler.
+Start with the [checked-progress report](CONSTANT_CLEAN_PROGRESS.md), then
+read the [operator-source proof](constant_clean/OPERATOR_SOURCE_COMPILER.md).
+With three clean qubits and $`b\ge L+n+6`$ dirty qubits it gives
+$`T=O(N+nL)`$ and $`G=O(NL)`$ for the complete real Hopf frame.
 
-The [phase-batching construction](constant_clean/IDENTICAL_PHASE_BATCHING.md) uses one clean qubit and supports distinct angles built from a few shared base angles with bounded integer coefficients. The improved [addressed reduction](constant_clean/GLOBAL_BLOCK_FOLLOWUP.md#5-a-constructive-reduction-to-heterogeneous-phase-batching) now uses two batch calls and no extra clean qubit, so the corresponding full frames also need only one clean qubit. Arbitrary angle tables remain unresolved; uniform selected-commutator synthesis is equivalent to full batching with a logarithmic precision margin. The endpoint brief defines the full target and resource model. The supported endpoint remains
+At $`L=N`$, the sufficient allocation is $`b=N+O(\log N)`$ and the frontier is
 
 ```math
-a=O(1),\quad b=\Theta(N),\quad L=N,
-\qquad \Omega(N)\le \tau^*_{F,\mathbb R}\le O(N^{3/2}).
+\Omega(N)\le\tau^*_{F,\mathbb R}\le O(N\log N).
 ```
 
-The [fault-tolerant compiler theorem](../docs/FAULT_TOLERANT_COMPILER.md) is the repository's main account of the established compiler frontier. New structural results and conditional constructions are indexed in the [technical reading map](constant_clean/README.md); they have not changed the unrestricted endpoint bounds.
+The earlier arbitrary-budget compiler remains available for smaller clean or
+dirty allocations. The [endpoint brief](CONSTANT_CLEAN_ENDPOINT.md) states the
+full contract, sufficient allocations, and remaining logarithmic gap. The
+[sufficient-clean matching theorem](../docs/FAULT_TOLERANT_COMPILER.md) and
+all general lower bounds are unchanged.
 
-| Technical appendix | What it preserves |
+The [technical reading map](constant_clean/README.md) also covers the new
+zero-clean modular table adder, one-clean shared-generator phase batching,
+dirty-rank compression, and the scoped program/clock obstructions. The
+operator-source compiler does not depend on the unresolved arbitrary phase
+batch or joint clock.
+
+| Earlier appendix | What it preserves |
 |---|---|
-| [Arbitrary returned-source attenuation](constant_clean/SOURCE_CHANNEL_PROOF.md) | Full Pauli-channel, integrality, determinant and singular-value proof; arbitrary precision-dependent sources; uniform family tradeoff |
+| [Arbitrary returned-source attenuation](constant_clean/SOURCE_CHANNEL_PROOF.md) | Full Pauli-channel and algebraic proof for a supplied source; uniform family tradeoff |
 | [Global XOR-program echo](constant_clean/GLOBAL_XOR_ECHO.md) | Complete-output inverse and commutator obstructions; precise two-query scope |
-| [Modular table lookup](constant_clean/MODULAR_LOOKUP.md) | Valid modular-bank echo, carry/selector/bank ledger, and the missing loader hypothesis |
-| [Joint dirty clock](constant_clean/DIRTY_CLOCK.md) | Linear whole-clock bound versus quadratic separately restored factor cost; remaining joint interface |
+| [Modular table lookup](constant_clean/MODULAR_LOOKUP.md) | Historical modular-bank proposal and its then-missing loader; the follow-up now supplies a different charged adder |
+| [Joint dirty clock](constant_clean/DIRTY_CLOCK.md) | Linear whole-clock bound versus quadratic separately restored factor cost |
 | [Exact catalytic phases](constant_clean/EXACT_PHASE_CATALYSIS.md) | Spectral multiplicity bound, accepted-block extension, and literal-phase caveats |
-| [Finite-width precision sources](constant_clean/FINITE_WIDTH_SOURCES.md) | Nilpotent-shift bound, one-qubit counterexample, and radix/address accounting |
-| [Appendix provenance](constant_clean/PROVENANCE.md) | Source identities and the limited editorial changes made during integration |
+| [Finite-width precision sources](constant_clean/FINITE_WIDTH_SOURCES.md) | Nilpotent-shift bound, one-qubit alternative, and radix/address accounting |
+| [Appendix provenance](constant_clean/PROVENANCE.md) | Source identities, integration history, and subsequent mathematical changes |
 
-The mathematical proofs are the evidence for the asymptotic claims. Historical finite checks test particular algebraic interfaces; they do not establish the universal quantifiers, emit a constant-clean endpoint compiler, or certify novelty. The endpoint brief governs current scope where an older appendix records an earlier proposed route.
+The proofs establish the general claims. Finite executable checks test fragile
+identities and conventions, not universal quantifiers or publication novelty.
+The endpoint brief governs current scope where an older appendix records an
+earlier stage of the investigation.

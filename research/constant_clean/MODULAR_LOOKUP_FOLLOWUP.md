@@ -1,6 +1,6 @@
-# Modular lookup followup: exact carry queries and a corrected dirty echo
+# Modular lookup through dirty carry queries
 
-This note continues [modular lookup](MODULAR_LOOKUP.md) and the [global XOR echo analysis](GLOBAL_XOR_ECHO.md) under the [constant-clean endpoint contract](../CONSTANT_CLEAN_ENDPOINT.md). It establishes two exact reductions, with their unresolved costs exposed. Neither reduction improves the current whole-frame upper bound. A recent linear-size constant adder also needs a model qualification: its carry cleanup uses measurements.
+This note continues [modular lookup](MODULAR_LOOKUP.md) and the [global XOR echo analysis](GLOBAL_XOR_ECHO.md) under the [constant-clean endpoint contract](../CONSTANT_CLEAN_ENDPOINT.md). Section 2 gives an exact modular table adder with $`O((N+m)\log(m+1))`$ T gates, $`O(m+\log N)`$ additional dirty work, and no initialized work. It batches the table-dependent carry computation across divide-and-conquer levels. The later weighted-subset-sum reduction remains an alternative interface with its own unresolved cost. Modular lookup alone does not supply a joint phase-clock compiler.
 
 Throughout, $`N=2^n`$, the classical table is $`f:\{0,1\}^n\to\mathbb Z_{2^m}`$, and the desired operator is
 
@@ -75,9 +75,148 @@ T=2\sum_{i=0}^{m-1}t_i,\qquad
 G=2\sum_{i=0}^{m-1}g_i+2m.
 ```
 
-It needs one reusable dirty query bit in addition to the queries' peak work allocations. The unresolved problem is to bound the *sum* of the complete query costs, including actual table insertion and coherent cleanup. A simultaneous XOR of all carries into a dirty bank does not establish these bounds: changing the lower target bits can change the inputs needed to erase that bank.
+It needs one reusable dirty query bit in addition to the queries' peak work allocations. This particular per-output-bit decomposition still needs a bound on the *sum* of its query costs. Section 2 instead uses simultaneous carry queries while keeping their lower input bits unchanged through each complete correction. This permits exact erasure of the dirty carry masks.
 
-## 2. A valid sign-corrected echo on a one-hot dirty bank
+## 2. An exact modular table adder with no clean work
+
+### Statement and charged interfaces
+
+For an arbitrary $`N=2^n`$-row table of $`m\ge1`$-bit constants, there is
+a deterministic coherent Clifford+T implementation of $`U_f`$ with
+
+```math
+T=O\bigl((N+m)\log(m+1)\bigr),\qquad
+G=O\bigl(Nm\log(m+1)\bigr),\qquad
+a=0,
+```
+
+using $`2m+n`$ additional dirty wires beyond the address and target.
+Here $`G`$ counts Clifford gates after exact Toffoli decomposition.
+Every additional workspace wire is returned exactly, including its joint
+state with an external reference; the designated target undergoes $`U_f`$.
+If a caller supplies that target from its dirty budget, include its
+$`m`$ wires as well: the complete dirty allocation is $`3m+n`$.
+
+The [retained dirty-selector loader](BORROWED_WORKSPACE_COMPILER.md#2-exact-dirty-table-and-reflection-interpreter)
+supplies the exact whole-word query
+
+```math
+Q_f:|x,v,z\rangle\longmapsto|x,v\oplus f(x),z\rangle
+```
+
+for arbitrary $`v,z`$, using $`n`$ dirty selectors, $`O(N)`$ Toffolis,
+and $`O(Nm)`$ Clifford gates. The two selector traversals cancel their
+unknown initial values; inserting an entire table row uses CNOTs into
+each selected output bit. No initialized copy of $`f(x)`$ is supplied.
+We charge every invocation below. The other cited primitive is the
+exact [controlled increment, Gidney §2.10, Fig. 20](https://arxiv.org/html/1706.07884v2#S2.SS10):
+it uses $`O(w)`$ gates on a $`w`$-bit word with one arbitrary dirty helper.
+Its even-width extension has the same order and needs no initialized carry.
+
+### Four queries compute all carries into an arbitrary mask
+
+Borrow two $`m`$-bit words $`g,a`$. Fix any collection of disjoint
+contiguous chunks of the target word. The desired query XORs the carry
+out of every bit of each chunk into the corresponding bit of $`g`$,
+with carry-in zero at the start of each chunk. Other bits of $`g`$ are
+unchanged. Address $`x`$ and words $`y,a`$ must all return exactly.
+
+First apply $`Q_f`$ to $`y`$, temporarily making $`p=y\oplus f(x)`$.
+For a chunk starting at position $`b`$, define a reversible binary-linear
+map $`P_p`$ by the ascending sweep
+
+```math
+g_i\longleftarrow g_i\oplus p_i g_{i-1},
+\qquad i=b+1,\ldots,\text{last bit of the chunk}.
+```
+
+There is no connection between different chunks. The inverse sweep runs
+in descending order. Put $`u_i=f_i(x)(1-p_i)`$ on chunk positions and
+zero elsewhere. On those positions $`u_i=y_i^{\rm original}f_i(x)`$.
+The carry recurrence is precisely
+
+```math
+c_i=u_i\oplus p_i c_{i-1},\qquad c_{b-1}=0,
+\quad\text{so}\quad c=P_pu.
+```
+
+An XOR of $`u`$ into arbitrary $`g`$ needs two more whole-word queries:
+apply $`Q_f`$ to $`a`$, apply the transversal Toffolis
+$`g_i\mathrel{\oplus}=a_i(1-p_i)`$ on chunk positions, apply $`Q_f`$
+to $`a`$ again, and repeat those Toffolis. Their difference is exactly
+$`f_i(x)(1-p_i)`$; the original unknown $`a_i`$ cancels. Negative controls
+use ordinary X gates, without initialized work.
+
+The complete chronological carry-query word $`C`$ is
+
+```math
+Q_f(y),\quad P_p^{-1},\quad
+Q_f(a),\quad \mathrm{AND}_{a,\neg p\to g},\quad
+Q_f(a),\quad \mathrm{AND}_{a,\neg p\to g},\quad
+P_p,\quad Q_f(y).
+```
+
+In its middle it performs
+$`P_p(P_p^{-1}g\oplus u)=g\oplus c`$. Hence $`C`$ returns $`y,a`$
+and implements the required carry XOR on all $`g`$ inputs. It uses four
+queries and $`O(m)`$ other Toffolis and Clifford gates. A contiguous
+$`s`$-bit chunk contributes exactly $`4s-2`$ carry-circuit Toffolis:
+two propagation sweeps and two transversal AND passes. The semantic
+operation $`C`$ is an involution.
+
+### Dirty carry correction and divide-and-conquer order
+
+At one level, split each current $`w`$-bit non-singleton block into a
+lower chunk of width $`\lfloor w/2\rfloor`$ and an upper chunk of width
+$`\lceil w/2\rceil`$. Use $`C`$ only on the lower chunks. For each block let
+$`z`$ be the corresponding final lower-chunk bit of $`g`$, and let
+$`c`$ be the true carry from adding that lower chunk of $`f(x)`$.
+Let $`B`$ complement the entire upper chunk controlled by $`z`$, and
+let $`I`$ increment it controlled by $`z`$. Both operations are applied
+to every block at this level. Use the chronological word
+
+```math
+B,\quad C,\quad I,\quad C,\quad I^\dagger,\quad B.
+```
+
+The lower target chunks do not change during this word. Thus the two
+calls to $`C`$ use identical inputs and restore *every* bit of $`g`$,
+including carry-mask bits that are not used as controls. Between the
+two complements, the upper-chunk translation is
+$`(z\oplus c)-z=(1-2z)c`$. When $`z=1`$, bitwise complement
+$`v\mapsto-1-v`$ reverses the sign of a translation. The two outer
+complements therefore make the net translation exactly $`+c`$ for
+both original values of the dirty control. No flag is assumed zero.
+
+This level costs eight whole-word queries and $`O(m)`$ additional
+arithmetic gates. The upper chunks are disjoint, and their widths sum
+to at most $`m`$. The incrementer may borrow one bit of $`a`$: that
+word has already been restored and is idle between carry queries.
+Each increment returns this helper before another query uses $`a`$.
+
+Process these levels from the whole word down to singleton blocks.
+A parent's carry is added to its upper chunk before either child is
+processed. This is the usual addition identity: the final upper chunk
+is its original value plus its table constant plus the carry from the
+original lower chunk. At the leaves, apply one final $`Q_f(y)`$ to
+perform every one-bit addition. The same induction applies to unequal
+chunk sizes, so no zero padding or initialized padding wires are needed.
+
+There are at most $`\lceil\log_2 m\rceil`$ nontrivial levels. The
+total query count is at most $`8\lceil\log_2m\rceil+1`$, and other
+arithmetic costs $`O(m\log(m+1))`$. Substituting the charged XOR-loader
+cost proves the stated T and Clifford bounds. The two borrowed words
+and selectors are disjoint; all work is reused only after its exact
+return. These basis identities use phase-correct native Toffolis, so
+linearity proves the complete dirty/reference contract.
+
+At $`m=N`$, this gives $`O(N\log N)`$ T gates for addressed modular
+translation with $`O(N)`$ dirty work and no clean work. It improves this
+arithmetic primitive without providing an $`O(N)`$-cost joint phase
+clock or, by itself, a complete frame compiler. The theorem is a
+construction and resource bound, without a novelty or optimality claim.
+
+## 3. A valid sign-corrected echo on a one-hot dirty bank
 
 The preceding XOR-echo obstruction applies to an uncorrected common interpreter. An address-dependent sign correction gives a useful exact reduction outside that premise.
 
@@ -132,7 +271,7 @@ For each basis input its output is exactly $`|x,z,y+f(x),0\rangle`$, including r
 
 Without the sign correction, $`m=2`$, $`z_x=1`$, $`f(x)=1`$, and $`y=0`$ give output three instead of one. With the correction, they give one. There is no contradiction with the earlier obstruction: the read and the controlled complement introduce address-dependent, noncommuting target operations outside its specified translation-only/common-interpreter interface.
 
-## 3. Resource ledger and the remaining subset-sum problem
+## 4. Resource ledger and the remaining subset-sum problem
 
 The two bank operations needed above have independent complete implementations:
 
@@ -162,14 +301,27 @@ w_i=\kappa_i+\sum_j a_{ij}z_j,\qquad
 
 Clifford XOR operations supply the parity part of a column. They do not supply its integer carry $`\kappa_{i+1}`$ or a restored storage arrangement for that carry. Moreover, $`z`$ ranges over *all* bitstrings: an implementation valid only when it is one-hot is insufficient, because the one-hot query is applied to an arbitrary dirty bank. This is the precise carry and workspace obligation left by the reduction.
 
-## 4. Why the recent linear constant adder is not a coherent subroutine here
+## 5. Why the recent linear constant adder is not a coherent subroutine here
 
 Gidney's [*A Classical-Quantum Adder with Constant Workspace and Linear Gates*](https://arxiv.org/html/2507.23079v1) reports a $`4m\pm O(1)`$-Toffoli adder with three clean qubits, and a $`3m\pm O(1)`$ variant with two clean and $`m-2`$ dirty qubits. Sections 2.2–2.4 explicitly erase carries by X-basis measurements and later correct the resulting phases using the measurement outcomes. These results therefore do not directly give deterministic coherent circuits in the present no-measurement model.
 
 Straightforward deferred measurement retains the carry records coherently instead of freeing their qubits; the streaming construction has linearly many such events. Obtaining constant clean width would require an additional coherent storage/erasure construction. This observation does not rule out a different coherent linear adder. Even such an adder, applied separately to every row, would not establish the desired whole-table bound.
 
-## 5. Checks and scope of the result
+## 6. Checks and scope of the result
 
 Exact finite checks evaluated the carry expansion and descending decomposition for every pair $`(f,y)`$ at widths one through seven: 21,844 cases. Separate checks evaluated the complete sign-corrected echo for every table and every $`x,z,y`$ at $`(N,m)=(2,3)`$ and $`(4,2)`$: 69,632 cases, including return of the clean read flag. Negative controls detected both the omitted sign correction and the wrong ascending carry schedule; at $`m=2,f=1,y=1`$ the ascending schedule yields zero instead of two. These are checks of the displayed integer identities, not a gate synthesis or evidence for an unproved asymptotic cost. The universal justification is the algebra above.
 
-The useful progress is an exact carry-query interface and a sign-corrected one-hot reduction whose overhead fits the endpoint resources. Their remaining costs are explicit. No unrestricted modular-lookup lower bound, new optimality claim, or improvement of the existing $`O(N^{3/2})`$ whole-frame upper bound follows from this note.
+The [modular compiler checks](../../tests/test_modular_lookup_compiler.py)
+add finite all-input checks of the carry-query circuit and complete
+divide-and-conquer addition, including odd word widths, query counts,
+dirty-register return, and incorrect-sign/propagation-order negative
+controls. An exact native small-instance check purifies all permitted
+address, target, and dirty-work inputs. Its finite increment emitter is
+quadratic in word width; the sharp asymptotic increment cost is the cited
+linear primitive, not an inference from that emitter. The test module
+states this boundary explicitly.
+
+The modular arithmetic theorem is the constructive gain in this note.
+The alternative weighted-subset-sum interpreter and the joint phase-clock
+task have separate costs. No unrestricted lower bound or optimality
+statement follows from these constructions.

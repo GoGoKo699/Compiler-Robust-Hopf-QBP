@@ -1093,14 +1093,22 @@ they do not emit every elementary gate of the asymptotic compiler.
 ### 9.5 The retained open endpoint
 
 At $L=N$, a sufficiently large $a=\Theta(n)$ clean budget and $b=\Theta(N)$ dirty workspace attain
-$T^\star=\Theta(N)$. For $a=O(1)$ with the same precision and dirty capacity,
-the retained lower and upper bounds are $\Omega(N)$ and $O(N^{3/2})$.
+$T^\star=\Theta(N)$. A new
+[operator-source compiler](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+gives $T=O(N+nL)$ and $G=O(NL)$ with $a=3$ and $b\ge L+n+6$.
+Thus, at $L=N$, the available upper bound is now $O(N\log N)$,
+against the unchanged $\Omega(N)$ lower bound. This is a sufficient allocation,
+not a claim for every fixed clean count or every prefactor in $b=\Theta(N)$.
 
-This is the next research question after the repository integration. The
-[continuation brief](research/CONSTANT_CLEAN_ENDPOINT.md) states the exact
-model, reusable results, and unproved compiler interfaces. Restricted
-source-processing obstructions do not establish a stronger full-frame lower
-bound.
+The construction represents binary weights in a charged Pauli operator on dirty
+work. An anticommutator extracts each scalar coefficient times the identity on
+that entire workspace; two clean flags and coherent amplification produce each
+addressed rotation. It needs no initialized precision state. The precision cost
+is still paid once per tree depth, leaving the logarithmic gap. The
+[progress report](research/CONSTANT_CLEAN_PROGRESS.md) is the short reading route;
+the [continuation brief](research/CONSTANT_CLEAN_ENDPOINT.md) gives the complete
+contract. Restricted source-processing obstructions do not establish a stronger
+full-frame lower bound.
 
 ---
 

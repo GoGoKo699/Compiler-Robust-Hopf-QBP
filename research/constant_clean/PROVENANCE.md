@@ -1,6 +1,6 @@
 # Technical appendix provenance
 
-These seven notes preserve the mathematical dependencies needed to resume the constant-clean endpoint. The integration source was the frozen research package through checkpoint 31; the current [resume brief](../CONSTANT_CLEAN_ENDPOINT.md) consolidates its conclusions and the later scope audit without extending the frontier.
+These seven notes preserve the mathematical dependencies needed to resume the constant-clean endpoint. The integration source was the frozen research package through checkpoint 31; the [resume brief](../CONSTANT_CLEAN_ENDPOINT.md) now also records later constructive progress. The initial integration itself did not extend the frontier.
 
 The source identities below refer to the original package, not additional repository dependencies. Each appendix received a navigation/scope notice and GitHub-compatible mathematical typography. Where marked, only the final historical verification section was omitted, avoiding reproduction commands that depend on the earlier scratch layout. The source-channel proof is retained in full. The borrowed-workspace appendix condenses and independently checks the earlier proof rather than importing its full historical narrative. No mathematical claim was strengthened during import or formatting.
 
@@ -72,3 +72,21 @@ reviewed converse extracts a full phase bank from a common circuit satisfying
 all selected-commutator promises, with summed error, two calls, and unchanged
 workspace. This establishes the stated resource reduction between the two
 batching contracts; it does not supply a fast arbitrary-angle compiler.
+
+The latest continuation adds the [operator-source compiler](OPERATOR_SOURCE_COMPILER.md),
+which changes the arbitrary-angle upper bound to $`O(N+nL)`$ with three clean
+bits and $`b\ge L+n+6`$. At $`L=N`$ this is $`O(N\log N)`$. Its proof
+credits prior Clifford loaders and their overlap algebra, and charges the
+native geometric specialization, dirty sign tables, constant-flag block, and
+complete-output amplification. Separate internal reviews checked its algebra,
+workspace and error ledger; [finite fixtures](../../tests/test_operator_source_compiler.py)
+check native source gates, dirty selector lookup, scalar blocks, phases and
+reference-entangled outputs. This is not an external review or priority claim.
+
+The same continuation extends [modular lookup](MODULAR_LOOKUP_FOLLOWUP.md)
+with a zero-clean divide-and-conquer table adder. Its exact carry extraction
+and sign correction are checked in
+[test_modular_lookup_compiler.py](../../tests/test_modular_lookup_compiler.py).
+The joint-clock problem remains open, and that arithmetic result is not a
+dependency of the operator-source compiler. Earlier statements above that the
+bounds were unchanged describe their respective earlier continuations.

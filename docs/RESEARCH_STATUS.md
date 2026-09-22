@@ -7,8 +7,9 @@ Last updated: 22 September 2026.
 The repository supports one compiler paper with two resource models. The exact
 logical frontier is established at every clean-workspace budget. The real-frame
 T-count frontier is matched above a sufficient clean reservation. The
-constant-clean endpoint is the active research question; its unrestricted
-bounds remain unchanged.
+constant-clean endpoint is the active research question. The new operator-source
+construction improves its upper bound to $O(N\log N)$ for three clean qubits
+and the explicit dirty allocation below; the lower bound remains $\Omega(N)$.
 
 ## Exact logical result
 
@@ -66,11 +67,20 @@ It implements the prescribed real frame on every initialized-clean and arbitrary
 borrowed/reference input. The [formal chapter](FAULT_TOLERANT_COMPILER.md)
 states the complete error contract and proof.
 
-At $a=O(1)$, $b=\Theta(N)$ and $L=N$, the retained lower bound is $\Omega(N)$
-and upper bound is $O(N^{3/2})$. A sufficient $O(n)$-clean construction does not
-settle this constant-clean slice. The [continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md)
-is the authoritative next-task specification. No new endpoint attempt is part
-of this repository integration.
+The [operator-source construction](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+adds a sufficient constant-clean regime:
+
+```math
+a\ge3,\qquad b\ge L+n+6,
+\qquad T=O(N+nL),\qquad G=O(NL).
+```
+
+At $L=N$ this gives $O(N\log N)$ T gates with three clean qubits and
+$N+O(\log N)$ dirty qubits, improving the earlier $O(N^{3/2})$ upper bound.
+The lower bound remains $\Omega(N)$. The explicit width condition matters;
+this theorem does not cover every smaller constant clean or dirty allocation.
+The [continuation brief](../research/CONSTANT_CLEAN_ENDPOINT.md) records the
+remaining logarithmic gap.
 
 The source-channel obstruction is a supporting interface theorem, not an
 additive or stronger general frame lower bound. Optimal T-depth remains open.
@@ -216,10 +226,11 @@ specific contribution claim; it does not certify priority.
 
 Research on the constant-clean endpoint has resumed. The
 [checked-progress report](../research/CONSTANT_CLEAN_PROGRESS.md) records
-one-clean compilation for shared-generator phase tables, the two-call
-addressed reduction, batching equivalence, dirty-rank compression, and scoped
-architecture restrictions. The unrestricted endpoint bounds and the main
-sufficient-clean theorem are unchanged.
+the arbitrary-angle operator-source compiler, one-clean compilation for
+shared-generator phase tables, batching equivalence, dirty-rank compression,
+and scoped architecture restrictions. The new upper bound has a full analytic
+proof and finite regression checks. The sufficient-clean matching theorem and
+the general lower bounds are unchanged.
 
 The repository has completed its internal analytic and executable checks and is
 ready for independent technical review.  The shortest route is:

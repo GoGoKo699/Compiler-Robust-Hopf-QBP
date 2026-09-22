@@ -21,13 +21,21 @@ These levels are kept distinct.  A matrix test does not prove an asymptotic
 bound, and an asymptotic bound does not certify an implementation's bit order.
 
 The [constant-clean progress report](../research/CONSTANT_CLEAN_PROGRESS.md)
-has a separate small structural audit in
-[`test_constant_clean_structure.py`](../tests/test_constant_clean_structure.py).
-Its twelve tests exercise Pauli restrictions, full program-space echoes,
-Fourier-rank witnesses, exact sign-corrected modular lookup, and a tensor-phase
-reduction with dense approximation errors and dirty/reference inputs.
-They are included in `python validate.py`. These tests do not supply the
-missing batch compiler or establish a smaller endpoint upper bound.
+links the new [operator-source proof](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+and its [finite circuit checks](../tests/test_operator_source_compiler.py).
+These test the native geometric operator, its programmable scalar block,
+the two-flag rotation, and coherent amplification on arbitrary dirty inputs.
+The analytic proof establishes the improved upper bound; finite matrices test
+its fragile identities and conventions.
+
+The earlier [structural checks](../tests/test_constant_clean_structure.py) cover
+Pauli restrictions, full program-space echoes, Fourier-rank witnesses, dirty
+modular echoes, and phase-bank reductions. Separate suites cover
+[masked phase batching](../tests/test_identical_phase_batching.py) and
+[the coherent modular adder](../tests/test_modular_lookup_compiler.py).
+All are included in `python validate.py`. The arbitrary-angle tensor-batch
+hypothesis remains unproved; the new frame compiler uses an addressed operator
+construction instead.
 
 ## 2. What is represented locally
 
