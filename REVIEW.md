@@ -99,7 +99,7 @@ Three schedules cover the complete workspace range.
 | Workspace | Schedule | Core idea |
 |---:|---|---|
 | $m=0$ | borrowed-suffix echo | use one original suffix data qubit as a temporary predicate carrier and restore it exactly |
-| $1\leq m<4n$ | direct flagged UCG | store the lower-suffix-zero predicate in one reusable clean flag |
+| $1\leq m\lt 4n$ | direct flagged UCG | store the lower-suffix-zero predicate in one reusable clean flag |
 | larger $m$ | routed parallel subframes | cut the tree, route the suffix coherently, and apply disjoint subtree frames in parallel |
 
 The proof uses the all-workspace state-preparation toolkit as an exact compiler
@@ -128,7 +128,7 @@ for this prescribed inverse-frame protocol.
 
 Put $q=n+a+b$, $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$ and
 $h=1+\lceil\log_2(L+n+2)\rceil$. For either the real or phase-dressed complex
-magnitude frame, $0<\eta\leq1/64$, and
+magnitude frame, $0\lt \eta\leq1/64$, and
 $a\geq C(n+h)$ with sufficiently large fixed $C$,
 
 ```math
@@ -337,7 +337,7 @@ binary tree with $N=2^n$ leaves.  If node $j$ has depth $d$ and position $r$,
 ```math
 j=2^d+r,
 \qquad
-0\leq r<2^d,
+0\leq r\lt 2^d,
 ```
 
 and its computational marker is
@@ -497,7 +497,7 @@ qubit can carry the predicate temporarily.
 
 ### 4.1 Borrowed-suffix decomposition
 
-For a nonfinal depth $d<n-1$, split the suffix into one original system bit $b$
+For a nonfinal depth $d\lt n-1$, split the suffix into one original system bit $b$
 and the remaining string $r$:
 
 ```math
@@ -657,10 +657,10 @@ D_{\mathrm{direct}}(n,m)
 When
 
 ```math
-1\leq m<4n,
+1\leq m\lt 4n,
 ```
 
-we have $n+m<5n$.  Since $n^3=O(2^n)$,
+we have $n+m\lt 5n$.  Since $n^3=O(2^n)$,
 
 ```math
 n^2=O\left(\frac{N}{n+m}\right),
@@ -875,7 +875,7 @@ For $m\geq4n$, choose the largest $t$ such that
 If $s=n-t>1$, failure of the next cut gives
 
 ```math
-m<4\,2^t s.
+m\lt 4\,2^t s.
 ```
 
 Therefore
@@ -883,7 +883,7 @@ Therefore
 ```math
 \frac{2^s}{s}
 =\frac{N}{2^t s}
-<4\frac{N}{m}
+\lt 4\frac{N}{m}
 =O\left(\frac{N}{n+m}\right).
 ```
 
@@ -1076,7 +1076,7 @@ resource question here is how the full correction stream shares its source.
 Let $J$ be the least power of two at least $L+8$, and set $M=4J$. Prepare the capped geometric source
 
 ```math
-g_j=2^{-(j+1)/2}\quad(0\leq j<M-1),\qquad
+g_j=2^{-(j+1)/2}\quad(0\leq j\lt M-1),\qquad
 g_{M-1}=2^{-(M-1)/2}.
 ```
 
@@ -1085,7 +1085,7 @@ lowering partial shift $S_d$ obeys the useful uniform relation
 
 ```math
 \left\|S_dg-2^{-d/2}g\right\|^2
-=(4-2\sqrt2)2^{-M},\qquad 1\leq d<M.
+=(4-2\sqrt2)2^{-M},\qquad 1\leq d\lt M.
 ```
 
 A reversible subtractor with an underflow flag realizes the shift as an accepted

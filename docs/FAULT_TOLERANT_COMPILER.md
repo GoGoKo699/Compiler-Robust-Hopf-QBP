@@ -53,7 +53,7 @@ $`b`$ borrowed qubits in an arbitrary joint state. Write
 q=n+a+b,\qquad
 L=\max\{6,\lceil\log_2(1/\eta)\rceil\},\qquad
 h=1+\lceil\log_2(L+n+2)\rceil,
-\quad 0<\eta\leq1/64.
+\quad 0\lt \eta\leq1/64.
 ```
 
 Let $`J_a`$ append the clean zero state to the system and borrowed registers.
@@ -243,8 +243,8 @@ exact scratch return on arbitrary logical inputs, so reversing the
 actual word is legitimate. ∎
 
 There are two uses of this source. First, if
-$`p=\sum_{k\geq1}b_k2^{-k}<1`$, output digit $`b_{j+1}`$ at label
-$`j<M-1`$ and zero at the last label. The output-one probability obeys
+$`p=\sum_{k\geq1}b_k2^{-k}\lt 1`$, output digit $`b_{j+1}`$ at label
+$`j\lt M-1`$ and zero at the last label. The output-one probability obeys
 
 ```math
 0\leq p-p_M\leq2^{-M+1}.
@@ -386,7 +386,7 @@ has leakage. The empty suffix uses a constant flag.
 
 Choose layer errors
 $`\epsilon_d=2^{-L}2^{d-n}`$, so
-$`\ell_d=L+n-d+O(1)`$ and $`\sum_d\epsilon_d<\eta`$. All layers may
+$`\ell_d=L+n-d+O(1)`$ and $`\sum_d\epsilon_d\lt \eta`$. All layers may
 use one private clean pool. If $`H_d`$ is an actual layer circuit and
 $`\|H_dJ-JL_d\|\leq\epsilon_d`$, unitary telescoping gives
 
@@ -416,7 +416,7 @@ G_{\rm direct}=O(NL),\qquad a_{\rm reserved}=O(n+h).
 \qquad\text{(15)}
 ```
 
-For $`L<n^3`$, $`nL/\sqrt{NL}\leq n^{5/2}/2^{n/2}`$, whose supremum
+For $`L\lt n^3`$, $`nL/\sqrt{NL}\leq n^{5/2}/2^{n/2}`$, whose supremum
 over positive integer $`n`$ is finite. Thus (15) proves the desired
 upper bound throughout this low-precision branch.
 
@@ -554,7 +554,7 @@ that grid. This produces Boolean digits satisfying
 \widehat a_{i\ell}
 =\varepsilon_i\sum_{k=0}^{J-1}f_{i\ell k}2^{-k},\qquad
 0\leq a_{i\ell}-\widehat a_{i\ell}
-<2\varepsilon_i2^{1-J}.
+\lt 2\varepsilon_i2^{1-J}.
 \qquad\text{(21)}
 ```
 
@@ -569,13 +569,13 @@ words.
 
 ## 7. A reusable source and the local correction kernel
 
-Prepare (10) once with the $`M`$ in (18). For $`0\leq d<M`$, define
+Prepare (10) once with the $`M`$ in (18). For $`0\leq d\lt M`$, define
 
 ```math
 S_d=\sum_{j=d}^{M-1}|j-d\rangle\langle j|.
 ```
 
-These are contractions. For $`d=0`$, $`S_0=I`$; for every $`1\leq d<M`$,
+These are contractions. For $`d=0`$, $`S_0=I`$; for every $`1\leq d\lt M`$,
 
 ```math
 \|S_dg-2^{-d/2}g\|^2=(4-2\sqrt2)2^{-M}.
@@ -586,13 +586,13 @@ Indeed all coordinates before $`M-d-1`$ agree. At that coordinate the
 difference is $`(\sqrt2-1)2^{-M/2}`$, while the omitted tail has squared
 norm $`2^{-M}`$. Adding gives (22), uniformly in $`d`$.
 
-The dilation of $`S_d`$ first XORs $`[j<d]`$ into a retained source-failure
+The dilation of $`S_d`$ first XORs $`[j\lt d]`$ into a retained source-failure
 bit, then subtracts $`d`$ modulo $`M`$. Initialized and projected flag
 zero gives exactly $`S_d`$. Both operations are reversible on every
 source/flag input; the inverse reverses subtraction and then the
 predicate. Ordinary ripple arithmetic costs $`O(\log M)`$ Toffolis
 and $`O(\log M)`$ exact temporary work. The digit label supplies the
-unchanged displacement $`d=2k<M`$.
+unchanged displacement $`d=2k\lt M`$.
 
 Use one shared private register $`F`$ for each local kernel. It includes
 the rare-mode bits, a uniform entry label $`\ell\in[Q_i]`$, a uniform
@@ -728,7 +728,7 @@ scratch is separately restored and may be excluded from the test.
 The final complete-isometry error is less than
 
 ```math
-8\xi+8\epsilon_0\leq2^{-L}/8<\eta.
+8\xi+8\epsilon_0\leq2^{-L}/8\lt \eta.
 \qquad\text{(27)}
 ```
 

@@ -148,7 +148,7 @@ bounds in Section 9.
 
 ## 4. Strict zero workspace
 
-Assume $m=0$ and fix a nonfinal depth $d<n-1$.  Write the system register as
+Assume $m=0$ and fix a nonfinal depth $d\lt n-1$.  Write the system register as
 
 ```math
 |p\rangle_P|x\rangle_T|b\rangle_B|r\rangle_R,
@@ -293,10 +293,10 @@ $O(n^2)$ total size and depth.  ∎
 If
 
 ```math
-1\leq m<4n,
+1\leq m\lt 4n,
 ```
 
-then $n+m<5n$.  Since $n^3=O(2^n)$,
+then $n+m\lt 5n$.  Since $n^3=O(2^n)$,
 
 ```math
 n^2=O\left(\frac{2^n}{n+m}\right),
@@ -490,7 +490,7 @@ $1\leq t\leq n-1$ satisfying
 If $s=n-t>1$, failure of the next cut gives
 
 ```math
-m<4\,2^t s,
+m\lt 4\,2^t s,
 ```
 
 hence
@@ -498,7 +498,7 @@ hence
 ```math
 \frac{2^s}{s}
 =\frac{2^n}{2^t s}
-<4\frac{2^n}{m}
+\lt 4\frac{2^n}{m}
 =O\left(\frac{2^n}{n+m}\right).
 ```
 
@@ -566,7 +566,7 @@ one-qubit slots. Parameterizing each by $U(2)$ gives the deliberately loose,
 workspace-independent parameter bound $4n+16K$. For a fixed CNOT topology,
 the circuit output is a smooth function of these parameters. Its image cannot
 cover a positive-measure subset of the $(N-1)$-dimensional real-state family
-when $4n+16K<N-1$. The possible finite topologies form a countable set, so
+when $4n+16K\lt N-1$. The possible finite topologies form a countable set, so
 allowing the topology to depend on the desired frame does not evade this
 measure-zero argument. Restricting to gates that return the workspace clean
 cannot increase the image dimension. Consequently the worst-case count obeys

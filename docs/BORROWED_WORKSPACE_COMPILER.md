@@ -15,7 +15,7 @@ contract of the main theorem. In particular, set
 
 ```math
 \begin{gathered}
-N=2^n,\qquad q=n+a+b,\qquad 0<\eta\le1/64,\\
+N=2^n,\qquad q=n+a+b,\qquad 0\lt \eta\le1/64,\\
 L=\max\{6,\lceil\log_2(1/\eta)\rceil\},\qquad
 h=1+\lceil\log_2(L+n+2)\rceil.
 \end{gathered}
@@ -85,7 +85,7 @@ loader costs $`O(S/\lambda)`$ Toffolis and $`O(S)`$ Clifford gates.
 The interpreter uses only the fixed reflection alphabet
 
 ```math
-\mathcal R=\{T^jHT^{-j}:0\le j<8\}\cup\{Z\}.
+\mathcal R=\{T^jHT^{-j}:0\le j\lt 8\}\cup\{Z\}.
 ```
 
 Each member squares to identity. Every one-qubit native word of determinant
@@ -245,7 +245,7 @@ O\!\left(n^2+\frac{Sw_d}{K}+w_d\sqrt S+w_d\right).
 \qquad\text{(10)}
 ```
 
-First suppose $`B<4n`$. For all sufficiently large n, (8) has
+First suppose $`B\lt 4n`$. For all sufficiently large n, (8) has
 $`r=O(\log n)`$, $`A=\Theta(n^2K+K^2)=O(n^3)`$, and (9) is
 $`\Omega(n)=\Omega(K)`$. Deep layers, $`d\ge r`$, contribute
 
@@ -282,9 +282,9 @@ $`O(NL/K+L\sqrt N+n^2)`$. For shallow layers put $`u=n-r`$ and retain
 the decreasing precision in (7). Geometric sums give
 
 ```math
-\sum_{d<r}2^{d/2}(L+n-d)=O\!\left(\sqrt A(L+u+1)\right),
+\sum_{d\lt r}2^{d/2}(L+n-d)=O\!\left(\sqrt A(L+u+1)\right),
 \qquad
-\sum_{d<r}\frac{2^d(L+n-d)}K
+\sum_{d\lt r}\frac{2^d(L+n-d)}K
 =O\!\left(\frac{A(L+u+1)}K\right).
 ```
 
@@ -329,7 +329,7 @@ to at least one. If $`a\ge C(n+h)`$, use that theorem. Otherwise, under
 $`h+b\le c\sqrt N`$ and using $`n\le2\sqrt N`$,
 
 ```math
-q<(C+1)n+Ch+b\le D\sqrt N,
+q\lt (C+1)n+Ch+b\le D\sqrt N,
 \qquad D=2(C+1)+Cc.
 ```
 

@@ -6,7 +6,7 @@ uses a linear combination of anticommuting Pauli operators to encode
 precision coefficients. No precision register is initialized to a
 geometric state.
 
-**Theorem.** Let $`N=2^n`$, $`n\geq1`$, $`0<\eta\leq1/64`$,
+**Theorem.** Let $`N=2^n`$, $`n\geq1`$, $`0\lt \eta\leq1/64`$,
 $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$, and let $`W`$ be the
 prescribed complete real Hopf frame, with the rotation convention
 $`R_y(\theta)=e^{-i\theta Y}`$. If
@@ -55,11 +55,11 @@ or for fewer than two initialized qubits.
 On $`m\geq2`$ arbitrary dirty qubits define
 
 ```math
-\Gamma_j=Z_0Z_1\cdots Z_{j-1}X_j,\qquad 0\leq j<m.
+\Gamma_j=Z_0Z_1\cdots Z_{j-1}X_j,\qquad 0\leq j\lt m.
 \qquad\text{(4)}
 ```
 
-Each operator is a Hermitian involution. For $`j<k`$, the X on wire
+Each operator is a Hermitian involution. For $`j\lt k`$, the X on wire
 $`j`$ anticommutes with the Z on that wire in $`\Gamma_k`$, and all
 other overlaps commute. Hence
 
@@ -242,7 +242,7 @@ k=\mathrm{round}\bigl((1-\widehat c)2^{m-2}\bigr),
 \qquad\text{(12)}
 ```
 
-If $`k<2^{m-1}`$, take the first $`m-1`$ bits of $`f`$ to be the
+If $`k\lt 2^{m-1}`$, take the first $`m-1`$ bits of $`f`$ to be the
 binary fraction representing $`k/2^{m-1}`$, and set the final bit
 to zero. If $`k=2^{m-1}`$, set every bit to one. Equation (8) then gives
 
@@ -519,7 +519,7 @@ earlier leakage is propagated unitarily. Consequently
 ```math
 \|VJ_2-J_2(W\otimes I_b)\|
 \leq\sum_{d=0}^{n-1}2^{-L}2^{d-n}
-<2^{-L}\leq\eta.
+\lt 2^{-L}\leq\eta.
 \qquad\text{(28)}
 ```
 
@@ -751,7 +751,7 @@ the task concerns the complete operator, including relative phases
 between addresses.
 
 **Corollary — optimal two-clean multiplexor synthesis.** Let $`n\geq1`$,
-$`0<\eta\leq1/64`$, and
+$`0\lt \eta\leq1/64`$, and
 $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$. Assume certified
 approximations to the entries of each promised unitary $`U_x`$ can be
 computed to any requested accuracy. Two clean qubits and
@@ -867,7 +867,7 @@ classical Euler approximation gives
 ```math
 \|VJ_2-J_2(U\otimes I_b)\|
 \leq\left(\frac1{16}+\frac{5\sqrt2}{8}\right)2^{-L}
-<2^{-L}\leq\eta.
+\lt 2^{-L}\leq\eta.
 ```
 
 Each factor has $`2N`$ cosine/sine rows. The unbanked source and dirty
@@ -890,7 +890,7 @@ displayed worst-case lower bound.
 
 The banked upper bound matches it for $`b\geq2B_0`$ because
 $`q=\Theta(b)`$. The unbanked upper bound is also matching when
-$`B_0\leq b<2B_0`$ and $`L\geq n`$: then
+$`B_0\leq b\lt 2B_0`$ and $`L\geq n`$: then
 $`q=\Theta(L)`$, and $`NL/q=\Theta(N)`$. No matching assertion
 for the remaining unbanked regimes is needed here. ∎
 
@@ -963,7 +963,7 @@ To see the bound, truncate an input toward zero to $`P+2`$ fractional bits
 and evaluate the degree $`K=16(P+2)`$ Taylor polynomial of
 $`e^{i\theta}`$, for $`P\geq6`$. The input perturbation has magnitude at
 most $`2^{-(P+2)}`$. The absolute Taylor tail is at most
-$`e^8 8^{K+1}/(K+1)!<2^{-(P+2)}`$, using
+$`e^8 8^{K+1}/(K+1)!\lt 2^{-(P+2)}`$, using
 $`k!\geq(k/e)^k`$. If the truncated angle is $`q/2^b`$, compute the
 polynomial exactly with common denominator $`2^{bK}K!`$. At step $`k`$,
 the numerator obeys

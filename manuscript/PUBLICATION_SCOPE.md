@@ -33,7 +33,7 @@ qubits. The coherent Clifford+T model uses $`a`$ clean and $`b`$ dirty
 qubits, $`q=n+a+b`$, and
 
 ```math
-0<\eta\le1/64,\qquad
+0\lt \eta\le1/64,\qquad
 L=\max\{6,\lceil\log_2(1/\eta)\rceil\},\qquad
 h=1+\lceil\log_2(L+n+2)\rceil.
 ```

@@ -74,7 +74,9 @@ outputs are used by default, leaving the expected evidence files unchanged.
 
 The optional `check_presentation.py` checker renders the diagrams and complete
 Markdown pages, including tables, inline mathematics, and display equations.
-It saves desktop and narrow-screen previews with measured layout checks.
+It checks MathJax SVG and native MathML, including unsupported numbered rows
+and vertically stacked equation glyphs, and saves desktop and narrow-screen
+previews with measured layout checks.
 The [rendering guide](../assets/README.md#rendering-checks) gives the separate
 browser and MathJax dependencies and the reproducible command. These previews
 model GitHub-style rendering; they do not reproduce GitHub's private client.

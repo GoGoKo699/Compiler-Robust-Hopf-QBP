@@ -76,7 +76,7 @@ has depth $d$ and position $r$, then
 ```math
 j=2^d+r,
 \qquad
-0\leq r<2^d.
+0\leq r\lt 2^d.
 ```
 
 Its marker is

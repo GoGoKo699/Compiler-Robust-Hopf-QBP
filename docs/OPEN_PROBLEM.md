@@ -19,7 +19,7 @@ the retained results give
 
 Here $`a`$ and $`b`$ count initialized clean and arbitrary dirty qubits, and
 $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$ for
-$`0<\eta\le1/64`$. Literal phases, clean-work leakage, and dirty/reference
+$`0\lt \eta\le1/64`$. Literal phases, clean-work leakage, and dirty/reference
 return error are included in the same operator norm as the
 [fault-tolerant theorem](FAULT_TOLERANT_COMPILER.md#1-target-resources-and-theorem).
 

@@ -1,4 +1,4 @@
-"""Browser-level SVG, whole-document layout, and MathJax regression checks.
+"""Browser-level SVG, native MathML, and whole-document layout checks.
 
 Optional tooling only: numerical validation does not depend on a browser.
 The Markdown handoff models GitHub's documented protected inline syntax; it
@@ -86,6 +86,93 @@ def contains(rect: dict, x: float, y: float) -> bool:
 def overlap(a: dict, b: dict) -> bool:
     return (min(a["x"] + a["w"], b["x"] + b["w"]) - max(a["x"], b["x"]) > 0.5
             and min(a["y"] + a["h"], b["y"] + b["h"]) - max(a["y"], b["y"]) > 0.5)
+
+
+def native_equation_is_stacked(metric: dict) -> bool:
+    """Detect a collapsed single-line formula without flagging real arrays.
+
+    Use the union of token bounds: a block-level MathML element itself spans
+    the page even when all its glyphs occupy a narrow vertical column.
+    Fractions and roots are exempt because they legitimately grow vertically.
+    Unsupported numbered rows are checked separately and unconditionally.
+    """
+    return (metric["rows"] <= 1 and metric.get("fractions", 0) == 0
+            and metric.get("roots", 0) == 0 and metric["token_count"] >= 8
+            and metric["ink_height"] > 4 * metric["font_size"]
+            and metric["ink_width"] < 2 * metric["ink_height"])
+
+
+def native_math_failures(metrics: dict) -> list[str]:
+    """Turn measured native-MathML regressions into actionable failures."""
+    failures = []
+    if metrics["unsupported_numbered_rows"]:
+        failures.append("unsupported native MathML mlabeledtr rows: "
+                        + str(metrics["unsupported_numbered_rows"]))
+    for equation in metrics.get("equations", []):
+        if native_equation_is_stacked(equation):
+            failures.append(f"stacked native equation {equation['index']}: "
+                            f"{equation['ink_width']:.1f} x {equation['ink_height']:.1f}px")
+    return failures
+
+
+NATIVE_MATH_MEASURE = r"""() => {
+ const equations = [...document.querySelectorAll('math[display="block"]')].map((e,index)=>{
+   const tokens=[...e.querySelectorAll('mi,mn,mo,mtext')];
+   const rects=tokens.map(t=>t.getBoundingClientRect()).filter(r=>r.width>0 && r.height>0);
+   const width=rects.length ? Math.max(...rects.map(r=>r.right))-Math.min(...rects.map(r=>r.left)) : 0;
+   const height=rects.length ? Math.max(...rects.map(r=>r.bottom))-Math.min(...rects.map(r=>r.top)) : 0;
+   return {index:index+1,ink_width:width,ink_height:height,
+     font_size:parseFloat(getComputedStyle(e).fontSize),token_count:tokens.length,
+     rows:e.querySelectorAll('mtr').length,fractions:e.querySelectorAll('mfrac').length,
+     roots:e.querySelectorAll('msqrt,mroot').length};
+ });
+ return {unsupported_numbered_rows:document.querySelectorAll('mlabeledtr').length,equations};
+}"""
+
+
+def render_native_math(page: Any) -> int:
+    """Replace MathJax SVG output with its MathML, then let Chromium render it.
+
+    This exercises the native numbered-row failure visible on GitHub. It is
+    a second renderer check, not a replica of GitHub's Markdown service.
+    """
+    return page.evaluate("""() => {
+      let count=0;
+      for (const math of MathJax.startup.document.math) {
+        const holder=document.createElement('span');
+        holder.innerHTML=MathJax.startup.toMML(math.root);
+        const native=holder.firstElementChild;
+        math.typesetRoot.replaceWith(native);
+        count++;
+      }
+      return count;
+    }""")
+
+
+def check_native_numbering_regression(page: Any, mathjax: Path, output: Path) -> dict:
+    """Prove that the native check rejects the reported bug and accepts its fix."""
+    formula = r"a\geq2,\qquad b\geq L+n+7,"
+    page.set_viewport_size({"width": 980, "height": 600})
+    page.set_content('<style>body{font:16px Arial,sans-serif;margin:24px}</style>'
+                     '<p>Regression fixture: unsupported numbered row</p>\\['
+                     + formula + r'\tag{1}' + '\\]'
+                     '<p>Fixed fixture: number within the expression</p>\\['
+                     + formula + r'\qquad\text{(1)}' + '\\]')
+    page.evaluate("window.MathJax={startup:{typeset:false},svg:{fontCache:'local'}}")
+    page.add_script_tag(content=mathjax.read_text(encoding="utf-8"))
+    page.evaluate("() => MathJax.startup.promise.then(() => MathJax.typesetPromise())")
+    if render_native_math(page) != 2:
+        raise AssertionError("Native numbering regression did not render both fixtures")
+    metrics = page.evaluate(NATIVE_MATH_MEASURE)
+    old, fixed = metrics["equations"]
+    if metrics["unsupported_numbered_rows"] != 1 or not native_equation_is_stacked(old):
+        raise AssertionError(f"Native check missed the old tagged-equation defect: {metrics}")
+    fixed_failures = native_math_failures({"unsupported_numbered_rows": 0, "equations": [fixed]})
+    if fixed_failures:
+        raise AssertionError(f"Corrected native equation failed: {fixed_failures}")
+    page.screenshot(path=str(output / 'native-numbering-regression.png'))
+    return {"tagged_fixture_rejected": True, "inline_numbered_fixture_passed": True,
+            "tagged_geometry": old, "fixed_geometry": fixed}
 
 
 def geometry_failures(data: dict) -> list[str]:
@@ -260,7 +347,7 @@ def rendered_markdown(path: Path) -> tuple[str, int]:
 
 
 def check_documents(page: Any, root: Path, mathjax: Path, output: Path) -> dict:
-    """Check whole-page math and overflow; retain previews for human review."""
+    """Check SVG and native-MathML pages; retain both for human review."""
     report: dict[str, Any] = {"pages": {}, "failures": []}
     bundle = mathjax.read_text(encoding="utf-8")
     for path in sorted(root.rglob("*.md")):
@@ -307,6 +394,31 @@ def check_documents(page: Any, root: Path, mathjax: Path, output: Path) -> dict:
             table.screenshot(path=str(output / f'{stem}-table-{i + 1}.png'))
         rendered = page.evaluate("() => {const d=document.documentElement.cloneNode(true);d.querySelectorAll('script').forEach(x=>x.remove());return '<!doctype html>'+d.outerHTML}")
         (output / f'{stem}-rendered.html').write_text(rendered, encoding='utf-8')
+        native_count = render_native_math(page)
+        native_report: dict[str, Any] = {"math_expressions": native_count, "viewports": {}}
+        document["native_math"] = native_report
+        if native_count != expected_math:
+            report["failures"].append(f"{relative}: native MathML rendered {native_count} of {expected_math} expressions")
+        for mode, width in [("desktop", 1280), ("narrow", 390)]:
+            page.set_viewport_size({"width": width, "height": 960})
+            page.evaluate("window.scrollTo(0,0)")
+            metrics = page.evaluate(NATIVE_MATH_MEASURE)
+            metrics.update(page.evaluate("""() => ({
+              page_overflow: document.documentElement.scrollWidth > innerWidth + 1,
+              scrolling_equations: [...document.querySelectorAll('.math-display')].filter(e=>e.scrollWidth>e.clientWidth+1).length,
+              broken_images: [...document.images].filter(e=>!e.complete || !e.naturalWidth).length
+            })"""))
+            native_report["viewports"][mode] = metrics
+            report["failures"].extend(f"{relative}/native/{mode}: {failure}"
+                                      for failure in native_math_failures(metrics))
+            if metrics["page_overflow"] or metrics["broken_images"]:
+                report["failures"].append(f"{relative}/native/{mode}: page overflow or broken image")
+            if mode == "desktop" and metrics["scrolling_equations"]:
+                report["failures"].append(f"{relative}/native: display equation exceeds desktop reading width")
+            page.screenshot(path=str(output / f'{stem}-native-math-{mode}.png'))
+        page.set_viewport_size({"width": 1280, "height": 960})
+        rendered = page.evaluate("() => {const d=document.documentElement.cloneNode(true);d.querySelectorAll('script').forEach(x=>x.remove());return '<!doctype html>'+d.outerHTML}")
+        (output / f'{stem}-native-math-rendered.html').write_text(rendered, encoding='utf-8')
         report["pages"][str(relative)] = document
     return report
 
@@ -349,6 +461,7 @@ def main() -> None:
                     (args.output / f'{Path(name).stem}-geometry.json').write_text(json.dumps(data, indent=2), encoding='utf-8')
         if not args.svg_only:
             report['inline_math'] = check_math(page, args.root, args.mathjax, args.output)
+            report['native_numbering_regression'] = check_native_numbering_regression(page, args.mathjax, args.output)
             report['documents'] = check_documents(page, args.root, args.mathjax, args.output)
             report['failures'].extend(report['documents']['failures'])
         browser.close()

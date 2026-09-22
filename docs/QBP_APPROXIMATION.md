@@ -374,7 +374,7 @@ most $`2\Lambda\tau`$. Analyze concentration with the ideal weights and
 then add this deterministic error. This avoids assuming that rounded
 weights retain the exact depth-norm identity.
 
-For $`0<\varepsilon_\infty\leq\Lambda`$, the explicit allocation
+For $`0\lt \varepsilon_\infty\leq\Lambda`$, the explicit allocation
 
 ```math
 \eta,\eta_O\leq\min\{1/64,\varepsilon_\infty/(32\Lambda)\},

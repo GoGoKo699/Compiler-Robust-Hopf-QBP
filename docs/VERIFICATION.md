@@ -201,7 +201,7 @@ Representative checked implications are
 ```math
 n^2
 =O\left(\frac{2^n}{n+m}\right)
-\qquad(1\leq m<4n),
+\qquad(1\leq m\lt 4n),
 ```
 
 and
@@ -281,8 +281,16 @@ python scripts/check_upstream_sync.py --offline
 For the optional browser audit, follow the
 [rendering guide](../assets/README.md#rendering-checks). It checks all diagrams
 and complete Markdown pages, including table mathematics, display equations,
-missing expressions, and horizontal overflow. Saved previews support human
-inspection; the local stylesheet is not GitHub's private renderer.
+missing expressions, and horizontal overflow. Equations are checked both with
+MathJax SVG and the browser's native MathML layout. The native checks reject
+unsupported numbered rows and detect the narrow vertical stacking that can
+otherwise pass expression-count and overflow checks. Equation numbers are
+printed as ordinary mathematical text so native rendering preserves them.
+Comparison signs use HTML-safe TeX commands, guarded against literal
+less-than characters that GitHub can misinterpret before math rendering.
+Saved desktop and narrow-screen previews support human inspection. These
+local checks cover both rendering paths but do not reproduce GitHub's private
+renderer or guarantee identical layout across all browsers.
 
 ## 10. Evidence boundary
 
