@@ -1,6 +1,22 @@
 # Constant-clean technical appendices
 
-Start with the [endpoint resume brief](../CONSTANT_CLEAN_ENDPOINT.md). The full-frame endpoint remains between $`\Omega(N)`$ and $`O(N^{3/2})`$ at constant clean width, $`\Theta(N)`$ dirty width, and $`L=N`$. Resume construction work after repository integration.
+Start with the short [checked-progress report](../CONSTANT_CLEAN_PROGRESS.md), then the [endpoint brief](../CONSTANT_CLEAN_ENDPOINT.md). The full-frame endpoint remains between $`\Omega(N)`$ and $`O(N^{3/2})`$ at constant clean width, $`\Theta(N)`$ dirty width, and $`L=N`$.
+
+## Current research
+
+| Note | Result and boundary |
+|---|---|
+| [Dirty symplectic rank](DIRTY_RETURN_LOWER_BOUND_FOLLOWUP.md) | Same-clean/T/error compression; the retained order is optimal for rank $`O(\sqrt N)`$, while linear T count requires linear rank on hard instances. |
+| [Global program blocks and phase batching](GLOBAL_BLOCK_FOLLOWUP.md) | Accepted-block adjoint and Fourier-rank restrictions; a separate exact phase-bank reduction with an explicitly unproved batch-synthesis hypothesis. |
+| [Joint clock follow-up](JOINT_CLOCK_FOLLOWUP.md) | A single-addition wrapper needs one initialized work qubit per clock bit, even with approximate complete return and arbitrary encoding. |
+| [Modular lookup follow-up](MODULAR_LOOKUP_FOLLOWUP.md) | Exact carry-query decomposition and sign-corrected dirty-bank echo; the jointly compiled arithmetic remains missing. |
+| [Primary-source follow-up](ENDPOINT_LITERATURE_FOLLOWUP.md) | Precise clean-work, accuracy, and gate-cost hypotheses of the inspected synthesis, lookup, and catalyst results. |
+
+These are structural results and conditional reductions. Their small checks
+run through `python -m unittest tests.test_constant_clean_structure`; the
+general proofs and the unresolved implementation costs are stated in the notes.
+
+## Established construction and earlier interface results
 
 | Note | Proven result and scope |
 |---|---|

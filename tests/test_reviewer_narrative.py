@@ -33,6 +33,15 @@ PRIMARY_PAGES = (
     "assets/README.md",
     "provenance/README.md",
     "manuscript/README.md",
+    "research/README.md",
+    "research/CONSTANT_CLEAN_ENDPOINT.md",
+    "research/CONSTANT_CLEAN_PROGRESS.md",
+    "research/constant_clean/README.md",
+    "research/constant_clean/GLOBAL_BLOCK_FOLLOWUP.md",
+    "research/constant_clean/JOINT_CLOCK_FOLLOWUP.md",
+    "research/constant_clean/DIRTY_RETURN_LOWER_BOUND_FOLLOWUP.md",
+    "research/constant_clean/MODULAR_LOOKUP_FOLLOWUP.md",
+    "research/constant_clean/ENDPOINT_LITERATURE_FOLLOWUP.md",
 )
 
 TABLE_MATH_PAGES = (

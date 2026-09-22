@@ -1,6 +1,6 @@
 # Research continuation
 
-**Resume after repository integration.** The active open problem is the constant-clean, large-dirty, high-precision endpoint for coherent Clifford+T compilation of the prescribed real Hopf frame. Integration preserves the research state; it does not start another construction attempt.
+The active open problem is the constant-clean, large-dirty, high-precision endpoint for coherent Clifford+T compilation of the prescribed real Hopf frame. Repository integration is complete and research has resumed. Start with the short [checked-progress report](CONSTANT_CLEAN_PROGRESS.md), then use the [endpoint brief](CONSTANT_CLEAN_ENDPOINT.md) for the full contract.
 
 Read [the endpoint brief](CONSTANT_CLEAN_ENDPOINT.md) first. It defines the target and resource model, separates the solved neighboring regime from the open endpoint, records the useful obstructions, and states the next concrete proof obligation. The supported endpoint remains
 
@@ -9,7 +9,7 @@ a=O(1),\quad b=\Theta(N),\quad L=N,
 \qquad \Omega(N)\le \tau^*_{F,\mathbb R}\le O(N^{3/2}).
 ```
 
-The [fault-tolerant compiler theorem](../docs/FAULT_TOLERANT_COMPILER.md) is the repository's main account of the established compiler frontier. These research notes preserve the unresolved continuation, rather than extending that theorem.
+The [fault-tolerant compiler theorem](../docs/FAULT_TOLERANT_COMPILER.md) is the repository's main account of the established compiler frontier. New structural results and conditional constructions are indexed in the [technical reading map](constant_clean/README.md); they have not changed the unrestricted endpoint bounds.
 
 | Technical appendix | What it preserves |
 |---|---|

@@ -213,6 +213,12 @@ specific contribution claim; it does not certify priority.
 
 ## Review status
 
+Research on the constant-clean endpoint has resumed. The
+[checked-progress report](../research/CONSTANT_CLEAN_PROGRESS.md) records
+dirty-rank compression, scoped architecture restrictions, and exact
+constructive reductions. The unrestricted endpoint bounds and the main
+sufficient-clean theorem are unchanged.
+
 The repository has completed its internal analytic and executable checks and is
 ready for independent technical review.  The shortest route is:
 

@@ -26,3 +26,18 @@ The source identities below refer to the original package, not additional reposi
 - `analysis/finite_width_precision.md`: `ffcf613361bb6e303528d44dcb97bc8bca80172ba3313c4c710a184f7f7b7938`
 
 The main theorem narrative lives in [the fault-tolerant compiler documentation](../../docs/FAULT_TOLERANT_COMPILER.md). These selected research appendices are not an archive of all earlier checkpoints or a substitute for the repository verification entrypoint.
+
+## Research resumed after integration
+
+The [checked-progress report](../CONSTANT_CLEAN_PROGRESS.md) and the five
+`FOLLOWUP.md` notes were developed after integration revision `b935b34`.
+They are new derivations and primary-source comparisons, not verbatim imports
+from the frozen package above. The original source hashes remain unchanged.
+
+Their proofs distinguish universal compression, restrictions on specified
+interfaces, and reductions whose synthesis hypotheses remain unproved.
+Primary papers are linked at the claims they support. Internal proof review
+and small checks do not certify publication novelty or external peer review.
+The executable regression record is
+[test_constant_clean_structure.py](../../tests/test_constant_clean_structure.py).
+The unrestricted endpoint bounds are unchanged.

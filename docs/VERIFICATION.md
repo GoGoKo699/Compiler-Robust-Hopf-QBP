@@ -20,6 +20,15 @@ peaks.  The asymptotic theorem itself is established analytically.
 These levels are kept distinct.  A matrix test does not prove an asymptotic
 bound, and an asymptotic bound does not certify an implementation's bit order.
 
+The [constant-clean progress report](../research/CONSTANT_CLEAN_PROGRESS.md)
+has a separate small structural audit in
+[`test_constant_clean_structure.py`](../tests/test_constant_clean_structure.py).
+Its twelve tests exercise Pauli restrictions, full program-space echoes,
+Fourier-rank witnesses, exact sign-corrected modular lookup, and a tensor-phase
+reduction with dense approximation errors and dirty/reference inputs.
+They are included in `python validate.py`. These tests do not supply the
+missing batch compiler or establish a smaller endpoint upper bound.
+
 ## 2. What is represented locally
 
 | Component | Local representation | Principal executable check | Imported ingredient |

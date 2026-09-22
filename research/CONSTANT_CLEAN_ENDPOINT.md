@@ -1,6 +1,6 @@
 # Constant-clean Hopf compilation: resume brief
 
-**Status: resume after repository integration.** The selected endpoint is still open. No new construction is attempted as part of this integration. This brief and the linked technical appendices contain the mathematical state needed to continue without the earlier conversation or scratch workspace.
+**Status: active research; endpoint still open.** Repository integration is complete. The [checked-progress report](CONSTANT_CLEAN_PROGRESS.md) records the subsequent dirty-rank compression lemma, restrictions on global program/clock interfaces, and conditional constructive reductions. None changes the unrestricted bounds below. This brief and the linked technical appendices contain the mathematical state needed to continue without the earlier conversation or scratch workspace.
 
 ## Target and model
 
@@ -73,7 +73,7 @@ R=\max_{1\le k\le L}(\tau_k+2f_k).}
 
 Thus fixed source size and fixed projected work force some kernel to cost $`\Omega(L)`$. Merely choosing a new high-precision one-qubit source does not evade this contract. Polylogarithmic $`R`$ requires $`s\ge\tfrac12\log_2 L-O(\log\log L)`$; optimality of this source-size dependence is not known.
 
-The [full proof](constant_clean/SOURCE_CHANNEL_PROOF.md) attaches arithmetic to the reduced source channel, not to the source. Its $`D=4^s`$ dimensional Pauli matrix satisfies $`F\in(\sqrt2)^{-(\tau+2f)}\operatorname{Mat}_D(\mathbb Z[\sqrt2])`$, and its Galois conjugate is another physical map. An algebraic-integrality argument gives the exact bound. A determinant-norm and minimum-singular-value estimate gives the uniform robust bound, including nonnormal channels.
+The [full proof](constant_clean/SOURCE_CHANNEL_PROOF.md) attaches arithmetic to the reduced source channel, not to the source. Its $`D=4^s`$ dimensional Pauli matrix satisfies $`F\in(\sqrt2)^{-(\tau+2f)}\mathrm{Mat}_D(\mathbb Z[\sqrt2])`$, and its Galois conjugate is another physical map. An algebraic-integrality argument gives the exact bound. A determinant-norm and minimum-singular-value estimate gives the uniform robust bound, including nonnormal channels.
 
 This is a **maximum-over-exponents interface bound**, not an additive cost across frame stages. A probability-only promise or a normalized-success promise omitting the correct success weight is insufficient for the robust statement. A source initially correlated with logical/dirty input is outside its independent-source premise. No theorem says that every frame compiler exposes this attenuation interface. In particular, one globally combined $`O(L)=O(N)`$ operation is fully compatible with the desired endpoint.
 
@@ -105,13 +105,13 @@ Every unitary $`U`$ has a Hermitian involution lift
 This removes an algebraic non-involution objection for one abstract target. It supplies no cheaper interpreter. Indeed
 
 ```math
-\mathcal I_U=\operatorname{diag}(U,I)\,(X\otimes I)\,
-\operatorname{diag}(U^\dagger,I),
+\mathcal I_U=\mathrm{diag}(U,I)\,(X\otimes I)\,
+\mathrm{diag}(U^\dagger,I),
 ```
 
 so implementing it by controlled $`U`$ and $`U^\dagger`$ assumes the original hard operation. Conversely, applying $`\mathcal I_U`$ to $`|1\rangle|\psi\rangle`$, followed by an X on the flag, implements $`U`$ and restores the flag. A cheap lift would be useful only after its target-dependent gates are independently synthesized and charged. Multiple loaded masks must still satisfy the common-interpreter consistency conditions; individually lifting each desired program does not make those conditions automatic.
 
-## Next proof obligation, after integration
+## Constructive proof obligations
 
 The most direct constructive target is **one complete global block**, rather than a new family of cheap tiny-scalar kernels. For every prescribed $`W`$ at $`L=N`$, exhibit an actual native circuit $`U`$ using a fixed constant $`c`$ of clean work and $`b=\Theta(N)`$ arbitrary dirty work, with
 
@@ -141,7 +141,7 @@ Z_mX^{f(x)}Z_m^\dagger X^{-f(x)}
 
 At $`m=\Theta(L)`$, this requires both a constant-clean joint clock costing $`O(m+L)`$ T gates and a carry-aware table translation with a charged ledger, or a direct commutator construction that avoids separate implementations. The hypothetical modular-lookup target is $`O(m+\sqrt{Nm}+Nm/K)`$, where $`K`$ is bank capacity **after** other reservations. At $`m=N`$, the bank-balancing choice is one word; it leaves the original hard modular lookup. Even both primitives need a determinant-one/real-rotation reduction and full prefix/suffix composition with the desired total cost. Their algebra alone is not a frame compiler.
 
-Begin resumed work by writing the complete operator identity and register ledger for one of these global interfaces. Charge where the classical table actually enters. Verify the actual inverse on every work state and the joint dirty/reference action before optimizing its asymptotics.
+The [current progress report](CONSTANT_CLEAN_PROGRESS.md) adds a direct phase-bank reduction and sharper tests for candidate interfaces. The next construction must specify the complete operator identity and register ledger. Charge where the classical table actually enters. Verify the actual inverse on every work state and the joint dirty/reference action before optimizing its asymptotics.
 
 ## Success criteria and stopping claims
 
