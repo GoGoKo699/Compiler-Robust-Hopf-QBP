@@ -13,6 +13,7 @@ implementation, evidence, and provenance.
 | [Landing page](../README.md) | one prepared column versus a prescribed unitary completion; theorem and schedule map |
 | [Technical reading map](INDEPENDENT_REVIEW_GUIDE.md) | a compact route through the proof and executable checks |
 | [Complete narrative](../REVIEW.md) | the full argument in one continuous reading |
+| [Publication scope](../manuscript/PUBLICATION_SCOPE.md) | the three principal results, supporting corollaries, appendix placement, and deferred questions |
 
 ## Pass II: inspect the proof by component
 
@@ -41,6 +42,7 @@ the same result.
 | [Source and dependency map](SOURCE_MAP.md) | exact state-preparation, Hopf, and QBP premises with local consumers |
 | [Related work](RELATED_WORK.md) | mathematical lineage and the narrow contribution boundary |
 | [Claim support map](CLAIM_SUPPORT.md) | claim-by-claim proof, implementation, test, and scope ledger |
+| [Full sanity check](SANITY_CHECK.md) | internal audit findings, corrections, reproduced checks, and publication decision |
 
 The internal reconstructions remain visible:
 

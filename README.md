@@ -24,7 +24,10 @@ This repository asks whether the prescribed Hopf completion can retain the same
 size–depth frontier as arbitrary state preparation, and what implementing the
 same frame costs at finite precision. The exact logical theorem covers every
 clean-workspace budget. The fault-tolerant theorem gives a matched T-count
-frontier in its stated clean/dirty-workspace regime.
+frontier in its stated clean/dirty-workspace regime. The
+[publication scope](manuscript/PUBLICATION_SCOPE.md) selects one full-length
+paper around these results and the two-clean construction; the
+[sanity check](docs/SANITY_CHECK.md) records the audit and its corrections.
 
 <p align="center">
   <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column, whereas Hopf differential-frame compilation fixes the state and designated frame columns." />
@@ -129,7 +132,7 @@ register ledger, and inherited primitives.
 At $L=N$, sufficient $a=\Theta(n)$ and $b=\Theta(N)$ give $T^\star=\Theta(N)$.
 The new [operator-source construction](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
 uses **two clean qubits** and $N+O(\log N)$ dirty qubits to give
-$O(N\log N)$ T gates for arbitrary real frames at the same precision.
+$O(N\log N)$ T gates for arbitrary prescribed real Hopf frames at the same precision.
 The lower bound remains $\Omega(N)$: **a logarithmic gap is still open**.
 The [progress report](research/CONSTANT_CLEAN_PROGRESS.md) explains the construction
 and its explicit workspace requirement; smaller clean allocations retain the

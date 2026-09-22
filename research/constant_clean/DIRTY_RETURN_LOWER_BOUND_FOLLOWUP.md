@@ -3,9 +3,12 @@
 This follow-up resumes the [constant-clean endpoint](../CONSTANT_CLEAN_ENDPOINT.md)
 after repository integration. It proves a circuit compression lemma that
 preserves the clean allocation and the complete approximation error. It
-does **not** improve the unrestricted endpoint bounds
-$`\Omega(N)`$ and $`O(N^{3/2})`$ at $`a=O(1)`$, $`b=\Theta(N)`$,
-and $`L=N`$.
+does **not** strengthen the unrestricted endpoint lower bound $`\Omega(N)`$.
+The $`O(N^{3/2})`$ upper bound discussed below is the earlier borrowed-workspace
+benchmark. The later [operator-source compiler](OPERATOR_SOURCE_COMPILER.md)
+gives $`T=O(N+nL)`$ with $`a=2`$ and $`b\ge L+n+7`$; at $`L=N`$
+this is $`O(N\log N)`$ with $`b\ge N+n+7`$. That remaining logarithmic
+gap does not change the rank restrictions proved here.
 
 The useful new restriction is architectural. If the non-Clifford Pauli axes
 use only $`O(\sqrt N)`$ noncommuting dirty pairs, then the worst-case
@@ -387,9 +390,9 @@ For the lower-bound route, the remaining concrete obligation is to bound
 the number of high-precision real frames attainable with $`a=O(1)`$,
 $`T=O(N)`$, and $`r_D=\Theta(N)`$ more sharply than the generic
 $`2^{O(N^2)}`$ word count, or to find another invariant excluding such
-circuits. For the construction route, an improvement on the retained
-$`O(N^{3/2})`$ order must use asymptotically more than
-$`O(\sqrt N)`$ dirty symplectic pairs on some hard frames; merely
+circuits. Any construction improving on the earlier
+$`O(N^{3/2})`$ order, including the later operator-source compiler, must
+use more than $`O(\sqrt N)`$ dirty symplectic pairs on some hard frames; merely
 allocating more untouched dirty wires cannot help. Reaching $`O(N)`$
 would require linear dirty rank in the worst case together with a fully
 charged, coherent whole-frame implementation.

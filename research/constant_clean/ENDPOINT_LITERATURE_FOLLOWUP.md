@@ -5,10 +5,14 @@ Working research note, 22 September 2026, after integration commit
 The target remains the [endpoint brief](../CONSTANT_CLEAN_ENDPOINT.md):
 the prescribed complete real frame, constant initialized workspace,
 $`b=\Theta(N)`$ arbitrary dirty work, $`L=N`$, and a literal complete-output
-isometry guarantee. The available bounds remain $`\Omega(N)`$ and
-$`O(N^{3/2})`$.
+isometry guarantee. At that checkpoint, the lower benchmark was $`\Omega(N)`$
+and the available upper benchmark was $`O(N^{3/2})`$. The later
+[operator-source compiler](OPERATOR_SOURCE_COMPILER.md) gives $`T=O(N+nL)`$
+with $`a=2`$ and $`b\ge L+n+7`$. Thus the current upper bound is
+$`O(N\log N)`$ at $`L=N`$ and $`b\ge N+n+7`$, while the lower bound
+remains $`\Omega(N)`$.
 
-**No theorem examined below supplies the missing constant-clean compiler.**
+**No theorem examined below supplies a constant-clean $`O(N)`$ endpoint compiler.**
 This is a statement about these inspected results, not an exhaustive novelty
 claim. Several recent papers supply useful building blocks, but their clean
 instruction registers, prepared catalysts, or accuracy contracts remain

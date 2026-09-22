@@ -264,8 +264,11 @@ high-precision corrections.
 
 ## 4. From a half-unitary block to the complete output
 
-The following elementary form of oblivious amplitude amplification is
-used twice in the proof. It includes the rejected-subspace error.
+We use the normalization-two oblivious amplification of
+[Berry–Childs–Cleve–Kothari–Somma](https://arxiv.org/pdf/1412.4687),
+Eqs. (11)–(15). The following lemma, used twice in the proof, supplies the
+complete initialized-isometry estimate, including the rejected-subspace
+error required when work is retained coherently.
 
 **Lemma 3 — robust normalization-two amplification.** Let $`U`$ be an
 actual unitary, let $`J`$ initialize its logical clean work, and set
@@ -378,7 +381,7 @@ has leakage. The empty suffix uses a constant flag.
 
 Choose layer errors
 $`\epsilon_d=2^{-L}2^{d-n}`$, so
-$`\ell_d=L+n-d+O(1)`$ and $`sum_d\epsilon_d<\eta`$. All layers may
+$`\ell_d=L+n-d+O(1)`$ and $`\sum_d\epsilon_d<\eta`$. All layers may
 use one private clean pool. If $`H_d`$ is an actual layer circuit and
 $`\|H_dJ-JL_d\|\leq\epsilon_d`$, unitary telescoping gives
 
@@ -745,8 +748,8 @@ The first row follows from (9) with table sizes $`Q_iJ`$, followed by
 again use (17). The coarse row follows from (8) at each original depth,
 with $`S_d=O(2^d)`$, one complete output program of length $`w`$, and an
 $`O(w)`$-cost interpreter. Thus
-$`sum_d\sqrt{2^dw}=O(\sqrt{Nw})`$ and
-$`sum_d2^dw=O(Nw)`$. Groups partition the original depths, so there is
+$`\sum_d\sqrt{2^dw}=O(\sqrt{Nw})`$ and
+$`\sum_d2^dw=O(Nw)`$. Groups partition the original depths, so there is
 no additional factor $`R`$.
 
 For the last row, each source shift, full-system equality, private-zero
@@ -943,3 +946,10 @@ remove Theorem 1's sufficient-clean hypothesis by substitution.
    Section 2.3.3 discusses exact unary preparation and conversion to
    a binary index. The source and complete-frame resource proof in
    this chapter is given independently in Sections 3 and 6–9.
+4. Dominic W. Berry, Andrew M. Childs, Richard Cleve, Robin Kothari, and
+   Rolando D. Somma, *Simulating Hamiltonian dynamics with a truncated Taylor
+   series*, Physical Review Letters **114**, 090502 (2015),
+   [arXiv:1412.4687](https://arxiv.org/pdf/1412.4687).
+   Equations (11)–(15) give normalization-two oblivious amplification and
+   its accepted-block polynomial. Section 4 above proves the full-output
+   estimate used here without discarding retained work.

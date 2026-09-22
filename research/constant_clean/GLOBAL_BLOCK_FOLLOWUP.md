@@ -11,11 +11,17 @@ family of binary-angle programs, it requires growing initialized workspace.
 This is an obstruction to the specified two-query architecture, even with
 arbitrarily expensive interpreter gates. It is **not** a lower bound on
 general Hopf-frame compilation. No improved whole-frame upper bound is
-proved here; the selected endpoint remains between $`\Omega(N)`$ and
-$`O(N^{3/2})`$ T gates. A separate exact dirty-bank identity in Section 5
+proved here. This note used the earlier endpoint benchmarks $`\Omega(N)`$
+and $`O(N^{3/2})`$. A separate exact dirty-bank identity in Section 5
 reduces the problem to a specified heterogeneous phase-batching primitive.
 If that stronger missing primitive were proved, it would give a conditional
 $`O(N\log N)`$ endpoint compiler.
+
+The later [operator-source compiler](OPERATOR_SOURCE_COMPILER.md) independently
+achieves $`T=O(N+nL)`$ with $`a=2`$ and $`b\ge L+n+7`$. At $`L=N`$
+and $`b\ge N+n+7`$, this gives $`O(N\log N)`$ against the unchanged
+$`\Omega(N)`$ lower bound. It does not establish the phase-batching hypothesis
+used in this note's conditional reduction.
 
 The governing model and remaining objective are in the
 [endpoint brief](../CONSTANT_CLEAN_ENDPOINT.md). The earlier same-embedding
@@ -776,5 +782,6 @@ concern companion notes.
 These checks corroborate signs, normalization, and multiplicity. They
 do not replace the proofs or certify an unrestricted endpoint circuit.
 The selected-SWAP wrapper reduces the calls and initialized workspace
-needed by this reduction. The unrestricted constant-clean frontier
-remains unchanged.
+needed by this reduction. This reduction alone does not improve the
+unrestricted constant-clean frontier; the later operator-source improvement
+is a separate construction.

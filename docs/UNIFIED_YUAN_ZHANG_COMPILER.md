@@ -201,15 +201,19 @@ reset.  The prefix and tail fit within
 
 clean ancillary qubits.
 
-For the largest feasible cut, the subtree term obeys
+For $n\geq2$ and $m\geq4n$, choose the largest feasible integer cut
+$1\leq t\leq n-1$. The subtree term obeys the uniform bound
 
 ```math
 \frac{2^s}{s}
-=O\left(\frac{N}{n+m}\right),
+=O\left(1+\frac{N}{n+m}\right).
 ```
 
-including the separate $s=1$ endpoint.  The routed schedule therefore reaches
-the target frontier.
+For $s>1$, failure of the next cut gives the sharper $O(N/(n+m))$ bound.
+At the saturated cut $s=1$, each subtree has constant depth, including when
+$m\gg N$. The routed schedule therefore reaches the target frontier.
+For $n=1$, a single one-qubit rotation works at every workspace budget without
+a routed cut.
 
 ## 8. Complex magnitude frame
 

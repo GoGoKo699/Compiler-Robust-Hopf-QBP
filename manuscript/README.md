@@ -1,10 +1,13 @@
 # Manuscript architecture
 
-[Read the argument](../REVIEW.md) · [Exact theorem](../docs/COMPILER_THEOREM.md) · [T-count theorem](../docs/FAULT_TOLERANT_COMPILER.md)
+[Publication scope](PUBLICATION_SCOPE.md) · [Read the argument](../REVIEW.md) · [Sanity check](../docs/SANITY_CHECK.md)
 
 This is one compiler paper about a prescribed Hopf differential frame, with
 exact logical and fault-tolerant resource theorems. The same complete-input
-contract connects both to the inverse-frame gradient protocol.
+contract connects both to the inverse-frame gradient protocol. The
+[publication scope](PUBLICATION_SCOPE.md) governs what enters the manuscript:
+three principal compiler results, their supporting corollaries, and the QBP
+application. The endpoint need not be solved before drafting.
 
 ## Working title
 
@@ -76,10 +79,12 @@ and oblivious amplification retain their original lineage. The main technical
 candidate is the precision-uniform full-frame composition with a charged,
 reusable source. See the [source map](../docs/SOURCE_MAP.md).
 
-The supporting source-channel obstruction is not needed to prove the positive
-T theorem. Keep its role focused on the [open endpoint](../research/CONSTANT_CLEAN_ENDPOINT.md);
-it must not become a claimed general frame lower bound. Most failed routes and
-the research chronology belong outside the main narrative.
+The source-channel and graph-source reuse obstructions are not needed for the
+positive compiler theorems. Retain their proofs in the repository research
+supplement and give at most a short discussion pointer from the paper. They
+must not become a claimed general frame lower bound or a fourth main result.
+Modular, batching, clock, and catalysis investigations remain outside the
+selected manuscript.
 
 Alternative shadow-based gradient estimators, learned scores, and classical
 validation algorithms are outside this compiler paper's selected scope. They
@@ -99,7 +104,7 @@ actual inverse. It does not differentiate a potentially discontinuous compiler.
 The complex magnitude frame and its separate phase stream retain their own
 resource statements.
 
-## Remaining work
+## Manuscript preparation
 
 The repository now carries the integrated proof and evidence reading route.
 The constant-clean continuation now improves the endpoint upper bound to
@@ -109,7 +114,9 @@ question: share the precision cost across depths or prove a stronger general
 lower bound. The [progress report](../research/CONSTANT_CLEAN_PROGRESS.md) gives
 the current reading route.
 
-For a submission package, prepare the full LaTeX manuscript, align notation
+The [sanity check](../docs/SANITY_CHECK.md) supports drafting the selected
+scope without waiting for that gap to close. For a submission package,
+prepare the full LaTeX manuscript, align notation
 with the earlier Hopf papers, check all imported theorem hypotheses, and obtain
 external technical feedback. Existing internal checks are not external review
 or a certification of priority. Update `CITATION.cff` when a manuscript

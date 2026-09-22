@@ -136,6 +136,21 @@ exact complex magnitude theorem above and this real-frame T theorem have
 separate scope. A finite-precision QBP consequence follows by controlling
 bounded-score bias, not by differentiating a compiled word.
 
+With two clean qubits, the separate
+[operator-source construction](research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+implements every prescribed real Hopf frame with
+
+```math
+a=2,\qquad b\ge L+n+7,\qquad
+T=O(N+nL),\qquad G_{\mathrm{Clifford}}=O(NL).
+```
+
+At $`L=N`$ and $`b=N+n+7`$, this gives $`O(N\log N)`$ T gates
+against the unchanged $`\Omega(N)`$ lower bound. The logarithmic gap remains
+open. The same construction supplies a dirty-bank tradeoff and a literal
+phase-dressed complex magnitude corollary, with their separate workspace
+conditions stated in Section 9.5.
+
 
 ---
 
@@ -729,7 +744,9 @@ For $B=2^t$, the decoder uses:
 | **total** | $3B-2-t$ |
 
 The explicit X/CNOT/Toffoli layers have disjoint support within each declared
-layer, depth $11t-4=O(t)$, and size $O(B)$.  On the one-excitation code, the
+layer, primitive-layer depth $11t-4$, and size $O(B)$. Constant-size,
+constant-depth elementary decompositions give $O(t)$ depth and $O(B)$ size
+in the arbitrary-one-qubit+CNOT model. On the one-excitation code, the
 Givens pairs at one Hopf depth are disjoint.  The external suffix-zero predicate
 is computed, copied to the live fixed-width controlled Givens rotations, used,
 and uncomputed.
@@ -1090,7 +1107,7 @@ normalization, error constants, and the workspace ledger. The
 kernel identities and separate rational budgets. They support the derivation;
 they do not emit every elementary gate of the asymptotic compiler.
 
-### 9.5 The retained open endpoint
+### 9.5 Two-clean compilation and the remaining gap
 
 At $L=N$, a sufficiently large $a=\Theta(n)$ clean budget and $b=\Theta(N)$ dirty workspace attain
 $T^\star=\Theta(N)$. A new
@@ -1293,10 +1310,13 @@ are not claimed.
 
 ---
 
-The finite-precision contribution is the full-frame residual composition with
-one reusable source and its explicit clean/dirty resource ledger. The
+The finite-precision constructions use two mechanisms: full-frame residual
+composition with one reusable prepared source, and a two-clean compiler that
+extracts coefficients from a charged operator on arbitrary dirty work. Both
+include explicit clean/dirty resource ledgers and complete-output error bounds;
+the latter retains the logarithmic high-precision gap. The
 [source map](docs/SOURCE_MAP.md) credits the established lookup, digit-weighting,
-synthesis, and amplification ingredients. Alternative shadow-based gradient
+Clifford-loader algebra, synthesis, and amplification ingredients. Alternative shadow-based gradient
 algorithms and their classical training problems are outside this compiler
 paper's main argument.
 

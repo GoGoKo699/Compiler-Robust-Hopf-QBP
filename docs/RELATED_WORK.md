@@ -318,7 +318,36 @@ full-isometry error can bound the bias of the
 This does not differentiate the compiled Clifford+T word as a function of the
 parameters and does not prove optimal gradient-query complexity.
 
-## 11. Detailed source record
+## 11. What the two-clean construction adds
+
+The [operator-source compiler](../research/constant_clean/OPERATOR_SOURCE_COMPILER.md)
+uses two initialized flags and an arbitrary dirty bank. Full-space
+anticommuting loaders are established by
+[Kerenidis–Prakash](https://arxiv.org/html/2202.00054v2), Definitions 4.4/4.6
+and Theorem 4.9; their scalar-overlap product algebra also appears in
+[Chee et al.](https://arxiv.org/pdf/2301.07477), Appendix C. Dirty SelectSwap
+is credited to LKS, and normalization-two amplification to
+[Berry et al.](https://arxiv.org/pdf/1412.4687), Eqs. (11)–(15).
+
+The local construction specializes the loader to native geometric weights,
+programs its signs through whole-word dirty queries, and combines a scalar
+block, suffix echo, and full-output amplification into the prescribed Hopf
+frame. With $`b\ge L+n+7`$ it gives $`T=O(N+nL)`$; with
+$`b\ge2(L+n+7)`$ its banked form gives
+$`T=O(\sqrt{NL}+nL+NL/b)`$. Both use $`O(NL)`$ Clifford gates.
+The operator core returns approximately within the full-isometry bound;
+lookup banks and selectors return exactly. Literal diagonal compilation
+also gives the phase-dressed magnitude-frame corollary with its own error
+allocation and dirty-width threshold.
+
+The remaining $`nL`$ term matters: at $`L=N`$ the two-clean result is an
+$`O(N\log N)`$ upper bound, not a matched linear bound. The claimed
+contribution is this explicitly charged construction and its stated resource
+regimes, not the invention of loaders, dirty lookup, overlap algebra, or
+amplification. The [publication scope](../manuscript/PUBLICATION_SCOPE.md)
+sets the role of these results in the paper.
+
+## 12. Detailed source record
 
 The [source map](SOURCE_MAP.md) gives exact theorem numbers and local consumers.
 The broader technical search is retained in
@@ -354,6 +383,9 @@ priority.
 - G. H. Low, V. Kliuchnikov, and L. Schaeffer,
   [“Trading T gates for dirty qubits in state preparation and unitary synthesis”](https://arxiv.org/html/1812.00954v2),
   *Quantum* **8**, 1375 (2024).
+- D. W. Berry, A. M. Childs, R. Cleve, R. Kothari, and R. D. Somma,
+  [“Simulating Hamiltonian dynamics with a truncated Taylor series”](https://arxiv.org/pdf/1412.4687),
+  *Physical Review Letters* **114**, 090502 (2015), Eqs. (11)–(15).
 - D. Gosset, R. Kothari, and K. Wu,
   [“Quantum state preparation with optimal T-count”](https://quantum-journal.org/papers/q-2026-07-22-2168/pdf/),
   *Quantum* **10**, 2168 (2026).

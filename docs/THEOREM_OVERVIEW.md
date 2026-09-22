@@ -192,15 +192,19 @@ The prefix and tail both fit within
 
 clean ancillary qubits.
 
-Choosing the largest feasible cut for $m\geq4n$ yields
+For $n\geq2$ and $m\geq4n$, choosing the largest feasible integer cut
+$1\leq t\leq n-1$ yields the uniform bound
 
 ```math
 \frac{2^s}{s}
-=O\left(\frac{N}{n+m}\right),
+=O\left(1+\frac{N}{n+m}\right).
 ```
 
-including the separate $s=1$ endpoint.  Hence the routed schedule also has
-$O(N)$ size and $`O\!\left(n+\frac{N}{n+m}\right)`$ depth.
+For $s>1$, failure of the next cut gives the sharper $O(N/(n+m))$ bound.
+At the saturated cut $s=1$, each subtree has constant depth, including when
+$m\gg N$. Hence the routed schedule also has $O(N)$ size and
+$`O\!\left(n+\frac{N}{n+m}\right)`$ depth. For $n=1$, the single one-qubit
+rotation needs no routed cut at any workspace budget.
 
 ## 5. Matching lower bounds
 

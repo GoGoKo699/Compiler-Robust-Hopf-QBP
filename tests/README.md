@@ -54,7 +54,8 @@ python validate.py
 ```
 
 The validation entry point prints the Python and NumPy versions and executes the
-complete deterministic test collection.
+complete unittest collection. The standalone exact receipt suites are run
+separately with `python scripts/verify_fault_tolerant.py`.
 
 The shorter orientation is:
 

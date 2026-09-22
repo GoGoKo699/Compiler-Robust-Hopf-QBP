@@ -27,7 +27,11 @@ T=O(N+nL),\qquad G=O(NL).
 
 The norm is over all logical and dirty inputs and therefore includes
 arbitrary references. It includes all initialized-work leakage and
-dirty-work return. All inverses are actual circuit inverses; there are
+dirty-work return. Lookup selectors, additional word banks, and the dirty
+suffix control return exactly after their completed subroutines. The
+operator core may have residual disturbance; its approximate return is
+included in the same error bound, together with any reference correlations.
+All inverses are actual circuit inverses; there are
 no measurements, resets, supplied catalysts, or uncharged quantum oracles.
 Angles must be effectively specified so that certified sine and cosine
 approximations can be computed. That classical evaluation and table
@@ -343,6 +347,12 @@ silently normalized.
 
 Apply the robust normalization-two lemma from
 [the fault-tolerant compiler chapter](../../docs/FAULT_TOLERANT_COMPILER.md).
+Robust oblivious amplitude amplification and its cubic accepted-block
+identity are established in Berry, Childs, Cleve, Kothari, and Somma,
+*Physical Review Letters* **114**, 090502 (2015),
+[Eqs. (11)–(15), arXiv:1412.4687](https://arxiv.org/abs/1412.4687).
+The local proof below records the full-isometry leakage estimate needed
+for the workspace-return contract.
 For an actual unitary Q, its initialized embedding J, a unitary W, and
 $`\zeta=\|2J^\dagger QJ-W\|\leq1/4`$, put
 

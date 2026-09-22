@@ -121,11 +121,12 @@ $`E^\dagger KE`$, but it generally leaves order-one amplitude outside that
 encoded subspace. The required promise is the full return
 $`KE\approx2^{-k}E`$.
 
+Let $`m`$ be the dirty core width and $`\tau`$ the processing T count.
 For this encoding, a kernel with $`r`$ extra initialized/projected flags and
 fixed relative error below one needs either $`\tau+r\ge m`$ or
-$`\tau\ge k-O(r+1)`$ T gates. Thus constant flags cannot supply cheap
-large-exponent attenuation after one preparation. A returned logarithmic
-index does not remove the linear bound. The proof uses the Pauli support of
+$`\tau\ge k-O(r+1)`$. When $`k=\Theta(m)`$ and $`r=O(1)`$, this
+requires $`\Omega(m)`$ T gates after the initial preparation. The same
+conclusion holds with $`r=O(\log m)`$. The proof uses the Pauli support of
 the accepted operator, the geometric tail, and exact acceptance arithmetic.
 
 This excludes a particular reuse interface. It is **not** a sum of costs
@@ -168,10 +169,12 @@ small native sources, sign tables, full-space accepted blocks, amplification,
 dirty/reference return, word-bank routing, the dirty suffix echo, and literal
 complex phases. The [reuse tests](../tests/test_operator_source_reuse.py) check
 small exact acceptance and leakage identities. The [modular tests](../tests/test_modular_lookup_compiler.py)
-check exact reversible arithmetic. Run all repository checks with
+check exact reversible arithmetic. Run the unittest collection and the
+separate exact shared-source receipt suites with
 
 ```bash
 python validate.py
+python scripts/verify_fault_tolerant.py
 ```
 
 Finite checks support the algebra and conventions; they do not prove the

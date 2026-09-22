@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run all deterministic analytic checks for the research repository."""
+"""Run the repository unittest collection; exact receipt suites run separately."""
 from __future__ import annotations
 
 import argparse

@@ -352,7 +352,8 @@ that subtree with the displayed angle map.  ∎
 
 ### Lemma P: clean binary–one-hot decoder
 
-For $B=2^t$, there is an explicit reversible X/CNOT/Toffoli circuit satisfying
+For an integer $t\geq1$ and $B=2^t$, there is an explicit reversible
+X/CNOT/Toffoli circuit satisfying
 
 ```math
 D_t|x\rangle|0\cdots0\rangle
@@ -365,7 +366,9 @@ It uses
 3B-2-t
 ```
 
-clean ancillary qubits, has depth $11t-4=O(t)$, and has size $O(B)$.
+clean ancillary qubits and has $11t-4$ disjoint X/CNOT/Toffoli layers.
+Decomposing these fixed-width primitives into arbitrary one-qubit gates and
+CNOTs gives elementary depth $O(t)$ and size $O(B)$.
 
 #### Register count
 
@@ -471,7 +474,8 @@ $B2^s=2^n$, the routed tail has $O(2^n)$ total size.
 
 ### Proposition R: maximal-cut depth
 
-Assume $m\geq4n$.  Choose the largest $t$ satisfying
+Assume $n\geq2$ and $m\geq4n$. Choose the largest integer
+$1\leq t\leq n-1$ satisfying
 
 ```math
 2\,2^t(n-t+1)\leq m.
@@ -501,6 +505,11 @@ s^2=O\left(n+\frac{2^s}{s}\right).
 If $s=1$, each subtree frame has constant depth.  Feasibility of $t=n-1$
 requires $m\geq2^{n+1}=2N$, so $N/(n+m)=O(1)$ and the target depth is
 $\Theta(n)$, matching the prefix and route–unroute stages.
+
+Thus the subtree term obeys the uniform bound
+$`2^s/s=O(1+N/(n+m))`$, including arbitrarily large workspace budgets.
+For $n=1$, the frame is a single one-qubit rotation and needs no routed cut,
+regardless of the available workspace.
 
 Therefore
 

@@ -165,20 +165,23 @@ Classification: **proved and matrix-tested**.
 
 ## 6. Binary–one-hot decoder
 
-For $B=2^t$, the explicit decoder uses $B$ one-hot leaves, $B-1$ internal
-indicators, and $B-1-t$ shared scratch wires:
+For an integer $t\geq1$ and $B=2^t$, the explicit decoder uses $B$ one-hot
+leaves, $B-1$ internal indicators, and $B-1-t$ shared scratch wires:
 
 ```math
 3B-2-t
 ```
 
-clean workspace qubits in total. Its X/CNOT/Toffoli layers are disjoint, have
-depth $11t-4=O(t)$, and implement
+clean workspace qubits in total. Its $11t-4$ X/CNOT/Toffoli layers have disjoint
+support within each layer and implement
 
 ```math
 D_t|x\rangle|0\rangle
 =|0^t\rangle|e_x\rangle|0\rangle.
 ```
+
+After constant-size, constant-depth decomposition of the fixed-width primitives,
+the elementary arbitrary-one-qubit/CNOT depth is $O(t)$ and size is $O(B)$.
 
 The one-hot Givens network equals the complete $t$-qubit Hopf frame on the code.
 
@@ -240,15 +243,18 @@ Route and unroute have $O(n)$ depth and $O(B(s+1))$ size. One controlled
 subtree has size $O(2^s)$ and depth $O(s^2+2^s/s)$; all branches run in
 parallel.
 
-For $m\geq4n$, the largest cut satisfying
+For $n\geq2$ and $m\geq4n$, the largest integer cut $1\leq t\leq n-1$ satisfying
 
 ```math
 2\,2^t(n-t+1)\leq m
 ```
 
-obeys $`\frac{2^s}{s}=O\!\left(\frac{N}{n+m}\right)`$. For $1\leq m<4n$, the direct flagged schedule's
-$O(n^2)$ term is absorbed. Therefore all positive budgets attain the target
-frontier.
+obeys $`\frac{2^s}{s}=O\!\left(1+\frac{N}{n+m}\right)`$ uniformly. The additive
+constant covers the saturated cut $s=1$; for $s>1$, failure of the next cut
+gives the sharper $O(N/(n+m))$ bound. For $1\leq m<4n$, the direct flagged
+schedule's $O(n^2)$ term is absorbed. When $n=1$, a single one-qubit rotation
+works at every workspace budget. Therefore all positive budgets attain the
+target frontier.
 
 Classification: **proved, with explicit schedule-to-ledger regression tests**.
 

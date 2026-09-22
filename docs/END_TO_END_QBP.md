@@ -186,9 +186,11 @@ The frame compiler uses at most $m$ clean qubits and returns them to zero.  The
 real frame and phase UCG reuse the same pool sequentially.  At $m=0$, both are
 ancilla free.
 
-The interference protocol adds one branch ancilla beyond the matched scalar
-program.  The borrowed suffix bit in the strict-zero compiler is logical data,
-not ancillary workspace.
+The interference protocol uses one clean branch ancilla in addition to the
+frame-compiler workspace. Any ancilla already used by the matched scalar
+program is accounted for within that program's observable-access implementation.
+The borrowed suffix bit in the strict-zero compiler is logical data, not
+ancillary workspace.
 
 ## 7. Classical magnitude decoding
 

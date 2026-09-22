@@ -4,6 +4,11 @@
 
 Last updated: 22 September 2026.
 
+The [publication scope](../manuscript/PUBLICATION_SCOPE.md) fixes the current
+manuscript around three compiler results and their QBP consequence. The
+[full sanity check](SANITY_CHECK.md) records the internal audit. Manuscript
+preparation can proceed while the constant-clean endpoint remains open.
+
 The repository supports one compiler paper with two resource models. The exact
 logical frontier is established at every clean-workspace budget. The real-frame
 T-count frontier is matched above a sufficient clean reservation. The

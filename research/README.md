@@ -1,5 +1,10 @@
 # Research continuation
 
+The [publication scope](../manuscript/PUBLICATION_SCOPE.md) includes the
+positive two-clean compiler below. The other investigations remain available
+as supporting research; their inclusion in this directory does not make them
+required sections of the current paper.
+
 The constant-clean research now has an improved arbitrary-angle compiler.
 Start with the [checked-progress report](CONSTANT_CLEAN_PROGRESS.md), then
 read the [operator-source proof](constant_clean/OPERATOR_SOURCE_COMPILER.md).

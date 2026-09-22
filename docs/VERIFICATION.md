@@ -206,10 +206,10 @@ and
 
 ```math
 \frac{2^s}{s}
-=O\left(\frac{2^n}{n+m}\right)
+=O\left(1+\frac{2^n}{n+m}\right)
 ```
 
-for the maximal routed cut.
+for the maximal routed cut, including the saturated endpoint $`s=1`$.
 
 Files:
 
@@ -266,11 +266,16 @@ Run the short orientation:
 python scripts/reviewer_walkthrough.py
 ```
 
-Run the complete deterministic suite:
+Run the deterministic unittest collection and the separate exact
+fault-tolerant receipt suites:
 
 ```bash
 python validate.py
+python scripts/verify_fault_tolerant.py
 ```
+
+The first command discovers the files in `tests/`; the second reproduces the
+four retained receipts in `verification/fault_tolerant/`.
 
 Print the two resource ledgers:
 
@@ -315,8 +320,9 @@ resource proof from the [focused finite checks](../verification/fault_tolerant/R
 Run `python scripts/verify_fault_tolerant.py` from the repository root. Four
 stdlib-only suites reproduce the retained exact Gray-source, shift-kernel,
 resource, and reflection receipts without changing their saved reference files.
-The runner identifies nondeterministic provenance fields separately from
-scientific output.
+The runner compares scientific receipt fields and separately verifies the
+deterministic source-file hashes, whose values changed when the sources were
+relocated into this repository.
 
 The shift fixtures test complete finite kernel columns, actual inverses, source
 defects, failure tracking, and negative controls. They do not instantiate all
