@@ -1,0 +1,89 @@
+name: Publish v1.0.1 metadata correction
+
+on:
+  push:
+    branches: [release-metadata-v1.0.1]
+
+permissions:
+  contents: write
+  checks: read
+
+concurrency:
+  group: publish-metadata-v1.0.1
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'GoGoKo699/Hopf-Frame-Compilation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify the fixed snapshot and publish the authorized correction
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, re, urllib.error, urllib.request
+          
+          BASE = "https://api.github.com/repos/GoGoKo699/Hopf-Frame-Compilation"
+          TARGET = "df4da3dd535034358e3bc601f9c38fcd11996d0e"
+          ORIGINAL = "9be942152654e3ade935b87c2ca0e2e6391ea19d"
+          NOTES = "This metadata-only patch synchronizes `CITATION.cff`, the Python package metadata, and `__version__` at `1.0.1`.\n\nThe `v1.0.0` source archive retained the earlier embedded version `0.4.0a0`. Its published tag remains unchanged. Scientific results, proofs, executable code behavior, and documented scope are unchanged in this patch.\n\nValidation: the Python 3.11 and 3.13 analytic checks and rendered-presentation check passed for the release commit."
+          OLD_NOTE = "Version correction: this release's source archive contains embedded citation and Python package versions of `0.4.0a0`. [Release v1.0.1](https://github.com/GoGoKo699/Hopf-Frame-Compilation/releases/tag/v1.0.1) corrects that metadata to match its release tag. The `v1.0.0` tag and source archive are preserved; the correction does not change scientific results or executable code behavior."
+          
+          def api(path, payload=None, method=None, missing_ok=False):
+              data = None if payload is None else json.dumps(payload).encode()
+              request = urllib.request.Request(BASE + path, data=data, method=method, headers={
+                  "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json",
+                  "X-GitHub-Api-Version": "2026-03-10",
+              })
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as error:
+                  if missing_ok and error.code == 404:
+                      return None
+                  raise
+          
+          assert api("/git/ref/tags/v1.0.0")["object"]["sha"] == ORIGINAL
+          assert api("/branches/main")["commit"]["sha"] == TARGET
+          comparison = api("/compare/" + ORIGINAL + "..." + TARGET)
+          paths = {"CITATION.cff", "pyproject.toml", "compiler_robust_hopf/__init__.py"}
+          assert {item["filename"] for item in comparison["files"]} == paths
+          for path in paths:
+              document = api("/contents/" + path + "?ref=" + TARGET)
+              content = base64.b64decode(document["content"]).decode()
+              pattern = r"(?m)^version: 1\.0\.1$" if path == "CITATION.cff" else (
+                  r'(?m)^__version__ = "1\.0\.1"$' if path.endswith("__init__.py") else r'(?m)^version = "1\.0\.1"$'
+              )
+              assert re.search(pattern, content), path
+          checks = api("/commits/" + TARGET + "/check-runs?per_page=100")["check_runs"]
+          for name in ("analytic (3.11)", "analytic (3.13)", "rendered-presentation"):
+              matching = [check for check in checks if check["name"] == name]
+              assert matching and max(matching, key=lambda check: check["id"])["conclusion"] == "success", name
+          
+          release = api("/releases/tags/v1.0.1", missing_ok=True)
+          if release is None:
+              assert api("/git/ref/tags/v1.0.1", missing_ok=True) is None, "Unexpected existing tag"
+              release = api("/releases", {
+                  "tag_name": "v1.0.1", "target_commitish": TARGET,
+                  "name": "v1.0.1 — Release metadata correction", "body": NOTES,
+                  "draft": False, "prerelease": False, "make_latest": "true",
+                  "generate_release_notes": False,
+              }, method="POST")
+          assert api("/git/ref/tags/v1.0.1")["object"]["sha"] == TARGET
+          assert release["draft"] is False and release["prerelease"] is False
+          old_release = api("/releases/tags/v1.0.0")
+          assert old_release["id"] == 393571259
+          body = old_release.get("body") or ""
+          if OLD_NOTE not in body:
+              api("/releases/" + str(old_release["id"]), {
+                  "body": (body.rstrip() + "\n\n" + OLD_NOTE).strip()
+              }, method="PATCH")
+          assert api("/git/ref/tags/v1.0.0")["object"]["sha"] == ORIGINAL
+          assert api("/releases/latest")["tag_name"] == "v1.0.1"
+          print("Published:", release["html_url"])
+          print("Verified: matching 1.0.1 metadata and preserved v1.0.0 tag.")
+          PY
