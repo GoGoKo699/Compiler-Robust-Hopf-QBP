@@ -155,12 +155,18 @@
   "fault_tolerant_sources": [
     {
       "id": "bausch_bit_index",
-      "authors": ["Johannes Bausch"],
+      "authors": [
+        "Johannes Bausch"
+      ],
       "title": "Fast Black-Box Quantum State Preparation",
       "checked_eprint": "arXiv:2009.10709v4",
       "year": 2022,
       "url": "https://arxiv.org/pdf/2009.10709v4",
-      "locators": ["Equation (4)", "Equation (6)", "Section 2.3.3"],
+      "locators": [
+        "Equation (4)",
+        "Equation (6)",
+        "Section 2.3.3"
+      ],
       "roles": [
         "geometric precision-index state and individual-bit oracle",
         "capped geometric source and its preparation lineage"
@@ -169,7 +175,11 @@
     },
     {
       "id": "lks_lookup_and_counting",
-      "authors": ["Guang Hao Low", "Vadym Kliuchnikov", "Luke Schaeffer"],
+      "authors": [
+        "Guang Hao Low",
+        "Vadym Kliuchnikov",
+        "Luke Schaeffer"
+      ],
       "title": "Trading T gates for dirty qubits in state preparation and unitary synthesis",
       "journal": "Quantum",
       "volume": 8,
@@ -178,7 +188,14 @@
       "doi": "10.22331/q-2024-06-17-1375",
       "checked_eprint": "arXiv:1812.00954v2",
       "url": "https://arxiv.org/html/1812.00954v2",
-      "locators": ["Section 2", "Table 2", "Figure 1(d)", "Equation (8)", "Section 5", "Appendix C, Theorem 2"],
+      "locators": [
+        "Section 2",
+        "Table 2",
+        "Figure 1(d)",
+        "Equation (8)",
+        "Section 5",
+        "Appendix C, Theorem 2"
+      ],
       "roles": [
         "exact dirty-assisted lookup and complete dirty-bank restoration",
         "finite-width Clifford+T circuit counting"
@@ -187,7 +204,11 @@
     },
     {
       "id": "gkw_t_count",
-      "authors": ["David Gosset", "Robin Kothari", "Kewen Wu"],
+      "authors": [
+        "David Gosset",
+        "Robin Kothari",
+        "Kewen Wu"
+      ],
       "title": "Quantum state preparation with optimal T-count",
       "journal": "Quantum",
       "volume": 10,
@@ -196,7 +217,13 @@
       "doi": "10.22331/q-2026-07-22-2168",
       "checked_eprint": "arXiv:2411.04790v3",
       "url": "https://quantum-journal.org/papers/q-2026-07-22-2168/pdf/",
-      "locators": ["Theorems 1.1-1.2", "Theorems 4.1-4.2", "Lemmas 2.1 and 2.3", "Lemma B.1", "Corollary B.2"],
+      "locators": [
+        "Theorems 1.1-1.2",
+        "Theorems 4.1-4.2",
+        "Lemmas 2.1 and 2.3",
+        "Lemma B.1",
+        "Corollary B.2"
+      ],
       "roles": [
         "optimal unrestricted state-preparation and diagonal-synthesis benchmarks",
         "ancilla-independent diagonal lower bound used through a frame subfamily",
@@ -207,7 +234,9 @@
     },
     {
       "id": "tan_general_unitary_comparison",
-      "authors": ["Xinyu Tan"],
+      "authors": [
+        "Xinyu Tan"
+      ],
       "title": "Unitary Synthesis with Fewer T Gates",
       "journal": "PRX Quantum",
       "volume": 7,
@@ -216,31 +245,241 @@
       "doi": "10.1103/pxhd-9s9q",
       "published_date": "2026-09-16",
       "url": "https://journals.aps.org/prxquantum/pdf/10.1103/pxhd-9s9q",
-      "locators": ["Definition I.2", "Theorem I.1", "Lemma IV.1", "Remark IV.2"],
-      "roles": ["general-unitary comparison", "batching controlled single-qubit instruction tables"],
+      "locators": [
+        "Definition I.2",
+        "Theorem I.1",
+        "Lemma IV.1",
+        "Remark IV.2"
+      ],
+      "roles": [
+        "general-unitary comparison",
+        "batching controlled single-qubit instruction tables"
+      ],
       "boundary": "Use the published precision-dependent T and ancilla bounds separately. The displayed instruction-word construction uses initialized program registers and does not directly give the stated small-clean/dirty frame theorem."
     },
     {
       "id": "sparse_t_count_context",
-      "authors": ["Tongyang Li", "Fengning Ou", "Xinzhao Wang", "Penghui Yao", "Pei Yuan", "Shengyu Zhang"],
+      "authors": [
+        "Tongyang Li",
+        "Fengning Ou",
+        "Xinzhao Wang",
+        "Penghui Yao",
+        "Pei Yuan",
+        "Shengyu Zhang"
+      ],
       "title": "Optimal T Counts under Sparsity: from QROM to State Preparation and Block Encoding",
       "checked_eprint": "arXiv:2607.28260v1",
       "year": 2026,
       "url": "https://arxiv.org/html/2607.28260v1",
-      "locators": ["Section 3", "Section 4"],
-      "roles": ["sparse QROM and sparse-state comparison"],
+      "locators": [
+        "Section 3",
+        "Section 4"
+      ],
+      "roles": [
+        "sparse QROM and sparse-state comparison"
+      ],
       "boundary": "Different input families; no generic full-frame or bounded-clean-workspace theorem is imported."
+    },
+    {
+      "id": "low_wiebe_compression",
+      "authors": [
+        "Guang Hao Low",
+        "Nathan Wiebe"
+      ],
+      "title": "Hamiltonian Simulation in the Interaction Picture",
+      "checked_eprint": "arXiv:1805.00675v2",
+      "year": 2019,
+      "url": "https://arxiv.org/html/1805.00675v2",
+      "locators": [
+        "Lemma 13",
+        "Appendix B"
+      ],
+      "roles": [
+        "coherent product compression with logarithmic failure-history work"
+      ],
+      "boundary": "The compression gadget and history counter are inherited mechanisms; the local contribution is their integration with residual factorization and a shared precision source."
+    },
+    {
+      "id": "fang_lin_tong_compression",
+      "authors": [
+        "Di Fang",
+        "Lin Lin",
+        "Yu Tong"
+      ],
+      "title": "Time-marching based quantum solvers for time-dependent linear differential equations",
+      "journal": "Quantum",
+      "volume": 7,
+      "article": 955,
+      "year": 2023,
+      "checked_eprint": "arXiv:2208.06941v2",
+      "url": "https://arxiv.org/html/2208.06941v2",
+      "locators": [
+        "Section 2.4",
+        "Lemma 3",
+        "Appendix D"
+      ],
+      "roles": [
+        "simplified coherent compression gadget and reusable block workspace"
+      ],
+      "boundary": "Reusing initialized block work with a logarithmic counter is established prior art. It does not replace the queried block encoding's peak initialized-work requirement with dirty work."
+    },
+    {
+      "id": "vasconcelos_gilyen_compression_context",
+      "authors": [
+        "Francisca Vasconcelos",
+        "Andras Gilyen"
+      ],
+      "title": "Methods for Reducing Ancilla-Overhead in Block Encodings",
+      "checked_eprint": "arXiv:2507.07900v2",
+      "year": 2025,
+      "url": "https://arxiv.org/html/2507.07900v2",
+      "locators": [
+        "Section 2",
+        "Section 3.1",
+        "Section 3.2",
+        "Appendix B.2.2"
+      ],
+      "roles": [
+        "ancilla-uncomputation comparison",
+        "restricted exact-history ancilla lower bound",
+        "approximate product compression comparison"
+      ],
+      "boundary": "The uncomputation procedure still queries the original block encoding with its initialized work. Exact-product lower bounds concern the defined MCM circuit class, not unrestricted Hopf compilation. Approximate compression needs near-identity full dilations, not only near-identity accepted blocks."
+    },
+    {
+      "id": "yamazaki_akibue_controlled_precision",
+      "authors": [
+        "Soichiro Yamazaki",
+        "Seiseki Akibue"
+      ],
+      "title": "Multi-qubit controlled gate with optimal T-count",
+      "checked_eprint": "arXiv:2603.14202v1",
+      "year": 2026,
+      "url": "https://arxiv.org/html/2603.14202v1",
+      "locators": [
+        "Theorem 1",
+        "Section 3",
+        "Theorem 4"
+      ],
+      "roles": [
+        "leading precision constants for complete multiplexed SU(2) synthesis",
+        "explicit precision-length clean program with dirty lookup"
+      ],
+      "boundary": "The displayed dirty-assisted circuit uses 3L+O(n)+o(L) clean qubits under a typical-target guarantee. Its ancilla-free alternative has order NL+Nn cost. The comparison uses channel distance and does not imply a literal-phase two-clean compiler for every target."
+    },
+    {
+      "id": "yuan_zhang_zi_general_unitary",
+      "authors": [
+        "Pei Yuan",
+        "Shengyu Zhang",
+        "Wei Zi"
+      ],
+      "title": "Quantum Circuits for General Unitaries: Improved T-Count via Block Flattening and Dilation",
+      "checked_eprint": "arXiv:2608.17846v2",
+      "year": 2026,
+      "url": "https://arxiv.org/html/2608.17846v2",
+      "locators": [
+        "Theorem I.1",
+        "Definition II.1",
+        "Section VI"
+      ],
+      "roles": [
+        "current generic-unitary upper-bound comparison",
+        "complete initialized-isometry error convention"
+      ],
+      "boundary": "For N=2^n and n+L<=N, the theorem gives O(n N^(5/4)(n+L)^(5/8)) T gates with O(N sqrt(n+L)) clean ancillas. It treats arbitrary unitaries, not the prescribed small-clean/dirty frame budget. Tan must not be described as the newest generic upper bound."
+    },
+    {
+      "id": "fang_heunen_wang_near_clifford",
+      "authors": [
+        "Wang Fang",
+        "Chris Heunen",
+        "Qisheng Wang"
+      ],
+      "title": "Unitary Synthesis with Near-Optimal T-Count for Near-Clifford Unitaries",
+      "checked_eprint": "arXiv:2607.12907v1",
+      "year": 2026,
+      "url": "https://arxiv.org/html/2607.12907v1",
+      "locators": [
+        "Theorem 1.2",
+        "Corollary 3.8"
+      ],
+      "roles": [
+        "instance-dependent synthesis in phase-optimized Frobenius distance to the Clifford group"
+      ],
+      "boundary": "Uses initialized ancillas with a detailed diamond-distance conclusion. Does not supply the literal-phase two-clean guarantee or the structured frame's worst-case frontier."
+    },
+    {
+      "id": "motlagh_pocrnic_qrom_constants",
+      "authors": [
+        "Danial Motlagh",
+        "Matthew Pocrnic"
+      ],
+      "title": "Halving the cost of QROM",
+      "checked_eprint": "arXiv:2605.20334v1",
+      "year": 2026,
+      "url": "https://arxiv.org/html/2605.20334v1",
+      "locators": [
+        "Section II",
+        "Figure 2"
+      ],
+      "roles": [
+        "improved dirty-QROM constants and bit-packet scheduling context"
+      ],
+      "boundary": "The displayed construction retains an initialized output word. Its improvements preserve the asymptotic lookup tradeoff used here; no constant-factor superiority is claimed."
+    },
+    {
+      "id": "ma_joven_liu_ancilla_counting",
+      "authors": [
+        "Jiaxin Ma",
+        "Kevin J. Joven",
+        "Yuan Liu"
+      ],
+      "title": "Optimal T-Count for Block Encodings of Fermionic and Spin Hamiltonians",
+      "checked_eprint": "arXiv:2609.11153v1",
+      "year": 2026,
+      "url": "https://arxiv.org/html/2609.11153v1",
+      "locators": [
+        "Theorem 3.1"
+      ],
+      "roles": [
+        "recent clean-ancilla compression for block-encoding lower bounds"
+      ],
+      "boundary": "Compresses to at most n+2T clean ancillas and can change normalization. It is not a two-clean unitary implementation result or a lower bound for the Hopf endpoint."
+    },
+    {
+      "id": "gosset_kliuchnikov_mosca_russo_t_count",
+      "authors": [
+        "David Gosset",
+        "Vadym Kliuchnikov",
+        "Michele Mosca",
+        "Vincent Russo"
+      ],
+      "title": "An algorithm for the T-count",
+      "checked_eprint": "arXiv:1308.4134v1",
+      "year": 2013,
+      "url": "https://arxiv.org/html/1308.4134v1",
+      "locators": [
+        "Section 2.3, Eq. (2.3)",
+        "Section 4, Definition 1 and Eq. (4.2)"
+      ],
+      "roles": [
+        "Pauli-transfer representation and square-root-of-two denominator lower-bound method"
+      ],
+      "boundary": "The local proof specializes the method to the geometric operator source and explicitly extends the scalar witness through returned clean and dirty helpers. It is not an additive full-frame lower bound."
     }
   ],
   "fault_tolerant_claim_policy": {
     "audit_date": "2026-09-22",
-    "audit_scope": "Checkpoint 32 primary-source comparison, including Bausch; a bounded technical audit, not certification of priority",
-    "model": "Approximate coherent Clifford+T synthesis of the prescribed real frame, with a complete initialized-isometry error bound and exact return of arbitrary dirty/reference inputs. Clean and dirty budgets, precision, and Clifford cost are recorded separately.",
+    "audit_scope": "Primary-source comparison through 2026-09-22, including current generic-unitary and controlled-gate bounds, dirty-QROM refinements, and block-product compression; bounded technical comparison, not certification of priority",
+    "model": "Coherent Clifford+T compilation with a literal-phase complete initialized-isometry error bound over arbitrary logical, dirty and reference inputs. The sufficient-clean frame compiler returns dirty work exactly; the two-clean operator-source compiler includes approximate dirty-core return in the norm and returns lookup work exactly. Budgets, precision and Clifford cost are separate.",
     "do_not_claim": [
       "invention of optimal unrestricted state preparation or diagonal synthesis",
       "invention of multiplexor synthesis or geometric layer-error allocation",
       "invention of geometric precision indexing or dyadic bit-oracle sampling",
       "invention of dirty lookup, selector cancellation, or borrowed-bit echoes",
+      "invention of logarithmic failure-history storage, block-product compression, Clifford-algebra loaders, or oblivious amplification",
+      "a two-clean unitary compiler inferred from a block-ancilla uncomputation theorem",
       "new finite-width counting or ancilla-independent lower-bound machinery",
       "one circuit simultaneously optimal in CNOT size, depth, and T count",
       "a general constant-clean-workspace frame lower bound from a small-source obstruction",
@@ -249,7 +488,7 @@
     ],
     "compact_source_role": "An explicit exact O(L)-T, O(log L)-peak-clean implementation of the established capped geometric source, with ordinary binary labels and exact temporary return.",
     "direct_sampler_role": "A complete addressed SU(2) compiler using fixed Pauli atoms, geometric bit sampling, charged lookup, and standard oblivious amplitude amplification. Its direct frame composition already yields the matching count in polynomial-precision examples.",
-    "principal_contribution": "The structured full-frame, uniform-in-precision upper construction: residual grouping, one shared accepted-branch shift source, failure tracking, and global amplification. Combined with imported lower bounds, it matches T count in the explicitly stated workspace regimes.",
+    "principal_contribution": "The full-frame precision/workspace upper construction combines residual grouping and a shared accepted-branch shift source with inherited failure compression and amplification. A distinct geometric operator source gives the two-clean frame construction and the matching two-clean literal-diagonal frontier. Imported lower bounds match only the stated regimes.",
     "all_clean_budget_corollary": "A splice of supported compilers under an additional workspace/precision condition; not a new independent lower bound.",
     "moderate_precision_boundary": "The L=n^2, a=Theta(n), b=Theta(n sqrt(N)) witness is already attained by the earlier direct sampler and must not be presented as an incremental checkpoint-28 gain.",
     "qbp_bridge": "At fixed parameters, complete-isometry and observable-implementation error bound the bias of a bounded-score estimator. No derivative of the classically selected Clifford+T word is taken.",
@@ -265,5 +504,41 @@
     ],
     "project_specific_claim": "One original suffix data qubit is used as a restored predicate carrier so that all prefix-dependent Hopf rotations at depth d are aggregated into two total-width-(d+2) UCGs, yielding the optimal complete-frame strict-zero size-depth frontier.",
     "review_status": "internal technical prior-art survey completed; broader independent review required before submission"
-  }
+  },
+  "parameter_counting_sources": [
+    {
+      "authors": [
+        "Raban Iten",
+        "Roger Colbeck",
+        "Ivan Kukuljan",
+        "Jonathan Home",
+        "Matthias Christandl"
+      ],
+      "title": "Quantum Circuits for Isometries",
+      "checked_eprint": "arXiv:1501.06911v4",
+      "url": "https://arxiv.org/html/1501.06911v4",
+      "locators": [
+        "Section III and ancillary-qubit footnote"
+      ],
+      "role": "Established circuit-parameter counting; the local proof makes the unrestricted-clean-workspace CNOT normalization explicit."
+    }
+  ],
+  "statistical_sources": [
+    {
+      "authors": [
+        "Iosif Pinelis"
+      ],
+      "title": "Optimum bounds for the distributions of martingales in Banach spaces",
+      "journal": "Annals of Probability",
+      "volume": 22,
+      "pages": "1679-1706",
+      "year": 1994,
+      "checked_eprint": "arXiv:1208.2200v2",
+      "url": "https://arxiv.org/pdf/1208.2200v2",
+      "locators": [
+        "Theorem 3.5"
+      ],
+      "role": "Dimension-independent Hilbert-space martingale concentration for bounded records under correlated dirty-bank reuse; fresh declared clean inputs are still required per execution."
+    }
+  ]
 }

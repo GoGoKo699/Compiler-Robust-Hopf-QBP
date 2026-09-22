@@ -137,6 +137,12 @@ hold in the worst case over the Hopf-frame family, uniformly in the
 clean-workspace budget. They do not impose the same cost on every individual
 frame.
 
+For $n\geq2$, the worst-case **CNOT count alone** is also $\Theta(N)$,
+even when arbitrary one-qubit gates are free. The one-qubit case $n=1$
+requires zero CNOTs. Section 9 gives the additional argument needed to
+separate this statement from the total-size bound. These are asymptotic
+counts; no optimal leading CNOT constant is asserted.
+
 The proof is assembled from the three schedules below and the matching lower
 bounds in Section 9.
 
@@ -536,6 +542,52 @@ an open subset of the real-state manifold.  Hence
 ```math
 S_{\mathbb R}(n,m)=\Omega(N).
 ```
+
+### CNOT count with unrestricted clean workspace
+
+Let $K$ be the CNOT count of an exact implementation. Its one-qubit gates may
+be arbitrarily numerous and are free for this count. Only ancillary wires
+participating in a CNOT can affect the system, and there are at most $2K$ such
+wires. An untouched ancillary wire undergoes a one-qubit circuit that must
+return its initialized state to itself, up to phase. Removing all such wires
+therefore changes only a common phase, which can be absorbed into a system
+one-qubit gate.
+
+On the remaining at most $n+2K$ wires, fuse every sequence of one-qubit gates
+between successive incident CNOTs. Each wire contributes one initial slot,
+and each CNOT contributes at most two further slots. Thus the normalized
+circuit has at most
+
+```math
+(n+2K)+2K=n+4K
+```
+
+one-qubit slots. Parameterizing each by $U(2)$ gives the deliberately loose,
+workspace-independent parameter bound $4n+16K$. For a fixed CNOT topology,
+the circuit output is a smooth function of these parameters. Its image cannot
+cover a positive-measure subset of the $(N-1)$-dimensional real-state family
+when $4n+16K<N-1$. The possible finite topologies form a countable set, so
+allowing the topology to depend on the desired frame does not evade this
+measure-zero argument. Restricting to gates that return the workspace clean
+cannot increase the image dimension. Consequently the worst-case count obeys
+
+```math
+K\geq\frac{N-1-4n}{16}=\Omega(N),
+```
+
+uniformly in $m$. The existing $O(N)$ total-size construction supplies an
+$O(N)$ CNOT upper bound. For the finitely many $n\geq2$ below the asymptotic
+range of the displayed lower bound, a nonproduct real state requires at least
+one CNOT, so the constants can be chosen uniformly for all $n\geq2$.
+At $n=1$, both the real and phase-dressed frames are single-qubit unitaries
+and their CNOT count is zero.
+
+This is an application of the standard circuit-parameter method, not a new
+lower-bound technique. See Iten et al., *Quantum circuits for isometries*,
+[Section III and its ancillary-qubit footnote](https://arxiv.org/html/1501.06911v4#S3).
+The explicit normalization above records why a large supply of initialized
+wires does not supply uncharged continuous parameters to the system. The
+real subfamily gives the same CNOT lower bound for the phase-dressed frame.
 
 ### Workspace-dependent depth
 

@@ -2,8 +2,10 @@
 
 The source plane rotations are explicit Clifford+T words. The miniature
 two-address-bit lookup uses phase-free X/CX/CCX dirty-selector echoes; its
-general asymptotic implementation is proved separately. Matrix checks use
-complex128, including all dirty input columns, with tolerance 3e-11.
+general asymptotic implementation is proved separately. A two-layer fixture
+expands every Toffoli and propagates all columns with just two clean flags.
+Matrix checks use complex128, including all dirty input columns, with
+tolerance 3e-11.
 """
 from __future__ import annotations
 
@@ -76,6 +78,14 @@ def _operator_source(width):
     unitary = _word_matrix(width, _source_word(width))
     source = unitary @ gammas[0] @ unitary.conj().T
     return source, gammas, np.array(amplitudes)
+
+
+def _optimized_source_word(width):
+    """Use the Clifford M_2 before the remaining source-plane conjugations."""
+    assert width >= 2
+    clifford_base = [('H', 1), ('CX', 1, 0), ('H', 0), ('CX', 1, 0), ('H', 1)]
+    tail = _source_word(width)[len(_source_word(2)):]
+    return _adjoint(tail) + clifford_base + tail
 
 
 def _sign_word(k, bits):
@@ -294,7 +304,184 @@ def _two_layer_frame_fixture():
     return layer0, layer1, logical0, logical1, embedding
 
 
+def _expand_toffolis(word):
+    """Literal seven-T Toffoli decomposition, including its global phase."""
+    expanded = []
+    for gate in word:
+        if gate[0] != 'CCX':
+            expanded.append(gate)
+            continue
+        _, left, right, target = gate
+        expanded += [('H', target), ('CX', right, target), ('TDG', target),
+                     ('CX', left, target), ('T', target), ('CX', right, target),
+                     ('TDG', target), ('CX', left, target), ('T', right),
+                     ('T', target), ('H', target), ('CX', left, right),
+                     ('T', left), ('TDG', right), ('CX', left, right)]
+    return expanded
+
+
+def _apply_native_word(width, word, columns):
+    """Propagate complete initialized columns without a square circuit matrix."""
+    result = columns.copy()
+    indices = np.arange(1 << width)
+    low = {q: indices[(indices & (1 << q)) == 0] for q in range(width)}
+    high = {q: low[q] | (1 << q) for q in range(width)}
+    phases = {'S': 1j, 'SDG': -1j, 'T': np.exp(1j * np.pi / 4),
+              'TDG': np.exp(-1j * np.pi / 4)}
+    for name, *qubits in word:
+        if name == 'X':
+            result = result[indices ^ (1 << qubits[0])]
+        elif name == 'CX':
+            control, target = qubits
+            result = result[indices ^ (((indices >> control) & 1) << target)]
+        elif name == 'H':
+            q = qubits[0]
+            row0, row1 = result[low[q]].copy(), result[high[q]].copy()
+            result[low[q]] = (row0 + row1) / np.sqrt(2)
+            result[high[q]] = (row0 - row1) / np.sqrt(2)
+        else:
+            result[high[qubits[0]]] *= phases[name]
+    return result
+
+
+def _native_two_layer_frame_fixture():
+    """Tiny native two-clean frame; this is not the asymptotic compiler emitter.
+
+    Three source bits encode two fractional bits. A single dirty selector
+    suffices for these miniature tables by an explicit row-by-row echo.
+    The precision is intentionally below the theorem's prescribed schedule.
+    """
+    core = [0, 1, 2]
+    selector, z, system0, system1, a, b = 3, 4, 5, 6, 7, 8
+    width = 9
+    source = _source_word(len(core))
+    inverse_source = _adjoint(source)
+    mword = _optimized_source_word(len(core))
+    control1 = inverse_source + [('CX', a, core[0])] + source
+    control0 = inverse_source + [('X', a), ('CX', a, core[0]), ('X', a)] + source
+    # R = I - 2 |00><00| tests exactly the two initialized flags.
+    reflection = [('X', a), ('X', b), ('H', b), ('CX', a, b),
+                  ('H', b), ('X', b), ('X', a)]
+    minus_identity = [('X', a), ('S', a), ('S', a),
+                      ('X', a), ('S', a), ('S', a)]
+
+    def layer(target, prefix, suffix, angles):
+        assert len(prefix) <= 1 and len(suffix) <= 1
+        address = [b, *prefix]
+        query = []
+        for x, theta in enumerate(angles):
+            for beta, value in enumerate((np.cos(theta), np.sin(theta))):
+                k = int(np.clip(np.rint((1 - value) * 2), 0, 4))
+                active_mask = sum(bit << j for j, bit in enumerate(_sign_word(k, 2)))
+                delta = active_mask ^ beta  # Inactive encoding f0(b) = b e0.
+                row = beta + 2 * x
+                negate = [('X', q) for j, q in enumerate(address) if not (row >> j) & 1]
+                mark = [('CX', address[0], selector)] if not prefix else [('CCX', *address, selector)]
+                insert = [('CCX', selector, z, q) for j, q in enumerate(core) if (delta >> j) & 1]
+                query += negate + mark + insert + mark + insert + _adjoint(negate)
+        # h = [suffix=0] for layer zero and h = 1 for the empty suffix.
+        predicate = [('X', z)] + [('CX', q, z) for q in suffix]
+        echo = predicate + query + predicate + query
+        hadamards = [('H', q) for q in core]
+        baseline = [('H', core[0]), ('CX', b, core[0]), ('H', core[0])]
+        phase = hadamards + echo + hadamards + baseline
+        scalar = ([('H', a)] + control1 + _adjoint(phase) + mword
+                  + phase + control0 + [('H', a)])
+        select = [('SDG', target), ('CX', b, target), ('S', target), ('SDG', b)]
+        block = _expand_toffolis([('H', b)] + scalar + select + [('H', b)])
+        amplified = block + reflection + _adjoint(block) + reflection + block + minus_identity
+        return amplified
+
+    angles = (0.37, 0.21, 0.91)
+    words = (layer(system0, [], [system1], angles[:1]),
+             layer(system1, [system0], [], angles[1:]))
+    logical0 = np.eye(4, dtype=complex)
+    logical0[np.ix_([0, 1], [0, 1])] = _rotation(angles[0])
+    logical1 = np.zeros((4, 4), dtype=complex)
+    logical1[np.ix_([0, 2], [0, 2])] = _rotation(angles[1])
+    logical1[np.ix_([1, 3], [1, 3])] = _rotation(angles[2])
+    # Only a and b are initialized; every logical and dirty basis column occurs.
+    embedding = np.eye(1 << width, dtype=complex)[:, :1 << a]
+    return width, words, (logical0, logical1), angles, embedding
+
+
 class OperatorSourceCompilerTests(unittest.TestCase):
+    def test_optimized_native_source_counts_and_transfer_witnesses(self):
+        for width in range(2, 6):
+            word = _optimized_source_word(width)
+            source = _word_matrix(width, word)
+            _, gammas, amplitudes = _operator_source(width)
+            expected = sum(amplitude * gamma for amplitude, gamma in zip(amplitudes, gammas))
+            np.testing.assert_allclose(source, expected, atol=ATOL, rtol=0)
+            self.assertEqual(sum(gate[0] in ('T', 'TDG') for gate in word), 2 * width - 4)
+            witness = _pauli(width, {width - 1: Z})
+            transfer = np.trace(witness @ source @ witness @ source.conj().T) / (1 << width)
+            self.assertAlmostEqual(transfer.real, 1 - 2 ** (2 - width), delta=ATOL)
+            self.assertAlmostEqual(transfer.imag, 0, delta=ATOL)
+
+            forward = _source_word(width)
+            controlled_word = _adjoint(forward) + [('CX', width, 0)] + forward
+            controlled = _word_matrix(width + 1, controlled_word)
+            zero = np.zeros_like(source)
+            np.testing.assert_allclose(controlled, np.block([[np.eye(1 << width), zero],
+                                                             [zero, expected]]), atol=ATOL, rtol=0)
+            self.assertEqual(sum(gate[0] in ('T', 'TDG') for gate in controlled_word), 2 * width - 2)
+            controlled_witness = np.kron(I2, witness)
+            transfer = np.trace(controlled_witness @ controlled @ controlled_witness
+                                @ controlled.conj().T) / (1 << (width + 1))
+            self.assertAlmostEqual(transfer.real, 1 - 2 ** (1 - width), delta=ATOL)
+            self.assertAlmostEqual(transfer.imag, 0, delta=ATOL)
+
+    def test_exact_native_toffoli_phase_and_inverse(self):
+        native = _expand_toffolis([('CCX', 0, 1, 2)])
+        expected = _word_matrix(3, [('CCX', 0, 1, 2)])
+        np.testing.assert_allclose(_word_matrix(3, native), expected, atol=ATOL, rtol=0)
+        np.testing.assert_allclose(_word_matrix(3, native + _adjoint(native)),
+                                   np.eye(8), atol=ATOL, rtol=0)
+        self.assertEqual(sum(gate[0] in ('T', 'TDG') for gate in native), 7)
+
+    def test_native_two_clean_full_frame_composition_without_reset(self):
+        width, words, logical, angles, embedding = _native_two_layer_frame_fixture()
+        self.assertEqual(embedding.shape, (512, 128))  # Exactly two clean flags.
+        self.assertTrue(all(gate[0] in ('X', 'H', 'S', 'SDG', 'T', 'TDG', 'CX')
+                            for word in words for gate in word))
+        identity_dirty = np.eye(32)
+        ideal = [np.kron(layer, identity_dirty) for layer in logical]
+        outputs = [_apply_native_word(width, word, embedding) for word in words]
+        errors = [np.linalg.norm(output - embedding @ target, ord=2)
+                  for output, target in zip(outputs, ideal)]
+        # Check each full output against the independent rotation and the
+        # normalization-two OAA bound, including all rejected flag amplitudes.
+        for error, layer_angles in zip(errors, (angles[:1], angles[1:])):
+            zeta = max(np.linalg.norm(np.round(2 * np.array([np.cos(theta), np.sin(theta)])) / 2
+                                      - np.array([np.cos(theta), np.sin(theta)]))
+                       for theta in layer_angles)
+            self.assertLess(zeta, 0.25)
+            self.assertLessEqual(error, 4 * zeta + ATOL)
+        output = _apply_native_word(width, words[1], outputs[0])
+        expected = embedding @ np.kron(logical[1] @ logical[0], identity_dirty)
+        full_error = np.linalg.norm(output - expected, ord=2)
+        self.assertGreater(full_error, 1e-3)
+        self.assertLessEqual(full_error, sum(errors) + ATOL)
+        np.testing.assert_allclose(output.conj().T @ output, np.eye(128), atol=ATOL, rtol=0)
+
+        # The next actual unitary consumes the entire previous output, including
+        # nonzero leakage; replacing that output by a clean projection changes it.
+        projected = outputs[0].copy()
+        projected[128:] = 0
+        self.assertGreater(np.linalg.norm(outputs[0] - projected, ord=2), 1e-3)
+        reset_output = _apply_native_word(width, words[1], projected)
+        self.assertGreater(np.linalg.norm(output - reset_output, ord=2), 1e-3)
+        inactive = [column for column in range(128) if (column >> 6) & 1]
+        np.testing.assert_allclose(outputs[0][:, inactive], embedding[:, inactive], atol=ATOL, rtol=0)
+
+        # The selector and suffix control return exactly for all their arbitrary
+        # input columns. Approximate return of the dirty source core is included
+        # in full_error. The full-column norm also covers an arbitrary reference.
+        rows, columns = np.indices(output.shape)
+        changed_helpers = ((rows ^ columns) & ((1 << 3) | (1 << 4))) != 0
+        np.testing.assert_allclose(output[changed_helpers], 0, atol=ATOL, rtol=0)
+
     def test_native_geometric_operator_source(self):
         for width in range(2, 6):
             source, gammas, amplitudes = _operator_source(width)
@@ -565,6 +752,78 @@ class OperatorSourceCompilerTests(unittest.TestCase):
         self.assertGreater(np.linalg.norm(frame_output - retained_clean_column, ord=2), 1e-3)
         self.assertGreater(np.linalg.norm(actual - diagonal @ retained_clean_column, ord=2), 1e-3)
         np.testing.assert_allclose(actual[128:], 0, atol=ATOL, rtol=0)
+
+    def test_general_u2_multiplexor_euler_phase_and_four_stage_composition(self):
+        # Matrix-block fixture, not a native scalable multiplexor emitter.
+        # Core0..2 is dirty; target3 and address4 are arbitrary; only a5,b6
+        # are initialized. Every stage reuses the same flags and source core.
+        core, target, address, a, b = [0, 1, 2], 3, 4, 5, 6
+        embedding = np.eye(128, dtype=complex)[:, :32]
+        k = H @ np.diag([1, -1j])  # K=HS†, so K Y K†=Z.
+        np.testing.assert_allclose(k @ Y @ k.conj().T, Z, atol=ATOL, rtol=0)
+        local_k = np.kron(np.eye(4), np.kron(k, np.eye(8)))
+
+        def rz(theta):
+            return np.diag([np.exp(-1j * theta), np.exp(1j * theta)])
+
+        def addressed(blocks):
+            zero = np.zeros((2, 2), dtype=complex)
+            return np.kron(np.block([[blocks[0], zero], [zero, blocks[1]]]), np.eye(8))
+
+        cases = (
+            ((np.pi / 2, np.pi), (np.pi / 2, -np.pi / 2),
+             (0, np.pi / 2), (np.pi, np.pi / 2)),
+            ((0.37, -1.03), (0.29, -0.53), (0.41, 1.07), (-0.23, 0.61)),
+        )
+        for case_index, (alpha, beta, gamma, delta) in enumerate(cases):
+            with self.subTest(exact=case_index == 0):
+                stages, ideals = [], []
+                # Chronological order is delta, gamma, beta, alpha.
+                for kind, angles in (('z', delta), ('y', gamma), ('z', beta), ('phase', alpha)):
+                    blocks = []
+                    for theta in angles:
+                        if kind == 'phase':
+                            unitary, initialized, _ = _two_flag_diagonal(2, theta)
+                        else:
+                            unitary, initialized, _, _ = _two_flag_block(2, theta)
+                        actual = _amplify(unitary, initialized)[0]
+                        if kind == 'z':
+                            actual = local_k @ actual @ local_k.conj().T
+                        blocks.append(actual)
+                    active = [*core, a, b] if kind == 'phase' else [*core, target, a, b]
+                    stages.append(_embed_addressed_blocks(7, active,
+                                                           lambda values: blocks[values[address]]))
+                    factor = ((lambda theta: np.exp(1j * theta) * I2) if kind == 'phase'
+                              else rz if kind == 'z' else _rotation)
+                    ideals.append(addressed([factor(theta) for theta in angles]))
+
+                # Construct the independent literal U(2) blocks directly from
+                # their Euler expression, including relative address phases.
+                ideal = addressed([np.exp(1j * alpha[x]) * rz(beta[x])
+                                   @ _rotation(gamma[x]) @ rz(delta[x]) for x in range(2)])
+                expected = embedding @ ideal
+                errors = [np.linalg.norm(stage @ embedding - embedding @ factor, ord=2)
+                          for stage, factor in zip(stages, ideals)]
+                first_output = stages[0] @ embedding
+                output = first_output
+                for stage in stages[1:]:
+                    output = stage @ output
+                full_error = np.linalg.norm(output - expected, ord=2)
+                self.assertLessEqual(full_error, sum(errors) + ATOL)
+                np.testing.assert_allclose(output.conj().T @ output, np.eye(32), atol=ATOL, rtol=0)
+                if case_index == 0:
+                    np.testing.assert_allclose(output, expected, atol=ATOL, rtol=0)
+                    discarded_phases = addressed([rz(beta[x]) @ _rotation(gamma[x])
+                                                  @ rz(delta[x]) for x in range(2)])
+                    self.assertGreater(np.linalg.norm(output - embedding @ discarded_phases, ord=2), 1.9)
+                else:
+                    self.assertGreater(full_error, 1e-3)
+                    projected = first_output.copy()
+                    projected[32:] = 0
+                    self.assertGreater(np.linalg.norm(first_output - projected, ord=2), 1e-3)
+                    for stage in stages[1:]:
+                        projected = stage @ projected
+                    self.assertGreater(np.linalg.norm(output - projected, ord=2), 1e-3)
 
     def test_missing_mask_and_wrong_oaa_inverse_are_detected(self):
         source = _operator_source(3)[0]

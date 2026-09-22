@@ -11,14 +11,14 @@ chapter below.
 | Chapter | Role |
 |---|---|
 | [Hopf interface](HOPF_INTERFACE.md) | Coordinates, marker columns, singular charts, and addressed layers |
-| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | Complete-input contract, actual adjoints, and sequential reuse |
+| [Frame-safe compilation](FRAME_SAFE_COMPILATION.md) | Complete-input contract, operational necessity, sharp marker sensitivity, and actual adjoints |
 | [Compiler boundaries](COMPILER_BOUNDARIES.md) | Concrete distinctions between state, checkpoint, and complete-frame promises |
-| [Exact compiler theorem](COMPILER_THEOREM.md) | All clean-workspace budgets; echo, decoder, router, and matching size/depth bounds |
-| [Fault-tolerant compiler](FAULT_TOLERANT_COMPILER.md) | Sufficient-clean matching T-count; shared source and full-error accounting |
-| [Two-clean compiler](OPERATOR_SOURCE_COMPILER.md) | Dirty operator source, bank tradeoff, literal diagonal and complex-frame corollaries |
+| [Exact compiler theorem](COMPILER_THEOREM.md) | All clean-workspace budgets; echo, decoder, router, and matching size/CNOT/depth bounds |
+| [Fault-tolerant compiler](FAULT_TOLERANT_COMPILER.md) | Real and complex sufficient-clean matching T-count; shared-source residual proposition |
+| [Two-clean compiler](OPERATOR_SOURCE_COMPILER.md) | Exact source costs, frame/bank bounds, matched diagonal and general multiplexor frontiers, and certified preprocessing |
 | [Borrowed-workspace appendix](BORROWED_WORKSPACE_COMPILER.md) | Exact dirty lookup and predicates; arbitrary-budget bound and restricted matching splice |
 | [QBP consequence](QBP_CONSEQUENCE.md) | Exact substitution, raw-coordinate accuracy, and matched-program accounting |
-| [Approximate QBP](QBP_APPROXIMATION.md) | Fixed-parameter bias with actual circuits, adjoints, and dirty references |
+| [Approximate QBP](QBP_APPROXIMATION.md) | Complete complex gradient, observable sums, rounded weights, correlated dirty reuse, and quantum/classical budgets |
 | [Open problem](OPEN_PROBLEM.md) | The precise unresolved two-clean high-precision endpoint |
 
 ## Evidence and sources

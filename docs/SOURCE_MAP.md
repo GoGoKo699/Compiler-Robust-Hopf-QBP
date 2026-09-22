@@ -88,7 +88,7 @@ and is reconciled in [`SYNC.md`](../SYNC.md) and
 
 | ID | Result | Analytic proof | Implementation and finite evidence |
 |---|---|---|---|
-| R1 | complete frame safety implies exact inverse-frame substitution | [frame-safe compilation](FRAME_SAFE_COMPILATION.md) | boundary fixtures in [`compiler_boundaries.py`](../compiler_robust_hopf/compiler_boundaries.py) |
+| R1 | complete frame safety implies substitution and, at regular points with exact prepared state, is necessary up to common phase for all observable-dependent fixed-decoder means | [frame-safe compilation](FRAME_SAFE_COMPILATION.md) | actual probability-decoder tests with complex phases, workspace leakage, and singular markers |
 | R2 | one correct state column need not preserve the decoded gradient | [two-qubit argument](../REVIEW.md#12-a-complete-two-qubit-obstruction) | [`test_compiler_boundaries.py`](../tests/test_compiler_boundaries.py) |
 | R3 | the borrowed-suffix echo implements one nonfinal addressed layer with no ancillary wire | [compiler theorem, Lemma Z](COMPILER_THEOREM.md#lemma-z-borrowed-suffix-echo) | [`strict_zero_echo.py`](../compiler_robust_hopf/strict_zero_echo.py), [`test_strict_zero_echo.py`](../tests/test_strict_zero_echo.py) |
 | R4 | the strict-zero frame has $\Theta(N)$ size and $\Theta(n+N/n)$ depth | [compiler theorem, Proposition Z](COMPILER_THEOREM.md#proposition-z-strict-zero-resources) | [`strict_zero_audit.py`](../compiler_robust_hopf/strict_zero_audit.py), exact-rational tests |
@@ -96,7 +96,7 @@ and is reconciled in [`SYNC.md`](../SYNC.md) and
 | R6 | a clean binary–one-hot decoder has $3\cdot2^t-2-t$ workspace, $O(t)$ depth, and $O(2^t)$ size | [compiler theorem, Lemma P](COMPILER_THEOREM.md#lemma-p-clean-binaryone-hot-decoder) | [`tree_decoder.py`](../compiler_robust_hopf/tree_decoder.py), [`test_tree_decoder.py`](../tests/test_tree_decoder.py) |
 | R7 | an explicit coherent router realizes the tail direct sum and clears all data, token, copy, and flag work registers | [compiler theorem, Lemma R](COMPILER_THEOREM.md#lemma-r-explicit-coherent-router) | [`router.py`](../compiler_robust_hopf/router.py), [`test_router.py`](../tests/test_router.py) |
 | R8 | the maximal feasible cut attains $O\!\left(n+\frac{N}{n+m}\right)$ depth for every large workspace, including $s=1$ | [compiler theorem, Proposition R](COMPILER_THEOREM.md#proposition-r-maximal-cut-depth) | [`resource_bounds.py`](../compiler_robust_hopf/resource_bounds.py), broad-grid tests |
-| R9 | parameter capacity and output light cones give matching lower bounds | [compiler theorem, Section 9](COMPILER_THEOREM.md#9-matching-lower-bounds) | diagnostic checks in [`test_resource_bounds.py`](../tests/test_resource_bounds.py) |
+| R9 | parameter capacity and output light cones give matching size/depth bounds; fusing free one-qubit slots gives the separate CNOT lower bound for arbitrary clean workspace | [compiler theorem, Section 9](COMPILER_THEOREM.md#9-matching-lower-bounds), using the standard parameter method of [Iten et al., Section III](https://arxiv.org/html/1501.06911v4#S3) | analytic dimension proof and resource diagnostics |
 | R10 | the real frame and phase-dressed complex magnitude frame attain the all-workspace optimum | [compiler theorem, main theorem](COMPILER_THEOREM.md#main-theorem-optimal-exact-hopf-frame-compilation) | [`unified_compiler.py`](../compiler_robust_hopf/unified_compiler.py), both resource ledgers |
 | R11 | frame-safe compilation preserves the global record and introduces no additional asymptotic depth factor in the matched program | [QBP consequence](QBP_CONSEQUENCE.md) | decoder and boundary tests; reviewer walkthrough |
 
@@ -123,21 +123,38 @@ from the exact clean-workspace size–depth theorem.
 | F7 | [Li–Ou–Wang–Yao–Yuan–Zhang, arXiv:2607.28260v1](https://arxiv.org/html/2607.28260v1), Sections 3–4 | sparse QROM and sparse-state comparison | different input families; no general full-frame conclusion is imported |
 | F8 | Khattar–Gidney, arXiv:2407.17966v2, Sections 3, 4 and 7.4 | conditionally clean and dirty selector context | cancellation and selector reuse are established techniques, not a separate contribution here |
 | F9 | [Kerenidis–Prakash, arXiv:2202.00054v2](https://arxiv.org/html/2202.00054v2), Definitions 4.4/4.6 and Theorem 4.9; [Chee et al., arXiv:2301.07477](https://arxiv.org/pdf/2301.07477), Appendix C | full-space Clifford loaders and their scalar/antisymmetric product decomposition | the Pauli representation and overlap algebra predate this work; the operator-source note supplies a native geometric specialization and dirty-programmed rotation construction |
+| F10 | [Low–Wiebe, arXiv:1805.00675v2](https://arxiv.org/html/1805.00675v2), Lemma 13; [Fang–Lin–Tong, arXiv:2208.06941v2](https://arxiv.org/html/2208.06941v2), Section 2.4, Lemma 3 and Appendix D | coherent product compression with logarithmic failure-history work | failure tracking is inherited; residual factorization, shared-source reuse and the charged frame schedule are the local specialization |
 | F11 | [Berry–Childs–Cleve–Kothari–Somma, arXiv:1412.4687](https://arxiv.org/pdf/1412.4687), Eqs. (11)–(15) | normalization-two oblivious amplification and its cubic accepted block | amplification is inherited; the local proofs explicitly bound the complete initialized isometry, including rejected work retained coherently |
+| F12 | [Yamazaki–Akibue, arXiv:2603.14202v1](https://arxiv.org/html/2603.14202v1), Theorem 1, Section 3 and Theorem 4 | leading precision constants for complete controlled SU(2) synthesis | the dirty-assisted construction retains a precision-length clean instruction register; the ancilla-free construction has different scaling and a typical-target guarantee |
+| F13 | [Yuan–Zhang–Zi, arXiv:2608.17846v2](https://arxiv.org/html/2608.17846v2), Theorem I.1 and Definition II.1; [Fang–Heunen–Wang, arXiv:2607.12907v1](https://arxiv.org/html/2607.12907v1), Theorem 1.2 and Corollary 3.8 | current generic-unitary and near-Clifford comparisons | different target families and clean allocations; the initialized-isometry contract already appears in general-unitary synthesis |
+| F14 | [Vasconcelos–Gilyén, arXiv:2507.07900v2](https://arxiv.org/html/2507.07900v2), Sections 2–3 and Appendix B | block-work uncomputation, exact-history lower bounds and approximate product compression | original clean work is still needed during a query; the lower bound is for the defined coherent-measurement class, and approximate compression needs near-identity dilations |
+| F15 | [Ma–Joven–Liu, arXiv:2609.11153v1](https://arxiv.org/html/2609.11153v1), Theorem 3.1 | clean ancilla compression for block-encoding counting bounds | at most $`n+2T`$ clean ancillas, with possible normalization change; no two-clean unitary conclusion |
+| F16 | [Motlagh–Pocrnic, arXiv:2605.20334v1](https://arxiv.org/html/2605.20334v1), Section II | improved dirty-QROM constants | the displayed output word remains initialized; no asymptotic or constant-factor lookup improvement is claimed here |
 
 Standard Pauli linear combinations, reversible arithmetic, and oblivious
 amplitude amplification are used with their actual preparations and adjoints.
 The operator and workspace arguments that instantiate them are part of the
 local construction, not additional oracle assumptions.
 
+The exact operator-source lower bound uses
+[Gosset–Kliuchnikov–Mosca–Russo, Sections 2.3 and 4](https://arxiv.org/html/1308.4134v1),
+for the Pauli-transfer denominator method. The local proof supplies its
+source-specific witnesses and normalization through returned helpers.
+The correlated-shot extension uses
+[Pinelis, Theorem 3.5](https://arxiv.org/pdf/1208.2200v2), with bounded
+Hilbert-space martingale increments; the concentration inequality itself
+is inherited.
+
 | ID | Local fault-tolerant result | Contribution and support |
 |---|---|---|
 | R12 | exact compact capped geometric preparation | simultaneous linear T count and logarithmic peak clean width, with ordinary binary labels and exact temporary return; refines the implementation of the established geometric source |
 | R13 | addressed SU(2) sampling and direct frame composition | complete operator contract with small clean work; combines fixed Pauli atoms, geometric bit sampling, and charged dirty lookup |
-| R14 | shared-source composition of frame residuals | the principal uniform-precision construction: accepted-branch shifts, retained source, failure tracking, and one final amplification; see [theorem and proof](FAULT_TOLERANT_COMPILER.md) |
+| R14 | shared-source composition of frame residuals | the uniform-precision construction combines accepted-branch shifts and a retained source with the inherited compression gadget F10 and amplification F11; see [theorem and proof](FAULT_TOLERANT_COMPILER.md) |
 | R15 | matching T-count in the stated workspace regimes | the sufficient-clean [theorem](FAULT_TOLERANT_COMPILER.md) plus the F3/F4 reductions; the separate all-clean-budget [corollary and borrowed-workspace proof](BORROWED_WORKSPACE_COMPILER.md) also uses the arbitrary-budget compiler under its additional condition |
-| R16 | fixed-parameter bounded-score robustness | [QBP approximation](QBP_APPROXIMATION.md): full-isometry and observable errors bound estimator bias, without differentiating a compiled word or proving gradient-query optimality |
-| R17 | two-clean operator-source compiler and corollaries | [proof](OPERATOR_SOURCE_COMPILER.md): full-frame composition gives $T=O(N+nL)$ for $b\ge L+n+7$; dirty banks give $O(\sqrt{NL}+nL+NL/b)$ for $b\ge2(L+n+7)$; literal diagonals and the phase-dressed magnitude frame have their stated separate reservations; operator-core return error is included in the norm |
+| R16 | fixed-parameter bounded-score robustness | [QBP approximation](QBP_APPROXIMATION.md): complete complex gradient, reflection sums, rounded weights, correlated dirty-bank reuse, and quantum/classical budgets; no derivative of a compiled word or gradient-query optimum |
+| R17 | two-clean operator-source compiler and corollaries | [proof](OPERATOR_SOURCE_COMPILER.md): full-frame $O(N+nL)$ bound and dirty-bank refinement; matched literal diagonal and general one-target U(2) multiplexor frontiers; all have separate explicit reservations and include operator-core return error |
+| R18 | exact geometric operator-source costs | [source proof](OPERATOR_SOURCE_COMPILER.md#exact-source-costs-including-returned-helpers): $2m-4$ uncontrolled and $2m-2$ controlled T gates, even with returned helpers; native words and transfer witnesses checked for small $m$ |
+| R19 | sufficient-clean complex-frame extension | [Corollary 7](FAULT_TOLERANT_COMPILER.md#92-literal-diagonals-and-the-complex-magnitude-frame): literal diagonal SU(2) embedding, same-pool composition, and diagonal-subfamily lower bounds |
 
 For polynomial accuracy-bit budgets, the direct sampler can already attain the
 matching T count. That regime is not attributed to the later shared-source
@@ -153,6 +170,10 @@ the lower bounds stated in the fault-tolerant chapter.
 
 The source audit supports these precise dependencies and comparisons. It does
 not certify priority or infer novelty from a bounded search finding no match.
+The current general-unitary benchmark includes Yuan–Zhang–Zi rather than
+treating Tan as the newest result. The two-clean literal-diagonal theorem
+is separately compared with GKW and Yamazaki–Akibue in
+[related work, Section 12](RELATED_WORK.md#12-contemporary-comparisons-and-the-broader-compiler-contribution).
 
 ## 6. Evidence classification
 

@@ -649,7 +649,11 @@ source disturbance is propagated contractively in the following hybrid.
 
 Sharing $`F`$ without a record would allow a failed component to return
 to $`F=0`$ at a later stage. A small counter supplies the required
-record. Initialize a counter $`H`$ of
+record. This is the established block-encoding compression mechanism of
+Low–Wiebe [5], in the fixed-product form of Fang–Lin–Tong [6]. The
+failure-count convention below uses the same mechanism and is proved here
+to make its source and scratch boundaries explicit; generic compression is
+not a new contribution. Initialize a counter $`H`$ of
 $`\lceil\log_2R\rceil`$ bits; omit it when $`R=1`$. Run each actual
 $`K_i`$ unconditionally, then its system coarse circuit $`C_i`$. Between
 successive stages increment $`H`$ if and only if $`F\ne0`$. There are
@@ -791,6 +795,187 @@ This is the inverse interface used by downstream differential-frame
 algorithms. It requires the complete contract, rather than merely an
 approximation to $`W|0^n\rangle`$.
 
+### 9.1 Transfer to other products with small residual dictionaries
+
+The argument has a reusable sufficient-condition form. Its content is the
+combination of a shared geometric precision source with explicitly charged
+residual dictionaries; neither product compression nor amplification alone
+is new.
+
+**Proposition 6 — shared-source residual compilation.** Let
+$`W=W_R\cdots W_1`$ be a specified product of unitaries on the same system.
+Let $`C_i`$ be exact, finite Clifford+T circuits whose scratch and borrowed
+work return exactly on every logical input. Suppose that their residuals
+admit classically evaluable dictionaries
+
+```math
+C_i^\dagger W_i-I
+=\sum_{\ell=0}^{Q_i-1} a_{i\ell}A_{i\ell},
+\qquad a_{i\ell}\geq0,\quad \|A_{i\ell}\|\leq1,
+```
+
+where each padded $`Q_i`$ is a power of two. For the $`L,p,J`$ of
+Sections 1 and 6, assume
+
+```math
+a_{i\ell}\leq
+\frac{p}{4(1-p)Q_iJ},\qquad
+p=2^{-\lceil\log_2(8R)\rceil},\qquad
+J=2^{\lceil\log_2(L+8)\rceil}.
+```
+
+Assume phase-correct, coherently selected unitary dilations of the
+$`A_{i\ell}`$ are supplied as finite circuits. Their action on rejected
+inputs is specified, and their table and temporary work return exactly on
+all inputs. Let $`C_T,C_G`$ denote the sums of the coarse-circuit T and
+Clifford costs. Let $`A_T,A_G`$ denote the sums of the atom-selection costs,
+including controls, endpoint or other metadata queries, and their actual
+inverses, but excluding the residual Boolean-digit queries charged below.
+
+Choose a simultaneous clean reservation of $`r`$ wires that fits all
+source, private, mode, counter, label, output, and exact temporary fields,
+with disjoint fields whenever they are live together. In particular, it
+must include a constant multiple of
+$`\log J+\log(R+1)+\max_i\log Q_i`$ and the selected-atom work.
+Let $`K\geq1`$ be additional usable clean or borrowed bank capacity, never
+counted simultaneously as this reservation. Then a complete initialized
+isometry approximating $`W`$ to error $`\eta`$ exists with
+
+```math
+T=O\!\left(
+C_T+A_T+L+\sqrt L\sum_i\sqrt{Q_i}
++\frac{L}{K}\sum_iQ_i+Rr\right),
+```
+
+```math
+G=O\!\left(C_G+A_G+L+L\sum_iQ_i+Rr\right).
+```
+
+Its borrowed banks return exactly; all initialized output error, including
+source and private-work leakage, is charged in the isometry norm. The
+proposition does not assert that an arbitrary unitary product has such a
+dictionary or cheap coarse circuits and selected atoms.
+
+*Proof.* Put $`\varepsilon_i=p/((1-p)Q_iJ)`$. The coefficient hypothesis
+permits precisely the certified downward digit rounding in (21), with
+no sign or exact-zero oracle. For each $`i`$, prepare the rare-mode and
+uniform labels and use the source shift $`S_{2k}`$ alongside the selected
+atom dilation. Independent flags separate source rejection, atom rejection,
+and the digit-zero case. The zero-private-work block is exactly (23), with
+the new atoms. Its norm is at most one because it is a block of an actual
+unitary. The bounds $`\|A_{i\ell}\|\leq1`$ and (22) prove (24)
+unchanged, with $`D_i=(1-p)C_i^\dagger W_i`$.
+
+Apply the failure counter between stages and the exact coarse circuit
+$`C_i`$ after its local kernel. The accepted block is the product of the
+local contractions, using one source throughout. Contractive telescoping,
+one actual source inverse, and one global padding mode give (25)–(26).
+Lemma 3 then gives the complete output estimate (27), including rejected
+work; every inverse is the inverse of its actual finite circuit.
+
+Each residual Boolean table has $`Q_iJ`$ entries. Equation (9) gives
+$`O(\sqrt{Q_iJ}+Q_iJ/K)`$ T gates and $`O(Q_iJ)`$ Clifford gates per
+table. Source preparation and the global mode cost $`O(J)=O(L)`$ once
+per stream. Arithmetic, private-zero predicates, counter updates, and final
+reflections cost $`O(Rr)`$ using the reserved exact scratch. The three
+stream appearances in Lemma 3 multiply all costs by an absolute constant.
+Summing establishes the ledger. ∎
+
+For the Hopf grouping, (17) supplies
+$`\sum_iQ_i=O(N)`$ and $`\sum_i\sqrt{Q_i}=O(\sqrt N)`$, while
+Section 9 supplies the coarse and atom-selection costs. This is where the
+structure of the prescribed frame enters the general sufficient condition.
+
+The counter is not evidence for a lower bound on the clean workspace of a
+Hopf compiler. Vasconcelos–Gilyén [7] prove a logarithmic history bound for
+their specified multiple-coherent-measurement circuit class, and analyze
+approximate compression under additional hypotheses. In particular, their
+near-identity assumption bounds the full supplied block-encoding unitary.
+A small accepted residual alone does not establish that hypothesis for the
+rare-mode dilation used here.
+
+### 9.2 Literal diagonals and the complex magnitude frame
+
+**Corollary 7 — phase-dressed matching bound.** After increasing the
+absolute reservation constant if necessary, Theorem 1 also holds for the
+specified complex magnitude frame
+
+```math
+W_{\mathbb C,\mathrm{mag}}=D_\phi W_{\mathbb R},\qquad
+D_\phi=\sum_{x=0}^{N-1}e^{i\phi_x}|x\rangle\langle x|.
+```
+
+Angles and phases are supplied independently and permit certified
+evaluation. For every $`a\geq C(n+h)`$ and $`b\geq0`$, the worst-case
+minimum T-count over this family is
+
+```math
+\tau_{\mathbb C,\mathrm{mag}}(n,a,b,\eta)
+=\Theta\!\left(\sqrt{NL}+L+\frac{NL}{n+a+b}\right),
+\qquad G=O(NL).
+```
+
+The upper bound has the same complete initialized-isometry contract and
+exact borrowed-bank return as Theorem 1. It preserves literal phases,
+including a common phase in $`D_\phi`$. This concerns the prescribed
+magnitude frame; it does not turn the separate leaf-phase derivative
+record into additional columns of that frame.
+
+*Proof.* Reserve one clean helper $`t`$ inside the logarithmic clean
+allocation. Apply Lemma 4 with $`S=N`$, system address $`x`$, target
+$`t`$, and
+
+```math
+U_x=\begin{pmatrix}e^{i\phi_x}&0\\0&e^{-i\phi_x}\end{pmatrix}
+\in\mathrm{SU}(2).
+```
+
+On $`t=0`$, the ideal addressed unitary is exactly $`D_\phi`$ and returns
+$`t`$ to zero. The complete output guarantee of Lemma 4 therefore gives a
+literal diagonal compiler of error $`\eta/2`$ with
+$`T=O(\sqrt{NL}+L+NL/K)`$ and $`G=O(NL)`$. Its initialized reservation
+is one helper plus $`O(n+\log(L+1))`$ sampler and exact temporary work.
+The helper is part of the final clean-return contract, never a borrowed
+bank. Reserving a sufficiently large constant multiple of $`n+h`$ leaves
+$`K=\Theta(n+a+b)`$ free bank capacity, as in (5).
+
+Compile $`W_{\mathbb R}`$ to error $`\eta/2`$ with Theorem 1 and reuse
+the same clean pool for the diagonal stage. Let their actual circuits be
+$`V_R,V_D`$, and write $`J_a`$ for appending the entire common clean
+pool. The two stage contracts give
+
+```math
+\begin{aligned}
+&\|V_DV_RJ_a-J_a(D_\phi W_{\mathbb R}\otimes I_b)\|\\
+&\quad\leq
+\|V_D(V_RJ_a-J_a(W_{\mathbb R}\otimes I_b))\|\\
+&\qquad\quad+
+\|(V_DJ_a-J_a(D_\phi\otimes I_b))
+(W_{\mathbb R}\otimes I_b)\|\leq\eta.
+\end{aligned}
+```
+
+Thus earlier coherent leakage is propagated by the actual unitary; the
+helper and sampler are not assumed to have been reset between stages.
+Both stages return their borrowed banks exactly on all inputs. Replacing
+$`L`$ by $`L+1`$ for the split error changes only absolute constants in
+the gate and width bounds.
+
+For the lower bound, set all magnitude angles to zero. Then
+$`W_{\mathbb R}=I`$ and the family contains every literal diagonal
+$`D_\phi`$. This restriction is valid even on the canonical complex
+magnitude domain $`[0,\pi/2]`$; it does not require the larger final-angle
+domain of the real chart. GKW Theorem 4.2 gives
+$`\Omega(\sqrt{NL}+L)`$ for the diagonal subfamily. For the width term,
+choose each phase independently from
+$`\{4\eta j:0\leq j\leq\lfloor1/(4\eta)\rfloor\}`$.
+Distinct diagonals have operator distance greater than $`2\eta`$,
+because two different phases differ by at least $`4\eta`$ and at most
+one radian. This gives at least $`(1/(4\eta))^N`$ distinguishable
+literal diagonals. Applying the finite-width count (30) and the same
+small-width/large-width split as in Section 10.2 supplies
+$`\Omega(NL/(n+a+b))`$. ∎
+
 ## 10. Matching lower bounds and their lineage
 
 Two different bounds are required: one for precision at arbitrary
@@ -907,10 +1092,14 @@ the angle descriptions must permit the required certified evaluation.
 The $`O(L)`$ precision charge comes from a constant number of geometric
 source preparations and their actual inverses. Its reuse across the
 whole frame is justified by (22)–(27). Geometric indices and digit
-oracles themselves have earlier precedent; the relevant resource step
-here is their exact logarithmic-width implementation and the shared
-source's complete-frame composition. SelectSwap and the lower-bound
-machinery retain their original attribution. The sufficient reservation
+oracles themselves have earlier precedent, as do compression of block
+products and amplification. The local resource step combines the explicit
+logarithmic-width source implementation, sparse residual dictionaries,
+and the shared source's complete-frame composition. SelectSwap and the
+lower-bound machinery retain their original attribution. Proposition 6
+states the sufficient conditions for this composition independently of
+Hopf frames; Corollary 7 includes the phase-dressed complex magnitude
+frame with the same sufficient-clean asymptotics. The sufficient reservation
 $`a\geq C(n+h)`$ remains part of Theorem 1; the
 [constant-clean endpoint](OPEN_PROBLEM.md) is not
 settled by removing that hypothesis from the displayed formula. A separate
@@ -953,3 +1142,21 @@ remove Theorem 1's sufficient-clean hypothesis by substitution.
    Equations (11)–(15) give normalization-two oblivious amplification and
    its accepted-block polynomial. Section 4 above proves the full-output
    estimate used here without discarding retained work.
+5. Guang Hao Low and Nathan Wiebe, *Hamiltonian Simulation in the
+   Interaction Picture*,
+   [arXiv:1805.00675](https://arxiv.org/html/1805.00675), Lemma 13.
+   The compression gadget composes block encodings without a fresh private
+   register for every factor.
+6. Di Fang, Lin Lin, and Yu Tong, *Time-marching based quantum solvers for
+   time-dependent linear differential equations*, Quantum **7**, 955
+   (2023), [arXiv:2208.06941v2](https://arxiv.org/html/2208.06941v2),
+   Section 2.4, Lemma 3, and Appendix D. Their simplified fixed-product
+   compression gadget uses a coherent counter and one shared private
+   register, followed by amplification where appropriate.
+7. Francisca Vasconcelos and András Gilyén, *Methods for Reducing
+   Ancilla-Overhead in Block Encodings*,
+   [arXiv:2507.07900v2](https://arxiv.org/html/2507.07900v2),
+   Sections 3.1–3.2 and Appendix B.2.2. Their exact-history lower bound
+   concerns a specified multiple-coherent-measurement circuit class;
+   their approximate-product results require additional conditions on
+   the full block-encoding unitaries.

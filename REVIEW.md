@@ -80,6 +80,11 @@ hold in the worst case over the Hopf-frame family, uniformly in the
 clean-workspace budget. They do not impose the same cost on every individual
 frame.
 
+The separate CNOT count is $\Theta(N)$ for $n\ge2$, uniformly over clean
+workspace, even when one-qubit gates are free. The $n=1$ count is zero.
+The [formal lower-bound argument](docs/COMPILER_THEOREM.md#cnot-count-with-unrestricted-clean-workspace)
+removes inactive ancillas and fuses one-qubit slots between CNOTs.
+
 The complex unitary is the phase-dressed magnitude frame
 
 ```math
@@ -122,7 +127,8 @@ synthesis allows $\eta>0$. A prepared-column guarantee alone is insufficient
 for this prescribed inverse-frame protocol.
 
 Put $q=n+a+b$, $`L=\max\{6,\lceil\log_2(1/\eta)\rceil\}`$ and
-$h=1+\lceil\log_2(L+n+2)\rceil$. For the real frame, $0<\eta\leq1/64$, and
+$h=1+\lceil\log_2(L+n+2)\rceil$. For either the real or phase-dressed complex
+magnitude frame, $0<\eta\leq1/64$, and
 $a\geq C(n+h)$ with sufficiently large fixed $C$,
 
 ```math
@@ -132,8 +138,8 @@ T^\star=\Theta\left(\sqrt{NL}+L+\frac{NL}{q}\right),
 
 The T bound is a worst-case optimum in its stated workspace regime. It is not
 a T-depth result or simultaneous optimization of Clifford and T gates. The
-exact complex magnitude theorem above and this real-frame T theorem have
-separate scope. A finite-precision QBP consequence follows by controlling
+complex extension follows from an addressed SU(2) diagonal compiler and
+sequential reuse of the same clean pool. A finite-precision QBP consequence follows by controlling
 bounded-score bias, not by differentiating a compiled word.
 
 With two clean qubits, the separate
@@ -157,6 +163,15 @@ conditions stated in Section 9.5.
 ## 1. Why the prescribed completion matters
 
 ### 1.1 Frame-safe compilation
+
+The complete contract also has an operational converse. At a regular chart
+point, suppose a compiler prepares the exact state and is used with its
+actual adjoint and the fixed marker decoder. Preserving every designated
+gradient mean for every Hermitian-unitary observable then forces the full
+clean-input frame, up to one common phase. The
+[necessity and sharp sensitivity proof](docs/FRAME_SAFE_COMPILATION.md#necessity-for-all-observable-dependent-gradient-means)
+also handles workspace leakage and identifies the singular-coordinate and
+fixed-observable exceptions.
 
 Let
 
@@ -1080,6 +1095,9 @@ so reversing the lookup remains valid on failure branches.
 
 Each local kernel has a precise accepted-source relation. A history counter
 prevents an earlier rejected branch from re-entering the final accepted block.
+This counter is the established Low–Wiebe/Fang–Lin–Tong compression gadget;
+the [source map](docs/SOURCE_MAP.md) separates it from the local residual and
+shared-source construction.
 All kernels are actual unitaries: mathematical projections describe blocks;
 there is no intermediate measurement or physical postselection. A contraction
 hybrid bounds the accumulated source error. One inverse source preparation and
@@ -1137,6 +1155,24 @@ addressed rotation. It needs no initialized precision state. The precision cost
 is still paid once per tree depth, leaving the logarithmic gap. The
 [two-clean proof](docs/OPERATOR_SOURCE_COMPILER.md) gives the full construction;
 the [open-problem statement](docs/OPEN_PROBLEM.md) records the remaining gap.
+
+The literal diagonal specialization is independently useful: with two clean
+qubits and $`b\ge2(L+n+5)`$, it attains the worst-case optimum
+$`\Theta(\sqrt{NL}+L+NL/b)`$. Its one-stage precision cost avoids the
+repeated depth charge. The underlying exact operator source also has a sharp
+primitive count: $`2m-4`$ T gates uncontrolled and $`2m-2`$ controlled,
+including arbitrary returned helpers. Primitive optimality does not make
+those costs additive across a complete compiler.
+
+More generally, four addressed Euler factors compile every one-target U(2)
+multiplexor with $`N=2^n`$ blocks at the same matched T-count order with
+two clean qubits and $`b\ge2(L+n+7)`$. Here $n$ counts the address
+qubits, with one additional logical target. The
+[proof](docs/OPERATOR_SOURCE_COMPILER.md#81-general-one-qubit-multiplexors-with-two-clean-qubits)
+includes certified approximate Euler coordinates, literal block phases, and
+sequential reuse through flag leakage. This is a general complete-operator
+application of the mechanism; it does not eliminate the repeated precision
+charge across the Hopf frame's layers.
 
 ---
 
@@ -1241,8 +1277,11 @@ The [complete approximation proof](docs/QBP_APPROXIMATION.md) gives constants,
 borrowed/reference-input scope, and the corresponding T-cost accounting.
 This statement estimates the target gradient at the fixed parameter tuple; it
 does not differentiate the map from parameters to discrete synthesized words.
-The complex leaf-phase stream remains separate. Neither compiler theorem is a
-lower bound on all possible gradient algorithms.
+The separate phase stream uses one forward frame and no inverse. Together
+the two streams cost at most $`S(3t_F+2t_O)`$ T gates for the complete complex
+raw gradient. The same chapter accounts for reflection-sum observables,
+rounded classical weights, and the classical preparation and output work.
+Neither compiler theorem is a lower bound on all possible gradient algorithms.
 
 ## 11. Proof-to-code correspondence
 

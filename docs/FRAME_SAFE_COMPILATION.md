@@ -147,6 +147,103 @@ with untouched registers.  The inverse statement is Lemma 2.  Applying these
 identities to each frame block leaves the complete protocol state unchanged up
 to a tensor factor $\lvert0^m\rangle$.  ∎
 
+### Necessity for all observable-dependent gradient means
+
+The complete-frame contract can also be recovered from the designated gradient
+means themselves. Fix a Hopf parameter tuple, write
+$|\psi\rangle=W|0^n\rangle$ and $|e_j\rangle=W|\lambda(j)\rangle$, and let
+$a_j$ be the real oriented incoming amplitude. Allow a unitary compiler
+$\widetilde V$ with clean-input embedding $J=J_m$ whose prepared state is exact:
+
+```math
+\widetilde VJ|0^n\rangle=e^{i\chi}J|\psi\rangle.
+```
+
+The same compiler and its adjoint are used in the forward and reverse blocks.
+Define its phase-aligned projected marker and marker error by
+
+```math
+|v_j\rangle=e^{-i\chi}J^\dagger\widetilde VJ|\lambda(j)\rangle,
+\qquad
+|d_j\rangle=|v_j\rangle-|e_j\rangle.
+```
+
+No clean return is assumed for the other input columns. Orthogonality of the
+compiled state and marker columns gives $\langle\psi|v_j\rangle=0$, and
+projection gives $`\|v_j\|\leq1`$. The fixed marker decoder has mean
+
+```math
+\mu_j(\widetilde V,O)
+=2a_j\mathrm{Re}\langle v_j|O|\psi\rangle
+```
+
+for a Hermitian-unitary system observable $O$. This follows by taking the
+interference between the reference branch $J|0^n\rangle$ and the reverse
+branch $e^{i\chi}\widetilde V^\dagger JO|\psi\rangle$; workspace components
+orthogonal to the clean reference do not contribute to this correlation.
+
+**Proposition: exact worst-observable sensitivity.**
+
+```math
+\sup_{O=O^\dagger,\ O^2=I}
+|\mu_j(\widetilde V,O)-\mu_j(W,O)|
+=2|a_j|\,\|d_j\|.
+```
+
+The upper bound is Cauchy–Schwarz. If $d_j\neq0$, put
+$`|z\rangle=|d_j\rangle/\|d_j\|`$. Since $z$ is orthogonal to $\psi$, the operator
+
+```math
+O_z=|z\rangle\!\langle\psi|+|\psi\rangle\!\langle z|
+    +I-|\psi\rangle\!\langle\psi|-|z\rangle\!\langle z|
+```
+
+is Hermitian and unitary and sends $\psi$ to $z$. It attains the stated bound.
+When $d_j=0$, the equality is immediate.
+
+At a regular point, where every $a_j\neq0$, equality of every designated
+gradient mean for every allowed observable forces $v_j=e_j$ for all markers.
+Each projected marker then has unit norm, so the corresponding compiled
+column has no workspace leakage. Together with the prepared-state column,
+this proves
+
+```math
+\widetilde VJ=e^{i\chi}JW.
+```
+
+Thus complete frame safety, up to one common phase, is necessary and sufficient
+for universal preservation of the designated means under the exact
+prepared-state assumption. Under the literal phase convention $\chi=0$, this
+is Definition 1. Consistent forward–inverse use cannot identify a common
+phase, so the mean condition alone does not enforce that phase convention.
+For exact equality it suffices to consider all Hermitian Pauli words: they
+span the Hermitian operators, and the mean difference is linear in $O$.
+
+The converse has two important boundaries. At a singular coordinate $a_j=0$,
+the raw mean is zero for every observable and does not identify that marker
+column. For one fixed observable, equality of the means likewise need not
+determine the frame.
+
+The quantitative statement also distinguishes projected marker error from
+workspace leakage. If the left side of the sensitivity formula is at most
+$\varepsilon$ and $a_j\neq0$, then
+
+```math
+\|d_j\|\leq\frac{\varepsilon}{2|a_j|},
+\qquad
+\left\|e^{-i\chi}\widetilde VJ|\lambda(j)\rangle-J|e_j\rangle\right\|
+\leq\sqrt{\frac{\varepsilon}{|a_j|}}.
+```
+
+For the second bound, the squared column distance is
+$`2-2\mathrm{Re}\langle e_j|v_j\rangle\leq2\|d_j\|`$.
+Without workspace leakage, the column distance equals $`\|d_j\|`$ instead.
+The factors involving $a_j$ explain why accurate raw means near a singular
+coordinate do not certify a comparably accurate complete frame. Finite checks
+in [`test_compiler_boundaries.py`](../tests/test_compiler_boundaries.py)
+exercise complex marker phases, common-phase cancellation, and workspace
+leakage through the actual probability decoder.
+
 ## 5. Sequential reuse of one workspace pool
 
 Suppose $\widetilde U$ and $\widetilde V$ frame-safely implement $U$ and $V$ using at most

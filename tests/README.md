@@ -15,7 +15,7 @@ theorem by numerical extrapolation.
 |---|---|
 | [`test_frames.py`](test_frames.py) | Do the recursive and addressed constructions give the same frame? Are marker columns, chart domains, metric weights, and singular continuations consistent? |
 | [`test_complex_analysis.py`](test_complex_analysis.py) | Do magnitude and leaf-phase differentials, gauge relations, and zero-amplitude behavior match the frame convention? |
-| [`test_compiler_boundaries.py`](test_compiler_boundaries.py) | Can one state column preserve the state while corrupting a gradient? Which checkpoint interface is sufficient? |
+| [`test_compiler_boundaries.py`](test_compiler_boundaries.py) | State-only failure, sharp all-observable sensitivity, common phases, leakage, singular markers, and checkpoint interfaces |
 | [`test_strict_zero_echo.py`](test_strict_zero_echo.py) | Does the four-sector echo implement every addressed layer, restore the borrowed data bit, and compose to the complete frame? |
 | [`test_strict_zero_audit.py`](test_strict_zero_audit.py) | Do the strict-zero size, depth, and lower-bound inequalities hold in exact arithmetic? |
 | [`test_tree_decoder.py`](test_tree_decoder.py) | Is the binary–one-hot decoder a reversible permutation with disjoint layers, exact counts, and the intended code-space frame action? |
@@ -23,8 +23,8 @@ theorem by numerical extrapolation.
 | [`test_unified_compiler.py`](test_unified_compiler.py) | Does schedule selection cover every workspace budget and does the phase diagonal equal one exact UCG? |
 | [`test_resource_bounds.py`](test_resource_bounds.py) | Do the low-workspace absorption, maximal-cut, workspace-envelope, and lower-bound diagnostics hold? |
 | [`test_decoders.py`](test_decoders.py) | Do direct parity, histogram, Walsh–Hadamard, and direct phase-record decoders agree? |
-| [`test_approximation_contract.py`](test_approximation_contract.py) | Do complete-output error and the actual adjoint control the fixed-parameter QBP measurement bias? |
-| [`test_operator_source_compiler.py`](test_operator_source_compiler.py) | Do the native source, scalar block, dirty bank and suffix echoes, literal phases, and amplified complete output agree with the construction? |
+| [`test_approximation_contract.py`](test_approximation_contract.py) | Actual-adjoint bias, complex phase records, reflection sums, finite weights, and conditional means with correlated dirty reuse |
+| [`test_operator_source_compiler.py`](test_operator_source_compiler.py) | Native two-clean frame composition, optimal source words and witnesses, dirty echoes/banks, and literal U(2) multiplexor phases |
 | [`test_provenance.py`](test_provenance.py) | Are upstream commits, source roles, and local lineage recorded consistently? |
 | [`test_literature_policy.py`](test_literature_policy.py) | Does the active proof use one compiler framework and maintain the declared contribution boundary? |
 | [`test_reviewer_narrative.py`](test_reviewer_narrative.py) | Do the primary reading route, diagrams, links, terminology, and source-version statements remain coherent? |

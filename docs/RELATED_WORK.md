@@ -280,6 +280,13 @@ complete frame corrections. A shared geometric source supplies approximate
 shift amplitudes on accepted branches; the source is retained between stages.
 The residual decomposition, failure tracking, and one final amplification
 control the full initialized isometry while returning dirty workspace exactly.
+The failure counter uses the established block-product compression gadget of
+[Low–Wiebe, Lemma 13](https://arxiv.org/html/1805.00675v2), in the form explained
+by [Fang–Lin–Tong, Section 2.4, Lemma 3 and Appendix D](https://arxiv.org/html/2208.06941v2).
+It coherently retains failed histories while reusing block work. Neither
+logarithmic history storage nor final amplification is a new general
+mechanism here; the additional ingredients are the residual representation,
+shared precision source, and charged frame-specific schedule.
 Under the conditions in the [theorem](FAULT_TOLERANT_COMPILER.md), this gives
 
 ```math
@@ -347,6 +354,108 @@ amplification.
 The [source map](SOURCE_MAP.md) gives exact theorem numbers and local consumers.
 The comparisons identify dependencies and specific additional constructions;
 they do not certify priority.
+
+## 12. Contemporary comparisons and the broader compiler contribution
+
+The following comparisons were checked against primary sources on
+**22 September 2026**. Their precision, initialization, and error contracts
+matter as much as their T-count exponents.
+
+**General unitary synthesis.** Tan is no longer the newest generic upper
+bound. [Yuan–Zhang–Zi, arXiv:2608.17846v2, Theorem I.1 and Definition II.1](https://arxiv.org/html/2608.17846v2)
+give, for $`n+L\le N`$,
+
+```math
+T=O\!\left(nN^{5/4}(n+L)^{5/8}\right),
+\qquad a=O\!\left(N\sqrt{n+L}\right).
+```
+
+Their ancillary qubits are clean. Their error criterion is the complete
+initialized-isometry norm, including leakage and literal phase, so that
+criterion itself is not a novelty claim here. They treat arbitrary dense
+unitaries; the Hopf family has only $`N-1`$ real parameters and has additional
+tree structure. The comparison establishes the importance of using that
+structure, not an improvement to arbitrary-unitary synthesis.
+[Fang–Heunen–Wang, arXiv:2607.12907v1, Theorem 1.2 and Corollary 3.8](https://arxiv.org/html/2607.12907v1)
+give an instance-dependent bound in terms of phase-optimized Frobenius
+distance to the Clifford group. Their circuit uses initialized ancillas and
+their detailed conclusion is in diamond distance. It supplies neither a
+two-clean guarantee nor the prescribed frame's worst-case frontier.
+
+**The closest precision and workspace comparison.**
+[Yamazaki–Akibue, arXiv:2603.14202v1, Theorem 1 and Section 3](https://arxiv.org/html/2603.14202v1)
+sharpen the leading precision coefficient for complete multiplexed SU(2)
+gates to $`3L+O(\sqrt{NL})+o(L)`$ for most targets. Their displayed
+construction explicitly reserves $`3L+O(n)+o(L)`$ clean ancillas; its
+remaining ancillas can be dirty. Theorem 4 removes ancillas with a cost
+of order $`NL+Nn`$, under its stated typical-target guarantee. These are
+channel-distance results with additional restrictions in the matching
+leading-constant lower bound. They do not establish a literal-phase,
+two-clean implementation for every supplied table.
+
+GKW's diagonal proof likewise computes a precision-length instruction word
+into an initialized register, then applies that word and uncomputes it. LKS
+can replace its lookup scratch with dirty banks, but an arbitrary dirty
+output word is not a known instruction word. The two-clean construction
+avoids that instruction register by using a full-space operator identity on
+the dirty core.
+
+This distinction already gives a result beyond the Hopf family. For **every
+literal diagonal** on $`n`$ qubits, the
+[operator-source proof](OPERATOR_SOURCE_COMPILER.md) establishes
+
+```math
+a=2,\quad b\ge2(L+n+5),\qquad
+T=\Theta\!\left(\sqrt{NL}+L+\frac{NL}{b}\right),
+\qquad G=O(NL).
+```
+
+The upper bound includes approximate joint return of the dirty operator
+core; lookup banks and selectors return exactly. Since $`n+2+b=\Theta(b)`$
+in this range, GKW's diagonal lower bound and LKS-style finite-width counting
+give the stated worst-case match. At $`L=N`$ and $`b=2(N+n+5)`$ this is
+$`\Theta(N)`$ T count with two clean qubits. This diagonal endpoint is
+settled by the retained proof, whereas the corresponding complete-frame
+endpoint still has a logarithmic gap. The broader scientific contribution
+is therefore a precision/workspace compiler for a standard operator family,
+together with the structured complete-frame extensions. It is not a claim
+that the entire two-clean frame frontier is matched.
+
+The same proof now covers **arbitrary complete one-target U(2)
+multiplexors**, with $`N=2^n`$ blocks, two initialized flags, and
+$`b\ge2(L+n+7)`$ dirty qubits, at
+$`\Theta(\sqrt{NL}+L+NL/(n+3+b))`$ T gates. Four addressed Euler
+factors suffice; their implementation reuses the flags and dirty core with
+all return error included. The [multiplexor corollary](OPERATOR_SOURCE_COMPILER.md#81-general-one-qubit-multiplexors-with-two-clean-qubits)
+handles certified matrix-entry input through finite approximate Euler search,
+so no nonsingular-chart or exact-zero promise is introduced. This directly
+addresses the complete multiplexor task in the GKW and Yamazaki–Akibue
+comparisons, while supplying the distinct two-clean guarantee. It does not
+improve their leading constants, and its general classical coordinate search
+is not claimed efficient. It also does not combine all Hopf tree depths into
+one jointly charged precision source.
+
+**Why general compression does not remove the distinction.**
+[Vasconcelos–Gilyén, arXiv:2507.07900v2](https://arxiv.org/html/2507.07900v2)
+give an ancilla-uncomputation procedure that still queries the original
+block encoding on its initialized work. Thus it reduces retained work
+between calls, not the initial peak-clean requirement to two qubits. Their
+exact-product logarithmic ancilla lower bound is for the specified multiple
+coherent measurement circuit class. Their approximate compression theorem
+requires near-identity supplied dilations, not merely near-identity accepted
+blocks. Neither statement proves or resolves our constant-clean frame gap.
+[Ma–Joven–Liu, arXiv:2609.11153v1, Theorem 3.1](https://arxiv.org/html/2609.11153v1)
+compress a block encoding to at most $`n+2T`$ clean ancillas without raising
+T count, possibly changing normalization. This supports counting lower
+bounds; it is not a constant-clean unitary implementation theorem.
+
+**Lookup constants.**
+[Motlagh–Pocrnic, arXiv:2605.20334v1, Section II](https://arxiv.org/html/2605.20334v1)
+improve dirty-QROM constants using SelectCopy and shared work across bit
+packets. The output instruction register remains initialized in their
+construction. These improvements preserve the asymptotic lookup tradeoff
+used here and do not supply the two-clean diagonal compiler. We claim no
+improvement to their constant factors.
 
 ## References highlighted here
 

@@ -28,6 +28,16 @@ inputs.
 The analytic proof establishes the improved upper bound; finite matrices test
 its fragile identities and conventions.
 
+The suite now includes a complete two-layer **native Clifford+T** fixture
+with nine wires and exactly two initialized flags. All 128 logical/dirty
+input columns are propagated through the actual gate words, including an
+exact seven-T Toffoli decomposition, the literal amplification phase,
+actual reversed-word inverses, and retained intermediate leakage. Its
+deliberately coarse precision tests composition rather than claiming the
+theorem's asymptotic accuracy. Separate fixtures verify general U(2)
+multiplexor Euler order, address-dependent phases, and four-stage composition,
+as well as the optimal exact source words and Pauli-transfer witnesses.
+
 ## 2. What is represented locally
 
 | Component | Local representation | Principal executable check | Imported ingredient |
@@ -71,6 +81,10 @@ The compiler-boundary fixtures check:
 - a checkpoint suffix that preserves one state but changes a derivative;
 - an active-interface-safe suffix that preserves designated means without
   preserving the complete distribution.
+
+Additional boundary tests exercise the sharp worst-observable sensitivity,
+common-phase cancellation, projected marker error versus physical leakage,
+and singular-marker ambiguity across all two-qubit Pauli observables.
 
 Files:
 
@@ -308,6 +322,12 @@ The [approximation bridge](QBP_APPROXIMATION.md) has tests for full-input error,
 actual-adjoint transfer, leakage, reference-entangled borrowed inputs, and
 bounded estimator bias. These validate the finite examples behind the general
 proof, not differentiation of a synthesized family.
+
+The approximation suite also checks the complex phase stream directly,
+reflection-term sampling, pathwise finite-weight error, and a two-shot
+measurement instrument whose retained dirty state changes the next-shot law.
+The last fixture tests the conditional-mean premise of the martingale proof;
+it is not a fitted statistical scaling experiment.
 
 ---
 
