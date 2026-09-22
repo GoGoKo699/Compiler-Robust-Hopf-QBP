@@ -530,7 +530,73 @@ on bank and batch-private work. Therefore each commutator is exactly
 $`A^\dagger A=I`$, and the remaining readout/conjugation gates cancel.
 Inactive identity does not depend on the batch approximation.
 
-### 5.3 The missing primitive and its conditional consequence
+### 5.3 A weaker sufficient batch contract
+
+The full batch approximation (30) is sufficient but stronger than the
+echo requires. Let $`X_x`$ flip the selected bank bit and define the
+actual unitary
+
+```math
+K_x=A^\dagger X_x A X_x.
+```
+
+Suppose instead that its complete initialized column satisfies
+
+```math
+\|K_xJ_B-J_B U_x\|\leq\epsilon,
+\qquad U_x=e^{i\theta_x Z_x}\otimes I_{\rm helpers},
+\tag{31a}
+```
+
+uniformly in $`x`$. Here $`A`$ acts only on the bank, its private clean
+work, and separate dirty helpers, as in Section 5.2. No closeness of
+$`A`$ itself to a tensor product is required. All private-work leakage
+and all dirty-input dependence are included in (31a).
+
+The actual inverse obeys the same column bound:
+
+```math
+\|K_x^\dagger J_B-J_B U_x^\dagger\|
+=\|J_B-K_xJ_B U_x^\dagger\|
+\leq\epsilon.
+\tag{31b}
+```
+
+On an active suffix sector the word (26), with $`A`$ in place of
+$`D`$, has the exact target-block form
+
+```math
+E_tE_{\bar t}^\dagger
+=|0\rangle\!\langle0|_t\otimes K_x^\dagger
+ +|1\rangle\!\langle1|_t\otimes K_x.
+\tag{31c}
+```
+
+Thus its complete column error is at most $`\epsilon`$, the maximum
+of the two block errors. Conjugating by the exact readout and sign
+gates in (28) gives complete addressed-rotation error at most
+$`\epsilon`$, including final readout and private-work leakage.
+The readout embedding can correlate the target, address, and bank;
+the uniform operator bound still applies. The private work remains
+disjoint from every readout, routing, and suffix-predicate operation.
+On an inactive suffix sector both controlled flips are identity, so
+the actual word cancels exactly, with no approximation assumption.
+
+This contract allows additional choices of batch circuit. With no additional work,
+its exact version for every bank position is equivalent to
+$`A^\dagger X_jA=D^\dagger X_jD`$ for every $`j`$. Writing
+$`A=BD`$ shows that all such solutions are precisely those with
+$`[B,X_j]=0`$ for every $`j`$: $`B`$ may be any unitary diagonal
+in the joint X basis, including an entangling one. This factor cancels
+inside each commutator. This characterization is only for the stated
+full-space, no-additional-work case.
+
+Equations (31a)–(31c) give a weaker construction target, not a compiler
+cost bound. Any proposed implementation must charge $`A`$, its actual
+inverse, all initialization, and complete work return. No circuit with
+the desired heterogeneous endpoint cost is established here.
+
+### 5.4 The missing primitive and its conditional consequence
 
 A sufficient **unproved** batch hypothesis is the following. For every
 $`S`$-fold heterogeneous phase product (25) and precision

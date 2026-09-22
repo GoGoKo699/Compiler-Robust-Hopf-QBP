@@ -366,6 +366,12 @@ class ConstantCleanStructureTests(unittest.TestCase):
         full_defect = actual @ embedding - embedding @ ideal
         error = _norm(full_defect)
         self.assertLessEqual(error, 4 * delta + ATOL)
+        commutator_error = max(
+            _norm(approximate.conj().T @ flip @ approximate @ flip
+                  - bank_phase.conj().T @ flip @ bank_phase @ flip)
+            for flip in (np.kron(X, I2), np.kron(I2, X))
+        )
+        self.assertLessEqual(error, commutator_error + ATOL)
         self.assertGreater(error, 1e-3)
         # Actual inverses cancel arbitrary dense bank mixing on the inactive suffix.
         np.testing.assert_allclose(actual[:, :32], np.eye(64)[:, :32], atol=ATOL, rtol=0)
@@ -385,6 +391,20 @@ class ConstantCleanStructureTests(unittest.TestCase):
         reference_error = np.linalg.norm(np.kron(actual, I2) @ initial - expected)
         self.assertLessEqual(reference_error, error + ATOL)
         self.assertGreater(reference_error, 1e-3)
+
+    def test_phase_bank_entangling_x_basis_factor_cancels_exactly(self):
+        embedding, bank_phase, ideal, compile_word = _tensor_phase_fixture()
+        angle = 0.63
+        gauge = np.cos(angle) * np.eye(4) + 1j * np.sin(angle) * np.kron(X, X)
+        batch = gauge @ bank_phase
+        # The off-diagonal mixing cannot be removed by any scalar phase.
+        self.assertGreater(abs(gauge[3, 0]), 0.5)
+        for flip in (np.kron(X, I2), np.kron(I2, X)):
+            np.testing.assert_allclose(batch.conj().T @ flip @ batch,
+                                       bank_phase.conj().T @ flip @ bank_phase,
+                                       atol=ATOL, rtol=0)
+        np.testing.assert_allclose(compile_word(batch) @ embedding,
+                                   embedding @ ideal, atol=ATOL, rtol=0)
 
 
 if __name__ == "__main__":

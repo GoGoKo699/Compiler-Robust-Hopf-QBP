@@ -1,4 +1,4 @@
-# Constant-clean research: checked structural progress
+# Constant-clean research: checked progress
 
 This is the reading entry for the research resumed on 22 September 2026.
 The [endpoint brief](CONSTANT_CLEAN_ENDPOINT.md) supplies the complete model.
@@ -9,10 +9,40 @@ a=O(1),\qquad b=\Theta(N),\qquad L=N,
 \qquad \Omega(N)\le\tau^*_{F,\mathbb R}\le O(N^{3/2}).
 ```
 
-The progress is a sharper description of what an improved compiler must do,
-two restrictions on proposed global shortcuts, and exact reductions that
-identify concrete missing synthesis tasks. These results support continued
-research; they do not change the main sufficient-clean theorem.
+The latest constructive result batches identical phases with one clean qubit
+and logarithmic dirty work. Earlier results characterize useful dirty workspace,
+restrict two proposed global shortcuts, and identify missing synthesis tasks.
+These results support continued research; they do not change the main
+sufficient-clean theorem.
+
+## Latest construction: identical phases with one clean qubit
+
+For an arbitrary angle, a product of $`m`$ identical phase gates can be
+approximated to complete-output error $`2^{-L}`$ using
+
+```math
+a=1,\qquad b=O(\log(m+1)),\qquad
+T,G=O((m+L)\log(m+1)).
+```
+
+The [construction and proof](constant_clean/IDENTICAL_PHASE_BATCHING.md)
+use a dirty binary accumulator with one initialized high bit. Add the input's
+Hamming weight, apply a phase proportional to the accumulator value, and
+reverse the addition. A matching inverse phase removes the accumulator's
+unknown starting value. The high bit gives enough room to prevent wraparound;
+the Hamming weight is never extracted into an initialized count register.
+Only logarithmically many one-qubit phases need synthesis. Existing coherent
+dirty-work arithmetic supplies the increment operations.
+
+The proof includes the literal scalar phase, clean leakage, arbitrary dirty
+inputs and their reference entanglement. The approximate circuit uses the
+actual inverse of its synthesized phase operator. The note also gives a
+simple explicit arithmetic implementation and finite regression checks.
+
+This is a proved restricted primitive. The phase bank needed for an arbitrary
+Hopf layer contains **different** angles. Decomposing all of those angles
+into dyadic layers introduces a precision-dependent number of batches, so
+the construction does not establish a smaller unrestricted frame bound.
 
 ## 1. The relevant dirty workspace can be characterized
 
@@ -89,15 +119,17 @@ finite checks exercise Pauli restrictions, dirty/reference return, Fourier
 signs, cross-flag blocks, and the new echo identities. Run them with
 
 ```bash
-python -m unittest tests.test_constant_clean_structure
+python -m unittest tests.test_constant_clean_structure tests.test_identical_phase_batching
 ```
 
 The source review records the precise hypotheses of the inspected synthesis,
 lookup and catalytic results. It is not an exhaustive novelty certification
 or external peer review.
 
-The next constructive task is to specify a complete, target-dependent batch
-interpreter or joint phase-bank circuit and charge its operations. It must
+The next constructive task is to extend the identical-phase primitive to
+heterogeneous phases, or implement the weaker selected-commutator contract in
+the [phase-bank reduction](constant_clean/GLOBAL_BLOCK_FOLLOWUP.md), and
+charge all operations. An improved arbitrary-frame construction must
 use the available dirty space beyond the rank-limited architecture above,
 while avoiding the two restricted global interfaces. A proved smaller T
 upper bound would update the frontier; an algebraic reduction with an

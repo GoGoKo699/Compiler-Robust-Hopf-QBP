@@ -41,3 +41,13 @@ and small checks do not certify publication novelty or external peer review.
 The executable regression record is
 [test_constant_clean_structure.py](../../tests/test_constant_clean_structure.py).
 The unrestricted endpoint bounds are unchanged.
+
+The subsequent constructive continuation adds
+[identical-phase batching](IDENTICAL_PHASE_BATCHING.md) and the weaker
+selected-commutator contract in the global-block note. The batching proof
+combines a masked accumulator with existing phase-commutator and coherent
+dirty-increment techniques; the note cites their primary sources and makes
+no priority claim. Its full-input identity, phase cancellation and resource
+ledger received a separate internal proof check. Small regression checks are
+in [test_identical_phase_batching.py](../../tests/test_identical_phase_batching.py).
+The result concerns identical phases, so the unrestricted endpoint remains open.

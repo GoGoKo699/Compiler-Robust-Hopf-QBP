@@ -42,6 +42,7 @@ PRIMARY_PAGES = (
     "research/constant_clean/DIRTY_RETURN_LOWER_BOUND_FOLLOWUP.md",
     "research/constant_clean/MODULAR_LOOKUP_FOLLOWUP.md",
     "research/constant_clean/ENDPOINT_LITERATURE_FOLLOWUP.md",
+    "research/constant_clean/IDENTICAL_PHASE_BATCHING.md",
 )
 
 TABLE_MATH_PAGES = (

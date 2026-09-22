@@ -7,7 +7,8 @@ Last updated: 22 September 2026.
 The repository supports one compiler paper with two resource models. The exact
 logical frontier is established at every clean-workspace budget. The real-frame
 T-count frontier is matched above a sufficient clean reservation. The
-constant-clean endpoint is the next research question after this integration.
+constant-clean endpoint is the active research question; its unrestricted
+bounds remain unchanged.
 
 ## Exact logical result
 
@@ -215,8 +216,8 @@ specific contribution claim; it does not certify priority.
 
 Research on the constant-clean endpoint has resumed. The
 [checked-progress report](../research/CONSTANT_CLEAN_PROGRESS.md) records
-dirty-rank compression, scoped architecture restrictions, and exact
-constructive reductions. The unrestricted endpoint bounds and the main
+one-clean identical-phase batching, dirty-rank compression, scoped architecture
+restrictions, and exact constructive reductions. The unrestricted endpoint bounds and the main
 sufficient-clean theorem are unchanged.
 
 The repository has completed its internal analytic and executable checks and is
