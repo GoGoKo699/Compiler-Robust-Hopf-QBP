@@ -95,7 +95,7 @@ coefficient therefore gives
 M_m=\sum_{j=0}^{m-1}a_j\Gamma_j,\qquad
 a_j=
 \begin{cases}
-2^{-(j+1)/2},&j<m-1,\\
+2^{-(j+1)/2},&j\lt m-1,\\
 2^{-(m-1)/2},&j=m-1.
 \end{cases}
 \qquad\text{(8)}
