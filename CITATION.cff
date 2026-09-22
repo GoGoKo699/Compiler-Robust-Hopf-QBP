@@ -1,14 +1,14 @@
 cff-version: 1.2.0
 message: "Cite this repository when using the prescribed-frame compilers, exact and fault-tolerant resource theorems, or validation code."
-title: "Optimal Compilation of Hopf Differential Frames"
+title: "Exact and Fault-Tolerant Compilation of Hopf Differential Frames"
 type: software
-version: 0.4.0-alpha
-date-released: 2026-09-04
+version: 0.4.0a0
+date-released: 2026-09-22
 authors:
   - family-names: Lin
     given-names: Ruge
     email: gogoko699@gmail.com
-repository-code: "https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP"
+repository-code: "https://github.com/GoGoKo699/Hopf-Frame-Compilation"
 license: MIT
 keywords:
   - quantum backpropagation

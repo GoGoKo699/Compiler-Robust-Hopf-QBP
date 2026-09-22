@@ -1,4 +1,4 @@
-# Optimal Compilation of Hopf Differential Frames
+# Exact and Fault-Tolerant Compilation of Hopf Differential Frames
 
 ### A technical narrative through exact and fault-tolerant compilation
 

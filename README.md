@@ -1,4 +1,4 @@
-# Optimal Compilation of Hopf Differential Frames
+# Exact and Fault-Tolerant Compilation of Hopf Differential Frames
 
 ### One prescribed frame, exact logical and fault-tolerant compilation
 
@@ -25,9 +25,8 @@ same frame costs at finite precision. The exact logical theorem covers every
 clean-workspace budget. The fault-tolerant theorem gives a matched T-count
 frontier in its stated clean/dirty-workspace regime. The
 [publication scope](manuscript/PUBLICATION_SCOPE.md) selects one full-length
-paper around these results and the two-clean construction. The target is
-**PRX Quantum**; scientific proofs, comparisons, and checks are integrated
-here before final manuscript writing.
+paper around these results and the two-clean construction. Scientific proofs,
+comparisons, and checks are integrated here before final manuscript writing.
 
 <p align="center">
   <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column, whereas Hopf differential-frame compilation fixes the state and designated frame columns." />
@@ -338,8 +337,8 @@ The exact fact-level dependencies are listed in
 
 ## Status and license
 
-The [manuscript guide](manuscript/README.md) records the PRX Quantum target
-and the [scientific package](manuscript/PUBLICATION_SCOPE.md#scientific-ingredients-before-final-writing)
+The [manuscript guide](manuscript/README.md) outlines the paper, and the
+[scientific package](manuscript/PUBLICATION_SCOPE.md#scientific-ingredients-before-final-writing)
 lists the proofs and evidence that precede final writing.
 
 The exact compiler and fault-tolerant construction have the analytical and

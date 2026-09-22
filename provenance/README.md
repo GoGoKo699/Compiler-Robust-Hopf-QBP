@@ -24,7 +24,7 @@ and internal checks do not certify priority or substitute for external review.
 ## Earlier research snapshot
 
 The complete pre-pruning research and internal audit material remains in
-[commit da91e34](https://github.com/GoGoKo699/Compiler-Robust-Hopf-QBP/tree/da91e34edd97d6d0f90af58ab556412c04929cb4).
+[commit da91e34](https://github.com/GoGoKo699/Hopf-Frame-Compilation/tree/da91e34edd97d6d0f90af58ab556412c04929cb4).
 It includes the exploratory constant-clean routes and their tests. Those
 materials are outside the active publication tree; the retained proof chapters
 contain all dependencies of the selected results.

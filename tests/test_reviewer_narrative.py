@@ -186,7 +186,7 @@ class ReviewerNarrativeTests(unittest.TestCase):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         opening = compact(readme[:2500]).lower()
         self.assertLess(len(readme), 15_000)
-        self.assertIn("# optimal compilation of hopf differential frames", opening)
+        self.assertIn("# exact and fault-tolerant compilation of hopf differential frames", opening)
         self.assertIn("prescribed unitary completion", opening)
         self.assertIn("exact state preparation normally specifies one initialized input", opening)
         self.assertIn("this repository asks whether the prescribed hopf completion", opening)

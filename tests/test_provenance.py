@@ -24,7 +24,7 @@ class ProvenanceTests(unittest.TestCase):
         self.assertEqual(self.payload["schema_version"], 1)
         self.assertEqual(
             self.payload["current_repository"],
-            "GoGoKo699/Compiler-Robust-Hopf-QBP",
+            "GoGoKo699/Hopf-Frame-Compilation",
         )
         upstreams = self.payload["upstreams"]
         self.assertGreaterEqual(len(upstreams), 2)

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "recorded_at_utc": "2026-09-07T11:33:27Z",
-  "current_repository": "GoGoKo699/Compiler-Robust-Hopf-QBP",
+  "current_repository": "GoGoKo699/Hopf-Frame-Compilation",
   "upstreams": [
     {
       "repository": "GoGoKo699/Hopf-QBP",
@@ -70,7 +70,7 @@
   },
   "synchronization_policy": {
     "foundational_corrections": "port deliberately to both repositories after review",
-    "new_compiler_research": "authoritative only in Compiler-Robust-Hopf-QBP",
+    "new_compiler_research": "authoritative only in Hopf-Frame-Compilation",
     "automatic_overwrite": false
   },
   "upstream_reconciliation_history": [

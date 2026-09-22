@@ -9,7 +9,7 @@ provenance for the chart and QBP interfaces it reuses.
 | Material | Authoritative repository |
 |---|---|
 | Published-chart conventions, established gradient protocols, direct-angle ledger, Möttönen robustness, and statistical task boundaries | `GoGoKo699/Hopf-QBP` |
-| Frame-safe compilation, strict-zero echo, routed all-workspace compiler, output-sensitive decoding, and the new compiler theorem | `GoGoKo699/Compiler-Robust-Hopf-QBP` |
+| Frame-safe compilation, strict-zero echo, routed all-workspace compiler, output-sensitive decoding, and the new compiler theorem | `GoGoKo699/Hopf-Frame-Compilation` |
 
 A correction to a shared mathematical foundation must be reviewed in both
 repositories. New compiler results are not copied back into `Hopf-QBP` unless

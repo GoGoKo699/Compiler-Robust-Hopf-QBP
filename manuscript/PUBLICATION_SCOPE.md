@@ -2,8 +2,8 @@
 
 [Paper architecture](README.md) · [Read the argument](../REVIEW.md) · [Verification](../docs/VERIFICATION.md)
 
-The selected publication is **one full-length theoretical compiler paper
-targeting PRX Quantum**. Its scientific ingredients are developed and checked
+The selected publication is **one full-length theoretical compiler paper**.
+Its scientific ingredients are developed and checked
 in this repository before final manuscript writing.
 Its subject is the prescribed Hopf differential frame, studied in two resource
 models. The constant-clean endpoint is an open problem in the discussion;
@@ -68,8 +68,8 @@ Proofs: [A](../docs/COMPILER_THEOREM.md),
 ## A compiler capability beyond Hopf frames
 
 The two-clean mechanism also compiles **every literal diagonal and every
-complete one-target U(2) multiplexor**. These corollaries are part of the
-scientific case for PRX Quantum, rather than incidental applications.
+complete one-target U(2) multiplexor**. These corollaries establish the
+mechanism's reach beyond the motivating frame family.
 
 For a multiplexor with $`k`$ address qubits, one target, and $`M=2^k`$
 arbitrary U(2) blocks, the [proof](../docs/OPERATOR_SOURCE_COMPILER.md#81-general-one-qubit-multiplexors-with-two-clean-qubits)
@@ -203,5 +203,4 @@ Final writing assembles these established statements and proofs into one
 argument with consistent notation and bibliography. No general elementary
 Clifford+T emitter, hardware experiment, or solution of the open endpoint is
 asserted by this package. External technical feedback on the complete draft
-and final submission preparation follow. Selecting PRX Quantum does not itself
-establish that the journal's exceptionality threshold has been met.
+and final submission preparation follow.

@@ -9,22 +9,15 @@ results and their corollaries. The exact theorem covers every $m\geq0$
 clean-workspace budget; the two T-count constructions keep their distinct
 clean/dirty reservations and return guarantees.
 
-## Target journal
+## Scientific contribution
 
-**Target: PRX Quantum, as a full-length research article.** The author selected
-this goal on 22 September 2026. Scientific development and verification come
-before final manuscript writing.
-
-The journal's [editorial criteria](https://journals.aps.org/prxquantum/pdf/10.1103/PRXQuantum.6.020001)
-require an exceptional advance, connection, capability, or insight. The
-scientific case pursued here is a compiler capability: preserving an entire
+The paper develops a compiler capability: preserving an entire
 operationally required frame while controlling exact entangling cost,
 fault-tolerant precision cost, and initialized versus borrowed workspace.
 The two-clean diagonal and general one-target multiplexor results also cover
-standard operator families beyond Hopf frames. This is the intended significance argument, not a prediction of
-an editorial decision.
+standard operator families beyond Hopf frames.
 
-The closest venue precedents are Yuan–Zhang's
+The principal synthesis comparisons are Yuan–Zhang's
 [exact state-preparation tradeoffs](https://quantum-journal.org/papers/q-2023-03-20-956/)
 (Quantum 7, 956), Low–Kliuchnikov–Schaeffer's
 [dirty-workspace tradeoffs](https://quantum-journal.org/papers/q-2024-06-17-1375/)
@@ -41,12 +34,6 @@ and state Results A–C with their resource assumptions. QBP provides the
 operational motivation and consequence. The exact and fault-tolerant models
 remain parts of one operator-compilation story; the open endpoint remains
 in the discussion.
-
-At submission preparation, follow the current
-[PRX Quantum author guidance](https://journals.aps.org/prxquantum/authors),
-including a cover letter explaining significance, a popular summary, data
-availability, and disclosure of substantive AI assistance. These presentation
-tasks follow the scientific package and the complete draft.
 
 ## Paper order
 
