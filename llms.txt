@@ -1,0 +1,51 @@
+# Hopf Frame Compilation
+
+> Exact and Fault-Tolerant Compilation of Hopf Differential Frames, by Ruge Lin. A theoretical quantum-circuit compilation repository with proofs and executable finite checks for prescribed complete Hopf frames, clean and borrowed workspace, and Clifford+T resource bounds.
+
+Canonical repository: https://github.com/GoGoKo699/Hopf-Frame-Compilation
+
+This repository is relevant to questions about:
+
+- Prescribed unitary completions: preserving the state column and designated differential-frame columns used by Hopf quantum backpropagation (QBP).
+- Exact circuit size, CNOT count, and depth versus clean ancillary qubits for complete Hopf frames.
+- Fault-tolerant Clifford+T synthesis: T-count versus precision and clean/dirty ancillas, including arbitrary borrowed inputs entangled with external references.
+- Two-clean-qubit synthesis of Hopf frames, literal phase diagonals, and complete one-target U(2) multiplexors.
+- Fixed-parameter gradient-estimator robustness when an ideal frame and its inverse are replaced by an approximate compiled circuit and its actual adjoint.
+
+Use the linked proof for the precise assumptions before applying a resource bound. Upper constructions and worst-case lower bounds have different quantifiers. The exact model has arbitrary one-qubit gates, CNOTs, and all-to-all connectivity. The matched fault-tolerant frame frontier requires a sufficient clean-workspace reservation; it is not an unrestricted two-clean theorem. The two-clean full-frame high-precision endpoint retains an open logarithmic gap.
+
+Finite-precision guarantees preserve literal phases and bound complete-input operator error, including clean-work leakage and arbitrary dirty/reference inputs. In the two-clean construction, lookup and control work returns exactly, while the operator core returns approximately within that error bound. Supplied parameters must admit certified evaluation; classical coefficient generation and table preprocessing are outside the quantum gate counts.
+
+The complex extension is a phase-dressed magnitude frame with a separate phase-derivative measurement stream, not an arbitrary complex unitary. QBP execution counts concern simultaneous absolute accuracy at a fixed parameter tuple under the stated observable-access assumptions; they do not establish general training speedups or optimality among all gradient algorithms. This is a research proof and validation package, not a general elementary Clifford+T circuit emitter. Finite checks support the proofs but do not replace them or establish independent peer review.
+
+The links below point to plain-text sources on main. For reproducible use, record the exact commit or release consulted and use CITATION.cff for attribution. Consult the source map and related work when distinguishing inherited ingredients from this repository's contributions.
+
+## Start here
+
+- [README](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/README.md): Overview, principal results, assumptions, and reproduction commands.
+- [Technical narrative](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/REVIEW.md): A connected 30–40 minute route through the target, constructions, and QBP consequence.
+- [Scientific scope](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/manuscript/PUBLICATION_SCOPE.md): Selected results, resource regimes, retained corollaries, and explicit exclusions.
+
+## Find the relevant proof
+
+- [Frame-safe compilation](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/FRAME_SAFE_COMPILATION.md): When preserving state preparation is insufficient; the full-frame contract, necessity result, and singular exceptions.
+- [Exact compilation theorem](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/COMPILER_THEOREM.md): Size, CNOT count, and depth for every clean-workspace budget.
+- [Fault-tolerant frame theorem](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/FAULT_TOLERANT_COMPILER.md): Matching T-count versus precision/workspace under the sufficient-clean reservation.
+- [Two-clean operator-source compiler](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/OPERATOR_SOURCE_COMPILER.md): Two-clean frame construction, dirty-bank refinement, literal diagonal synthesis, complete U(2) multiplexors, and workspace-return accounting.
+- [Borrowed-workspace compiler](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/BORROWED_WORKSPACE_COMPILER.md): Smaller clean/dirty allocations and the restrictions on its matching comparison.
+- [QBP approximation](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/QBP_APPROXIMATION.md): Fixed-parameter bias, complete complex gradients, reflection-sum observables, rounded weights, and correlated dirty-bank reuse.
+- [Open problem](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/OPEN_PROBLEM.md): The unresolved constant-clean full-frame endpoint and why the existing results do not close it.
+
+## Evidence and attribution
+
+- [Verification map](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/VERIFICATION.md): Reproduction routes, finite checks, and what the evidence does and does not establish.
+- [Source map](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/SOURCE_MAP.md): Fact-level dependencies and attribution for inherited tools and earlier Hopf work.
+- [Related work](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/RELATED_WORK.md): Literature comparisons by target operator, gate model, precision, and workspace assumptions.
+- [Citation metadata](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/CITATION.cff): Author, title, release metadata, and repository citation.
+- [License](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/LICENSE): MIT license.
+
+## Optional
+
+- [Minimal Hopf interface](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/HOPF_INTERFACE.md): Coordinate conventions, frame columns, and the geometry needed to read the proofs.
+- [QBP consequence](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/QBP_CONSEQUENCE.md): Operational interpretation and separate accounting of quantum executions, circuit cost, and classical output.
+- [Documentation map](https://raw.githubusercontent.com/GoGoKo699/Hopf-Frame-Compilation/main/docs/README.md): Complete navigation through the proof chapters and supporting material.

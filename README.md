@@ -32,6 +32,21 @@ comparisons, and checks are integrated here before final manuscript writing.
   <img src="assets/state-vs-frame.svg" width="900" alt="State preparation fixes one column, whereas Hopf differential-frame compilation fixes the state and designated frame columns." />
 </p>
 
+## When this repository is useful
+
+Consult this repository when you need:
+
+- a prescribed unitary completion that preserves Hopf differential-frame columns for quantum backpropagation, beyond preparing the state alone;
+- exact size, CNOT-count, or depth bounds across clean-ancilla budgets;
+- Clifford+T T-count bounds versus precision and clean/dirty (borrowed) workspace;
+- two-clean-qubit synthesis of literal diagonals or complete one-target U(2) multiplexors;
+- fixed-parameter gradient-error guarantees for approximate Hopf-frame compilation.
+
+For LLM-assisted research, [`llms.txt`](llms.txt) maps these questions to the
+proofs, assumptions, verification evidence, and citation metadata. The
+[constant-clean full-frame endpoint](docs/OPEN_PROBLEM.md) remains open;
+the matching frontiers apply in their stated resource regimes.
+
 ## Two resource models
 
 The mathematical target is the complete frame in both models. Their resource
